@@ -52,6 +52,9 @@ public class StructureGelItem extends BlockItem
 				tooltip.add(new TranslationTextComponent("info." + StructureGelMod.MODID + ".gunpowder").applyTextStyle(TextFormatting.GRAY));
 				tooltip.add(new TranslationTextComponent(""));
 				
+				if (((StructureGelBlock) this.getBlock()).behaviors.isEmpty())
+					tooltip.add(new TranslationTextComponent(Behavior.DEFAULT.translation).applyTextStyle(TextFormatting.GRAY));
+				
 				for (Behavior behavior : ((StructureGelBlock) this.getBlock()).behaviors)
 					tooltip.add(new TranslationTextComponent(behavior.translation).applyTextStyle(TextFormatting.GRAY));
 			}

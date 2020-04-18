@@ -34,14 +34,13 @@ public interface IStructureGel
 		 */
 		DEFAULT(),
 		/**
-		 * Only spreads the gel when there isn't max skylight or there are blocks
-		 * blocking the sky. Great for rooms with open walls.
+		 * Only spreads the gel in positions not exposed to the sky. Great for rooms
+		 * with open walls.
 		 */
 		PHOTOSENSITIVE(),
 		/**
-		 * Spreads the gel diagonally to allow it to go through corners created by vines
-		 * and other details in a build that other gel cant get around. Be careful as
-		 * this may go in unintended places.
+		 * Spreads itself along the cardinal and diagonal directions. Useful to get
+		 * around vines and other weird corners.
 		 */
 		DIAGONAL_SPREAD(),
 		/**
@@ -56,7 +55,7 @@ public interface IStructureGel
 		{
 			this.translation = String.format("info.%s.%s", StructureGelMod.MODID, this.name().toLowerCase());
 		}
-		
+
 		Behavior(String translation)
 		{
 			this.translation = translation;
