@@ -3,23 +3,38 @@ package com.legacy.structure_gel.structures.jigsaw;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Streams;
+import com.google.common.collect.ImmutableMap;
+import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.structures.GelPlacementSettings;
 import com.legacy.structure_gel.structures.processors.RemoveGelStructureProcessor;
+import com.mojang.datafixers.Dynamic;
+import com.mojang.datafixers.types.DynamicOps;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.MutableBoundingBox;
+import net.minecraft.world.gen.feature.jigsaw.IJigsawDeserializer;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
 import net.minecraft.world.gen.feature.jigsaw.SingleJigsawPiece;
+import net.minecraft.world.gen.feature.template.BlockIgnoreStructureProcessor;
 import net.minecraft.world.gen.feature.template.JigsawReplacementStructureProcessor;
 import net.minecraft.world.gen.feature.template.PlacementSettings;
 import net.minecraft.world.gen.feature.template.StructureProcessor;
 
+/**
+ * Extension of {@link SingleJigsawPiece} without the
+ * {@link BlockIgnoreStructureProcessor#AIR_AND_STRUCTURE_BLOCK} in favor of
+ * {@link RemoveGelStructureProcessor#INSTANCE} and including a way to determine
+ * interactions with water.
+ * 
+ * @author David
+ *
+ */
 public class GelJigsawPiece extends SingleJigsawPiece
 {
 	private boolean maintainWater = true;
-	
+	private boolean ignoreEntities = false;
+
 	public GelJigsawPiece(ResourceLocation location, List<StructureProcessor> processors, JigsawPattern.PlacementBehaviour placementBehavior)
 	{
 		super(location.toString(), processors, placementBehavior);
@@ -34,20 +49,12 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	{
 		this(location, ImmutableList.of());
 	}
-	
-	public GelJigsawPiece(String location, List<StructureProcessor> processors, JigsawPattern.PlacementBehaviour placementBehavior)
-	{
-		this(JigsawRegistryHelper.locatePiece(location), Streams.concat(processors.stream(), ImmutableList.of(RemoveGelStructureProcessor.INSTANCE).stream()).collect(ImmutableList.toImmutableList()), placementBehavior);
-	}
 
-	public GelJigsawPiece(String location, List<StructureProcessor> processors)
+	public GelJigsawPiece(Dynamic<?> dyn)
 	{
-		this(JigsawRegistryHelper.locatePiece(location), processors, JigsawPattern.PlacementBehaviour.RIGID);
-	}
-
-	public GelJigsawPiece(String location)
-	{
-		this(JigsawRegistryHelper.locatePiece(location), ImmutableList.of());
+		super(dyn);
+		this.maintainWater = dyn.get("maintainWater").asBoolean(true);
+		this.ignoreEntities = dyn.get("ignoreEntities").asBoolean(false);
 	}
 
 	public GelJigsawPiece setMaintainWater(boolean value)
@@ -55,7 +62,20 @@ public class GelJigsawPiece extends SingleJigsawPiece
 		this.maintainWater = value;
 		return this;
 	}
-	
+
+	/**
+	 * Not sure why you'd do this, but I'll allow it.
+	 * 
+	 * @param value
+	 * @return
+	 */
+	public GelJigsawPiece setIgnoreEntities(boolean value)
+	{
+		this.ignoreEntities = value;
+		return this;
+	}
+
+	@Override
 	protected PlacementSettings createPlacementSettings(Rotation rotation, MutableBoundingBox boundingBox)
 	{
 		GelPlacementSettings placementSettings = new GelPlacementSettings();
@@ -63,10 +83,34 @@ public class GelJigsawPiece extends SingleJigsawPiece
 		placementSettings.setBoundingBox(boundingBox);
 		placementSettings.setRotation(rotation);
 		placementSettings.func_215223_c(true);
-		placementSettings.setIgnoreEntities(false);
+		placementSettings.setIgnoreEntities(this.ignoreEntities);
+		placementSettings.addProcessor(RemoveGelStructureProcessor.INSTANCE);
 		placementSettings.addProcessor(JigsawReplacementStructureProcessor.INSTANCE);
 		this.processors.forEach(placementSettings::addProcessor);
 		this.getPlacementBehaviour().getStructureProcessors().forEach(placementSettings::addProcessor);
 		return placementSettings;
+	}
+
+	@Override
+	public IJigsawDeserializer getType()
+	{
+		return StructureGelMod.JigsawDeserializers.GEL_SINGLE_POOL_ELEMENT;
+	}
+
+	@Override
+	public <T> Dynamic<T> serialize0(DynamicOps<T> ops)
+	{
+		//@formatter:off
+		return new Dynamic<>(ops, ops.createMap(ImmutableMap.of(
+				ops.createString("maintainWater"), ops.createBoolean(this.maintainWater), 
+				ops.createString("ignoreEntities"), ops.createBoolean(this.ignoreEntities)
+				)));
+		//@formatter:on
+	}
+
+	@Override
+	public String toString()
+	{
+		return "Gel[" + this.location + "]";
 	}
 }

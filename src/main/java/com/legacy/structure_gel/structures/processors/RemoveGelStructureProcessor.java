@@ -17,33 +17,29 @@ import net.minecraft.world.gen.feature.template.PlacementSettings;
 import net.minecraft.world.gen.feature.template.StructureProcessor;
 import net.minecraft.world.gen.feature.template.Template;
 
+/**
+ * Ignores {@link Blocks#AIR} and {@link Blocks#STRUCTURE_BLOCK}, and replaces
+ * structure gel blocks with air. Great to make sure the insides of things don't
+ * have unintended things inside of them, and to make it easier to blend into
+ * the world.
+ * 
+ * @author David
+ *
+ */
 public class RemoveGelStructureProcessor extends StructureProcessor
 {
 	public static final RemoveGelStructureProcessor INSTANCE = new RemoveGelStructureProcessor();
 	public static final ImmutableList<Block> IGNORED_BLOCKS = ImmutableList.of(Blocks.AIR, Blocks.STRUCTURE_BLOCK);
-	
+
 	@Nullable
 	public Template.BlockInfo process(IWorldReader worldReaderIn, BlockPos pos, Template.BlockInfo existing, Template.BlockInfo placed, PlacementSettings settings)
 	{
 		if (placed.state.getBlock().isIn(GelTags.GEL))
-		{
-			if (pos.equals(new BlockPos(58146, 45, 60842)))
-				System.out.println(existing.state.getBlock() + " -> "  + Blocks.AIR);
 			return new Template.BlockInfo(placed.pos, Blocks.AIR.getDefaultState(), null);
-		}
 		else if (IGNORED_BLOCKS.contains(placed.state.getBlock()))
-		{
-			if (pos.equals(new BlockPos(58146, 45, 60842)))
-				System.out.println(existing.state.getBlock() + " -> null");
 			return null;
-		}
-		else 
-		{
-			if (pos.equals(new BlockPos(58146, 45, 60842)))
-				System.out.println(existing.state.getBlock() + " -> " + placed.state.getBlock());
+		else
 			return placed;
-		}
-		//return (placed.state.getBlock() == SkiesBlocks.structure_filler) ? new Template.BlockInfo(placed.pos, Blocks.AIR.getDefaultState(), null) : (IGNORED_BLOCKS.contains(placed.state.getBlock()) ? null : placed);
 	}
 
 	protected IStructureProcessorType getType()

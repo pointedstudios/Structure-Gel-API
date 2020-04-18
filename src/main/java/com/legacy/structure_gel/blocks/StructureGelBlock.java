@@ -64,14 +64,10 @@ public class StructureGelBlock extends Block
 			for (Direction d : Direction.values())
 			{
 				BlockPos offset = pos.offset(d);
-				if (worldIn.isAirBlock(offset))
+				if (worldIn.getLightFor(LightType.SKY, offset) < 15)
 				{
-					// TODO Temporary avoid sky. Stops when it would expose itself to the air
-					if (worldIn.getLightFor(LightType.SKY, offset) < 15)
-					{
-						worldIn.setBlockState(offset, this.getDefaultState().with(COUNT, state.get(COUNT) + 1));
-						worldIn.getPendingBlockTicks().scheduleTick(offset, worldIn.getBlockState(offset).getBlock(), 2);
-					}
+					worldIn.setBlockState(offset, this.getDefaultState().with(COUNT, state.get(COUNT) + 1));
+					worldIn.getPendingBlockTicks().scheduleTick(offset, worldIn.getBlockState(offset).getBlock(), 2);
 				}
 			}
 			worldIn.setBlockState(pos, this.getDefaultState().with(COUNT, 50));

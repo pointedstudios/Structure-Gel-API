@@ -4,12 +4,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.legacy.structure_gel.blocks.StructureGelBlock;
+import com.legacy.structure_gel.structures.jigsaw.GelJigsawPiece;
 import com.legacy.structure_gel.structures.processors.RemoveGelStructureProcessor;
 
 import net.minecraft.block.Block;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.jigsaw.IJigsawDeserializer;
 import net.minecraft.world.gen.feature.template.IStructureProcessorType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -60,33 +62,50 @@ public class StructureGelMod
 		registry.register(object);
 		return object;
 	}
-	
+
 	@Mod.EventBusSubscriber(modid = StructureGelMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 	public static class Blocks
 	{
 		public static Block RED_GEL;
-		
+
 		@SubscribeEvent
 		public static void onRegistry(final RegistryEvent.Register<Block> event)
 		{
 			RED_GEL = register(event.getRegistry(), "red_gel", new StructureGelBlock());
 		}
 	}
-	
+
 	@Mod.EventBusSubscriber(modid = StructureGelMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 	public static class Processors
 	{
 		public static IStructureProcessorType REMOVE_FILLER;
-		
+
 		@SubscribeEvent
 		public static void onRegistry(final RegistryEvent.Register<Feature<?>> event)
 		{
-			REMOVE_FILLER = register("remove_filler", (dyn) -> {return RemoveGelStructureProcessor.INSTANCE;});
+			REMOVE_FILLER = register("remove_filler", (dyn) -> RemoveGelStructureProcessor.INSTANCE);
 		}
 
 		static IStructureProcessorType register(String key, IStructureProcessorType type)
 		{
 			return Registry.register(Registry.STRUCTURE_PROCESSOR, locate(key), type);
+		}
+	}
+
+	@Mod.EventBusSubscriber(modid = StructureGelMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+	public static class JigsawDeserializers
+	{
+		public static IJigsawDeserializer GEL_SINGLE_POOL_ELEMENT;
+
+		@SubscribeEvent
+		public static void onRegistry(final RegistryEvent.Register<Feature<?>> event)
+		{
+			GEL_SINGLE_POOL_ELEMENT = register("gel_single_pool_element", GelJigsawPiece::new);
+		}
+
+		static IJigsawDeserializer register(String key, IJigsawDeserializer type)
+		{
+			return Registry.register(Registry.STRUCTURE_POOL_ELEMENT, locate(key), type);
 		}
 	}
 }
