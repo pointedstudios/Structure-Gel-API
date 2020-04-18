@@ -3,6 +3,8 @@ package com.legacy.structure_gel.items;
 import java.util.List;
 
 import com.legacy.structure_gel.StructureGelMod;
+import com.legacy.structure_gel.blocks.IStructureGel.Behavior;
+import com.legacy.structure_gel.blocks.StructureGelBlock;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.screen.Screen;
@@ -41,13 +43,20 @@ public class StructureGelItem extends BlockItem
 	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
 	{
 		if (!Screen.hasShiftDown())
-			tooltip.add(new TranslationTextComponent("item." + StructureGelMod.MODID + ".hold_shift").applyTextStyle(TextFormatting.GRAY));
+			tooltip.add(new TranslationTextComponent("info." + StructureGelMod.MODID + ".hold_shift").applyTextStyle(TextFormatting.GRAY));
 		else
 		{
-			tooltip.add(new TranslationTextComponent("item." + StructureGelMod.MODID + ".place").applyTextStyle(TextFormatting.GRAY));
-			tooltip.add(new TranslationTextComponent("item." + StructureGelMod.MODID + ".gunpowder").applyTextStyle(TextFormatting.GRAY));
-			tooltip.add(new TranslationTextComponent(""));
-			tooltip.add(new TranslationTextComponent("item." + this.getRegistryName().toString().replace(":", ".") + ".information").applyTextStyle(TextFormatting.GRAY));
+			if (this.getBlock() instanceof StructureGelBlock)
+			{
+				tooltip.add(new TranslationTextComponent("info." + StructureGelMod.MODID + ".place").applyTextStyle(TextFormatting.GRAY));
+				tooltip.add(new TranslationTextComponent("info." + StructureGelMod.MODID + ".gunpowder").applyTextStyle(TextFormatting.GRAY));
+				tooltip.add(new TranslationTextComponent(""));
+				
+				for (Behavior behavior : ((StructureGelBlock) this.getBlock()).behaviors)
+					tooltip.add(new TranslationTextComponent(behavior.translation).applyTextStyle(TextFormatting.GRAY));
+			}
+			else
+				tooltip.add(new TranslationTextComponent("info." + StructureGelMod.MODID + ".unknown_behavior").applyTextStyle(TextFormatting.RED));
 		}
 	}
 }

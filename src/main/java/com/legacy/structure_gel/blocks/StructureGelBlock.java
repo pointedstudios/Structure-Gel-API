@@ -1,9 +1,11 @@
 package com.legacy.structure_gel.blocks;
 
+import java.util.List;
 import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import com.google.common.collect.ImmutableList;
 import com.legacy.structure_gel.data.GelTags;
 
 import net.minecraft.block.Block;
@@ -31,18 +33,16 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class StructureGelBlock extends Block
+public class StructureGelBlock extends Block implements IStructureGel
 {
 	// 0-49 spreads, 50 does nothing, 51 deletes
-	private static final IntegerProperty COUNT = IntegerProperty.create("count", 0, 51);
-	private final boolean diagonalSpread;
-	private final boolean photosensitive;
+	public static final IntegerProperty COUNT = IntegerProperty.create("count", 0, 51);
+	public final List<Behavior> behaviors;
 
-	public StructureGelBlock(boolean diagonalSpread, boolean photosensitive)
+	public StructureGelBlock(Behavior... behaviors)
 	{
 		super(Block.Properties.create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.0F).noDrops());
-		this.diagonalSpread = diagonalSpread;
-		this.photosensitive = photosensitive;
+		this.behaviors = ImmutableList.copyOf(behaviors);
 
 		this.setDefaultState(this.getDefaultState().with(COUNT, 50));
 	}
@@ -51,7 +51,20 @@ public class StructureGelBlock extends Block
 	public BlockState getStateForPlacement(BlockItemUseContext context)
 	{
 		if (context.getPlayer().isCreative())
-			return this.getDefaultState().with(COUNT, context.getPlayer().isSneaking() ? 0 : 50);
+		{
+			BlockState hookState = this.onHandPlaceHook(context);
+			if (hookState != null)
+				return hookState;
+			
+			int count = 50;
+			if (context.getPlayer().isSneaking())
+			{
+				count = 0;
+				if (this.behaviors.contains(Behavior.DYNAMIC_SPREAD_DIST))
+					count = Math.min(Math.max(50 - context.getItem().getCount(), 0), 50);
+			}
+			return this.getDefaultState().with(COUNT, count);
+		}
 		else
 			return Blocks.AIR.getDefaultState();
 	}
@@ -67,11 +80,13 @@ public class StructureGelBlock extends Block
 	{
 		if (state.get(COUNT) < 50)
 		{
+			if (!this.spreadHookPre(state, worldIn, pos, random))
+				return;
 			for (Direction d : Direction.values())
 			{
 				BlockPos offset = pos.offset(d);
 				addGel(worldIn, offset, state.get(COUNT) + 1);
-				if (this.diagonalSpread)
+				if (this.behaviors.contains(Behavior.DIAGONAL_SPREAD))
 				{
 					if (d == Direction.UP || d == Direction.DOWN)
 						for (int i = 0; i < 4; i++)
@@ -81,14 +96,17 @@ public class StructureGelBlock extends Block
 				}
 			}
 			setGel(worldIn, pos, 50);
+			this.spreadHookPost(state, worldIn, pos, random);
 		}
 		else if (state.get(COUNT) == 51)
 		{
+			if (!this.removalHookPre(state, worldIn, pos, random))
+				return;
 			for (Direction d : Direction.values())
 			{
 				BlockPos offset = pos.offset(d);
 				removeGel(worldIn, offset);
-				if (this.diagonalSpread)
+				if (this.behaviors.contains(Behavior.DIAGONAL_SPREAD))
 				{
 					if (d == Direction.UP || d == Direction.DOWN)
 						for (int i = 0; i < 4; i++)
@@ -98,6 +116,7 @@ public class StructureGelBlock extends Block
 				}
 			}
 			worldIn.setBlockState(pos, Blocks.AIR.getDefaultState());
+			this.removalHookPost(state, worldIn, pos, random);
 		}
 	}
 
@@ -137,7 +156,7 @@ public class StructureGelBlock extends Block
 	
 	public void addGel(World worldIn, BlockPos pos, int count)
 	{
-		if (worldIn.isAirBlock(pos) && checkAbove(worldIn, pos))
+		if (worldIn.isAirBlock(pos) && checkAbove(worldIn, pos) && this.checkPlacementHook(worldIn, pos, count))
 			setGel(worldIn, pos, count);
 	}
 	
@@ -163,7 +182,7 @@ public class StructureGelBlock extends Block
 	 */
 	public boolean checkAbove(World worldIn, BlockPos pos)
 	{
-		if (!this.photosensitive)
+		if (!this.behaviors.contains(Behavior.PHOTOSENSITIVE))
 			return true;
 		else
 		{

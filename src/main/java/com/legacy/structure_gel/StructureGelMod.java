@@ -3,6 +3,7 @@ package com.legacy.structure_gel;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import com.legacy.structure_gel.blocks.IStructureGel.Behavior;
 import com.legacy.structure_gel.blocks.StructureGelBlock;
 import com.legacy.structure_gel.items.StructureGelItem;
 import com.legacy.structure_gel.structures.jigsaw.GelJigsawPiece;
@@ -69,24 +70,20 @@ public class StructureGelMod
 	{
 		public static Set<Block> GELS = new LinkedHashSet<Block>();
 		
-		public static Block RED_GEL;
-		public static Block BLUE_GEL;
-		public static Block GREEN_GEL;
-		public static Block CYAN_GEL;
-		
 		@SubscribeEvent
 		public static void onRegistry(final RegistryEvent.Register<Block> event)
 		{
-			RED_GEL = registerBlock(event.getRegistry(), "red_gel", new StructureGelBlock(false, false));
-			BLUE_GEL = registerBlock(event.getRegistry(), "blue_gel", new StructureGelBlock(false, true));
-			GREEN_GEL = registerBlock(event.getRegistry(), "green_gel", new StructureGelBlock(true, false));
-			CYAN_GEL = registerBlock(event.getRegistry(), "cyan_gel", new StructureGelBlock(true, true));
+			registerBlock(event.getRegistry(), "red_gel", new StructureGelBlock());
+			registerBlock(event.getRegistry(), "blue_gel", new StructureGelBlock(Behavior.PHOTOSENSITIVE));
+			registerBlock(event.getRegistry(), "green_gel", new StructureGelBlock(Behavior.DIAGONAL_SPREAD));
+			registerBlock(event.getRegistry(), "cyan_gel", new StructureGelBlock(Behavior.PHOTOSENSITIVE, Behavior.DIAGONAL_SPREAD));
+			registerBlock(event.getRegistry(), "orange_gel", new StructureGelBlock(Behavior.DYNAMIC_SPREAD_DIST));
 		}
 		
-		public static Block registerBlock(IForgeRegistry<Block> registry, String name, Block object)
+		public static void registerBlock(IForgeRegistry<Block> registry, String name, Block object)
 		{
 			GELS.add(object);
-			return register(registry, name, object);
+			register(registry, name, object);
 		}
 	}
 
