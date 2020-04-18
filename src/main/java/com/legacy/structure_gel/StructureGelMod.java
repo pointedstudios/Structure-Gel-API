@@ -7,6 +7,7 @@ import com.legacy.structure_gel.blocks.IStructureGel.Behavior;
 import com.legacy.structure_gel.blocks.StructureGelBlock;
 import com.legacy.structure_gel.items.StructureGelItem;
 import com.legacy.structure_gel.structures.jigsaw.GelJigsawPiece;
+import com.legacy.structure_gel.structures.processors.RandomBlockSwapProcessor;
 import com.legacy.structure_gel.structures.processors.RemoveGelStructureProcessor;
 
 import net.minecraft.block.Block;
@@ -104,11 +105,13 @@ public class StructureGelMod
 	public static class Processors
 	{
 		public static IStructureProcessorType REMOVE_FILLER;
+		public static IStructureProcessorType REPLACE_RANDOMLY;
 
 		@SubscribeEvent
 		public static void onRegistry(final RegistryEvent.Register<Feature<?>> event)
 		{
 			REMOVE_FILLER = register("remove_filler", (dyn) -> RemoveGelStructureProcessor.INSTANCE);
+			REPLACE_RANDOMLY = register("replace_randomly", RandomBlockSwapProcessor::new);
 		}
 
 		static IStructureProcessorType register(String key, IStructureProcessorType type)
