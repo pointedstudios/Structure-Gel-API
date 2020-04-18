@@ -1,13 +1,15 @@
 package com.legacy.structure_gel;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import com.legacy.structure_gel.blocks.StructureGelBlock;
+import com.legacy.structure_gel.items.StructureGelItem;
 import com.legacy.structure_gel.structures.jigsaw.GelJigsawPiece;
 import com.legacy.structure_gel.structures.processors.RemoveGelStructureProcessor;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.feature.Feature;
@@ -25,7 +27,6 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 @Mod(StructureGelMod.MODID)
 public class StructureGelMod
 {
-	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String NAME = "Structure Gel API";
 	public static final String MODID = "structure_gel";
 	public static final String VERSION = "1.0.0";
@@ -66,15 +67,42 @@ public class StructureGelMod
 	@Mod.EventBusSubscriber(modid = StructureGelMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 	public static class Blocks
 	{
+		public static Set<Block> GELS = new LinkedHashSet<Block>();
+		
 		public static Block RED_GEL;
-
+		public static Block BLUE_GEL;
+		public static Block GREEN_GEL;
+		public static Block CYAN_GEL;
+		
 		@SubscribeEvent
 		public static void onRegistry(final RegistryEvent.Register<Block> event)
 		{
-			RED_GEL = register(event.getRegistry(), "red_gel", new StructureGelBlock());
+			RED_GEL = registerBlock(event.getRegistry(), "red_gel", new StructureGelBlock(false, false));
+			BLUE_GEL = registerBlock(event.getRegistry(), "blue_gel", new StructureGelBlock(false, true));
+			GREEN_GEL = registerBlock(event.getRegistry(), "green_gel", new StructureGelBlock(true, false));
+			CYAN_GEL = registerBlock(event.getRegistry(), "cyan_gel", new StructureGelBlock(true, true));
+		}
+		
+		public static Block registerBlock(IForgeRegistry<Block> registry, String name, Block object)
+		{
+			GELS.add(object);
+			return register(registry, name, object);
 		}
 	}
 
+	@Mod.EventBusSubscriber(modid = StructureGelMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+	public static class Items
+	{
+		@SubscribeEvent
+		public static void onRegistry(final RegistryEvent.Register<Item> event)
+		{
+			for (Block b : StructureGelMod.Blocks.GELS)
+				register(event.getRegistry(), b.getRegistryName().getPath(), new StructureGelItem(b));
+			
+			StructureGelMod.Blocks.GELS.clear();
+		}
+	}
+	
 	@Mod.EventBusSubscriber(modid = StructureGelMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 	public static class Processors
 	{

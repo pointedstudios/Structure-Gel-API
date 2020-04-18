@@ -1,7 +1,7 @@
 {
 	"variants": {
 		"": {
-			"model": "structure_gel:block/red"
+			"model": "structure_gel:block/red_gel"
 		}
 	}
 }
