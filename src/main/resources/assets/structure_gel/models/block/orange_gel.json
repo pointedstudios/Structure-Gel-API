@@ -1,0 +1,6 @@
+{
+	"parent": "block/cube_all",
+	"textures": {
+		"all": "structure_gel:block/orange_gel"
+	}
+}
