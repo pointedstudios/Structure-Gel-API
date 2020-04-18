@@ -5,7 +5,7 @@ import java.util.List;
 import com.legacy.structure_gel.StructureGelMod;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.BlockItemUseContext;
@@ -14,6 +14,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -39,9 +40,14 @@ public class StructureGelItem extends BlockItem
 	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
 	{
-		if (!Minecraft.getInstance().gameSettings.keyBindSneak.isKeyDown())
-			tooltip.add(new TranslationTextComponent("item." + StructureGelMod.MODID + ".hold_shift", Minecraft.getInstance().gameSettings.keyBindSneak.getLocalizedName()));
+		if (!Screen.hasShiftDown())
+			tooltip.add(new TranslationTextComponent("item." + StructureGelMod.MODID + ".hold_shift").applyTextStyle(TextFormatting.GRAY));
 		else
-			tooltip.add(new TranslationTextComponent("item." + this.getRegistryName().toString().replace(":", ".") + ".information"));
+		{
+			tooltip.add(new TranslationTextComponent("item." + StructureGelMod.MODID + ".place").applyTextStyle(TextFormatting.GRAY));
+			tooltip.add(new TranslationTextComponent("item." + StructureGelMod.MODID + ".gunpowder").applyTextStyle(TextFormatting.GRAY));
+			tooltip.add(new TranslationTextComponent(""));
+			tooltip.add(new TranslationTextComponent("item." + this.getRegistryName().toString().replace(":", ".") + ".information").applyTextStyle(TextFormatting.GRAY));
+		}
 	}
 }

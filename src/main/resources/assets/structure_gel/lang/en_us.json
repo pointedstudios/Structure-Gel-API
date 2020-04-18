@@ -1,12 +1,16 @@
 {
 	"block.structure_gel.red_gel": "Red Gel",
-	"block.structure_gel.green_gel": "Green Gel",
 	"block.structure_gel.blue_gel": "Blue Gel",
+	"block.structure_gel.green_gel": "Green Gel",
 	"block.structure_gel.cyan_gel": "Cyan Gel",
 	
-	"item.structure_gel.hold_shift": "Hold <%s> for info",
-	"item.structure_gel.red_gel.information": "Spreads itself along the cardinal directions up to 50 blocks.",
-	"item.structure_gel.green_gel.information": "Spreads itself along the cardinal directions and the diagonals up to 50 blocks.",
-	"item.structure_gel.blue_gel.information": "Spreads itself along the cardinal directions up to 50 blocks as long as it can see the sky at that position.",
-	"item.structure_gel.cyan_gel.information": "Spreads itself along the cardinal directions and the diagonals up to 50 blocks as long as it can see the sky at that position.";
+	"item.structure_gel.hold_shift": "Hold Shift for info",
+
+	"item.structure_gel.place": "• Place while sneaking to trigger the spread effect.",
+	"item.structure_gel.gunpowder": "• Use gunpowder to destroy all connected gels.",
+	
+	"item.structure_gel.red_gel.information": "• Spreads itself along the cardinal directions up to 50 blocks.",
+	"item.structure_gel.blue_gel.information": "• Spreads itself along the cardinal directions up to 50 blocks as long as it can see the sky at that position. A more controlled version of the Red Gel.",
+	"item.structure_gel.green_gel.information": "• Spreads itself along the cardinal directions and the diagonals up to 50 blocks. Useful to get around vines and other weird corners.",
+	"item.structure_gel.cyan_gel.information": "• Spreads itself along the cardinal directions and the diagonals up to 50 blocks as long as it can see the sky at that position. A more controlled version of the Green Gel."
 }

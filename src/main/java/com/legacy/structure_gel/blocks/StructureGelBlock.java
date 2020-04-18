@@ -167,10 +167,12 @@ public class StructureGelBlock extends Block
 			return true;
 		else
 		{
-			for (int dy = pos.getY() + 1; dy < 256; dy++)
-				if (!(worldIn.isAirBlock(pos.up(dy)) || worldIn.getBlockState(pos.up(dy)).getBlock().isIn(GelTags.GEL)))
-					return false;
-			return true;
+			if (!worldIn.isSkyLightMax(pos))
+				return true;
+			for (int dy = 1; pos.up(dy).getY() < 256; dy++)
+				if (!(worldIn.isAirBlock(pos.up(dy)) || worldIn.getBlockState(pos.up(dy)).isIn(GelTags.GEL)))
+					return true;
+			return false;
 		}
 	}
 
