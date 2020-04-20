@@ -33,12 +33,34 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+/**
+ * A block that spreads out from where it's placed. Sneak while placing to
+ * trigger this behavior. Right click with gunpowder to cause a chain reaction
+ * that removes all gels connected. Some methods contain hooks in
+ * {@link IStructureGel} that you can override for custom behavior. All methods
+ * containing hooks are documented with "@see"
+ * 
+ * @author David
+ *
+ */
 public class StructureGelBlock extends Block implements IStructureGel
 {
-	// 0-49 spreads, 50 does nothing, 51 deletes
+	/**
+	 * 0-49 causes spreading, 50 does nothing, and 51 causes it to remove itself.
+	 */
 	public static final IntegerProperty COUNT = IntegerProperty.create("count", 0, 51);
+	/**
+	 * List of behaviors that this block will use.
+	 * 
+	 * @see Behavior
+	 */
 	public final List<Behavior> behaviors;
 
+	/**
+	 * @param behaviors
+	 * @see Behavior
+	 * @see StructureGelBlock
+	 */
 	public StructureGelBlock(Behavior... behaviors)
 	{
 		super(Block.Properties.create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.0F).noDrops());
@@ -47,6 +69,11 @@ public class StructureGelBlock extends Block implements IStructureGel
 		this.setDefaultState(this.getDefaultState().with(COUNT, 50));
 	}
 
+	/**
+	 * Ensures that only creative players can place this block.
+	 * 
+	 * @see IStructureGel#onHandPlaceHook(BlockItemUseContext)
+	 */
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context)
 	{
@@ -55,7 +82,7 @@ public class StructureGelBlock extends Block implements IStructureGel
 			BlockState hookState = this.onHandPlaceHook(context);
 			if (hookState != null)
 				return hookState;
-			
+
 			int count = 50;
 			if (context.getPlayer().isSneaking())
 			{
@@ -69,12 +96,25 @@ public class StructureGelBlock extends Block implements IStructureGel
 			return Blocks.AIR.getDefaultState();
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack)
 	{
 		worldIn.getPendingBlockTicks().scheduleTick(pos, this, 2);
 	}
 
+	/**
+	 * Called on block update to either spread or remove the structure gel.
+	 * 
+	 * @see IStructureGel#spreadHookPre(BlockState, World, BlockPos, Random)
+	 * @see IStructureGel#spreadHookPost(BlockState, World, BlockPos, Random)
+	 * @see IStructureGel#removalHookPre(BlockState, World, BlockPos, Random)
+	 * @see IStructureGel#removalHookPost(BlockState, World, BlockPos, Random)
+	 * @see StructureGelBlock#addGel(World, BlockPos, int)
+	 * @see StructureGelBlock#removeGel(World, BlockPos)
+	 */
 	@Override
 	public void tick(BlockState state, World worldIn, BlockPos pos, Random random)
 	{
@@ -153,19 +193,48 @@ public class StructureGelBlock extends Block implements IStructureGel
 		}
 		super.onBlockHarvested(worldIn, pos, state, player);
 	}
-	
+
+	/**
+	 * Called when adding structure gel to the world. This method contains checks to
+	 * ensure that it can place the gel before actually placing it.
+	 * 
+	 * @param worldIn
+	 * @param pos
+	 * @param count
+	 * 
+	 * @see IStructureGel#checkPlacementHook(World, BlockPos, int)
+	 * @see StructureGelBlock#setGel(World, BlockPos, int)
+	 */
 	public void addGel(World worldIn, BlockPos pos, int count)
 	{
 		if (worldIn.isAirBlock(pos) && checkAbove(worldIn, pos) && this.checkPlacementHook(worldIn, pos, count))
 			setGel(worldIn, pos, count);
 	}
-	
+
+	/**
+	 * Called when removing structure gel from the world from the gunpowder chain
+	 * reaction. This method contains checks to make sure it's only removing
+	 * structure gel blocks from the world.
+	 * 
+	 * @param worldIn
+	 * @param pos
+	 * 
+	 * @see StructureGelBlock#setGel(World, BlockPos, int)
+	 */
 	public void removeGel(World worldIn, BlockPos pos)
 	{
 		if (worldIn.getBlockState(pos).getBlock() == this)
 			setGel(worldIn, pos, 51);
 	}
-	
+
+	/**
+	 * Places structure gel with the proper state and then schedules a block update
+	 * on it to continue the spread.
+	 * 
+	 * @param worldIn
+	 * @param pos
+	 * @param count
+	 */
 	public void setGel(World worldIn, BlockPos pos, int count)
 	{
 		worldIn.setBlockState(pos, this.getDefaultState().with(COUNT, count));
@@ -195,48 +264,72 @@ public class StructureGelBlock extends Block implements IStructureGel
 		}
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
 	{
 		builder.add(COUNT);
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
 	{
 		return VoxelShapes.empty();
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public boolean isNormalCube(BlockState state, IBlockReader worldIn, BlockPos pos)
 	{
 		return false;
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public boolean isSolid(BlockState state)
 	{
 		return false;
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public BlockRenderLayer getRenderLayer()
 	{
 		return BlockRenderLayer.TRANSLUCENT;
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos)
 	{
 		return true;
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public boolean causesSuffocation(BlockState state, IBlockReader worldIn, BlockPos pos)
 	{
 		return false;
 	}
 
+	/**
+	 * 
+	 */
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean isSideInvisible(BlockState state, BlockState adjacentBlockState, Direction side)
@@ -244,6 +337,9 @@ public class StructureGelBlock extends Block implements IStructureGel
 		return adjacentBlockState.getBlock() == this;
 	}
 
+	/**
+	 * 
+	 */
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public float getAmbientOcclusionLightValue(BlockState state, IBlockReader worldIn, BlockPos pos)
@@ -251,6 +347,9 @@ public class StructureGelBlock extends Block implements IStructureGel
 		return 1.0F;
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public boolean canEntitySpawn(BlockState state, IBlockReader worldIn, BlockPos pos, EntityType<?> type)
 	{

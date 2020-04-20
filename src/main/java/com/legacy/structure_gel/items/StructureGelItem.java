@@ -6,7 +6,6 @@ import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.blocks.IStructureGel.Behavior;
 import com.legacy.structure_gel.blocks.StructureGelBlock;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.BlockItem;
@@ -22,13 +21,26 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+/**
+ * The item used by structure gel blocks to display information on how it works.
+ * 
+ * @author David
+ *
+ */
 public class StructureGelItem extends BlockItem
 {
-	public StructureGelItem(Block blockIn)
+	/**
+	 * @param blockIn : must be an instanceof {@link StructureGelBlock}
+	 * @see StructureGelItem
+	 */
+	public StructureGelItem(StructureGelBlock blockIn)
 	{
 		super(blockIn, new Item.Properties().group(ItemGroup.MISC));
 	}
 
+	/**
+	 * Prevents the player from placing if they are not in creative mode.
+	 */
 	@Override
 	public ActionResultType tryPlace(BlockItemUseContext context)
 	{
@@ -38,6 +50,11 @@ public class StructureGelItem extends BlockItem
 			return super.tryPlace(context);
 	}
 
+	/**
+	 * Displays information about the structure gel based on it's behaviors.
+	 * 
+	 * @see Behavior
+	 */
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
@@ -51,10 +68,10 @@ public class StructureGelItem extends BlockItem
 				tooltip.add(new TranslationTextComponent("info." + StructureGelMod.MODID + ".place").applyTextStyle(TextFormatting.GRAY));
 				tooltip.add(new TranslationTextComponent("info." + StructureGelMod.MODID + ".gunpowder").applyTextStyle(TextFormatting.GRAY));
 				tooltip.add(new TranslationTextComponent(""));
-				
+
 				if (((StructureGelBlock) this.getBlock()).behaviors.isEmpty())
 					tooltip.add(new TranslationTextComponent(Behavior.DEFAULT.translation).applyTextStyle(TextFormatting.GRAY));
-				
+
 				for (Behavior behavior : ((StructureGelBlock) this.getBlock()).behaviors)
 					tooltip.add(new TranslationTextComponent(behavior.translation).applyTextStyle(TextFormatting.GRAY));
 			}

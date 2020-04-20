@@ -26,6 +26,14 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
+/**
+ * This is an API mod designed with the purpose of simplifying the work required
+ * to create generated structures, particularly with jigsaws. All methods and
+ * classes that you will interact with are documented with how they function.
+ * 
+ * @author David
+ *
+ */
 @Mod(StructureGelMod.MODID)
 public class StructureGelMod
 {
@@ -54,11 +62,6 @@ public class StructureGelMod
 		return new ResourceLocation(MODID, key);
 	}
 
-	public static String find(String key)
-	{
-		return new String(MODID + ":" + key);
-	}
-
 	public static <T extends IForgeRegistryEntry<T>> T register(IForgeRegistry<T> registry, String name, T object)
 	{
 		object.setRegistryName(StructureGelMod.locate(name));
@@ -69,8 +72,8 @@ public class StructureGelMod
 	@Mod.EventBusSubscriber(modid = StructureGelMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 	public static class Blocks
 	{
-		public static Set<Block> GELS = new LinkedHashSet<Block>();
-		
+		public static Set<Block> BLOCKS = new LinkedHashSet<Block>();
+
 		@SubscribeEvent
 		public static void onRegistry(final RegistryEvent.Register<Block> event)
 		{
@@ -80,10 +83,10 @@ public class StructureGelMod
 			registerBlock(event.getRegistry(), "cyan_gel", new StructureGelBlock(Behavior.PHOTOSENSITIVE, Behavior.DIAGONAL_SPREAD));
 			registerBlock(event.getRegistry(), "orange_gel", new StructureGelBlock(Behavior.DYNAMIC_SPREAD_DIST));
 		}
-		
+
 		public static void registerBlock(IForgeRegistry<Block> registry, String name, Block object)
 		{
-			GELS.add(object);
+			BLOCKS.add(object);
 			register(registry, name, object);
 		}
 	}
@@ -94,13 +97,14 @@ public class StructureGelMod
 		@SubscribeEvent
 		public static void onRegistry(final RegistryEvent.Register<Item> event)
 		{
-			for (Block b : StructureGelMod.Blocks.GELS)
-				register(event.getRegistry(), b.getRegistryName().getPath(), new StructureGelItem(b));
-			
-			StructureGelMod.Blocks.GELS.clear();
+			for (Block b : StructureGelMod.Blocks.BLOCKS)
+				if (b instanceof StructureGelBlock)
+					register(event.getRegistry(), b.getRegistryName().getPath(), new StructureGelItem((StructureGelBlock) b));
+
+			StructureGelMod.Blocks.BLOCKS.clear();
 		}
 	}
-	
+
 	@Mod.EventBusSubscriber(modid = StructureGelMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 	public static class Processors
 	{

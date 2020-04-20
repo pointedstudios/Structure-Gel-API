@@ -35,21 +35,41 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	private boolean maintainWater = true;
 	private boolean ignoreEntities = false;
 
+	/**
+	 * @see GelJigsawPiece
+	 * @param location : the structure
+	 * @param processors
+	 * @param placementBehavior
+	 */
 	public GelJigsawPiece(ResourceLocation location, List<StructureProcessor> processors, JigsawPattern.PlacementBehaviour placementBehavior)
 	{
 		super(location.toString(), processors, placementBehavior);
 	}
 
+	/**
+	 * @see GelJigsawPiece
+	 * @param location : the structure
+	 * @param processors
+	 */
 	public GelJigsawPiece(ResourceLocation location, List<StructureProcessor> processors)
 	{
 		this(location, processors, JigsawPattern.PlacementBehaviour.RIGID);
 	}
 
+	/**
+	 * @see GelJigsawPiece
+	 * @param location : the structure
+	 */
 	public GelJigsawPiece(ResourceLocation location)
 	{
 		this(location, ImmutableList.of());
 	}
 
+	/**
+	 * Used internally for deserialization
+	 * 
+	 * @param dyn
+	 */
 	public GelJigsawPiece(Dynamic<?> dyn)
 	{
 		super(dyn);
@@ -57,6 +77,12 @@ public class GelJigsawPiece extends SingleJigsawPiece
 		this.ignoreEntities = dyn.get("ignoreEntities").asBoolean(false);
 	}
 
+	/**
+	 * Determins if blocks should become waterlogged when placed in water.
+	 * 
+	 * @param value
+	 * @return GelJigsawPiece
+	 */
 	public GelJigsawPiece setMaintainWater(boolean value)
 	{
 		this.maintainWater = value;
@@ -64,10 +90,11 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	}
 
 	/**
-	 * Not sure why you'd do this, but I'll allow it.
+	 * Prevents entities from generating with the structure. Not sure why you'd do
+	 * this, but I'll allow it.
 	 * 
 	 * @param value
-	 * @return
+	 * @return GelJigsawPiece
 	 */
 	public GelJigsawPiece setIgnoreEntities(boolean value)
 	{
@@ -75,6 +102,9 @@ public class GelJigsawPiece extends SingleJigsawPiece
 		return this;
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	protected PlacementSettings createPlacementSettings(Rotation rotation, MutableBoundingBox boundingBox)
 	{
@@ -91,12 +121,18 @@ public class GelJigsawPiece extends SingleJigsawPiece
 		return placementSettings;
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public IJigsawDeserializer getType()
 	{
 		return StructureGelMod.JigsawDeserializers.GEL_SINGLE_POOL_ELEMENT;
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public <T> Dynamic<T> serialize0(DynamicOps<T> ops)
 	{
@@ -108,6 +144,9 @@ public class GelJigsawPiece extends SingleJigsawPiece
 		//@formatter:on
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public String toString()
 	{

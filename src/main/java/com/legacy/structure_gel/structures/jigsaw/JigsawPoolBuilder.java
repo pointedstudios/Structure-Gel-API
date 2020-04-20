@@ -27,13 +27,14 @@ public class JigsawPoolBuilder
 {
 	private final JigsawRegistryHelper jigsawRegistryHelper;
 	private Map<ResourceLocation, Integer> names = ImmutableMap.of();
-	
+
 	private List<StructureProcessor> processors = ImmutableList.of();
 	private boolean maintainWater = true;
 	private JigsawPattern.PlacementBehaviour placementBehavior = JigsawPattern.PlacementBehaviour.RIGID;
 
 	/**
-	 * @see {@link JigsawRegistryHelper#builder()}
+	 * @see JigsawPoolBuilder
+	 * @see JigsawRegistryHelper#builder()
 	 * @param jigsawRegistryHelper
 	 */
 	public JigsawPoolBuilder(JigsawRegistryHelper jigsawRegistryHelper)
@@ -48,7 +49,7 @@ public class JigsawPoolBuilder
 	 * @param nameMap : Names are converted to {@link ResourceLocation} using
 	 *            {@link JigsawRegistryHelper#locatePiece(String)} from the
 	 *            {@link #jigsawRegistryHelper}. Piece weights are set in the map.
-	 * @return {@link JigsawPoolBuilder}
+	 * @return JigsawPoolBuilder
 	 */
 	public JigsawPoolBuilder names(Map<String, Integer> nameMap)
 	{
@@ -68,7 +69,7 @@ public class JigsawPoolBuilder
 	 * @param names : Names are converted to {@link ResourceLocation} using
 	 *            {@link JigsawRegistryHelper#locatePiece(String)} from the
 	 *            {@link #jigsawRegistryHelper}. All pieces have equal weight.
-	 * @return {@link JigsawPoolBuilder}
+	 * @return JigsawPoolBuilder
 	 */
 	public JigsawPoolBuilder names(String... names)
 	{
@@ -83,7 +84,7 @@ public class JigsawPoolBuilder
 	 * Structure processors that all pieces in this builder will use.
 	 * 
 	 * @param processors : empty by default
-	 * @return {@link JigsawPoolBuilder}
+	 * @return JigsawPoolBuilder
 	 */
 	public JigsawPoolBuilder processors(StructureProcessor... processors)
 	{
@@ -96,7 +97,7 @@ public class JigsawPoolBuilder
 	 * water.
 	 * 
 	 * @param maintainWater : default = false
-	 * @return {@link JigsawPoolBuilder}
+	 * @return JigsawPoolBuilder
 	 */
 	public JigsawPoolBuilder maintainWater(boolean maintainWater)
 	{
@@ -108,7 +109,7 @@ public class JigsawPoolBuilder
 	 * Sets how the structures should place.
 	 * 
 	 * @param placementBehavior : default = RIGID
-	 * @return
+	 * @return JigsawPoolBuilder
 	 */
 	public JigsawPoolBuilder placementBehavior(JigsawPattern.PlacementBehaviour placementBehavior)
 	{
@@ -117,10 +118,10 @@ public class JigsawPoolBuilder
 	}
 
 	/**
-	 * Generates a pool of pieces using the chances established in {@link #names}
-	 * and other settings established such as {@link #maintainWater}.
+	 * Generates a pool of pieces using the weights established in {@link #names}
+	 * and other settings established such as {@link #maintainWater(boolean)}.
 	 * 
-	 * @return {@link List}
+	 * @return List
 	 */
 	public List<Pair<JigsawPiece, Integer>> build()
 	{
@@ -133,10 +134,11 @@ public class JigsawPoolBuilder
 	}
 
 	/**
-	 * Creates a pool of pieces based on the values input.
+	 * Creates a simple pool of pieces based on the values input with the default
+	 * settings.
 	 * 
 	 * @param pieceMap : A map containing the pieces and their weights.
-	 * @return {@link List}
+	 * @return List
 	 */
 	public static List<Pair<JigsawPiece, Integer>> build(Map<JigsawPiece, Integer> pieceMap)
 	{
@@ -149,10 +151,10 @@ public class JigsawPoolBuilder
 	}
 
 	/**
-	 * Creats a pool of pieces with equal chances.
+	 * Creats a pool of pieces with equal chances with the default settings.
 	 * 
 	 * @param pieces
-	 * @return {@link List}
+	 * @return List
 	 */
 	public static List<Pair<JigsawPiece, Integer>> build(JigsawPiece... pieces)
 	{
@@ -164,9 +166,11 @@ public class JigsawPoolBuilder
 	}
 
 	/**
+	 * Combines multiple lists generated from {@link #build()}. Intended to be used
+	 * in cases where one pool needs to have pieces with different settings.
 	 * 
-	 * @param lists : Combines multiple lists generated from {@link #build()}
-	 * @return {@link List}
+	 * @param lists
+	 * @return List
 	 */
 	@SuppressWarnings("unchecked")
 	public static List<Pair<JigsawPiece, Integer>> collect(List<Pair<JigsawPiece, Integer>>... lists)

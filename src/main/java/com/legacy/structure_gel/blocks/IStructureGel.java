@@ -20,7 +20,8 @@ import net.minecraft.world.World;
 public interface IStructureGel
 {
 	/**
-	 * Determines how the structure gel should act.
+	 * Determines how the structure gel should act and provides translations for the
+	 * item.
 	 * 
 	 * @author David
 	 *
@@ -49,13 +50,24 @@ public interface IStructureGel
 		 */
 		DYNAMIC_SPREAD_DIST();
 
+		/**
+		 * Translation string for the item to display in it's lore field.
+		 */
 		public final String translation;
 
+		/**
+		 * Automatically generates a translation as "info.structure_gel.(name)"
+		 * 
+		 * @see Behavior
+		 */
 		Behavior()
 		{
 			this.translation = String.format("info.%s.%s", StructureGelMod.MODID, this.name().toLowerCase());
 		}
 
+		/**
+		 * @see Behavior
+		 */
 		Behavior(String translation)
 		{
 			this.translation = translation;

@@ -34,6 +34,13 @@ public class RandomBlockSwapProcessor extends StructureProcessor
 	private final float chance;
 	private final BlockState changeTo;
 
+	/**
+	 * @see RandomBlockSwapProcessor
+	 * @param condition : the block to change
+	 * @param chance : expressed as a percentage. 0.1F = 10%
+	 * @param changeTo : the BlockState to change "condition" to when the chance is
+	 *            true
+	 */
 	public RandomBlockSwapProcessor(Block condition, float chance, BlockState changeTo)
 	{
 		this.condition = condition;
@@ -41,6 +48,10 @@ public class RandomBlockSwapProcessor extends StructureProcessor
 		this.changeTo = changeTo;
 	}
 
+	/**
+	 * @see #RandomBlockSwapProcessor(Block, float, BlockState)
+	 * @param dyn
+	 */
 	public RandomBlockSwapProcessor(Dynamic<?> dyn)
 	{
 		this.condition = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(dyn.get("condition").asString("minecraft:air")));
@@ -48,6 +59,9 @@ public class RandomBlockSwapProcessor extends StructureProcessor
 		this.changeTo = BlockState.deserialize(dyn.get("changeTo").orElseEmptyMap());
 	}
 
+	/**
+	 * 
+	 */
 	@Nullable
 	public Template.BlockInfo process(IWorldReader worldReaderIn, BlockPos pos, Template.BlockInfo existing, Template.BlockInfo placed, PlacementSettings settings)
 	{
@@ -56,11 +70,17 @@ public class RandomBlockSwapProcessor extends StructureProcessor
 		return placed;
 	}
 
+	/**
+	 * 
+	 */
 	protected IStructureProcessorType getType()
 	{
 		return StructureGelMod.Processors.REPLACE_RANDOMLY;
 	}
 
+	/**
+	 * 
+	 */
 	protected <T> Dynamic<T> serialize0(DynamicOps<T> ops)
 	{
 		//@formatter:off
