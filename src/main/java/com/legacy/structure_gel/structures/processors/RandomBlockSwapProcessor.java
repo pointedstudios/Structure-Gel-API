@@ -56,7 +56,7 @@ public class RandomBlockSwapProcessor extends StructureProcessor
 	{
 		this.condition = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(dyn.get("condition").asString("minecraft:air")));
 		this.chance = dyn.get("chance").asFloat(0.0F);
-		this.changeTo = BlockState.deserialize(dyn.get("changeTo").orElseEmptyMap());
+		this.changeTo = BlockState.deserialize(dyn.get("change_to").orElseEmptyMap());
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class RandomBlockSwapProcessor extends StructureProcessor
 	@Nullable
 	public Template.BlockInfo process(IWorldReader worldReaderIn, BlockPos pos, Template.BlockInfo existing, Template.BlockInfo placed, PlacementSettings settings)
 	{
-		if (new Random(MathHelper.getPositionRandom(placed.pos)).nextFloat() < this.chance)
+		if (placed.state.getBlock() == this.condition && new Random(MathHelper.getPositionRandom(placed.pos)).nextFloat() < this.chance)
 			return new Template.BlockInfo(placed.pos, changeTo, null);
 		return placed;
 	}
@@ -85,7 +85,7 @@ public class RandomBlockSwapProcessor extends StructureProcessor
 	{
 		//@formatter:off
 		return new Dynamic<>(ops, ops.createMap(ImmutableMap.of(
-				ops.createString("condition"), ops.createString(this.condition.getRegistryName().toString()),
+				ops.createString("condition"), ops.createString(this.condition.toString()),
 				ops.createString("chance"), ops.createFloat(this.chance),
 				ops.createString("change_to"), BlockState.serialize(ops, changeTo).getValue()
 				)));

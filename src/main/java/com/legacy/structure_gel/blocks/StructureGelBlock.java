@@ -6,7 +6,6 @@ import java.util.Random;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
-import com.legacy.structure_gel.data.GelTags;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -112,8 +111,8 @@ public class StructureGelBlock extends Block implements IStructureGel
 	 * @see IStructureGel#spreadHookPost(BlockState, World, BlockPos, Random)
 	 * @see IStructureGel#removalHookPre(BlockState, World, BlockPos, Random)
 	 * @see IStructureGel#removalHookPost(BlockState, World, BlockPos, Random)
-	 * @see StructureGelBlock#addGel(World, BlockPos, int)
-	 * @see StructureGelBlock#removeGel(World, BlockPos)
+	 * @see #addGel(World, BlockPos, int)
+	 * @see #removeGel(World, BlockPos)
 	 */
 	@Override
 	public void tick(BlockState state, World worldIn, BlockPos pos, Random random)
@@ -258,7 +257,7 @@ public class StructureGelBlock extends Block implements IStructureGel
 			if (!worldIn.isSkyLightMax(pos))
 				return true;
 			for (int dy = 1; pos.up(dy).getY() < 256; dy++)
-				if (!(worldIn.isAirBlock(pos.up(dy)) || worldIn.getBlockState(pos.up(dy)).isIn(GelTags.GEL)))
+				if (!worldIn.isAirBlock(pos.up(dy)))
 					return true;
 			return false;
 		}

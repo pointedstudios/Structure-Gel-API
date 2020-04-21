@@ -39,7 +39,7 @@ public class RemoveGelStructureProcessor extends StructureProcessor
 	/**
 	 * Blocks that get ignored when generating the structure.
 	 */
-	public static final ImmutableList<Block> IGNORED_BLOCKS = ImmutableList.of(Blocks.AIR, Blocks.STRUCTURE_BLOCK);
+	public static final ImmutableList<Block> IGNORED_BLOCKS = ImmutableList.of(Blocks.AIR);
 
 	/**
 	 * 
@@ -70,5 +70,4 @@ public class RemoveGelStructureProcessor extends StructureProcessor
 	{
 		return new Dynamic<>(ops, ops.emptyMap());
 	}
-
 }

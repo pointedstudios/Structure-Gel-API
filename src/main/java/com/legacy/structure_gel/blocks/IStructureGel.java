@@ -29,9 +29,8 @@ public interface IStructureGel
 	public static enum Behavior
 	{
 		/**
-		 * Spreads the gel along the cardinal directions, only replacing
-		 * {@link Blocks#AIR}. All gels use this basic behavior, using the others to
-		 * modify it.
+		 * Spreads the gel along the cardinal directions, only replacing air. All gels
+		 * use this basic behavior, using the others to modify it.
 		 */
 		DEFAULT(),
 		/**

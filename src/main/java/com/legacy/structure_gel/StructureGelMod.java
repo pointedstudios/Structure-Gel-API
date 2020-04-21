@@ -110,6 +110,7 @@ public class StructureGelMod
 	{
 		public static IStructureProcessorType REMOVE_FILLER;
 		public static IStructureProcessorType REPLACE_RANDOMLY;
+		public static IStructureProcessorType HANDLE_DATA;
 
 		@SubscribeEvent
 		public static void onRegistry(final RegistryEvent.Register<Feature<?>> event)

@@ -35,6 +35,7 @@ public class JigsawPoolBuilder
 	/**
 	 * @see JigsawPoolBuilder
 	 * @see JigsawRegistryHelper#builder()
+	 * 
 	 * @param jigsawRegistryHelper
 	 */
 	public JigsawPoolBuilder(JigsawRegistryHelper jigsawRegistryHelper)
@@ -54,11 +55,20 @@ public class JigsawPoolBuilder
 	public JigsawPoolBuilder names(Map<String, Integer> nameMap)
 	{
 		Map<ResourceLocation, Integer> tempNames = new HashMap<>();
-		nameMap.forEach((s, i) ->
-		{
-			tempNames.put(jigsawRegistryHelper.locatePiece(s), i);
-		});
-		this.names = tempNames;
+		nameMap.forEach((s, i) -> tempNames.put(jigsawRegistryHelper.locatePiece(s), i));
+		return namesR(tempNames);
+	}
+
+	/**
+	 * Set a list of names that the builder uses as structure ResourceLocations with
+	 * the weights in the map.
+	 * 
+	 * @param nameMap : Names are left as is with no conversion
+	 * @return JigsawPoolBuilder
+	 */
+	public JigsawPoolBuilder namesR(Map<ResourceLocation, Integer> nameMap)
+	{
+		this.names = nameMap;
 		return this;
 	}
 
@@ -76,19 +86,46 @@ public class JigsawPoolBuilder
 		Map<ResourceLocation, Integer> tempNames = new HashMap<>();
 		for (String s : names)
 			tempNames.put(jigsawRegistryHelper.locatePiece(s), 1);
-		this.names = tempNames;
-		return this;
+		return namesR(tempNames);
 	}
 
 	/**
-	 * Structure processors that all pieces in this builder will use.
+	 * Set a list of names that the builder uses as structure ResourceLocations with
+	 * equal weights.
+	 * 
+	 * @param names : Names are left as is with no conversion
+	 * @return JigsawPoolBuilder
+	 */
+	public JigsawPoolBuilder names(ResourceLocation... names)
+	{
+		Map<ResourceLocation, Integer> tempNames = new HashMap<>();
+		for (ResourceLocation rl : names)
+			tempNames.put(rl, 1);
+		return namesR(tempNames);
+	}
+
+	/**
+	 * Structure processors that all pieces in this builder will use.</br>
+	 * This functions as an append.
 	 * 
 	 * @param processors : empty by default
 	 * @return JigsawPoolBuilder
 	 */
 	public JigsawPoolBuilder processors(StructureProcessor... processors)
 	{
-		this.processors = Arrays.asList(processors).stream().collect(ImmutableList.toImmutableList());
+		return processors(Arrays.asList(processors));
+	}
+
+	/**
+	 * Structure processors that all pieces in this builder will use. </br>
+	 * This functions as an append.
+	 * 
+	 * @param processors : empty by default
+	 * @return JigsawPoolBuilder
+	 */
+	public JigsawPoolBuilder processors(List<StructureProcessor> processors)
+	{
+		this.processors = Streams.concat(this.processors.stream(), ImmutableList.copyOf(processors).stream()).collect(ImmutableList.toImmutableList());
 		return this;
 	}
 
@@ -126,10 +163,8 @@ public class JigsawPoolBuilder
 	public List<Pair<JigsawPiece, Integer>> build()
 	{
 		List<Pair<JigsawPiece, Integer>> jigsawList = new ArrayList<>();
-		this.names.forEach((rl, i) ->
-		{
-			jigsawList.add(Pair.of(new GelJigsawPiece(rl, this.processors, this.placementBehavior).setMaintainWater(this.maintainWater), i));
-		});
+		this.names.forEach((rl, i) -> jigsawList.add(Pair.of(new GelJigsawPiece(rl, this.processors, this.placementBehavior).setMaintainWater(this.maintainWater), i)));
+
 		return jigsawList.stream().collect(ImmutableList.toImmutableList());
 	}
 
@@ -143,10 +178,8 @@ public class JigsawPoolBuilder
 	public static List<Pair<JigsawPiece, Integer>> build(Map<JigsawPiece, Integer> pieceMap)
 	{
 		List<Pair<JigsawPiece, Integer>> jigsawList = new ArrayList<>();
-		pieceMap.forEach((jp, i) ->
-		{
-			jigsawList.add(Pair.of(jp, i));
-		});
+		pieceMap.forEach((jp, i) -> jigsawList.add(Pair.of(jp, i)));
+		
 		return jigsawList.stream().collect(ImmutableList.toImmutableList());
 	}
 
@@ -166,18 +199,29 @@ public class JigsawPoolBuilder
 	}
 
 	/**
-	 * Combines multiple lists generated from {@link #build()}. Intended to be used
-	 * in cases where one pool needs to have pieces with different settings.
+	 * Combines the JigsawPoolBuilders together after building them. This is used in
+	 * cases where multiple structures exist in the same pool using different
+	 * settings, processors, etc.
 	 * 
 	 * @param lists
 	 * @return List
 	 */
-	@SuppressWarnings("unchecked")
-	public static List<Pair<JigsawPiece, Integer>> collect(List<Pair<JigsawPiece, Integer>>... lists)
+	public static List<Pair<JigsawPiece, Integer>> collect(JigsawPoolBuilder... builders)
 	{
 		List<Pair<JigsawPiece, Integer>> pairs = new ArrayList<>();
-		for (List<Pair<JigsawPiece, Integer>> l : lists)
-			pairs = Streams.concat(pairs.stream(), l.stream()).collect(ImmutableList.toImmutableList());
+		for (JigsawPoolBuilder builder : builders)
+			pairs = Streams.concat(pairs.stream(), builder.build().stream()).collect(ImmutableList.toImmutableList());
 		return pairs;
+	}
+
+	/**
+	 * Creates a copy of this builder. Used in cases where similar settings are used
+	 * across multiple builders.
+	 * 
+	 * @return JigsawPoolBuilder
+	 */
+	public JigsawPoolBuilder clone()
+	{
+		return new JigsawPoolBuilder(this.jigsawRegistryHelper).namesR(this.names).maintainWater(this.maintainWater).processors(this.processors).placementBehavior(this.placementBehavior);
 	}
 }
