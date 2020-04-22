@@ -52,6 +52,8 @@ public class StructureGelMod
 	 * outposts to generate terrain underneath them so they don't float. The area
 	 * that gets generated is based on the structure that starts the generation. In
 	 * villages, this would be the town center.
+	 * <br><br>
+	 * Call this during feature registration.
 	 * 
 	 * @param structures
 	 */

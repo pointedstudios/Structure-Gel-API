@@ -12,6 +12,7 @@ import com.legacy.structure_gel.structures.processors.RemoveGelStructureProcesso
 import com.mojang.datafixers.Dynamic;
 import com.mojang.datafixers.types.DynamicOps;
 
+import net.minecraft.block.Blocks;
 import net.minecraft.state.properties.StructureMode;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
@@ -154,7 +155,7 @@ public class GelJigsawPiece extends SingleJigsawPiece
 			for (Template.BlockInfo blockInfo : Template.processBlockInfos(template, worldIn, pos, placementSettings, this.func_214857_a(manager, pos, rotation, false)))
 			{
 				this.func_214846_a(worldIn, blockInfo, pos, rotation, rand, bounds);
-				if (blockInfo.nbt != null)
+				if (blockInfo.nbt != null && worldIn.getBlockState(blockInfo.pos).getBlock() == Blocks.STRUCTURE_BLOCK)
 				{
 					StructureMode mode = StructureMode.valueOf(blockInfo.nbt.getString("mode"));
 					if (mode == StructureMode.DATA)
