@@ -1,8 +1,11 @@
 package com.legacy.structure_gel;
 
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Streams;
 import com.legacy.structure_gel.blocks.IStructureGel.Behavior;
 import com.legacy.structure_gel.blocks.StructureGelBlock;
 import com.legacy.structure_gel.items.StructureGelItem;
@@ -16,13 +19,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.jigsaw.IJigsawDeserializer;
+import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.template.IStructureProcessorType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
@@ -43,18 +44,20 @@ public class StructureGelMod
 
 	public StructureGelMod()
 	{
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientInit);
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonInit);
-	}
-
-	private void commonInit(final FMLCommonSetupEvent event)
-	{
 
 	}
 
-	private void clientInit(final FMLClientSetupEvent event)
+	/**
+	 * The {@link Feature#ILLAGER_STRUCTURES} list allows for villages and pillager
+	 * outposts to generate terrain underneath them so they don't float. The area
+	 * that gets generated is based on the structure that starts the generation. In
+	 * villages, this would be the town center.
+	 * 
+	 * @param structures
+	 */
+	public static void addIllagerStructures(Structure<?>... structures)
 	{
-
+		Feature.ILLAGER_STRUCTURES = Streams.concat(Feature.ILLAGER_STRUCTURES.stream(), Arrays.asList(structures).stream()).collect(ImmutableList.toImmutableList());
 	}
 
 	public static ResourceLocation locate(String key)
@@ -62,7 +65,7 @@ public class StructureGelMod
 		return new ResourceLocation(MODID, key);
 	}
 
-	public static <T extends IForgeRegistryEntry<T>> T register(IForgeRegistry<T> registry, String name, T object)
+	private static <T extends IForgeRegistryEntry<T>> T register(IForgeRegistry<T> registry, String name, T object)
 	{
 		object.setRegistryName(StructureGelMod.locate(name));
 		registry.register(object);
@@ -84,7 +87,7 @@ public class StructureGelMod
 			registerBlock(event.getRegistry(), "orange_gel", new StructureGelBlock(Behavior.DYNAMIC_SPREAD_DIST));
 		}
 
-		public static void registerBlock(IForgeRegistry<Block> registry, String name, Block object)
+		private static void registerBlock(IForgeRegistry<Block> registry, String name, Block object)
 		{
 			BLOCKS.add(object);
 			register(registry, name, object);
@@ -110,7 +113,6 @@ public class StructureGelMod
 	{
 		public static IStructureProcessorType REMOVE_FILLER;
 		public static IStructureProcessorType REPLACE_RANDOMLY;
-		public static IStructureProcessorType HANDLE_DATA;
 
 		@SubscribeEvent
 		public static void onRegistry(final RegistryEvent.Register<Feature<?>> event)
@@ -119,7 +121,7 @@ public class StructureGelMod
 			REPLACE_RANDOMLY = register("replace_randomly", RandomBlockSwapProcessor::new);
 		}
 
-		static IStructureProcessorType register(String key, IStructureProcessorType type)
+		private static IStructureProcessorType register(String key, IStructureProcessorType type)
 		{
 			return Registry.register(Registry.STRUCTURE_PROCESSOR, locate(key), type);
 		}
@@ -136,7 +138,7 @@ public class StructureGelMod
 			GEL_SINGLE_POOL_ELEMENT = register("gel_single_pool_element", GelJigsawPiece::new);
 		}
 
-		static IJigsawDeserializer register(String key, IJigsawDeserializer type)
+		private static IJigsawDeserializer register(String key, IJigsawDeserializer type)
 		{
 			return Registry.register(Registry.STRUCTURE_POOL_ELEMENT, locate(key), type);
 		}

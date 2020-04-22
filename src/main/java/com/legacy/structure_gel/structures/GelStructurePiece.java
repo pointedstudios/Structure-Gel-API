@@ -64,14 +64,31 @@ public abstract class GelStructurePiece extends AbstractVillagePiece
 	{
 		world.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
 	}
-	
+
+	/**
+	 * Shorthand method to create an entity with the given pos (offset by 0.5) and
+	 * rotation. Rotation is south by default, with the structure's rotation taken
+	 * into account.
+	 * 
+	 * @param entityType
+	 * @param worldIn
+	 * @param pos
+	 * @param rotation
+	 * @return Entity
+	 */
 	public <T extends Entity> T createEntity(EntityType<T> entityType, IWorld worldIn, BlockPos pos, Rotation rotation)
 	{
 		T entity = entityType.create(worldIn.getWorld());
 		entity.setLocationAndAngles(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, rotation.rotate(Direction.SOUTH).getHorizontalAngle(), 0);
 		return entity;
 	}
-	
+
+	/**
+	 * Gives you the name of this structure piece. Useful for cases where you want
+	 * extra things to happen when this piece generates.
+	 * 
+	 * @return ResourceLocation
+	 */
 	public ResourceLocation getLocation()
 	{
 		if (this.jigsawPiece instanceof GelJigsawPiece)
