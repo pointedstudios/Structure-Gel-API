@@ -39,11 +39,28 @@ public abstract class GelStructurePiece extends AbstractVillagePiece
 	/**
 	 * Modification of addComponentParts to allow for data structure block handling.
 	 */
+	@Override
 	public boolean addComponentParts(IWorld world, Random rand, MutableBoundingBox bounds, ChunkPos chunkPos)
 	{
 		if (this.jigsawPiece instanceof GelJigsawPiece)
 			return ((GelJigsawPiece) this.jigsawPiece).place(this.templateManager, world, this.pos, this.rotation, bounds, rand, this);
 		return this.jigsawPiece.place(this.templateManager, world, this.pos, this.rotation, bounds, rand);
+	}
+
+	/**
+	 * Overrides to tell it not to offset the y if it's told not to generate at the
+	 * surface.
+	 */
+	@Override
+	public void offset(int x, int y, int z)
+	{
+		if (this.jigsawPiece instanceof GelJigsawPiece)
+			if (!((GelJigsawPiece) this.jigsawPiece).generatesAtSurface())
+				super.offset(x, 0, z);
+			else
+				super.offset(x, y, z);
+		else
+			super.offset(x, y, z);
 	}
 
 	/**

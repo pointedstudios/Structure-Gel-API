@@ -19,8 +19,8 @@ import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
  */
 public class JigsawRegistryHelper
 {
-	private String modid;
-	private String prefix;
+	public final String modid;
+	public final String prefix;
 
 	/**
 	 * @see JigsawRegistryHelper
@@ -45,23 +45,31 @@ public class JigsawRegistryHelper
 	}
 
 	/**
+	 * Creates a new instance of this with the existing prefix and this modid.<br>
+	 * <br>
+	 * Note: Any JigsawPoolBuilders created/cloned from the original instance will
+	 * still reference the original and use its modid.
 	 * 
 	 * @param modid
+	 * @return JigsawRegistryHelper
 	 */
-	public void setModID(String modid)
+	public JigsawRegistryHelper setModID(String modid)
 	{
-		this.modid = modid;
+		return new JigsawRegistryHelper(modid, this.prefix);
 	}
 
 	/**
-	 * Placed between the modid and the string passed in
-	 * {@link #locatePiece(String)}
+	 * Creates a new instance of this with the existing modid and this prefix.<br>
+	 * <br>
+	 * Note: Any JigsawPoolBuilders created/cloned from the original instance will
+	 * still reference the original and use its prefix.
 	 * 
 	 * @param prefix
+	 * @return JigsawRegistryHelper
 	 */
-	public void setPrefix(String prefix)
+	public JigsawRegistryHelper setPrefix(String prefix)
 	{
-		this.prefix = prefix;
+		return new JigsawRegistryHelper(this.modid, prefix);
 	}
 
 	/**
