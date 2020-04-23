@@ -42,7 +42,6 @@ public class GelJigsawPiece extends SingleJigsawPiece
 {
 	private boolean maintainWater = true;
 	private boolean ignoreEntities = false;
-	private boolean generateAtSurface = true;
 
 	/**
 	 * @see GelJigsawPiece
@@ -84,7 +83,6 @@ public class GelJigsawPiece extends SingleJigsawPiece
 		super(dyn);
 		this.maintainWater = dyn.get("maintainWater").asBoolean(true);
 		this.ignoreEntities = dyn.get("ignoreEntities").asBoolean(false);
-		this.generateAtSurface = dyn.get("genAtSurface").asBoolean(true);
 	}
 
 	/**
@@ -97,24 +95,6 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	{
 		this.maintainWater = value;
 		return this;
-	}
-
-	/**
-	 * Normally, jigsaw structures generate at the surface. Set this to false to
-	 * control the y level.
-	 * 
-	 * @param value
-	 * @return GelJigsawPiece
-	 */
-	public GelJigsawPiece generateAtSurface(boolean value)
-	{
-		this.generateAtSurface = value;
-		return this;
-	}
-	
-	public boolean generatesAtSurface()
-	{
-		return this.generateAtSurface;
 	}
 
 	/**
@@ -217,8 +197,7 @@ public class GelJigsawPiece extends SingleJigsawPiece
 		//@formatter:off
 		return new Dynamic<>(ops, ops.createMap(ImmutableMap.of(
 				ops.createString("maintainWater"), ops.createBoolean(this.maintainWater), 
-				ops.createString("ignoreEntities"), ops.createBoolean(this.ignoreEntities), 
-				ops.createString("genAtSurface"), ops.createBoolean(this.generateAtSurface)
+				ops.createString("ignoreEntities"), ops.createBoolean(this.ignoreEntities) 
 				)));
 		//@formatter:on
 	}

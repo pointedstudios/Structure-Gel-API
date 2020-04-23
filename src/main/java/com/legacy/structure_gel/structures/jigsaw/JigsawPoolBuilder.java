@@ -30,7 +30,6 @@ public class JigsawPoolBuilder
 
 	private List<StructureProcessor> processors = ImmutableList.of();
 	private boolean maintainWater = true;
-	private boolean generateAtSurface = true;
 	private JigsawPattern.PlacementBehaviour placementBehavior = JigsawPattern.PlacementBehaviour.RIGID;
 
 	/**
@@ -144,19 +143,6 @@ public class JigsawPoolBuilder
 	}
 
 	/**
-	 * Normally, jigsaw structures are forced to generate at surface level. Set this
-	 * to false to let them generate at any y level.
-	 * 
-	 * @param generateAtSurface : default = true
-	 * @return JigsawPoolBuilder
-	 */
-	public JigsawPoolBuilder generateAtSurface(boolean generateAtSurface)
-	{
-		this.generateAtSurface = generateAtSurface;
-		return this;
-	}
-
-	/**
 	 * Sets how the structures should place.
 	 * 
 	 * @param placementBehavior : default = RIGID
@@ -177,7 +163,7 @@ public class JigsawPoolBuilder
 	public List<Pair<JigsawPiece, Integer>> build()
 	{
 		List<Pair<JigsawPiece, Integer>> jigsawList = new ArrayList<>();
-		this.names.forEach((rl, i) -> jigsawList.add(Pair.of(new GelJigsawPiece(rl, this.processors, this.placementBehavior).maintainWater(this.maintainWater).generateAtSurface(this.generateAtSurface), i)));
+		this.names.forEach((rl, i) -> jigsawList.add(Pair.of(new GelJigsawPiece(rl, this.processors, this.placementBehavior).maintainWater(this.maintainWater), i)));
 
 		return jigsawList.stream().collect(ImmutableList.toImmutableList());
 	}

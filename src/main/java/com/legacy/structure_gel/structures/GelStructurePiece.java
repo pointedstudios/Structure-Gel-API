@@ -24,6 +24,15 @@ import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.TemplateStructurePiece;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 
+/**
+ * An extension of {@link AbstractVillagePiece} for jigsaw structures that
+ * allows for data structure block interaction and contains more functional
+ * methods to go along with that. Use this as your piece type if you're doing
+ * anything with jigsaw structures, as you'll have more options.
+ * 
+ * @author David
+ *
+ */
 public abstract class GelStructurePiece extends AbstractVillagePiece
 {
 	public GelStructurePiece(IStructurePieceType structurePieceType, TemplateManager templateManager, JigsawPiece jigsawPiece, BlockPos pos, int groundLevelDelta, Rotation rotation, MutableBoundingBox bounds)
@@ -45,22 +54,6 @@ public abstract class GelStructurePiece extends AbstractVillagePiece
 		if (this.jigsawPiece instanceof GelJigsawPiece)
 			return ((GelJigsawPiece) this.jigsawPiece).place(this.templateManager, world, this.pos, this.rotation, bounds, rand, this);
 		return this.jigsawPiece.place(this.templateManager, world, this.pos, this.rotation, bounds, rand);
-	}
-
-	/**
-	 * Overrides to tell it not to offset the y if it's told not to generate at the
-	 * surface.
-	 */
-	@Override
-	public void offset(int x, int y, int z)
-	{
-		if (this.jigsawPiece instanceof GelJigsawPiece)
-			if (!((GelJigsawPiece) this.jigsawPiece).generatesAtSurface())
-				super.offset(x, 0, z);
-			else
-				super.offset(x, y, z);
-		else
-			super.offset(x, y, z);
 	}
 
 	/**
