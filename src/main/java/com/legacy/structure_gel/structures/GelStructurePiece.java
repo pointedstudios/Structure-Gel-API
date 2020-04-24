@@ -76,7 +76,7 @@ public abstract class GelStructurePiece extends AbstractVillagePiece
 	 * @param worldIn
 	 * @param pos
 	 * @param rotation
-	 * @return Entity
+	 * @return {@link Entity}
 	 */
 	public <T extends Entity> T createEntity(EntityType<T> entityType, IWorld worldIn, BlockPos pos, Rotation rotation)
 	{
@@ -89,7 +89,7 @@ public abstract class GelStructurePiece extends AbstractVillagePiece
 	 * Gives you the name of this structure piece. Useful for cases where you want
 	 * extra things to happen when this piece generates.
 	 * 
-	 * @return ResourceLocation
+	 * @return {@link ResourceLocation}
 	 */
 	public ResourceLocation getLocation()
 	{
@@ -101,7 +101,7 @@ public abstract class GelStructurePiece extends AbstractVillagePiece
 	/**
 	 * Returns the template manager so you can get data about the structure itself.
 	 * 
-	 * @return TemplateManager
+	 * @return {@link TemplateManager}
 	 */
 	public TemplateManager getTemplateManager()
 	{
@@ -111,7 +111,7 @@ public abstract class GelStructurePiece extends AbstractVillagePiece
 	/**
 	 * Gets the size of the structure.
 	 * 
-	 * @return BlockPos
+	 * @return {@link BlockPos}
 	 */
 	public BlockPos getSize()
 	{

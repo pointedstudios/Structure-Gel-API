@@ -50,7 +50,7 @@ public class JigsawPoolBuilder
 	 * @param nameMap : Names are converted to {@link ResourceLocation} using
 	 *            {@link JigsawRegistryHelper#locatePiece(String)} from the
 	 *            {@link #jigsawRegistryHelper}. Piece weights are set in the map.
-	 * @return JigsawPoolBuilder
+	 * @return {@link JigsawPoolBuilder}
 	 */
 	public JigsawPoolBuilder names(Map<String, Integer> nameMap)
 	{
@@ -64,7 +64,7 @@ public class JigsawPoolBuilder
 	 * the weights in the map.
 	 * 
 	 * @param nameMap : Names are left as is with no conversion
-	 * @return JigsawPoolBuilder
+	 * @return {@link JigsawPoolBuilder}
 	 */
 	public JigsawPoolBuilder namesR(Map<ResourceLocation, Integer> nameMap)
 	{
@@ -79,7 +79,7 @@ public class JigsawPoolBuilder
 	 * @param names : Names are converted to {@link ResourceLocation} using
 	 *            {@link JigsawRegistryHelper#locatePiece(String)} from the
 	 *            {@link #jigsawRegistryHelper}. All pieces have equal weight.
-	 * @return JigsawPoolBuilder
+	 * @return {@link JigsawPoolBuilder}
 	 */
 	public JigsawPoolBuilder names(String... names)
 	{
@@ -94,7 +94,7 @@ public class JigsawPoolBuilder
 	 * equal weights.
 	 * 
 	 * @param names : Names are left as is with no conversion
-	 * @return JigsawPoolBuilder
+	 * @return {@link JigsawPoolBuilder}
 	 */
 	public JigsawPoolBuilder names(ResourceLocation... names)
 	{
@@ -109,7 +109,7 @@ public class JigsawPoolBuilder
 	 * This functions as an append.
 	 * 
 	 * @param processors : empty by default
-	 * @return JigsawPoolBuilder
+	 * @return {@link JigsawPoolBuilder}
 	 */
 	public JigsawPoolBuilder processors(StructureProcessor... processors)
 	{
@@ -121,7 +121,7 @@ public class JigsawPoolBuilder
 	 * This functions as an append.
 	 * 
 	 * @param processors : empty by default
-	 * @return JigsawPoolBuilder
+	 * @return {@link JigsawPoolBuilder}
 	 */
 	public JigsawPoolBuilder processors(List<StructureProcessor> processors)
 	{
@@ -134,7 +134,7 @@ public class JigsawPoolBuilder
 	 * water.
 	 * 
 	 * @param maintainWater : default = true
-	 * @return JigsawPoolBuilder
+	 * @return {@link JigsawPoolBuilder}
 	 */
 	public JigsawPoolBuilder maintainWater(boolean maintainWater)
 	{
@@ -146,7 +146,7 @@ public class JigsawPoolBuilder
 	 * Sets how the structures should place.
 	 * 
 	 * @param placementBehavior : default = RIGID
-	 * @return JigsawPoolBuilder
+	 * @return {@link JigsawPoolBuilder}
 	 */
 	public JigsawPoolBuilder placementBehavior(JigsawPattern.PlacementBehaviour placementBehavior)
 	{
@@ -158,7 +158,7 @@ public class JigsawPoolBuilder
 	 * Generates a pool of pieces using the weights established in {@link #names}
 	 * and other settings established such as {@link #maintainWater(boolean)}.
 	 * 
-	 * @return List
+	 * @return {@link List}
 	 */
 	public List<Pair<JigsawPiece, Integer>> build()
 	{
@@ -173,7 +173,7 @@ public class JigsawPoolBuilder
 	 * settings.
 	 * 
 	 * @param pieceMap : A map containing the pieces and their weights.
-	 * @return List
+	 * @return {@link List}
 	 */
 	public static List<Pair<JigsawPiece, Integer>> build(Map<JigsawPiece, Integer> pieceMap)
 	{
@@ -187,7 +187,7 @@ public class JigsawPoolBuilder
 	 * Creats a pool of pieces with equal chances with the default settings.
 	 * 
 	 * @param pieces
-	 * @return List
+	 * @return {@link List}
 	 */
 	public static List<Pair<JigsawPiece, Integer>> build(JigsawPiece... pieces)
 	{
@@ -204,7 +204,7 @@ public class JigsawPoolBuilder
 	 * settings, processors, etc.
 	 * 
 	 * @param lists
-	 * @return List
+	 * @return {@link List}
 	 */
 	public static List<Pair<JigsawPiece, Integer>> collect(JigsawPoolBuilder... builders)
 	{
@@ -218,7 +218,7 @@ public class JigsawPoolBuilder
 	 * Creates a copy of this builder. Used in cases where similar settings are used
 	 * across multiple builders.
 	 * 
-	 * @return JigsawPoolBuilder
+	 * @return {@link JigsawPoolBuilder}
 	 */
 	public JigsawPoolBuilder clone()
 	{

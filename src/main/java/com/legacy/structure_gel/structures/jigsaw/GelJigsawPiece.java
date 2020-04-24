@@ -89,7 +89,7 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	 * Determins if blocks should become waterlogged when placed in water.
 	 * 
 	 * @param value
-	 * @return GelJigsawPiece
+	 * @return {@link GelJigsawPiece}
 	 */
 	public GelJigsawPiece maintainWater(boolean value)
 	{
@@ -102,7 +102,7 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	 * this, but I'll allow it.
 	 * 
 	 * @param value
-	 * @return GelJigsawPiece
+	 * @return {@link GelJigsawPiece}
 	 */
 	public GelJigsawPiece setIgnoreEntities(boolean value)
 	{
@@ -172,7 +172,7 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	/**
 	 * Gets the resource location of this piece
 	 * 
-	 * @return ResourceLocation
+	 * @return {@link ResourceLocation}
 	 */
 	public ResourceLocation getLocation()
 	{

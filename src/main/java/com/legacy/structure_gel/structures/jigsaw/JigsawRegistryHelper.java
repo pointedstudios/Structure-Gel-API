@@ -51,7 +51,7 @@ public class JigsawRegistryHelper
 	 * still reference the original and use its modid.
 	 * 
 	 * @param modid
-	 * @return JigsawRegistryHelper
+	 * @return {@link JigsawRegistryHelper}
 	 */
 	public JigsawRegistryHelper setModID(String modid)
 	{
@@ -65,7 +65,7 @@ public class JigsawRegistryHelper
 	 * still reference the original and use its prefix.
 	 * 
 	 * @param prefix
-	 * @return JigsawRegistryHelper
+	 * @return {@link JigsawRegistryHelper}
 	 */
 	public JigsawRegistryHelper setPrefix(String prefix)
 	{
