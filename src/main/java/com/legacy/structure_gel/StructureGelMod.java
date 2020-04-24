@@ -1,14 +1,11 @@
 package com.legacy.structure_gel;
 
-import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Streams;
 import com.legacy.structure_gel.blocks.IStructureGel.Behavior;
 import com.legacy.structure_gel.blocks.StructureGelBlock;
 import com.legacy.structure_gel.items.StructureGelItem;
@@ -22,11 +19,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.jigsaw.IJigsawDeserializer;
-import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.template.IStructureProcessorType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
@@ -48,22 +46,12 @@ public class StructureGelMod
 
 	public StructureGelMod()
 	{
-
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonInit);
 	}
 
-	/**
-	 * The {@link Feature#ILLAGER_STRUCTURES} list allows for villages and pillager
-	 * outposts to generate terrain underneath them so they don't float. The area
-	 * that gets generated is based on the structure that starts the generation. In
-	 * villages, this would be the town center.
-	 * <br><br>
-	 * Call this during feature registration.
-	 * 
-	 * @param structures
-	 */
-	public static void addIllagerStructures(Structure<?>... structures)
+	public void commonInit(FMLCommonSetupEvent event)
 	{
-		Feature.ILLAGER_STRUCTURES = Streams.concat(Feature.ILLAGER_STRUCTURES.stream(), Arrays.asList(structures).stream()).collect(ImmutableList.toImmutableList());
+		
 	}
 
 	public static ResourceLocation locate(String key)
