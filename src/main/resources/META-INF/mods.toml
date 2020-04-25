@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[28,)"
+loaderVersion="[31,)"
 issueTrackerURL="https://gitlab.com/groups/modding-legacy/-/issues"
 [[mods]]
 modId="structure_gel"
@@ -13,12 +13,12 @@ description='''An API mod to simplify structure generation on the developers'''
 [[dependencies.structure_gel]]
     modId="forge"
     mandatory=true
-    versionRange="[28.2.0,)"
+    versionRange="[31.1.0,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.structure_gel]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.14.4]"
+    versionRange="[1.15.2]"
     ordering="NONE"
     side="BOTH"

@@ -14,12 +14,12 @@ apply plugin: 'maven-publish'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
-version = '1.0.0'
+version = '1.0.1'
 group = 'com.legacy.structure_gel'
-archivesBaseName = 'structure-gel-api-1.14.4'
+archivesBaseName = 'structure-gel-api-1.15.2'
 
 minecraft {
-    mappings channel: 'snapshot', version: '20200119-1.14.3'
+    mappings channel: 'snapshot', version: '20200425-1.15.1'
 	accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
     runs {
         client {
@@ -59,7 +59,7 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.14.4-28.2.0'
+    minecraft 'net.minecraftforge:forge:1.15.2-31.1.50'
 }
 
 jar {
