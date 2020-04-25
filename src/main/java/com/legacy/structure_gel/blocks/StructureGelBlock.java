@@ -13,13 +13,14 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.monster.HuskEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -29,6 +30,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -62,7 +64,7 @@ public class StructureGelBlock extends Block implements IStructureGel
 	 */
 	public StructureGelBlock(Behavior... behaviors)
 	{
-		super(Block.Properties.create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.0F).noDrops());
+		super(Block.Properties.create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.0F).noDrops().notSolid());
 		this.behaviors = ImmutableList.copyOf(behaviors);
 
 		this.setDefaultState(this.getDefaultState().with(COUNT, 50));
@@ -115,7 +117,7 @@ public class StructureGelBlock extends Block implements IStructureGel
 	 * @see #removeGel(World, BlockPos)
 	 */
 	@Override
-	public void tick(BlockState state, World worldIn, BlockPos pos, Random random)
+	public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random)
 	{
 		if (state.get(COUNT) < 50)
 		{
@@ -164,14 +166,14 @@ public class StructureGelBlock extends Block implements IStructureGel
 	 * connected gels.
 	 */
 	@Override
-	public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit)
+	public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit)
 	{
 		if (player.isCreative() && player.getHeldItem(handIn).getItem() == Items.GUNPOWDER)
 		{
 			removeGel(worldIn, pos);
-			return true;
+			return ActionResultType.SUCCESS;
 		}
-		return false;
+		return ActionResultType.FAIL;
 	}
 
 	/**
@@ -246,7 +248,7 @@ public class StructureGelBlock extends Block implements IStructureGel
 	 * 
 	 * @param worldIn
 	 * @param pos
-	 * @return boolean
+	 * @return boolean {@link HuskEntity}
 	 */
 	public boolean checkAbove(World worldIn, BlockPos pos)
 	{
@@ -254,7 +256,7 @@ public class StructureGelBlock extends Block implements IStructureGel
 			return true;
 		else
 		{
-			if (!worldIn.isSkyLightMax(pos))
+			if (!worldIn.canSeeSky(pos))
 				return true;
 			for (int dy = 1; pos.up(dy).getY() < 256; dy++)
 				if (!worldIn.isAirBlock(pos.up(dy)))
@@ -288,24 +290,6 @@ public class StructureGelBlock extends Block implements IStructureGel
 	public boolean isNormalCube(BlockState state, IBlockReader worldIn, BlockPos pos)
 	{
 		return false;
-	}
-
-	/**
-	 * 
-	 */
-	@Override
-	public boolean isSolid(BlockState state)
-	{
-		return false;
-	}
-
-	/**
-	 * 
-	 */
-	@Override
-	public BlockRenderLayer getRenderLayer()
-	{
-		return BlockRenderLayer.TRANSLUCENT;
 	}
 
 	/**
