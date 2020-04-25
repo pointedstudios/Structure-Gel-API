@@ -3,7 +3,7 @@ package com.legacy.structure_gel;
 import java.util.Arrays;
 
 import com.google.common.collect.ImmutableList;
-import com.legacy.structure_gel.structures.ProbabilityStructure;
+import com.legacy.structure_gel.structures.GelStructure;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
@@ -18,7 +18,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class ConfigTemplates
 {
 	/**
-	 * Useful in conjunction with {@link ProbabilityStructure} to make generation
+	 * Useful in conjunction with {@link GelStructure} to make generation
 	 * settings configurable.
 	 * 
 	 * @author David
