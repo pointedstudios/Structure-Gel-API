@@ -19,6 +19,7 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.jigsaw.IJigsawDeserializer;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
 import net.minecraft.world.gen.feature.jigsaw.SingleJigsawPiece;
@@ -141,7 +142,7 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	 * @param con
 	 * @return boolean
 	 */
-	public boolean place(TemplateManager manager, IWorld worldIn, BlockPos pos, Rotation rotation, MutableBoundingBox bounds, Random rand, GelStructurePiece gelStructurePiece)
+	public boolean place(TemplateManager manager, IWorld worldIn, ChunkGenerator<?> chunkGenerator, BlockPos pos, Rotation rotation, MutableBoundingBox bounds, Random rand, GelStructurePiece gelStructurePiece)
 	{
 		Template template = manager.getTemplateDefaulted(this.location);
 		PlacementSettings placementSettings = this.createPlacementSettings(rotation, bounds);

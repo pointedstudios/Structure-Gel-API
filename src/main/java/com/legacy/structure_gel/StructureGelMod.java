@@ -14,6 +14,8 @@ import com.legacy.structure_gel.structures.processors.RandomBlockSwapProcessor;
 import com.legacy.structure_gel.structures.processors.RemoveGelStructureProcessor;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
@@ -23,7 +25,7 @@ import net.minecraft.world.gen.feature.template.IStructureProcessorType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
@@ -46,12 +48,12 @@ public class StructureGelMod
 
 	public StructureGelMod()
 	{
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonInit);
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientInit);
 	}
 
-	public void commonInit(FMLCommonSetupEvent event)
+	public void clientInit(FMLClientSetupEvent event)
 	{
-		
+		Blocks.BLOCKS.forEach(b -> RenderTypeLookup.setRenderLayer(b, RenderType.getTranslucent()));
 	}
 
 	public static ResourceLocation locate(String key)

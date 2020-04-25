@@ -219,7 +219,7 @@ public class JigsawAccessHelper
 	 * @param piece
 	 * @return {@link ConfiguredFeature}
 	 */
-	public static ConfiguredFeature<?> getFeatureJigsawPieceFeatures(FeatureJigsawPiece piece)
+	public static ConfiguredFeature<?, ?> getFeatureJigsawPieceFeatures(FeatureJigsawPiece piece)
 	{
 		return piece.configuredFeature;
 	}

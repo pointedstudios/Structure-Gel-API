@@ -9,8 +9,8 @@ import com.mojang.datafixers.Dynamic;
 
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.util.SharedSeedRandom;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeManager;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.structure.ScatteredStructure;
@@ -48,7 +48,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	 * @param chunkPosZ
 	 * @return boolean
 	 */
-	public boolean canStartInChunk(ChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ)
+	public boolean canStartInChunk(ChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ, Biome biomeIn)
 	{
 		int spacing = this.getSpacing();
 		int gridX = (chunkPosX / spacing) * spacing;
@@ -62,18 +62,20 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 		int gridOffsetX = gridX + offsetX;
 		int gridOffsetZ = gridZ + offsetZ;
 
-		return chunkPosX == gridOffsetX && chunkPosZ == gridOffsetZ && chunkGen.hasStructure(chunkGen.getBiomeProvider().getBiome(new BlockPos((chunkPosX << 4) + 9, 0, (chunkPosZ << 4) + 9)), this);
+		return chunkPosX == gridOffsetX && chunkPosZ == gridOffsetZ && chunkGen.hasStructure(biomeIn, this);
 	}
-
+	
 	/**
+	 * hasStartAt<br>
+	 * <br>
 	 * Runs {@link #canStartInChunk(ChunkGenerator, Random, int, int)} to see if the
 	 * chunk is a valid chunk to generate this structure in, and then checks
 	 * {@link #getProbability()} to see if it will succeed in generating.
 	 */
 	@Override
-	public boolean hasStartAt(ChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ)
+	public boolean func_225558_a_(BiomeManager biomeManagerIn, ChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ, Biome biomeIn)
 	{
-		if (canStartInChunk(chunkGen, rand, chunkPosX, chunkPosZ))
+		if (canStartInChunk(chunkGen, rand, chunkPosX, chunkPosZ, biomeIn))
 		{
 			((SharedSeedRandom) rand).setLargeFeatureSeedWithSalt(chunkGen.getSeed(), chunkPosX, chunkPosZ, this.getSeed());
 			return rand.nextDouble() < getProbability();

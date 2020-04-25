@@ -1,15 +1,14 @@
 package com.legacy.structure_gel.structures;
 
 import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructureStart;
 
 public abstract class GelStructureStart extends StructureStart
 {
-	public GelStructureStart(Structure<?> structureIn, int chunkX, int chunkZ, Biome biomeIn, MutableBoundingBox boundsIn, int referenceIn, long seed)
+	public GelStructureStart(Structure<?> structureIn, int chunkX, int chunkZ, MutableBoundingBox boundsIn, int referenceIn, long seed)
 	{
-		super(structureIn, chunkX, chunkZ, biomeIn, boundsIn, referenceIn, seed);
+		super(structureIn, chunkX, chunkZ, boundsIn, referenceIn, seed);
 	}
 
 	/**

@@ -18,7 +18,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
+import net.minecraft.world.gen.feature.jigsaw.SingleJigsawPiece;
 import net.minecraft.world.gen.feature.structure.AbstractVillagePiece;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.TemplateStructurePiece;
@@ -46,14 +48,16 @@ public abstract class GelStructurePiece extends AbstractVillagePiece
 	}
 
 	/**
+	 * addComponentParts<br>
+	 * <br>
 	 * Modification of addComponentParts to allow for data structure block handling.
 	 */
 	@Override
-	public boolean addComponentParts(IWorld world, Random rand, MutableBoundingBox bounds, ChunkPos chunkPos)
+	public boolean func_225577_a_(IWorld world, ChunkGenerator<?> chunkGen, Random rand, MutableBoundingBox bounds, ChunkPos chunkPos)
 	{
 		if (this.jigsawPiece instanceof GelJigsawPiece)
-			return ((GelJigsawPiece) this.jigsawPiece).place(this.templateManager, world, this.pos, this.rotation, bounds, rand, this);
-		return this.jigsawPiece.place(this.templateManager, world, this.pos, this.rotation, bounds, rand);
+			return ((GelJigsawPiece) this.jigsawPiece).place(this.templateManager, world, chunkGen, this.pos, this.rotation, bounds, rand, this);
+		return this.jigsawPiece.func_225575_a_(this.templateManager, world, chunkGen, this.pos, this.rotation, bounds, rand);
 	}
 
 	/**
@@ -93,8 +97,8 @@ public abstract class GelStructurePiece extends AbstractVillagePiece
 	 */
 	public ResourceLocation getLocation()
 	{
-		if (this.jigsawPiece instanceof GelJigsawPiece)
-			return ((GelJigsawPiece) this.jigsawPiece).getLocation();
+		if (this.jigsawPiece instanceof SingleJigsawPiece)
+			return JigsawAccessHelper.getSingleJigsawPieceLocation((SingleJigsawPiece) this.jigsawPiece);
 		return new ResourceLocation("empty");
 	}
 
