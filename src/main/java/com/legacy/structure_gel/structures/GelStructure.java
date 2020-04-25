@@ -1,16 +1,22 @@
 package com.legacy.structure_gel.structures;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
 
 import com.mojang.datafixers.Dynamic;
 
+import net.minecraft.entity.EntityClassification;
 import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.structure.ScatteredStructure;
 import net.minecraft.world.gen.feature.structure.Structure;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.WorldEvent;
 
 /**
  * An extension of {@link Structure} that allows for more precise tweaking and
@@ -21,11 +27,12 @@ import net.minecraft.world.gen.feature.structure.Structure;
  *
  * @param <C>
  */
-public abstract class ProbabilityStructure<C extends IFeatureConfig> extends Structure<C>
+public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C>
 {
-	public ProbabilityStructure(Function<Dynamic<?>, ? extends C> configFactoryIn)
+	public GelStructure(Function<Dynamic<?>, ? extends C> configFactoryIn)
 	{
 		super(configFactoryIn);
+		MinecraftForge.EVENT_BUS.addListener(this::potentialSpawnsEvent);
 	}
 
 	/**
@@ -33,7 +40,7 @@ public abstract class ProbabilityStructure<C extends IFeatureConfig> extends Str
 	 * with custom spacing and offsets.
 	 * 
 	 * @see #getSpacing()
-	 * @see #getSpacingOffset()
+	 * @see #getOffset()
 	 * 
 	 * @param chunkGen
 	 * @param rand
@@ -48,7 +55,7 @@ public abstract class ProbabilityStructure<C extends IFeatureConfig> extends Str
 		int gridZ = (chunkPosZ / spacing) * spacing;
 
 		((SharedSeedRandom) rand).setLargeFeatureSeedWithSalt(chunkGen.getSeed(), gridX, gridZ, this.getSeed());
-		int spacingOffset = this.getSpacingOffset();
+		int spacingOffset = this.getOffset();
 		int offsetX = rand.nextInt(spacingOffset * 2 + 1) - spacingOffset;
 		int offsetZ = rand.nextInt(spacingOffset * 2 + 1) - spacingOffset;
 
@@ -61,7 +68,7 @@ public abstract class ProbabilityStructure<C extends IFeatureConfig> extends Str
 	/**
 	 * Runs {@link #canStartInChunk(ChunkGenerator, Random, int, int)} to see if the
 	 * chunk is a valid chunk to generate this structure in, and then checks
-	 * {@link #getChance()} to see if it will succeed in generating.
+	 * {@link #getProbability()} to see if it will succeed in generating.
 	 */
 	@Override
 	public boolean hasStartAt(ChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ)
@@ -69,7 +76,7 @@ public abstract class ProbabilityStructure<C extends IFeatureConfig> extends Str
 		if (canStartInChunk(chunkGen, rand, chunkPosX, chunkPosZ))
 		{
 			((SharedSeedRandom) rand).setLargeFeatureSeedWithSalt(chunkGen.getSeed(), chunkPosX, chunkPosZ, this.getSeed());
-			return rand.nextDouble() < getChance();
+			return rand.nextDouble() < getProbability();
 		}
 		else
 			return false;
@@ -90,7 +97,7 @@ public abstract class ProbabilityStructure<C extends IFeatureConfig> extends Str
 	 * 
 	 * @return double
 	 */
-	public abstract double getChance();
+	public abstract double getProbability();
 
 	/**
 	 * When checking if a structure can be placed in a given chunk, this is called
@@ -114,5 +121,50 @@ public abstract class ProbabilityStructure<C extends IFeatureConfig> extends Str
 	 * 
 	 * @return int
 	 */
-	public abstract int getSpacingOffset();
+	public abstract int getOffset();
+
+	@Override
+	public String getStructureName()
+	{
+		return this.getRegistryName().toString();
+	}
+
+	/**
+	 * Return a list of hostile mobs to change spawn behavior.
+	 */
+	public List<Biome.SpawnListEntry> getSpawnList()
+	{
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Return a list of passive mobs to change spawn behavior.
+	 */
+	public List<Biome.SpawnListEntry> getCreatureSpawnList()
+	{
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Automatically registered to the event bus. Use {@link #getSpawnList()} or
+	 * {@link #getCreatureSpawnList()} to set the mob spawns that should occur.
+	 * 
+	 * @param event
+	 */
+	public void potentialSpawnsEvent(WorldEvent.PotentialSpawns event)
+	{
+		if (this.isPositionInStructure(event.getWorld(), event.getPos()))
+		{
+			if (event.getType() == EntityClassification.MONSTER && !this.getSpawnList().isEmpty())
+			{
+				event.getList().clear();
+				event.getList().addAll(this.getSpawnList());
+			}
+			if (event.getType() == EntityClassification.CREATURE && !this.getCreatureSpawnList().isEmpty())
+			{
+				event.getList().clear();
+				event.getList().addAll(this.getCreatureSpawnList());
+			}
+		}
+	}
 }
