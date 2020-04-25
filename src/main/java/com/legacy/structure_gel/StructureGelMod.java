@@ -72,21 +72,22 @@ public class StructureGelMod
 	public static class Blocks
 	{
 		public static Set<Block> BLOCKS = new LinkedHashSet<Block>();
+		public static Block RED_GEL, BLUE_GEL, GREEN_GEL, CYAN_GEL, ORANGE_GEL;
 
 		@SubscribeEvent
 		public static void onRegistry(final RegistryEvent.Register<Block> event)
 		{
-			registerBlock(event.getRegistry(), "red_gel", new StructureGelBlock());
-			registerBlock(event.getRegistry(), "blue_gel", new StructureGelBlock(Behavior.PHOTOSENSITIVE));
-			registerBlock(event.getRegistry(), "green_gel", new StructureGelBlock(Behavior.DIAGONAL_SPREAD));
-			registerBlock(event.getRegistry(), "cyan_gel", new StructureGelBlock(Behavior.PHOTOSENSITIVE, Behavior.DIAGONAL_SPREAD));
-			registerBlock(event.getRegistry(), "orange_gel", new StructureGelBlock(Behavior.DYNAMIC_SPREAD_DIST));
+			RED_GEL = registerBlock(event.getRegistry(), "red_gel", new StructureGelBlock());
+			BLUE_GEL = registerBlock(event.getRegistry(), "blue_gel", new StructureGelBlock(Behavior.PHOTOSENSITIVE));
+			GREEN_GEL = registerBlock(event.getRegistry(), "green_gel", new StructureGelBlock(Behavior.DIAGONAL_SPREAD));
+			CYAN_GEL = registerBlock(event.getRegistry(), "cyan_gel", new StructureGelBlock(Behavior.PHOTOSENSITIVE, Behavior.DIAGONAL_SPREAD));
+			ORANGE_GEL = registerBlock(event.getRegistry(), "orange_gel", new StructureGelBlock(Behavior.DYNAMIC_SPREAD_DIST));
 		}
 
-		private static void registerBlock(IForgeRegistry<Block> registry, String name, Block object)
+		private static Block registerBlock(IForgeRegistry<Block> registry, String name, Block object)
 		{
 			BLOCKS.add(object);
-			register(registry, name, object);
+			return register(registry, name, object);
 		}
 	}
 
@@ -99,8 +100,6 @@ public class StructureGelMod
 			for (Block b : StructureGelMod.Blocks.BLOCKS)
 				if (b instanceof StructureGelBlock)
 					register(event.getRegistry(), b.getRegistryName().getPath(), new StructureGelItem((StructureGelBlock) b));
-
-			StructureGelMod.Blocks.BLOCKS.clear();
 		}
 	}
 

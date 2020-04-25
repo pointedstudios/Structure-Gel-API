@@ -35,7 +35,7 @@ public class StructureGelItem extends BlockItem
 	 */
 	public StructureGelItem(StructureGelBlock blockIn)
 	{
-		super(blockIn, new Item.Properties().group(ItemGroup.MISC));
+		super(blockIn, new Item.Properties().group(ItemGroup.MISC).maxStackSize(blockIn.behaviors.contains(Behavior.DYNAMIC_SPREAD_DIST) ? 50 : 64));
 	}
 
 	/**
