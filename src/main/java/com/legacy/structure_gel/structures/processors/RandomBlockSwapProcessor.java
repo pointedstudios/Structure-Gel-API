@@ -85,7 +85,7 @@ public class RandomBlockSwapProcessor extends StructureProcessor
 	{
 		//@formatter:off
 		return new Dynamic<>(ops, ops.createMap(ImmutableMap.of(
-				ops.createString("condition"), ops.createString(this.condition.toString()),
+				ops.createString("condition"), ops.createString(this.condition.getRegistryName().toString()),
 				ops.createString("chance"), ops.createFloat(this.chance),
 				ops.createString("change_to"), BlockState.serialize(ops, changeTo).getValue()
 				)));

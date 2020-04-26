@@ -2,6 +2,7 @@ package com.legacy.structure_gel.structures.jigsaw;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,7 @@ public class JigsawPoolBuilder
 {
 	private final JigsawRegistryHelper jigsawRegistryHelper;
 	private Map<ResourceLocation, Integer> names = ImmutableMap.of();
-
+	private int weight = 1;
 	private List<StructureProcessor> processors = ImmutableList.of();
 	private boolean maintainWater = true;
 	private JigsawPattern.PlacementBehaviour placementBehavior = JigsawPattern.PlacementBehaviour.RIGID;
@@ -78,14 +79,14 @@ public class JigsawPoolBuilder
 	 * 
 	 * @param names : Names are converted to {@link ResourceLocation} using
 	 *            {@link JigsawRegistryHelper#locatePiece(String)} from the
-	 *            {@link #jigsawRegistryHelper}. All pieces have equal weight.
+	 *            {@link #jigsawRegistryHelper}. Piece weights are set in the map.
 	 * @return {@link JigsawPoolBuilder}
 	 */
-	public JigsawPoolBuilder names(String... names)
+	public JigsawPoolBuilder names(Collection<String> names)
 	{
 		Map<ResourceLocation, Integer> tempNames = new HashMap<>();
 		for (String s : names)
-			tempNames.put(jigsawRegistryHelper.locatePiece(s), 1);
+			tempNames.put(jigsawRegistryHelper.locatePiece(s), this.weight);
 		return namesR(tempNames);
 	}
 
@@ -96,12 +97,50 @@ public class JigsawPoolBuilder
 	 * @param names : Names are left as is with no conversion
 	 * @return {@link JigsawPoolBuilder}
 	 */
-	public JigsawPoolBuilder names(ResourceLocation... names)
+	public JigsawPoolBuilder namesR(Collection<ResourceLocation> names)
 	{
 		Map<ResourceLocation, Integer> tempNames = new HashMap<>();
 		for (ResourceLocation rl : names)
-			tempNames.put(rl, 1);
+			tempNames.put(rl, this.weight);
 		return namesR(tempNames);
+	}
+
+	/**
+	 * Set a list of names that the builder uses as structure ResourceLocations with
+	 * equal weights.
+	 * 
+	 * @param names : Names are converted to {@link ResourceLocation} using
+	 *            {@link JigsawRegistryHelper#locatePiece(String)} from the
+	 *            {@link #jigsawRegistryHelper}. All pieces have equal weight.
+	 * @return {@link JigsawPoolBuilder}
+	 */
+	public JigsawPoolBuilder names(String... names)
+	{
+		return this.names(Arrays.asList(names));
+	}
+
+	/**
+	 * Set a list of names that the builder uses as structure ResourceLocations with
+	 * equal weights.
+	 * 
+	 * @param names : Names are left as is with no conversion
+	 * @return {@link JigsawPoolBuilder}
+	 */
+	public JigsawPoolBuilder namesR(ResourceLocation... names)
+	{
+		return this.namesR(Arrays.asList(names));
+	}
+
+	/**
+	 * Sets the weight of all pieces to be the value passed in.
+	 * 
+	 * @param weight
+	 * @return {@link JigsawPoolBuilder}
+	 */
+	public JigsawPoolBuilder weight(int weight)
+	{
+		this.weight = weight;
+		return this.namesR(this.names.keySet());
 	}
 
 	/**
@@ -143,7 +182,8 @@ public class JigsawPoolBuilder
 	}
 
 	/**
-	 * Sets how the structures should place.
+	 * Determines placement for the structure. It's recommeneded that you set this
+	 * when you register the structure pool in {@link JigsawRegistryHelper}.
 	 * 
 	 * @param placementBehavior : default = RIGID
 	 * @return {@link JigsawPoolBuilder}
@@ -222,6 +262,6 @@ public class JigsawPoolBuilder
 	 */
 	public JigsawPoolBuilder clone()
 	{
-		return new JigsawPoolBuilder(this.jigsawRegistryHelper).namesR(this.names).maintainWater(this.maintainWater).processors(this.processors).placementBehavior(this.placementBehavior);
+		return new JigsawPoolBuilder(this.jigsawRegistryHelper).weight(this.weight).namesR(this.names).maintainWater(this.maintainWater).processors(this.processors).placementBehavior(this.placementBehavior);
 	}
 }

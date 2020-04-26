@@ -1,4 +1,4 @@
-package com.legacy.structure_gel.structures;
+package com.legacy.structure_gel.structures.jigsaw;
 
 import java.util.Arrays;
 import java.util.List;
@@ -7,7 +7,6 @@ import java.util.Map;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Streams;
 import com.legacy.structure_gel.StructureGelMod;
-import com.legacy.structure_gel.structures.jigsaw.JigsawPoolBuilder;
 import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.util.ResourceLocation;

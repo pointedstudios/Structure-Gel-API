@@ -10,6 +10,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -62,7 +63,7 @@ public class StructureGelBlock extends Block implements IStructureGel
 	 */
 	public StructureGelBlock(Behavior... behaviors)
 	{
-		super(Block.Properties.create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.0F).noDrops());
+		super(Block.Properties.create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.0F).noDrops().sound(SoundType.SLIME));
 		this.behaviors = ImmutableList.copyOf(behaviors);
 
 		this.setDefaultState(this.getDefaultState().with(COUNT, 50));

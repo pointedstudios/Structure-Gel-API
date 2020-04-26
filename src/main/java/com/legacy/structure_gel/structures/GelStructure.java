@@ -10,6 +10,7 @@ import com.mojang.datafixers.Dynamic;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.IFeatureConfig;
@@ -34,35 +35,30 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 		super(configFactoryIn);
 		MinecraftForge.EVENT_BUS.addListener(this::potentialSpawnsEvent);
 	}
-
+	
 	/**
 	 * Checks to see if this structure can generate in the given chunk using a grid
 	 * with custom spacing and offsets.
 	 * 
 	 * @see #getSpacing()
 	 * @see #getOffset()
-	 * 
-	 * @param chunkGen
-	 * @param rand
-	 * @param chunkPosX
-	 * @param chunkPosZ
-	 * @return boolean
 	 */
-	public boolean canStartInChunk(ChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ)
+	@Override
+	protected ChunkPos getStartPositionForPosition(ChunkGenerator<?> chunkGenerator, Random random, int x, int z, int spacingOffsetsX, int spacingOffsetsZ)
 	{
 		int spacing = this.getSpacing();
-		int gridX = (chunkPosX / spacing) * spacing;
-		int gridZ = (chunkPosZ / spacing) * spacing;
+		int gridX = ((x + spacingOffsetsX) / spacing) * spacing;
+		int gridZ = ((z + spacingOffsetsZ) / spacing) * spacing;
 
-		((SharedSeedRandom) rand).setLargeFeatureSeedWithSalt(chunkGen.getSeed(), gridX, gridZ, this.getSeed());
 		int spacingOffset = this.getOffset();
-		int offsetX = rand.nextInt(spacingOffset * 2 + 1) - spacingOffset;
-		int offsetZ = rand.nextInt(spacingOffset * 2 + 1) - spacingOffset;
+		((SharedSeedRandom) random).setLargeFeatureSeedWithSalt(chunkGenerator.getSeed(), gridX, gridZ, this.getSeed());
+		int offsetX = random.nextInt(spacingOffset * 2 + 1) - spacingOffset;
+		int offsetZ = random.nextInt(spacingOffset * 2 + 1) - spacingOffset;
 
 		int gridOffsetX = gridX + offsetX;
 		int gridOffsetZ = gridZ + offsetZ;
 
-		return chunkPosX == gridOffsetX && chunkPosZ == gridOffsetZ && chunkGen.hasStructure(chunkGen.getBiomeProvider().getBiome(new BlockPos((chunkPosX << 4) + 9, 0, (chunkPosZ << 4) + 9)), this);
+		return new ChunkPos(gridOffsetX, gridOffsetZ);
 	}
 
 	/**
@@ -73,7 +69,8 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	@Override
 	public boolean hasStartAt(ChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ)
 	{
-		if (canStartInChunk(chunkGen, rand, chunkPosX, chunkPosZ))
+		ChunkPos chunkPos = getStartPositionForPosition(chunkGen, rand, chunkPosX, chunkPosZ, 0, 0);
+		if (chunkPos.x == chunkPosX && chunkPos.z == chunkPosZ && chunkGen.hasStructure(chunkGen.getBiomeProvider().getBiome(new BlockPos(chunkPos.x << 4, 0, chunkPos.z << 4)), this))
 		{
 			((SharedSeedRandom) rand).setLargeFeatureSeedWithSalt(chunkGen.getSeed(), chunkPosX, chunkPosZ, this.getSeed());
 			return rand.nextDouble() < getProbability();
