@@ -2,6 +2,7 @@ package com.legacy.structure_gel.structures.jigsaw;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,7 @@ public class JigsawPoolBuilder
 {
 	private final JigsawRegistryHelper jigsawRegistryHelper;
 	private Map<ResourceLocation, Integer> names = ImmutableMap.of();
-
+	private int weight = 1;
 	private List<StructureProcessor> processors = ImmutableList.of();
 	private boolean maintainWater = true;
 	private JigsawPattern.PlacementBehaviour placementBehavior = JigsawPattern.PlacementBehaviour.RIGID;
@@ -71,6 +72,38 @@ public class JigsawPoolBuilder
 		this.names = nameMap;
 		return this;
 	}
+	
+	/**
+	 * Set a list of names that the builder uses as structure ResourceLocations with
+	 * equal weights.
+	 * 
+	 * @param names : Names are converted to {@link ResourceLocation} using
+	 *            {@link JigsawRegistryHelper#locatePiece(String)} from the
+	 *            {@link #jigsawRegistryHelper}. Piece weights are set in the map.
+	 * @return {@link JigsawPoolBuilder}
+	 */
+	public JigsawPoolBuilder names(Collection<String> names)
+	{
+		Map<ResourceLocation, Integer> tempNames = new HashMap<>();
+		for (String s : names)
+			tempNames.put(jigsawRegistryHelper.locatePiece(s), this.weight);
+		return namesR(tempNames);
+	}
+
+	/**
+	 * Set a list of names that the builder uses as structure ResourceLocations with
+	 * equal weights.
+	 * 
+	 * @param names : Names are left as is with no conversion
+	 * @return {@link JigsawPoolBuilder}
+	 */
+	public JigsawPoolBuilder namesR(Collection<ResourceLocation> names)
+	{
+		Map<ResourceLocation, Integer> tempNames = new HashMap<>();
+		for (ResourceLocation rl : names)
+			tempNames.put(rl, this.weight);
+		return namesR(tempNames);
+	}
 
 	/**
 	 * Set a list of names that the builder uses as structure ResourceLocations with
@@ -83,10 +116,7 @@ public class JigsawPoolBuilder
 	 */
 	public JigsawPoolBuilder names(String... names)
 	{
-		Map<ResourceLocation, Integer> tempNames = new HashMap<>();
-		for (String s : names)
-			tempNames.put(jigsawRegistryHelper.locatePiece(s), 1);
-		return namesR(tempNames);
+		return this.names(Arrays.asList(names));
 	}
 
 	/**
@@ -96,12 +126,21 @@ public class JigsawPoolBuilder
 	 * @param names : Names are left as is with no conversion
 	 * @return {@link JigsawPoolBuilder}
 	 */
-	public JigsawPoolBuilder names(ResourceLocation... names)
+	public JigsawPoolBuilder namesR(ResourceLocation... names)
 	{
-		Map<ResourceLocation, Integer> tempNames = new HashMap<>();
-		for (ResourceLocation rl : names)
-			tempNames.put(rl, 1);
-		return namesR(tempNames);
+		return this.namesR(Arrays.asList(names));
+	}
+
+	/**
+	 * Sets the weight of all pieces to be the value passed in.
+	 * 
+	 * @param weight
+	 * @return {@link JigsawPoolBuilder}
+	 */
+	public JigsawPoolBuilder weight(int weight)
+	{
+		this.weight = weight;
+		return this.namesR(this.names.keySet());
 	}
 
 	/**
