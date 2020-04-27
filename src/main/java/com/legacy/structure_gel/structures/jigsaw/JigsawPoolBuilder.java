@@ -72,7 +72,7 @@ public class JigsawPoolBuilder
 		this.names = nameMap;
 		return this;
 	}
-	
+
 	/**
 	 * Set a list of names that the builder uses as structure ResourceLocations with
 	 * equal weights.
@@ -182,7 +182,8 @@ public class JigsawPoolBuilder
 	}
 
 	/**
-	 * Sets how the structures should place.
+	 * Determines placement for the structure. It's recommeneded that you set this
+	 * when you register the structure pool in {@link JigsawRegistryHelper}.
 	 * 
 	 * @param placementBehavior : default = RIGID
 	 * @return {@link JigsawPoolBuilder}
