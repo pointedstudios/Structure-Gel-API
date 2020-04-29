@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.legacy.structure_gel.blocks.IStructureGel.Behavior;
+import com.legacy.structure_gel.blocks.AxisStructureGelBlock;
 import com.legacy.structure_gel.blocks.StructureGelBlock;
 import com.legacy.structure_gel.items.StructureGelItem;
 import com.legacy.structure_gel.structures.jigsaw.GelJigsawPiece;
@@ -72,7 +73,7 @@ public class StructureGelMod
 	public static class Blocks
 	{
 		public static Set<Block> BLOCKS = new LinkedHashSet<Block>();
-		public static Block RED_GEL, BLUE_GEL, GREEN_GEL, CYAN_GEL, ORANGE_GEL;
+		public static Block RED_GEL, BLUE_GEL, GREEN_GEL, CYAN_GEL, ORANGE_GEL, YELLOW_GEL;
 
 		@SubscribeEvent
 		public static void onRegistry(final RegistryEvent.Register<Block> event)
@@ -82,6 +83,7 @@ public class StructureGelMod
 			GREEN_GEL = registerBlock(event.getRegistry(), "green_gel", new StructureGelBlock(Behavior.DIAGONAL_SPREAD));
 			CYAN_GEL = registerBlock(event.getRegistry(), "cyan_gel", new StructureGelBlock(Behavior.PHOTOSENSITIVE, Behavior.DIAGONAL_SPREAD));
 			ORANGE_GEL = registerBlock(event.getRegistry(), "orange_gel", new StructureGelBlock(Behavior.DYNAMIC_SPREAD_DIST));
+			YELLOW_GEL = registerBlock(event.getRegistry(), "yellow_gel", new AxisStructureGelBlock(Behavior.AXIS_SPREAD));
 		}
 
 		private static Block registerBlock(IForgeRegistry<Block> registry, String name, Block object)
