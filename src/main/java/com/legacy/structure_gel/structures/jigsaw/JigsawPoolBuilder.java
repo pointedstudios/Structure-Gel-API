@@ -262,6 +262,6 @@ public class JigsawPoolBuilder
 	 */
 	public JigsawPoolBuilder clone()
 	{
-		return new JigsawPoolBuilder(this.jigsawRegistryHelper).namesR(this.names).maintainWater(this.maintainWater).processors(this.processors).placementBehavior(this.placementBehavior);
+		return new JigsawPoolBuilder(this.jigsawRegistryHelper).weight(this.weight).namesR(this.names).maintainWater(this.maintainWater).processors(this.processors).placementBehavior(this.placementBehavior);
 	}
 }
