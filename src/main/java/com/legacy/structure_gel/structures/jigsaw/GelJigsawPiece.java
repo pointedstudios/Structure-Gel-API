@@ -197,6 +197,8 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	{
 		//@formatter:off
 		return new Dynamic<>(ops, ops.createMap(ImmutableMap.of(
+				ops.createString("location"), ops.createString(this.location.toString()), 
+				ops.createString("processors"), ops.createList(this.processors.stream().map((processor) -> processor.serialize(ops).getValue())),
 				ops.createString("maintainWater"), ops.createBoolean(this.maintainWater), 
 				ops.createString("ignoreEntities"), ops.createBoolean(this.ignoreEntities) 
 				)));

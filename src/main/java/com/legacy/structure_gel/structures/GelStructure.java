@@ -36,7 +36,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 		super(configFactoryIn);
 		MinecraftForge.EVENT_BUS.addListener(this::potentialSpawnsEvent);
 	}
-	
+
 	/**
 	 * Checks to see if this structure can generate in the given chunk using a grid
 	 * with custom spacing and offsets.
