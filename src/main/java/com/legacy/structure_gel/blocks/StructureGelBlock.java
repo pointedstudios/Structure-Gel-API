@@ -54,14 +54,14 @@ public class StructureGelBlock extends Block implements IStructureGel
 	 * 
 	 * @see Behavior
 	 */
-	public final List<Behavior> behaviors;
+	public final List<IBehavior> behaviors;
 
 	/**
 	 * @param behaviors
 	 * @see Behavior
 	 * @see StructureGelBlock
 	 */
-	public StructureGelBlock(Behavior... behaviors)
+	public StructureGelBlock(IBehavior... behaviors)
 	{
 		super(Block.Properties.create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.0F).noDrops().sound(SoundType.SLIME));
 		this.behaviors = ImmutableList.copyOf(behaviors);
@@ -125,17 +125,17 @@ public class StructureGelBlock extends Block implements IStructureGel
 			for (Direction d : Direction.values())
 			{
 				BlockPos offset = pos.offset(d);
-				addGel(worldIn, offset, state.get(COUNT) + 1);
+				addGel(state, worldIn, offset, state.get(COUNT) + 1);
 				if (this.behaviors.contains(Behavior.DIAGONAL_SPREAD))
 				{
 					if (d == Direction.UP || d == Direction.DOWN)
 						for (int i = 0; i < 4; i++)
-							addGel(worldIn, offset.offset(Direction.byHorizontalIndex(i)), state.get(COUNT) + 1);
+							addGel(state, worldIn, offset.offset(Direction.byHorizontalIndex(i)), state.get(COUNT) + 1);
 					else
-						addGel(worldIn, offset.offset(d.rotateY()), state.get(COUNT) + 1);
+						addGel(state, worldIn, offset.offset(d.rotateY()), state.get(COUNT) + 1);
 				}
 			}
-			setGel(worldIn, pos, 50);
+			setGel(state, worldIn, pos, 50);
 			this.spreadHookPost(state, worldIn, pos, random);
 		}
 		else if (state.get(COUNT) == 51)
@@ -145,14 +145,14 @@ public class StructureGelBlock extends Block implements IStructureGel
 			for (Direction d : Direction.values())
 			{
 				BlockPos offset = pos.offset(d);
-				removeGel(worldIn, offset);
+				removeGel(state, worldIn, offset);
 				if (this.behaviors.contains(Behavior.DIAGONAL_SPREAD))
 				{
 					if (d == Direction.UP || d == Direction.DOWN)
 						for (int i = 0; i < 4; i++)
-							removeGel(worldIn, offset.offset(Direction.byHorizontalIndex(i)));
+							removeGel(state, worldIn, offset.offset(Direction.byHorizontalIndex(i)));
 					else
-						removeGel(worldIn, offset.offset(d.rotateY()));
+						removeGel(state, worldIn, offset.offset(d.rotateY()));
 				}
 			}
 			worldIn.setBlockState(pos, Blocks.AIR.getDefaultState());
@@ -169,7 +169,7 @@ public class StructureGelBlock extends Block implements IStructureGel
 	{
 		if (player.isCreative() && player.getHeldItem(handIn).getItem() == Items.GUNPOWDER)
 		{
-			removeGel(worldIn, pos);
+			removeGel(state, worldIn, pos);
 			return true;
 		}
 		return false;
@@ -188,7 +188,7 @@ public class StructureGelBlock extends Block implements IStructureGel
 			{
 				BlockPos offset = pos.offset(d);
 				if (worldIn.getBlockState(offset).getBlock() == this)
-					removeGel(worldIn, offset);
+					removeGel(state, worldIn, offset);
 			}
 		}
 		super.onBlockHarvested(worldIn, pos, state, player);
@@ -198,6 +198,7 @@ public class StructureGelBlock extends Block implements IStructureGel
 	 * Called when adding structure gel to the world. This method contains checks to
 	 * ensure that it can place the gel before actually placing it.
 	 * 
+	 * @param state
 	 * @param worldIn
 	 * @param pos
 	 * @param count
@@ -205,10 +206,10 @@ public class StructureGelBlock extends Block implements IStructureGel
 	 * @see IStructureGel#checkPlacementHook(World, BlockPos, int)
 	 * @see StructureGelBlock#setGel(World, BlockPos, int)
 	 */
-	public void addGel(World worldIn, BlockPos pos, int count)
+	public void addGel(BlockState state, World worldIn, BlockPos pos, int count)
 	{
 		if (worldIn.isAirBlock(pos) && checkAbove(worldIn, pos) && this.checkPlacementHook(worldIn, pos, count))
-			setGel(worldIn, pos, count);
+			setGel(state, worldIn, pos, count);
 	}
 
 	/**
@@ -216,28 +217,30 @@ public class StructureGelBlock extends Block implements IStructureGel
 	 * reaction. This method contains checks to make sure it's only removing
 	 * structure gel blocks from the world.
 	 * 
+	 * @param state
 	 * @param worldIn
 	 * @param pos
 	 * 
 	 * @see StructureGelBlock#setGel(World, BlockPos, int)
 	 */
-	public void removeGel(World worldIn, BlockPos pos)
+	public void removeGel(BlockState state, World worldIn, BlockPos pos)
 	{
 		if (worldIn.getBlockState(pos).getBlock() == this)
-			setGel(worldIn, pos, 51);
+			setGel(state, worldIn, pos, 51);
 	}
 
 	/**
 	 * Places structure gel with the proper state and then schedules a block update
 	 * on it to continue the spread.
 	 * 
+	 * @param state
 	 * @param worldIn
 	 * @param pos
 	 * @param count
 	 */
-	public void setGel(World worldIn, BlockPos pos, int count)
+	public void setGel(BlockState state, World worldIn, BlockPos pos, int count)
 	{
-		worldIn.setBlockState(pos, this.getDefaultState().with(COUNT, count));
+		worldIn.setBlockState(pos, state.with(COUNT, count));
 		worldIn.getPendingBlockTicks().scheduleTick(pos, worldIn.getBlockState(pos).getBlock(), 2);
 	}
 

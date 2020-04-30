@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.blocks.IStructureGel.Behavior;
+import com.legacy.structure_gel.blocks.IStructureGel.IBehavior;
 import com.legacy.structure_gel.blocks.StructureGelBlock;
 
 import net.minecraft.client.gui.screen.Screen;
@@ -70,10 +71,10 @@ public class StructureGelItem extends BlockItem
 				tooltip.add(new TranslationTextComponent(""));
 
 				if (((StructureGelBlock) this.getBlock()).behaviors.isEmpty())
-					tooltip.add(new TranslationTextComponent(Behavior.DEFAULT.translation).applyTextStyle(TextFormatting.GRAY));
+					tooltip.add(new TranslationTextComponent(Behavior.DEFAULT.getTranslation()).applyTextStyle(TextFormatting.GRAY));
 
-				for (Behavior behavior : ((StructureGelBlock) this.getBlock()).behaviors)
-					tooltip.add(new TranslationTextComponent(behavior.translation).applyTextStyle(TextFormatting.GRAY));
+				for (IBehavior behavior : ((StructureGelBlock) this.getBlock()).behaviors)
+					tooltip.add(new TranslationTextComponent(behavior.getTranslation()).applyTextStyle(TextFormatting.GRAY));
 			}
 			else
 				tooltip.add(new TranslationTextComponent("info." + StructureGelMod.MODID + ".unknown_behavior").applyTextStyle(TextFormatting.RED));

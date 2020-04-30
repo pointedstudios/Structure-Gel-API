@@ -20,13 +20,24 @@ import net.minecraft.world.World;
 public interface IStructureGel
 {
 	/**
+	 * Extend off of this to make your own behaviors.
+	 * 
+	 * @author David
+	 *
+	 */
+	public static interface IBehavior
+	{
+		public String getTranslation();
+	}
+
+	/**
 	 * Determines how the structure gel should act and provides translations for the
 	 * item.
 	 * 
 	 * @author David
 	 *
 	 */
-	public static enum Behavior
+	public static enum Behavior implements IBehavior
 	{
 		/**
 		 * Spreads the gel along the cardinal directions, only replacing air. All gels
@@ -44,6 +55,11 @@ public interface IStructureGel
 		 */
 		DIAGONAL_SPREAD(),
 		/**
+		 * Spreads itself along the plane that it was placed facing. Must extend
+		 * {@link PlaneStructureGelBlock}.
+		 */
+		AXIS_SPREAD(),
+		/**
 		 * Spreads the gel with a set distance based on how many you're holding. Maxes
 		 * out at 50.
 		 */
@@ -52,7 +68,7 @@ public interface IStructureGel
 		/**
 		 * Translation string for the item to display in it's lore field.
 		 */
-		public final String translation;
+		private final String translation;
 
 		/**
 		 * Automatically generates a translation as "info.structure_gel.(name)"
@@ -64,12 +80,10 @@ public interface IStructureGel
 			this.translation = String.format("info.%s.%s", StructureGelMod.MODID, this.name().toLowerCase());
 		}
 
-		/**
-		 * @see Behavior
-		 */
-		Behavior(String translation)
+		@Override
+		public String getTranslation()
 		{
-			this.translation = translation;
+			return this.translation;
 		}
 	}
 
