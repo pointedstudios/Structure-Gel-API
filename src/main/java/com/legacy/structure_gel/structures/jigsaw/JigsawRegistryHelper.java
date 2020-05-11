@@ -95,8 +95,7 @@ public class JigsawRegistryHelper
 	 *            this, so make sure it matches. Uses {@link #locatePiece(String)}
 	 *            with the prefix and modid included. Use a ResourceLocation instead
 	 *            to set it yourself.
-	 * @param defaultPool : The default pool if it fails I think. Not sure. Uses
-	 *            JigsawRegistryHelper.prefix. "minecraft:empty" by default. TODO
+	 * @param defaultPool : The pool to generate if the main pool fails to place.
 	 *            Needs better documentation.
 	 * @param pool : The structurs that this pool can generate. Use a
 	 *            {@link JigsawPoolBuilder} from {@link #builder()} for simplicity.

@@ -14,15 +14,13 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.IFeatureConfig;
-import net.minecraft.world.gen.feature.structure.ScatteredStructure;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 
 /**
  * An extension of {@link Structure} that allows for more precise tweaking and
- * removes the weird grid pattern that can occur when using
- * {@link ScatteredStructure}.
+ * handles structure spacing.
  * 
  * @author David
  *
@@ -35,7 +33,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 		super(configFactoryIn);
 		MinecraftForge.EVENT_BUS.addListener(this::potentialSpawnsEvent);
 	}
-	
+
 	/**
 	 * Checks to see if this structure can generate in the given chunk using a grid
 	 * with custom spacing and offsets.

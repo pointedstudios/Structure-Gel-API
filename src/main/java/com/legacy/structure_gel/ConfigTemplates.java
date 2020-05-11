@@ -18,8 +18,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class ConfigTemplates
 {
 	/**
-	 * Useful in conjunction with {@link GelStructure} to make generation
-	 * settings configurable.
+	 * Useful in conjunction with {@link GelStructure} to make generation settings
+	 * configurable.
 	 * 
 	 * @author David
 	 *
@@ -72,6 +72,7 @@ public class ConfigTemplates
 	public static class BiomeStructureConfig extends StructureConfig
 	{
 		private final ForgeConfigSpec.ConfigValue<String> biomeString;
+		private final ForgeConfigSpec.BooleanValue isWhitelist;
 		private ImmutableList<Biome> biomes = ImmutableList.of();
 
 		/**
@@ -81,13 +82,31 @@ public class ConfigTemplates
 		 * @param defaultProbability
 		 * @param defaultSpacing
 		 * @param defaultOffset
-		 * @param defaultBiomesString : Entered as a comma separated string of resource locations. You can put spaces, but you don't need to. Ex: "plains, minecraft:swamp, biomesoplenty:origin_beach"
+		 * @param defaultBiomesString
+		 * @param defaultIsWhitelist : true by default
+		 */
+		public BiomeStructureConfig(ForgeConfigSpec.Builder builder, String name, double defaultProbability, int defaultSpacing, int defaultOffset, String defaultBiomesString, boolean defaultIsWhitelist)
+		{
+			super(builder, name, defaultProbability, defaultSpacing, defaultOffset);
+			this.biomeString = builder.comment("A biome filter to choose where this structure should generate.").define(name + ".biomes", defaultBiomesString);
+			this.isWhitelist = builder.comment("How should the code treate biomes? true = whitelist, false = blacklist.").define(name + ".is_whitelist", defaultIsWhitelist);
+			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onConfigLoad);
+		}
+
+		/**
+		 * 
+		 * @param builder
+		 * @param name
+		 * @param defaultProbability
+		 * @param defaultSpacing
+		 * @param defaultOffset
+		 * @param defaultBiomesString : Entered as a comma separated string of resource
+		 *            locations. You can put spaces, but you don't need to. Ex: "plains,
+		 *            minecraft:swamp, biomesoplenty:origin_beach"
 		 */
 		public BiomeStructureConfig(ForgeConfigSpec.Builder builder, String name, double defaultProbability, int defaultSpacing, int defaultOffset, String defaultBiomesString)
 		{
-			super(builder, name, defaultProbability, defaultSpacing, defaultOffset);
-			this.biomeString = builder.comment("Biomes that this can generate in, separated by comma. Spaces are allowed but not needed.").define(name + ".biomes", defaultBiomesString);
-			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onConfigLoad);
+			this(builder, name, defaultProbability, defaultSpacing, defaultOffset, defaultBiomesString, true);
 		}
 
 		/**
@@ -103,32 +122,48 @@ public class ConfigTemplates
 		@SubscribeEvent
 		protected void onConfigLoad(ModConfig.ModConfigEvent event)
 		{
-			this.biomes = Arrays.asList(this.biomeString.get().replace(" ", "").split(",")).stream().map(s ->
-			{
-				if (ForgeRegistries.BIOMES.containsKey(new ResourceLocation(s)))
-					return ForgeRegistries.BIOMES.getValue(new ResourceLocation(s));
-				else
-				{
-					StructureGelMod.LOGGER.warn(String.format("The biome \"%s\" entered in the config %s is not a registered biome. Defaulting to plains.", s, this.biomeString.getPath()));
-					return Biomes.PLAINS;
-				}
-			}).collect(ImmutableList.toImmutableList());
+			this.biomes = parseBiomes(this.biomeString.get());
 		}
 
 		/**
-		 * Gets the list of biomes that a structure is allowed to spawn in.<br>
+		 * Gets the list of biomes for the filter.<br>
 		 * <br>
-		 * You can call this during {@link FMLCommonSetupEvent} to register only to
-		 * biomes in the config (requires restart, but slightly more optimal for
-		 * performance since it only happens on startup), or when the structure checks
-		 * to see if it can be placed in a given chunk (no restart required, but
-		 * potentially worse performance since it happens every time a chunk generates)
+		 * Use {@link BiomeStructureConfig#isBiomeAllowed(Biome)} to use the
+		 * whitelist/blacklist setting.
 		 * 
 		 * @return {@link ImmutableList}
 		 */
 		public ImmutableList<Biome> getBiomes()
 		{
 			return this.biomes;
+		}
+
+		/**
+		 * Checks if the input biome is or isn't in the biomes list depending on if you
+		 * use whitelist or blacklist mode.
+		 * 
+		 * @param biome
+		 * @return
+		 */
+		public boolean isBiomeAllowed(Biome biome)
+		{
+			return this.biomes.contains(biome) == this.isWhitelist.get();
+		}
+
+		public static ImmutableList<Biome> parseBiomes(String key)
+		{
+			if (key.isEmpty())
+				return ImmutableList.of();
+			return Arrays.asList(key.replace(" ", "").split(",")).stream().map(s ->
+			{
+				if (ForgeRegistries.BIOMES.containsKey(new ResourceLocation(s)))
+					return ForgeRegistries.BIOMES.getValue(new ResourceLocation(s));
+				else
+				{
+					StructureGelMod.LOGGER.warn(String.format("Tried to parse the biome \"%s\" but it is not registered. Defaulting to plains.", s, key));
+					return Biomes.PLAINS;
+				}
+			}).collect(ImmutableList.toImmutableList());
 		}
 	}
 }
