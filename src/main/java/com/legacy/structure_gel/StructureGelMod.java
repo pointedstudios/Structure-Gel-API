@@ -6,8 +6,8 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.legacy.structure_gel.blocks.IStructureGel.Behavior;
 import com.legacy.structure_gel.blocks.AxisStructureGelBlock;
+import com.legacy.structure_gel.blocks.IStructureGel.Behavior;
 import com.legacy.structure_gel.blocks.StructureGelBlock;
 import com.legacy.structure_gel.items.StructureGelItem;
 import com.legacy.structure_gel.structures.jigsaw.GelJigsawPiece;
@@ -52,7 +52,7 @@ public class StructureGelMod
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientInit);
 	}
 
-	public void clientInit(FMLClientSetupEvent event)
+	public void clientInit(final FMLClientSetupEvent event)
 	{
 		Blocks.BLOCKS.forEach(b -> RenderTypeLookup.setRenderLayer(b, RenderType.getTranslucent()));
 	}

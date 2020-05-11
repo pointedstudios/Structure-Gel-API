@@ -103,16 +103,7 @@ public class ConfigTemplates
 		@SubscribeEvent
 		protected void onConfigLoad(ModConfig.ModConfigEvent event)
 		{
-			this.biomes = Arrays.asList(this.biomeString.get().replace(" ", "").split(",")).stream().map(s ->
-			{
-				if (ForgeRegistries.BIOMES.containsKey(new ResourceLocation(s)))
-					return ForgeRegistries.BIOMES.getValue(new ResourceLocation(s));
-				else
-				{
-					StructureGelMod.LOGGER.warn(String.format("The biome \"%s\" entered in the config %s is not a registered biome. Defaulting to plains.", s, this.biomeString.getPath()));
-					return Biomes.PLAINS;
-				}
-			}).collect(ImmutableList.toImmutableList());
+			this.biomes = parseBiomes(this.biomeString.get());
 		}
 
 		/**
@@ -129,6 +120,20 @@ public class ConfigTemplates
 		public ImmutableList<Biome> getBiomes()
 		{
 			return this.biomes;
+		}
+		
+		public static ImmutableList<Biome> parseBiomes(String key)
+		{
+			return Arrays.asList(key.replace(" ", "").split(",")).stream().map(s ->
+			{
+				if (ForgeRegistries.BIOMES.containsKey(new ResourceLocation(s)))
+					return ForgeRegistries.BIOMES.getValue(new ResourceLocation(s));
+				else
+				{
+					StructureGelMod.LOGGER.warn(String.format("Tried to parse the biome \"%s\" but it is not registered. Defaulting to plains.", s, key));
+					return Biomes.PLAINS;
+				}
+			}).collect(ImmutableList.toImmutableList());
 		}
 	}
 }
