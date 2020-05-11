@@ -137,7 +137,8 @@ public class JigsawPoolBuilder
 	}
 
 	/**
-	 * Sets the weight of all pieces to be the value passed in.
+	 * Sets the weight of all pieces to be the value passed in. For efficiency, set
+	 * the weight before the names.
 	 * 
 	 * @param weight
 	 * @return {@link JigsawPoolBuilder}
