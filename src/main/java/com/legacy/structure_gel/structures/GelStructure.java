@@ -15,15 +15,13 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeManager;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.IFeatureConfig;
-import net.minecraft.world.gen.feature.structure.ScatteredStructure;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 
 /**
  * An extension of {@link Structure} that allows for more precise tweaking and
- * removes the weird grid pattern that can occur when using
- * {@link ScatteredStructure}.
+ * handles structure spacing.
  * 
  * @author David
  *
