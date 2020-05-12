@@ -18,8 +18,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class ConfigTemplates
 {
 	/**
-	 * Useful in conjunction with {@link GelStructure} to make generation
-	 * settings configurable.
+	 * Useful in conjunction with {@link GelStructure} to make generation settings
+	 * configurable.
 	 * 
 	 * @author David
 	 *
@@ -81,13 +81,31 @@ public class ConfigTemplates
 		 * @param defaultProbability
 		 * @param defaultSpacing
 		 * @param defaultOffset
-		 * @param defaultBiomesString : Entered as a comma separated string of resource locations. You can put spaces, but you don't need to. Ex: "plains, minecraft:swamp, biomesoplenty:origin_beach"
+		 * @param defaultBiomesString
+		 * @param biomeDescription : By default, this string is written as if you'd use
+		 *            it as a whitelist. You can change the description with this
+		 */
+		public BiomeStructureConfig(ForgeConfigSpec.Builder builder, String name, double defaultProbability, int defaultSpacing, int defaultOffset, String defaultBiomesString, String biomeDescription)
+		{
+			super(builder, name, defaultProbability, defaultSpacing, defaultOffset);
+			this.biomeString = builder.comment(biomeDescription).define(name + ".biomes", defaultBiomesString);
+			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onConfigLoad);
+		}
+
+		/**
+		 * 
+		 * @param builder
+		 * @param name
+		 * @param defaultProbability
+		 * @param defaultSpacing
+		 * @param defaultOffset
+		 * @param defaultBiomesString : Entered as a comma separated string of resource
+		 *            locations. You can put spaces, but you don't need to. Ex: "plains,
+		 *            minecraft:swamp, biomesoplenty:origin_beach"
 		 */
 		public BiomeStructureConfig(ForgeConfigSpec.Builder builder, String name, double defaultProbability, int defaultSpacing, int defaultOffset, String defaultBiomesString)
 		{
-			super(builder, name, defaultProbability, defaultSpacing, defaultOffset);
-			this.biomeString = builder.comment("Biomes that this can generate in, separated by comma. Spaces are allowed but not needed.").define(name + ".biomes", defaultBiomesString);
-			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onConfigLoad);
+			this(builder, name, defaultProbability, defaultSpacing, defaultOffset, defaultBiomesString, "Biomes that this can generate in, separated by comma. Spaces are allowed but not needed.");
 		}
 
 		/**
@@ -121,9 +139,11 @@ public class ConfigTemplates
 		{
 			return this.biomes;
 		}
-		
+
 		public static ImmutableList<Biome> parseBiomes(String key)
 		{
+			if (key.isEmpty())
+				return ImmutableList.of();
 			return Arrays.asList(key.replace(" ", "").split(",")).stream().map(s ->
 			{
 				if (ForgeRegistries.BIOMES.containsKey(new ResourceLocation(s)))
