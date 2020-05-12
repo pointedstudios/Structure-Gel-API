@@ -72,6 +72,7 @@ public class ConfigTemplates
 	public static class BiomeStructureConfig extends StructureConfig
 	{
 		private final ForgeConfigSpec.ConfigValue<String> biomeString;
+		private final ForgeConfigSpec.BooleanValue isWhitelist;
 		private ImmutableList<Biome> biomes = ImmutableList.of();
 
 		/**
@@ -82,13 +83,13 @@ public class ConfigTemplates
 		 * @param defaultSpacing
 		 * @param defaultOffset
 		 * @param defaultBiomesString
-		 * @param biomeDescription : By default, this string is written as if you'd use
-		 *            it as a whitelist. You can change the description with this
+		 * @param defaultIsWhitelist : true by default
 		 */
-		public BiomeStructureConfig(ForgeConfigSpec.Builder builder, String name, double defaultProbability, int defaultSpacing, int defaultOffset, String defaultBiomesString, String biomeDescription)
+		public BiomeStructureConfig(ForgeConfigSpec.Builder builder, String name, double defaultProbability, int defaultSpacing, int defaultOffset, String defaultBiomesString, boolean defaultIsWhitelist)
 		{
 			super(builder, name, defaultProbability, defaultSpacing, defaultOffset);
-			this.biomeString = builder.comment(biomeDescription).define(name + ".biomes", defaultBiomesString);
+			this.biomeString = builder.comment("A biome filter to choose where this structure should generate.").define(name + ".biomes", defaultBiomesString);
+			this.isWhitelist = builder.comment("How should the code treate biomes? true = whitelist, false = blacklist.").define(name + ".is_whitelist", defaultIsWhitelist);
 			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onConfigLoad);
 		}
 
@@ -105,7 +106,7 @@ public class ConfigTemplates
 		 */
 		public BiomeStructureConfig(ForgeConfigSpec.Builder builder, String name, double defaultProbability, int defaultSpacing, int defaultOffset, String defaultBiomesString)
 		{
-			this(builder, name, defaultProbability, defaultSpacing, defaultOffset, defaultBiomesString, "Biomes that this can generate in, separated by comma. Spaces are allowed but not needed.");
+			this(builder, name, defaultProbability, defaultSpacing, defaultOffset, defaultBiomesString, true);
 		}
 
 		/**
@@ -125,19 +126,28 @@ public class ConfigTemplates
 		}
 
 		/**
-		 * Gets the list of biomes that a structure is allowed to spawn in.<br>
+		 * Gets the list of biomes for the filter.<br>
 		 * <br>
-		 * You can call this during {@link FMLCommonSetupEvent} to register only to
-		 * biomes in the config (requires restart, but slightly more optimal for
-		 * performance since it only happens on startup), or when the structure checks
-		 * to see if it can be placed in a given chunk (no restart required, but
-		 * potentially worse performance since it happens every time a chunk generates)
+		 * Use {@link BiomeStructureConfig#isBiomeAllowed(Biome)} to use the
+		 * whitelist/blacklist setting.
 		 * 
 		 * @return {@link ImmutableList}
 		 */
 		public ImmutableList<Biome> getBiomes()
 		{
 			return this.biomes;
+		}
+
+		/**
+		 * Checks if the input biome is or isn't in the biomes list depending on if you
+		 * use whitelist or blacklist mode.
+		 * 
+		 * @param biome
+		 * @return
+		 */
+		public boolean isBiomeAllowed(Biome biome)
+		{
+			return this.biomes.contains(biome) == this.isWhitelist.get();
 		}
 
 		public static ImmutableList<Biome> parseBiomes(String key)
