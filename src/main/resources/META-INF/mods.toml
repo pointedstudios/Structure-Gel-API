@@ -6,10 +6,10 @@ modId="structure_gel"
 version="${file.jarVersion}"
 displayName="Structure Gel API"
 displayURL="https://moddinglegacy.com/"
-logoFile="banner.png"
+logoFile="logo.png"
 credits=""
 authors="Silver_David"
-description='''An API mod to simplify structure generation on the developers'''
+description='''An API mod to improve the developer side of structure gen'''
 [[dependencies.structure_gel]]
     modId="forge"
     mandatory=true
