@@ -45,14 +45,14 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	protected ChunkPos getStartPositionForPosition(ChunkGenerator<?> chunkGenerator, Random random, int x, int z, int spacingOffsetsX, int spacingOffsetsZ)
 	{
 		int spacing = this.getSpacing();
-		int gridX = ((x + spacingOffsetsX) / spacing) * spacing;
-		int gridZ = ((z + spacingOffsetsZ) / spacing) * spacing;
+		int gridX = ((x / spacing) * spacing) + (spacingOffsetsX * spacing);
+		int gridZ = ((z / spacing) * spacing) + (spacingOffsetsZ * spacing);
 
-		int spacingOffset = this.getOffset();
+		int offset = this.getOffset() + 1;
 		((SharedSeedRandom) random).setLargeFeatureSeedWithSalt(chunkGenerator.getSeed(), gridX, gridZ, this.getSeed());
-		int offsetX = random.nextInt(spacingOffset * 2 + 1) - spacingOffset;
-		int offsetZ = random.nextInt(spacingOffset * 2 + 1) - spacingOffset;
-
+		int offsetX = random.nextInt(offset);
+		int offsetZ = random.nextInt(offset);
+		
 		int gridOffsetX = gridX + offsetX;
 		int gridOffsetZ = gridZ + offsetZ;
 
