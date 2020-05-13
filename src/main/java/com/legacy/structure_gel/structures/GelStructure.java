@@ -58,20 +58,6 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 		int gridOffsetZ = gridZ + offsetZ;
 
 		return new ChunkPos(gridOffsetX, gridOffsetZ);
-		
-		/*int spacing = this.getSpacing();
-		int gridX = ((x + spacingOffsetsX) / spacing) * spacing;
-		int gridZ = ((z + spacingOffsetsZ) / spacing) * spacing;
-
-		int spacingOffset = this.getOffset();
-		((SharedSeedRandom) random).setLargeFeatureSeedWithSalt(chunkGenerator.getSeed(), gridX, gridZ, this.getSeed());
-		int offsetX = random.nextInt(spacingOffset * 2 + 1) - spacingOffset;
-		int offsetZ = random.nextInt(spacingOffset * 2 + 1) - spacingOffset;
-
-		int gridOffsetX = gridX + offsetX;
-		int gridOffsetZ = gridZ + offsetZ;
-
-		return new ChunkPos(gridOffsetX, gridOffsetZ);*/
 	}
 
 	/**
