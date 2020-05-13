@@ -12,6 +12,8 @@ import com.legacy.structure_gel.blocks.StructureGelBlock;
 import com.legacy.structure_gel.items.StructureGelItem;
 import com.legacy.structure_gel.structures.jigsaw.GelJigsawPiece;
 import com.legacy.structure_gel.structures.processors.RandomBlockSwapProcessor;
+import com.legacy.structure_gel.structures.processors.RandomStateSwapProcessor;
+import com.legacy.structure_gel.structures.processors.RandomTagSwapProcessor;
 import com.legacy.structure_gel.structures.processors.RemoveGelStructureProcessor;
 
 import net.minecraft.block.Block;
@@ -109,13 +111,17 @@ public class StructureGelMod
 	public static class Processors
 	{
 		public static IStructureProcessorType REMOVE_FILLER;
-		public static IStructureProcessorType REPLACE_RANDOMLY;
+		public static IStructureProcessorType REPLACE_BLOCK;
+		public static IStructureProcessorType REPLACE_TAG;
+		public static IStructureProcessorType REPLACE_STATE;
 
 		@SubscribeEvent
 		public static void onRegistry(final RegistryEvent.Register<Feature<?>> event)
 		{
 			REMOVE_FILLER = register("remove_filler", (dyn) -> RemoveGelStructureProcessor.INSTANCE);
-			REPLACE_RANDOMLY = register("replace_randomly", RandomBlockSwapProcessor::new);
+			REPLACE_BLOCK = register("replace_block", RandomBlockSwapProcessor::new);
+			REPLACE_TAG = register("replace_tag", RandomTagSwapProcessor::new);
+			REPLACE_STATE = register("replace_state", RandomStateSwapProcessor::new);
 		}
 
 		private static IStructureProcessorType register(String key, IStructureProcessorType type)
