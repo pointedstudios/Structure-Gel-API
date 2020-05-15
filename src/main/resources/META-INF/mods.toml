@@ -2,14 +2,14 @@ modLoader="javafml"
 loaderVersion="[31,)"
 issueTrackerURL="https://gitlab.com/groups/modding-legacy/-/issues"
 [[mods]]
-modId="structure_gel"
-version="${file.jarVersion}"
-displayName="Structure Gel API"
-displayURL="https://moddinglegacy.com/"
-logoFile="logo.png"
-credits=""
-authors="Silver_David"
-description='''An API mod to improve the developer side of structure gen'''
+	modId="structure_gel"
+	version="${file.jarVersion}"
+	displayName="Structure Gel API"
+	displayURL="https://moddinglegacy.com/"
+	logoFile="logo.png"
+	credits="KingPhygieBoo"
+	authors="Silver_David"
+	description='''An API mod to improve the developer side of structure gen'''
 [[dependencies.structure_gel]]
     modId="forge"
     mandatory=true
