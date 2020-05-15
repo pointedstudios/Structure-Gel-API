@@ -15,6 +15,7 @@ import com.legacy.structure_gel.structures.processors.RandomBlockSwapProcessor;
 import com.legacy.structure_gel.structures.processors.RandomStateSwapProcessor;
 import com.legacy.structure_gel.structures.processors.RandomTagSwapProcessor;
 import com.legacy.structure_gel.structures.processors.RemoveGelStructureProcessor;
+import com.legacy.structure_gel.util.RegistryHelper;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderType;
@@ -31,7 +32,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
 /**
  * This is an API mod designed with the purpose of simplifying the work required
@@ -64,13 +64,6 @@ public class StructureGelMod
 		return new ResourceLocation(MODID, key);
 	}
 
-	private static <T extends IForgeRegistryEntry<T>> T register(IForgeRegistry<T> registry, String name, T object)
-	{
-		object.setRegistryName(StructureGelMod.locate(name));
-		registry.register(object);
-		return object;
-	}
-
 	@Mod.EventBusSubscriber(modid = StructureGelMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 	public static class Blocks
 	{
@@ -80,18 +73,19 @@ public class StructureGelMod
 		@SubscribeEvent
 		public static void onRegistry(final RegistryEvent.Register<Block> event)
 		{
-			RED_GEL = registerBlock(event.getRegistry(), "red_gel", new StructureGelBlock());
-			BLUE_GEL = registerBlock(event.getRegistry(), "blue_gel", new StructureGelBlock(Behavior.PHOTOSENSITIVE));
-			GREEN_GEL = registerBlock(event.getRegistry(), "green_gel", new StructureGelBlock(Behavior.DIAGONAL_SPREAD));
-			CYAN_GEL = registerBlock(event.getRegistry(), "cyan_gel", new StructureGelBlock(Behavior.PHOTOSENSITIVE, Behavior.DIAGONAL_SPREAD));
-			ORANGE_GEL = registerBlock(event.getRegistry(), "orange_gel", new StructureGelBlock(Behavior.DYNAMIC_SPREAD_DIST));
-			YELLOW_GEL = registerBlock(event.getRegistry(), "yellow_gel", new AxisStructureGelBlock(Behavior.AXIS_SPREAD));
+			IForgeRegistry<Block> registry = event.getRegistry();
+			RED_GEL = registerBlock(registry, "red_gel", new StructureGelBlock());
+			BLUE_GEL = registerBlock(registry, "blue_gel", new StructureGelBlock(Behavior.PHOTOSENSITIVE));
+			GREEN_GEL = registerBlock(registry, "green_gel", new StructureGelBlock(Behavior.DIAGONAL_SPREAD));
+			CYAN_GEL = registerBlock(registry, "cyan_gel", new StructureGelBlock(Behavior.PHOTOSENSITIVE, Behavior.DIAGONAL_SPREAD));
+			ORANGE_GEL = registerBlock(registry, "orange_gel", new StructureGelBlock(Behavior.DYNAMIC_SPREAD_DIST));
+			YELLOW_GEL = registerBlock(registry, "yellow_gel", new AxisStructureGelBlock(Behavior.AXIS_SPREAD));
 		}
 
-		private static Block registerBlock(IForgeRegistry<Block> registry, String name, Block object)
+		private static Block registerBlock(IForgeRegistry<Block> registry, String key, Block object)
 		{
 			BLOCKS.add(object);
-			return register(registry, name, object);
+			return RegistryHelper.register(registry, StructureGelMod.locate(key), object);
 		}
 	}
 
@@ -103,7 +97,7 @@ public class StructureGelMod
 		{
 			for (Block b : StructureGelMod.Blocks.BLOCKS)
 				if (b instanceof StructureGelBlock)
-					register(event.getRegistry(), b.getRegistryName().getPath(), new StructureGelItem((StructureGelBlock) b));
+					RegistryHelper.register(event.getRegistry(), b.getRegistryName(), new StructureGelItem((StructureGelBlock) b));
 		}
 	}
 
