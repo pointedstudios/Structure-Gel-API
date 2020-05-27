@@ -1,9 +1,10 @@
 package com.legacy.structure_gel.structures;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
+
+import javax.annotation.Nullable;
 
 import com.mojang.datafixers.Dynamic;
 
@@ -53,7 +54,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 		((SharedSeedRandom) random).setLargeFeatureSeedWithSalt(chunkGenerator.getSeed(), gridX, gridZ, this.getSeed());
 		int offsetX = random.nextInt(offset);
 		int offsetZ = random.nextInt(offset);
-		
+
 		int gridOffsetX = gridX + offsetX;
 		int gridOffsetZ = gridZ + offsetZ;
 
@@ -128,19 +129,23 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	}
 
 	/**
-	 * Return a list of hostile mobs to change spawn behavior.
+	 * Return a list of hostile mobs to change spawn behavior. Return null to do
+	 * nothing.
 	 */
+	@Nullable
 	public List<Biome.SpawnListEntry> getSpawnList()
 	{
-		return Collections.emptyList();
+		return null;
 	}
 
 	/**
-	 * Return a list of passive mobs to change spawn behavior.
+	 * Return a list of passive mobs to change spawn behavior. Return null to do
+	 * nothing.
 	 */
+	@Nullable
 	public List<Biome.SpawnListEntry> getCreatureSpawnList()
 	{
-		return Collections.emptyList();
+		return null;
 	}
 
 	/**
@@ -153,12 +158,12 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	{
 		if (this.isPositionInStructure(event.getWorld(), event.getPos()))
 		{
-			if (event.getType() == EntityClassification.MONSTER && !this.getSpawnList().isEmpty())
+			if (event.getType() == EntityClassification.MONSTER && this.getSpawnList() != null)
 			{
 				event.getList().clear();
 				event.getList().addAll(this.getSpawnList());
 			}
-			if (event.getType() == EntityClassification.CREATURE && !this.getCreatureSpawnList().isEmpty())
+			if (event.getType() == EntityClassification.CREATURE && this.getCreatureSpawnList() != null)
 			{
 				event.getList().clear();
 				event.getList().addAll(this.getCreatureSpawnList());
