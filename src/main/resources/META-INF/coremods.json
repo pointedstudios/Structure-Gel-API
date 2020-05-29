@@ -1,3 +1,4 @@
 {
-	"structure_gel_lake_check_for_structure": "asm/lake_check_for_structures.js"
+	"structure_gel_lake_check_for_structure": "asm/lake_check_for_structures.js",
+	"structure_gel_template_entity_rotation_fix": "asm/template_entity_rotation_fix.js"
 }
