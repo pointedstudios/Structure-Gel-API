@@ -87,7 +87,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	 * {@link #getProbability()} to see if it will succeed in generating.
 	 */
 	@Override
-	public boolean func_225558_a_(BiomeManager biomeManagerIn, ChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ, Biome biomeIn)
+	public boolean canBeGenerated(BiomeManager biomeManagerIn, ChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ, Biome biomeIn)
 	{
 		ChunkPos chunkPos = getStartPositionForPosition(chunkGen, rand, chunkPosX, chunkPosZ, 0, 0);
 		if (chunkPos.x == chunkPosX && chunkPos.z == chunkPosZ && chunkGen.hasStructure(biomeManagerIn.getBiome(new BlockPos(chunkPos.x << 4, 0, chunkPos.z << 4)), this))

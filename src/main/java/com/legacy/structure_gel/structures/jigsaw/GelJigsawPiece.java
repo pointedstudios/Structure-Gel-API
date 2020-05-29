@@ -153,9 +153,9 @@ public class GelJigsawPiece extends SingleJigsawPiece
 		else
 		{
 			// Get all data structure blocks
-			for (Template.BlockInfo blockInfo : Template.processBlockInfos(template, worldIn, pos, placementSettings, this.func_214857_a(manager, pos, rotation, false)))
+			for (Template.BlockInfo blockInfo : Template.processBlockInfos(template, worldIn, pos, placementSettings, this.getDataMarkers(manager, pos, rotation, false)))
 			{
-				this.func_214846_a(worldIn, blockInfo, pos, rotation, rand, bounds);
+				this.handleDataMarker(worldIn, blockInfo, pos, rotation, rand, bounds);
 				if (blockInfo.nbt != null && worldIn.getBlockState(blockInfo.pos).getBlock() == Blocks.STRUCTURE_BLOCK)
 				{
 					StructureMode mode = StructureMode.valueOf(blockInfo.nbt.getString("mode"));

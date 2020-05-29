@@ -54,11 +54,11 @@ public abstract class GelStructurePiece extends AbstractVillagePiece
 	 * Modification of addComponentParts to allow for data structure block handling.
 	 */
 	@Override
-	public boolean func_225577_a_(IWorld world, ChunkGenerator<?> chunkGen, Random rand, MutableBoundingBox bounds, ChunkPos chunkPos)
+	public boolean create(IWorld world, ChunkGenerator<?> chunkGen, Random rand, MutableBoundingBox bounds, ChunkPos chunkPos)
 	{
 		if (this.jigsawPiece instanceof GelJigsawPiece)
 			return ((GelJigsawPiece) this.jigsawPiece).place(this.templateManager, world, chunkGen, this.pos, this.rotation, bounds, rand, this);
-		return this.jigsawPiece.func_225575_a_(this.templateManager, world, chunkGen, this.pos, this.rotation, bounds, rand);
+		return this.jigsawPiece.place(this.templateManager, world, chunkGen, this.pos, this.rotation, bounds, rand);
 	}
 
 	/**
