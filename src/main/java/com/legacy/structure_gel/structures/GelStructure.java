@@ -6,7 +6,7 @@ import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
-import com.legacy.structure_gel.asm.StructureGelHooks;
+import com.legacy.structure_gel.access_helpers.StructureAccessHelper;
 import com.mojang.datafixers.Dynamic;
 
 import net.minecraft.entity.EntityClassification;
@@ -48,9 +48,9 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	public GelStructure<C> setLakeProof(boolean lakeProof)
 	{
 		if (lakeProof)
-			StructureGelHooks.addLakeProofStructure(this);
+			StructureAccessHelper.addLakeProofStructure(this);
 		else
-			StructureGelHooks.removeLakeProofStructure(this);
+			StructureAccessHelper.removeLakeProofStructure(this);
 		return this;
 	}
 

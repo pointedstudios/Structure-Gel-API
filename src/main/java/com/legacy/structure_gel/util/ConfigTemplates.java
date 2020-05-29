@@ -1,8 +1,9 @@
-package com.legacy.structure_gel;
+package com.legacy.structure_gel.util;
 
 import java.util.Arrays;
 
 import com.google.common.collect.ImmutableList;
+import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.structures.GelStructure;
 
 import net.minecraft.util.ResourceLocation;

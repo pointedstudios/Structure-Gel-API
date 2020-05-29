@@ -7,18 +7,18 @@ function initializeCoreMod() {
 				'methodName': 'func_212245_a', // place
 				'methodDesc': '(Lnet/minecraft/world/IWorld;Lnet/minecraft/world/gen/ChunkGenerator;Ljava/util/Random;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/gen/feature/BlockStateFeatureConfig;)Z'
 			},
-			'transformer': function(method) {
+			'transformer': function(methodNode) {
 				var ASM = Java.type('net.minecraftforge.coremod.api.ASMAPI');
 				var Opcodes = Java.type('org.objectweb.asm.Opcodes');
 				var InsnList = Java.type('org.objectweb.asm.tree.InsnList');
 				
-				var target = method.instructions.getFirst();
-				var index = method.instructions.indexOf(target);
+				var target = methodNode.instructions.getFirst();
+				var index = methodNode.instructions.indexOf(target);
 				// Find first ALOAD 6, operate around it, and exit the loop
-				while (target !== null && index < method.instructions.size()) {
+				while (target !== null && index < methodNode.instructions.size()) {
 					// Find first ALOAD 6
 					if (target.opcode === Opcodes.ALOAD && target.var === 6) {						
-						var index = method.instructions.indexOf(target);
+						var index = methodNode.instructions.indexOf(target);
 						var inst = new InsnList();
 						
 						// + INVOKESTATIC com/legacy/structure_gel/asm/StructureGelHooks.lakeCheckForStructures(Lnet/minecraft/world/IWorld;Lnet/minecraft/util/math/ChunkPos;)Z
@@ -30,25 +30,25 @@ function initializeCoreMod() {
 						));
 						
 						// Remove old
-						var endIndex = method.instructions.indexOf(ASM.findFirstInstructionAfter(method, Opcodes.IFNE, index));
+						var endIndex = methodNode.instructions.indexOf(ASM.findFirstInstructionAfter(methodNode, Opcodes.IFNE, index));
 						for (i = index + 1; i < endIndex; i++) {
-							method.instructions.remove(method.instructions.get(index + 1));
+							methodNode.instructions.remove(methodNode.instructions.get(index + 1));
 						}
 						
 						// Insert the instructions
-						method.instructions.insert(target, inst);
+						methodNode.instructions.insert(target, inst);
 
-						// Return the modified method
-						return method;
+						// Return the modified methodNode
+						return methodNode;
 						
 					}
 					
 					// Go to the next instruction
 					index++;
-					target = method.instructions.get(index);
+					target = methodNode.instructions.get(index);
 				}
 				
-				return method;
+				return methodNode;
 			}
 		}
 	}

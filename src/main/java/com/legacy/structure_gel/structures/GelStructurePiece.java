@@ -3,8 +3,8 @@ package com.legacy.structure_gel.structures;
 import java.util.Random;
 import java.util.function.Function;
 
+import com.legacy.structure_gel.access_helpers.JigsawAccessHelper;
 import com.legacy.structure_gel.structures.jigsaw.GelJigsawPiece;
-import com.legacy.structure_gel.structures.jigsaw.JigsawAccessHelper;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;

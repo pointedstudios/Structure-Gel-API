@@ -2,7 +2,7 @@ package com.legacy.structure_gel.structures;
 
 import java.util.function.Function;
 
-import com.legacy.structure_gel.ConfigTemplates;
+import com.legacy.structure_gel.util.ConfigTemplates;
 import com.mojang.datafixers.Dynamic;
 
 import net.minecraft.world.gen.feature.IFeatureConfig;
