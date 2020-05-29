@@ -6,6 +6,7 @@ import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
+import com.legacy.structure_gel.asm.StructureGelHooks;
 import com.mojang.datafixers.Dynamic;
 
 import net.minecraft.entity.EntityClassification;
@@ -34,6 +35,23 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	{
 		super(configFactoryIn);
 		MinecraftForge.EVENT_BUS.addListener(this::potentialSpawnsEvent);
+		this.setLakeProof(true);
+	}
+
+	/**
+	 * Determines if lakes shuold generate inside of this structure or not. This is
+	 * automatically set to true when you create the structure.
+	 * 
+	 * @param lakeProof
+	 * @return
+	 */
+	public GelStructure<C> setLakeProof(boolean lakeProof)
+	{
+		if (lakeProof)
+			StructureGelHooks.addLakeProofStructure(this);
+		else
+			StructureGelHooks.removeLakeProofStructure(this);
+		return this;
 	}
 
 	/**
