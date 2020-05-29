@@ -8,7 +8,6 @@ import com.google.common.collect.ImmutableMap;
 import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.structures.GelPlacementSettings;
 import com.legacy.structure_gel.structures.GelStructurePiece;
-import com.legacy.structure_gel.structures.GelTemplate;
 import com.legacy.structure_gel.structures.processors.RemoveGelStructureProcessor;
 import com.mojang.datafixers.Dynamic;
 import com.mojang.datafixers.types.DynamicOps;
@@ -147,7 +146,7 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	{
 		Template template = manager.getTemplateDefaulted(this.location);
 		PlacementSettings placementSettings = this.createPlacementSettings(rotation, bounds);
-		if (!new GelTemplate(template).addBlocksToWorld(worldIn, pos, placementSettings, 18))
+		if (!template.addBlocksToWorld(worldIn, pos, placementSettings, 18))
 		{
 			return false;
 		}
