@@ -1,4 +1,4 @@
-package com.legacy.structure_gel.tile_entities;
+package com.legacy.structure_gel.access_helpers;
 
 import java.util.List;
 

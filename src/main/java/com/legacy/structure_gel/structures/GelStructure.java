@@ -6,6 +6,7 @@ import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
+import com.legacy.structure_gel.access_helpers.StructureAccessHelper;
 import com.mojang.datafixers.Dynamic;
 
 import net.minecraft.entity.EntityClassification;
@@ -33,6 +34,23 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	{
 		super(configFactoryIn);
 		MinecraftForge.EVENT_BUS.addListener(this::potentialSpawnsEvent);
+		this.setLakeProof(true);
+	}
+
+	/**
+	 * Determines if lakes shuold generate inside of this structure or not. This is
+	 * automatically set to true when you create the structure.
+	 * 
+	 * @param lakeProof
+	 * @return
+	 */
+	public GelStructure<C> setLakeProof(boolean lakeProof)
+	{
+		if (lakeProof)
+			StructureAccessHelper.addLakeProofStructure(this);
+		else
+			StructureAccessHelper.removeLakeProofStructure(this);
+		return this;
 	}
 
 	/**
@@ -53,7 +71,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 		((SharedSeedRandom) random).setLargeFeatureSeedWithSalt(chunkGenerator.getSeed(), gridX, gridZ, this.getSeed());
 		int offsetX = random.nextInt(offset);
 		int offsetZ = random.nextInt(offset);
-		
+
 		int gridOffsetX = gridX + offsetX;
 		int gridOffsetZ = gridZ + offsetZ;
 

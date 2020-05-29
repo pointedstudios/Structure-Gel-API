@@ -1,4 +1,4 @@
-package com.legacy.structure_gel.entities;
+package com.legacy.structure_gel.access_helpers;
 
 import net.minecraft.entity.MobEntity;
 import net.minecraft.util.ResourceLocation;
