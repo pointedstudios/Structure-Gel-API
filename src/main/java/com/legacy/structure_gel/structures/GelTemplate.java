@@ -234,7 +234,7 @@ public class GelTemplate extends Template
 				compoundnbt.remove("UUIDLeast");
 				loadEntity(worldIn, compoundnbt).ifPresent((entity) ->
 				{
-					// getMirroredYaw is flipped, so I flip it here to correct that.
+					// entity.getMirroredYaw(Mirror) has it's mirroring flipped, so I flip it here to correct that.
 					//float yaw = entity.getMirroredYaw(mirrorIn);
 					Mirror oppositeMirror = mirrorIn == Mirror.FRONT_BACK ? Mirror.LEFT_RIGHT : (mirrorIn == Mirror.LEFT_RIGHT ? Mirror.FRONT_BACK : Mirror.NONE);
 					float yaw = entity.getMirroredYaw(oppositeMirror);
