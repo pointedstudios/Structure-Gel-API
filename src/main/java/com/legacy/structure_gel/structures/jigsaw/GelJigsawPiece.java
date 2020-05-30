@@ -136,12 +136,13 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	 * 
 	 * @param manager
 	 * @param worldIn
+	 * @param chunkGenerator
 	 * @param pos
 	 * @param rotation
 	 * @param bounds
 	 * @param rand
-	 * @param con
-	 * @return boolean
+	 * @param gelStructurePiece
+	 * @return
 	 */
 	public boolean place(TemplateManager manager, IWorld worldIn, ChunkGenerator<?> chunkGenerator, BlockPos pos, Rotation rotation, MutableBoundingBox bounds, Random rand, GelStructurePiece gelStructurePiece)
 	{

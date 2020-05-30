@@ -80,7 +80,7 @@ public class RandomStateSwapProcessor extends StructureProcessor
 	}
 
 	/**
-	 * @see #RandomStateSwapProcessor(Block, float, BlockState)
+	 * @see #RandomStateSwapProcessor(BlockState, float, BlockState)
 	 * @param dyn
 	 */
 	public RandomStateSwapProcessor(Dynamic<?> dyn)

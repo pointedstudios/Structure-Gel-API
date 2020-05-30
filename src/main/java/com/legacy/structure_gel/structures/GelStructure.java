@@ -82,7 +82,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	/**
 	 * hasStartAt<br>
 	 * <br>
-	 * Runs {@link #canStartInChunk(ChunkGenerator, Random, int, int)} to see if the
+	 * Runs {@link #getStartPositionForPosition(ChunkGenerator, Random, int, int, int, int)} to see if the
 	 * chunk is a valid chunk to generate this structure in, and then checks
 	 * {@link #getProbability()} to see if it will succeed in generating.
 	 */

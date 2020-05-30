@@ -56,7 +56,7 @@ public interface IStructureGel
 		DIAGONAL_SPREAD(),
 		/**
 		 * Spreads itself along the plane that it was placed facing. Must extend
-		 * {@link PlaneStructureGelBlock}.
+		 * {@link AxisStructureGelBlock}.
 		 */
 		AXIS_SPREAD(),
 		/**

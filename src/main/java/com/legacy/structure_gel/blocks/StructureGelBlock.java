@@ -114,8 +114,8 @@ public class StructureGelBlock extends Block implements IStructureGel
 	 * @see IStructureGel#spreadHookPost(BlockState, World, BlockPos, Random)
 	 * @see IStructureGel#removalHookPre(BlockState, World, BlockPos, Random)
 	 * @see IStructureGel#removalHookPost(BlockState, World, BlockPos, Random)
-	 * @see #addGel(World, BlockPos, int)
-	 * @see #removeGel(World, BlockPos)
+	 * @see #addGel(BlockState, World, BlockPos, int)
+	 * @see #removeGel(BlockState, World, BlockPos)
 	 */
 	@Override
 	public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random)
@@ -206,7 +206,7 @@ public class StructureGelBlock extends Block implements IStructureGel
 	 * @param count
 	 * 
 	 * @see IStructureGel#checkPlacementHook(World, BlockPos, int)
-	 * @see StructureGelBlock#setGel(World, BlockPos, int)
+	 * @see StructureGelBlock#setGel(BlockState, World, BlockPos, int)
 	 */
 	public void addGel(BlockState state, World worldIn, BlockPos pos, int count)
 	{
@@ -223,7 +223,7 @@ public class StructureGelBlock extends Block implements IStructureGel
 	 * @param worldIn
 	 * @param pos
 	 * 
-	 * @see StructureGelBlock#setGel(World, BlockPos, int)
+	 * @see StructureGelBlock#setGel(BlockState, World, BlockPos, int)
 	 */
 	public void removeGel(BlockState state, World worldIn, BlockPos pos)
 	{

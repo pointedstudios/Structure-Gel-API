@@ -30,8 +30,7 @@ public class RegistryHelper
 	 * Simply means of registering to a forge registry.
 	 * 
 	 * @param registry
-	 * @param modid
-	 * @param name
+	 * @param key
 	 * @param registryObject
 	 * @return T
 	 */

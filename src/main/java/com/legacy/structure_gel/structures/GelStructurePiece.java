@@ -154,10 +154,10 @@ public abstract class GelStructurePiece extends AbstractVillagePiece
 	 * BlockState produced from randStateIn.
 	 * 
 	 * @param worldIn
-	 * @param randomBlockState
+	 * @param randStateIn
 	 * @param bounds
 	 * @param rotation
-	 * @param rand
+	 * @param random
 	 */
 	public void extendDown(IWorld worldIn, Function<Random, BlockState> randStateIn, MutableBoundingBox bounds, Rotation rotation, Random random)
 	{

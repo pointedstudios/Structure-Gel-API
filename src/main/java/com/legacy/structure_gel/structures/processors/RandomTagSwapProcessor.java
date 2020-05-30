@@ -83,7 +83,7 @@ public class RandomTagSwapProcessor extends StructureProcessor
 	}
 
 	/**
-	 * @see #RandomTagSwapProcessor(Block, float, BlockState)
+	 * @see #RandomTagSwapProcessor(Tag, float, BlockState)
 	 * @param dyn
 	 */
 	public RandomTagSwapProcessor(Dynamic<?> dyn)

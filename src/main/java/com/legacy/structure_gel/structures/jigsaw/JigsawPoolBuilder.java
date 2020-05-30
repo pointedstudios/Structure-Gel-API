@@ -150,7 +150,7 @@ public class JigsawPoolBuilder
 	}
 
 	/**
-	 * Structure processors that all pieces in this builder will use.</br>
+	 * Structure processors that all pieces in this builder will use.
 	 * This functions as an append.
 	 * 
 	 * @param processors : empty by default
@@ -162,7 +162,7 @@ public class JigsawPoolBuilder
 	}
 
 	/**
-	 * Structure processors that all pieces in this builder will use. </br>
+	 * Structure processors that all pieces in this builder will use.
 	 * This functions as an append.
 	 * 
 	 * @param processors : empty by default
@@ -249,7 +249,7 @@ public class JigsawPoolBuilder
 	 * cases where multiple structures exist in the same pool using different
 	 * settings, processors, etc.
 	 * 
-	 * @param lists
+	 * @param builders
 	 * @return {@link List}
 	 */
 	public static List<Pair<JigsawPiece, Integer>> collect(JigsawPoolBuilder... builders)
