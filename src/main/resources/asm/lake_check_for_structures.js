@@ -17,7 +17,7 @@ function initializeCoreMod() {
 				// Find first ALOAD 6, operate around it, and exit the loop
 				while (target !== null && index < methodNode.instructions.size()) {
 					// Find first ALOAD 6
-					if (target.opcode === Opcodes.ALOAD && target.var === 6) {						
+					if (target.opcode === Opcodes.ALOAD && target.var === 6) {
 						var index = methodNode.instructions.indexOf(target);
 						var inst = new InsnList();
 						
