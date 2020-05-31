@@ -1,0 +1,10 @@
+com.legacy.structure_gel
+com.legacy.structure_gel.access_helpers
+com.legacy.structure_gel.asm
+com.legacy.structure_gel.blocks
+com.legacy.structure_gel.data
+com.legacy.structure_gel.items
+com.legacy.structure_gel.structures
+com.legacy.structure_gel.structures.jigsaw
+com.legacy.structure_gel.structures.processors
+com.legacy.structure_gel.util
