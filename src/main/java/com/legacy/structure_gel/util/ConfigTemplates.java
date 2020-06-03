@@ -1,14 +1,14 @@
 package com.legacy.structure_gel.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import com.google.common.collect.ImmutableList;
-import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.structures.GelStructure;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
+import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.config.ModConfig;
@@ -16,6 +16,14 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 
+/**
+ * These are templates that you can use for your structure's config settings. I
+ * reccomend using {@link BiomeStructureConfig} as it lets you configure what
+ * biome your structure can spawn in.
+ * 
+ * @author David
+ *
+ */
 public class ConfigTemplates
 {
 	/**
@@ -74,10 +82,10 @@ public class ConfigTemplates
 	{
 		private final ForgeConfigSpec.ConfigValue<String> biomeString;
 		private final ForgeConfigSpec.BooleanValue isWhitelist;
-		private ImmutableList<Biome> biomes = ImmutableList.of();
+		private List<Biome> biomes = new ArrayList<>();
 
 		/**
-		 * 
+		 * @see BiomeDictionary.Type
 		 * @param builder
 		 * @param name
 		 * @param defaultProbability
@@ -89,8 +97,8 @@ public class ConfigTemplates
 		public BiomeStructureConfig(ForgeConfigSpec.Builder builder, String name, double defaultProbability, int defaultSpacing, int defaultOffset, String defaultBiomesString, boolean defaultIsWhitelist)
 		{
 			super(builder, name, defaultProbability, defaultSpacing, defaultOffset);
-			this.biomeString = builder.comment("A biome filter to choose where this structure should generate.").define(name + ".biomes", defaultBiomesString);
-			this.isWhitelist = builder.comment("How should the code treate biomes? true = whitelist, false = blacklist.").define(name + ".is_whitelist", defaultIsWhitelist);
+			this.biomeString = builder.comment("A biome filter to determine where the structure should generate. Works with the biome dictionary (#overworld) and \"not\" statements (!plains). These can be combined (!#nether). Operates in the order presented. So \"#forest, !flower_forest\" will add all forests and then remove the flower forest.").define(name + ".biomes", defaultBiomesString);
+			this.isWhitelist = builder.comment("How should the code treate biomes? true = whitelist, false = blacklist. Biomes defined with ! do the opposite.").define(name + ".is_whitelist", defaultIsWhitelist);
 			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onConfigLoad);
 		}
 
@@ -123,18 +131,18 @@ public class ConfigTemplates
 		@SubscribeEvent
 		protected void onConfigLoad(ModConfig.ModConfigEvent event)
 		{
-			this.biomes = parseBiomes(this.biomeString.get());
+			this.biomes.clear();
+			parseBiomes(this.biomeString.get());
 		}
 
 		/**
-		 * Gets the list of biomes for the filter.<br>
-		 * <br>
-		 * Use {@link BiomeStructureConfig#isBiomeAllowed(Biome)} to use the
+		 * Gets the list of biomes for the filter. Use
+		 * {@link BiomeStructureConfig#isBiomeAllowed(Biome)} to use the
 		 * whitelist/blacklist setting.
 		 * 
-		 * @return {@link ImmutableList}
+		 * @return {@link List}
 		 */
-		public ImmutableList<Biome> getBiomes()
+		public List<Biome> getBiomes()
 		{
 			return this.biomes;
 		}
@@ -151,20 +159,48 @@ public class ConfigTemplates
 			return this.biomes.contains(biome) == this.isWhitelist.get();
 		}
 
-		public static ImmutableList<Biome> parseBiomes(String key)
+		/**
+		 * Reads the biomes and tags from the config string and assigns them to the
+		 * biomes list. Used internally.
+		 * 
+		 * @param key
+		 */
+		protected void parseBiomes(String key)
 		{
-			if (key.isEmpty())
-				return ImmutableList.of();
-			return Arrays.asList(key.replace(" ", "").split(",")).stream().map(s ->
+			Arrays.asList(key.replace(" ", "").split(",")).stream().forEach(s ->
 			{
-				if (ForgeRegistries.BIOMES.containsKey(new ResourceLocation(s)))
-					return ForgeRegistries.BIOMES.getValue(new ResourceLocation(s));
-				else
+				boolean not = s.startsWith("!");
+				boolean isTag = s.replace("!", "").startsWith("#");
+				String biomeString = s.replace("!", "").replace("#", "");
+
+				if (!isTag)
 				{
-					StructureGelMod.LOGGER.warn(String.format("Tried to parse the biome \"%s\" but it is not registered. Defaulting to plains.", s, key));
-					return Biomes.PLAINS;
+					ResourceLocation biome = new ResourceLocation(biomeString);
+					if (ForgeRegistries.BIOMES.containsKey(biome))
+						updateBiomeList(ForgeRegistries.BIOMES.getValue(biome), not);
 				}
-			}).collect(ImmutableList.toImmutableList());
+				else if (BiomeDictionary.Type.getType(biomeString) != null)
+				{
+					BiomeDictionary.getBiomes(BiomeDictionary.Type.getType(biomeString)).forEach(biome -> updateBiomeList(biome, not));
+				}
+			});
+		}
+
+		/**
+		 * Adds/removes the biome to/from the biomes list. Used internally.
+		 * 
+		 * @param biome
+		 * @param not
+		 */
+		protected void updateBiomeList(Biome biome, boolean not)
+		{
+			if (not)
+			{
+				if (this.biomes.contains(biome))
+					this.biomes.remove(biome);
+			}
+			else if (!this.biomes.contains(biome))
+				this.biomes.add(biome);
 		}
 	}
 }
