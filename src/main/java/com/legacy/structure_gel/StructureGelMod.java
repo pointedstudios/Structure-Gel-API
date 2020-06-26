@@ -189,20 +189,23 @@ public class StructureGelMod
 		{
 			Gson gson = new Gson();
 			Map<String, JsonObject> jsons = new HashMap<>();
-			List<String> paths = getFilePaths("json_structures");
-			paths.forEach(path ->
+			File directory = new File("json_structures");
+			if (directory.exists() && directory.isDirectory())
 			{
-				try
+				List<String> paths = getFilePaths("json_structures");
+				paths.forEach(path ->
 				{
-					jsons.put(path, gson.fromJson(new FileReader(path), JsonObject.class));
-				}
-				catch (JsonSyntaxException | JsonIOException | FileNotFoundException e)
-				{
-					StructureGelMod.LOGGER.error(String.format("Failed to load the structure \"%s\"", path));
-					e.printStackTrace();
-				}
-			});
-
+					try
+					{
+						jsons.put(path, gson.fromJson(new FileReader(path), JsonObject.class));
+					}
+					catch (JsonSyntaxException | JsonIOException | FileNotFoundException e)
+					{
+						StructureGelMod.LOGGER.error(String.format("Failed to load the structure \"%s\"", path));
+						e.printStackTrace();
+					}
+				});
+			}
 			return jsons;
 		}
 
