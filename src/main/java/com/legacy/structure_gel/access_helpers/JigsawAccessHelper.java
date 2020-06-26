@@ -213,7 +213,7 @@ public class JigsawAccessHelper
 	 */
 	public static ResourceLocation getSingleJigsawPieceLocation(SingleJigsawPiece piece)
 	{
-		return piece.field_236839_c_.getLeft().get();
+		return piece.field_236839_c_.left().get();
 	}
 
 	/**
