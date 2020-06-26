@@ -150,8 +150,8 @@ public class JigsawPoolBuilder
 	}
 
 	/**
-	 * Structure processors that all pieces in this builder will use.
-	 * This functions as an append.
+	 * Structure processors that all pieces in this builder will use. This functions
+	 * as an append.
 	 * 
 	 * @param processors : empty by default
 	 * @return {@link JigsawPoolBuilder}
@@ -162,8 +162,8 @@ public class JigsawPoolBuilder
 	}
 
 	/**
-	 * Structure processors that all pieces in this builder will use.
-	 * This functions as an append.
+	 * Structure processors that all pieces in this builder will use. This functions
+	 * as an append.
 	 * 
 	 * @param processors : empty by default
 	 * @return {@link JigsawPoolBuilder}
@@ -253,6 +253,19 @@ public class JigsawPoolBuilder
 	 * @return {@link List}
 	 */
 	public static List<Pair<JigsawPiece, Integer>> collect(JigsawPoolBuilder... builders)
+	{
+		return collect(Arrays.asList(builders));
+	}
+
+	/**
+	 * Combines the JigsawPoolBuilders together after building them. This is used in
+	 * cases where multiple structures exist in the same pool using different
+	 * settings, processors, etc.
+	 * 
+	 * @param builders
+	 * @return {@link List}
+	 */
+	public static List<Pair<JigsawPiece, Integer>> collect(List<JigsawPoolBuilder> builders)
 	{
 		List<Pair<JigsawPiece, Integer>> pairs = new ArrayList<>();
 		for (JigsawPoolBuilder builder : builders)
