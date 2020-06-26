@@ -1,0 +1,49 @@
+{
+	"name": "structure_gel:test_red",
+	"properties": {
+		"seed": 1337,
+		"spacing": 4,
+		"offset": 0,
+		"probability": 1.0,
+		"chunk_size": 1,
+		"biomes": "#ocean, minecraft:plains, !minecraft:frozen_ocean",
+		"placement": {
+			"min_y": 70,
+			"max_y": 90
+		}
+	},
+	"start_pool": "structure_gel:red_start",
+	"pools": [
+		{
+			"name": "structure_gel:red_start",
+			"default_pool": "minecraft:empty",
+			"placement": "rigid",
+			"pieces": [
+				{
+					"piece": "structure_gel:test/red",
+					"weight": 1,
+					"maintain_water": true,
+					"placement": "rigid",
+					"processors": [
+						{
+							"name": "structure_gel:replace_block",
+							"data": {
+								"condition": "minecraft:iron_block",
+								"chance": 1.0,
+								"change_to": {
+									"Name": "minecraft:oak_log",
+									"Properties": {
+										"axis": "z"
+									}
+								}
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}
+
+
+
