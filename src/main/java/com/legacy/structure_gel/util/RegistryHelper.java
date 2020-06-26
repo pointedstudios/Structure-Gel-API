@@ -69,9 +69,9 @@ public class RegistryHelper
 	 * @param pieceType
 	 * @return {@link IStructurePieceType}
 	 */
-	public static <C extends IFeatureConfig> IStructurePieceType registerStructurePiece(String modid, String key, Structure<C> structure, IStructurePieceType pieceType)
+	public static <C extends IFeatureConfig> IStructurePieceType registerStructurePiece(String modid, String key, IStructurePieceType pieceType)
 	{
-		return registerStructurePiece(new ResourceLocation(modid, key), structure, pieceType);
+		return registerStructurePiece(new ResourceLocation(modid, key), pieceType);
 	}
 
 	/**
@@ -117,7 +117,7 @@ public class RegistryHelper
 	 * @param pieceType
 	 * @return {@link IStructurePieceType}
 	 */
-	public static <C extends IFeatureConfig> IStructurePieceType registerStructurePiece(ResourceLocation key, Structure<C> structure, IStructurePieceType pieceType)
+	public static <C extends IFeatureConfig> IStructurePieceType registerStructurePiece(ResourceLocation key, IStructurePieceType pieceType)
 	{
 		return Registry.register(Registry.STRUCTURE_PIECE, key, pieceType);
 	}
@@ -138,7 +138,7 @@ public class RegistryHelper
 	public static <C extends IFeatureConfig> Pair<Structure<C>, IStructurePieceType> registerStructureAndPiece(IForgeRegistry<Feature<?>> registry, ResourceLocation key, Structure<C> structure, IStructurePieceType pieceType)
 	{
 		Structure<C> struc = registerStructure(registry, key, structure);
-		IStructurePieceType piece = registerStructurePiece(key, structure, pieceType);
+		IStructurePieceType piece = registerStructurePiece(key, pieceType);
 		return Pair.of(struc, piece);
 	}
 
