@@ -42,4 +42,17 @@ public abstract class GelStructureStart extends StructureStart
 			this.components.forEach(piece -> piece.offset(0, offsetAmount, 0));
 		}
 	}
+
+	/**
+	 * Places the structure at the y value set.
+	 * 
+	 * @param minY
+	 * @param maxY
+	 */
+	public void setHeight(int y)
+	{
+		int offset = y - this.bounds.minY;
+		this.bounds.offset(0, offset, 0);
+		this.components.forEach(piece -> piece.offset(0, offset, 0));
+	}
 }
