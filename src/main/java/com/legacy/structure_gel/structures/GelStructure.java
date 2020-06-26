@@ -2,22 +2,27 @@ package com.legacy.structure_gel.structures;
 
 import java.util.List;
 import java.util.Random;
-import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
 import com.legacy.structure_gel.access_helpers.StructureAccessHelper;
-import com.mojang.datafixers.Dynamic;
+import com.mojang.serialization.Codec;
 
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeManager;
+import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
+import net.minecraft.world.gen.feature.structure.StructureStart;
+import net.minecraft.world.gen.feature.template.TemplateManager;
+import net.minecraft.world.gen.settings.StructureSeparationSettings;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 
@@ -31,9 +36,9 @@ import net.minecraftforge.event.world.WorldEvent;
  */
 public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C>
 {
-	public GelStructure(Function<Dynamic<?>, ? extends C> configFactoryIn)
+	public GelStructure(Codec<C> codec)
 	{
-		super(configFactoryIn);
+		super(codec);
 		MinecraftForge.EVENT_BUS.addListener(this::potentialSpawnsEvent);
 		this.setLakeProof(true);
 	}
@@ -62,14 +67,14 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	 * @see #getOffset()
 	 */
 	@Override
-	protected ChunkPos getStartPositionForPosition(ChunkGenerator<?> chunkGenerator, Random random, int x, int z, int spacingOffsetsX, int spacingOffsetsZ)
+	public ChunkPos func_236392_a_(StructureSeparationSettings settings, long seed, SharedSeedRandom random, int x, int z)
 	{
 		int spacing = this.getSpacing();
-		int gridX = ((x / spacing) * spacing) + (spacingOffsetsX * spacing);
-		int gridZ = ((z / spacing) * spacing) + (spacingOffsetsZ * spacing);
+		int gridX = ((x / spacing) * spacing);
+		int gridZ = ((z / spacing) * spacing);
 
 		int offset = this.getOffset() + 1;
-		((SharedSeedRandom) random).setLargeFeatureSeedWithSalt(chunkGenerator.getSeed(), gridX, gridZ, this.getSeed());
+		((SharedSeedRandom) random).setLargeFeatureSeedWithSalt(seed, gridX, gridZ, this.getSeed());
 		int offsetX = random.nextInt(offset);
 		int offsetZ = random.nextInt(offset);
 
@@ -79,24 +84,10 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 		return new ChunkPos(gridOffsetX, gridOffsetZ);
 	}
 
-	/**
-	 * hasStartAt<br>
-	 * <br>
-	 * Runs {@link #getStartPositionForPosition(ChunkGenerator, Random, int, int, int, int)} to see if the
-	 * chunk is a valid chunk to generate this structure in, and then checks
-	 * {@link #getProbability()} to see if it will succeed in generating.
-	 */
-	@Override
-	public boolean canBeGenerated(BiomeManager biomeManagerIn, ChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ, Biome biomeIn)
+	protected boolean func_230363_a_(ChunkGenerator chunkGen, BiomeProvider biomeProvider, long seed, SharedSeedRandom sharedSeedRand, int chunkPosX, int chunkPosZ, Biome biomeIn, ChunkPos chunkPos, C config)
 	{
-		ChunkPos chunkPos = getStartPositionForPosition(chunkGen, rand, chunkPosX, chunkPosZ, 0, 0);
-		if (chunkPos.x == chunkPosX && chunkPos.z == chunkPosZ && chunkGen.hasStructure(biomeManagerIn.getBiome(new BlockPos(chunkPos.x << 4, 0, chunkPos.z << 4)), this))
-		{
-			((SharedSeedRandom) rand).setLargeFeatureSeedWithSalt(chunkGen.getSeed(), chunkPosX, chunkPosZ, this.getSeed());
-			return rand.nextDouble() < getProbability();
-		}
-		else
-			return false;
+		((SharedSeedRandom) sharedSeedRand).setLargeFeatureSeedWithSalt(seed, chunkPosX, chunkPosZ, this.getSeed());
+		return sharedSeedRand.nextDouble() < getProbability();
 	}
 
 	/**
@@ -174,7 +165,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	 */
 	public void potentialSpawnsEvent(WorldEvent.PotentialSpawns event)
 	{
-		if (this.isPositionInStructure(event.getWorld(), event.getPos()))
+		if (event.getWorld() instanceof ServerWorld && ((ServerWorld) event.getWorld()).func_241112_a_().func_235010_a_(event.getPos(), false, this).isValid())
 		{
 			if (event.getType() == EntityClassification.MONSTER && this.getSpawnList() != null)
 			{

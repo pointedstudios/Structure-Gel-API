@@ -9,7 +9,6 @@ import com.legacy.structure_gel.asm.StructureGelHooks;
 
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.structure.Structure;
 
 public class StructureAccessHelper
@@ -20,10 +19,10 @@ public class StructureAccessHelper
 	public static List<Structure<?>> LAKE_STRUCTURES = new ArrayList<>();
 	static
 	{
-		StructureAccessHelper.LAKE_STRUCTURES.add(Feature.VILLAGE);
+		StructureAccessHelper.LAKE_STRUCTURES.add(Structure.field_236381_q_);
 		if (StructureGelConfig.COMMON.getExtraLakeProofing())
 		{
-			StructureAccessHelper.LAKE_STRUCTURES.addAll(ImmutableList.of(Feature.PILLAGER_OUTPOST, Feature.JUNGLE_TEMPLE, Feature.DESERT_PYRAMID, Feature.IGLOO, Feature.SWAMP_HUT, Feature.WOODLAND_MANSION));
+			StructureAccessHelper.LAKE_STRUCTURES.addAll(ImmutableList.of(Structure.field_236368_d_, Structure.field_236369_e_, Structure.field_236370_f_, Structure.field_236371_g_, Structure.field_236375_k_));
 		}
 	}
 

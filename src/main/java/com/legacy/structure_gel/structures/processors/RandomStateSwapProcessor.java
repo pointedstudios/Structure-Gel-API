@@ -4,10 +4,9 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
-import com.google.common.collect.ImmutableMap;
 import com.legacy.structure_gel.StructureGelMod;
-import com.mojang.datafixers.Dynamic;
-import com.mojang.datafixers.types.DynamicOps;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -28,6 +27,20 @@ import net.minecraft.world.gen.feature.template.Template;
  */
 public class RandomStateSwapProcessor extends StructureProcessor
 {
+	public static final Codec<RandomStateSwapProcessor> CODEC = RecordCodecBuilder.create((instance) ->
+	{
+		return instance.group(BlockState.field_235877_b_.fieldOf("condition").forGetter(processor ->
+		{
+			return processor.condition;
+		}), Codec.FLOAT.fieldOf("chance").forGetter(processor ->
+		{
+			return processor.chance;
+		}), BlockState.field_235877_b_.fieldOf("change_to").forGetter(processor ->
+		{
+			return processor.changeTo;
+		})).apply(instance, RandomStateSwapProcessor::new);
+	});
+	
 	private final BlockState condition;
 	private final float chance;
 	private final BlockState changeTo;
@@ -80,21 +93,11 @@ public class RandomStateSwapProcessor extends StructureProcessor
 	}
 
 	/**
-	 * @see #RandomStateSwapProcessor(BlockState, float, BlockState)
-	 * @param dyn
-	 */
-	public RandomStateSwapProcessor(Dynamic<?> dyn)
-	{
-		this.condition = BlockState.deserialize(dyn.get("condition").orElseEmptyMap());
-		this.chance = dyn.get("chance").asFloat(0.0F);
-		this.changeTo = BlockState.deserialize(dyn.get("change_to").orElseEmptyMap());
-	}
-
-	/**
 	 * 
 	 */
 	@Nullable
-	public Template.BlockInfo process(IWorldReader worldReaderIn, BlockPos pos, Template.BlockInfo existing, Template.BlockInfo placed, PlacementSettings settings)
+	@Override
+	public Template.BlockInfo func_230386_a_(IWorldReader worldReaderIn, BlockPos pos, BlockPos pos2, Template.BlockInfo existing, Template.BlockInfo placed, PlacementSettings settings)
 	{
 		if (placed.state == this.condition && (this.chance == 1F || new Random(MathHelper.getPositionRandom(placed.pos)).nextFloat() < this.chance))
 			return new Template.BlockInfo(placed.pos, changeTo, null);
@@ -104,22 +107,9 @@ public class RandomStateSwapProcessor extends StructureProcessor
 	/**
 	 * 
 	 */
-	protected IStructureProcessorType getType()
+	@Override
+	protected IStructureProcessorType<?> getType()
 	{
 		return StructureGelMod.Processors.REPLACE_BLOCK;
-	}
-
-	/**
-	 * 
-	 */
-	protected <T> Dynamic<T> serialize0(DynamicOps<T> ops)
-	{
-		//@formatter:off
-		return new Dynamic<>(ops, ops.createMap(ImmutableMap.of(
-				ops.createString("condition"), BlockState.serialize(ops, condition).getValue(),
-				ops.createString("chance"), ops.createFloat(this.chance),
-				ops.createString("change_to"), BlockState.serialize(ops, changeTo).getValue()
-				)));
-		//@formatter:on
 	}
 }

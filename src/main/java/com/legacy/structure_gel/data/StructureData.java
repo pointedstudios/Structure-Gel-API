@@ -10,8 +10,9 @@ import com.google.gson.JsonSyntaxException;
 import com.legacy.structure_gel.structures.jigsaw.JigsawPoolBuilder;
 import com.legacy.structure_gel.structures.jigsaw.JigsawRegistryHelper;
 import com.legacy.structure_gel.util.ConfigTemplates;
-import com.mojang.datafixers.Dynamic;
-import com.mojang.datafixers.types.JsonOps;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.Dynamic;
+import com.mojang.serialization.JsonOps;
 
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
@@ -23,12 +24,12 @@ import net.minecraft.world.gen.feature.template.StructureProcessor;
 
 public class StructureData
 {
-	public final int seed, spacing, offset, chunkSize, minY, maxY;
+	public final int seed, spacing, offset, minY, maxY;
 	public final double probability;
 	public final ResourceLocation registryName, startPool;
 	public final List<Biome> biomes;
 
-	public StructureData(ResourceLocation name, ResourceLocation startPool, int seed, int spacing, int offset, double probability, List<Biome> biomes, int chunkSize, int minY, int maxY)
+	public StructureData(ResourceLocation name, ResourceLocation startPool, int seed, int spacing, int offset, double probability, List<Biome> biomes, int minY, int maxY)
 	{
 		this.registryName = name;
 		this.startPool = startPool;
@@ -37,7 +38,6 @@ public class StructureData
 		this.offset = offset;
 		this.probability = probability;
 		this.biomes = biomes;
-		this.chunkSize = chunkSize;
 		this.minY = minY;
 		this.maxY = maxY;
 	}
@@ -62,11 +62,6 @@ public class StructureData
 		return this.offset;
 	}
 
-	public int getChunkSize()
-	{
-		return this.chunkSize;
-	}
-
 	public static StructureData parse(JsonObject json, String path) throws JsonSyntaxException
 	{
 		if (!JSONUtils.isString(json, "name"))
@@ -82,7 +77,6 @@ public class StructureData
 		int spacing = JSONUtils.getInt(properties, "spacing", 12);
 		int offset = JSONUtils.getInt(properties, "offset", 5);
 		double probability = JSONUtils.getFloat(properties, "probability", 1.0F);
-		int chunkSize = JSONUtils.getInt(properties, "chunk_size", 3);
 		List<Biome> biomes = ConfigTemplates.BiomeStructureConfig.parseBiomes(JSONUtils.getString(properties, "biomes", ""));
 		JsonObject placement = JSONUtils.getJsonObject(properties, "placement", new JsonObject());
 		int minY = placement.has("min_y") ? JSONUtils.getInt(placement, "min_y") : -1;
@@ -94,7 +88,7 @@ public class StructureData
 				parsePool(j.getAsJsonObject(), path);
 		});
 
-		return new StructureData(name, startPool, seed, spacing, offset, probability, biomes, chunkSize, minY, maxY);
+		return new StructureData(name, startPool, seed, spacing, offset, probability, biomes, minY, maxY);
 	}
 
 	private static void parsePool(JsonObject json, String path) throws JsonSyntaxException
@@ -148,9 +142,14 @@ public class StructureData
 					throwJson("json object", "data", path);
 
 				ResourceLocation name = new ResourceLocation(JSONUtils.getString(jsonObj, "name"));
-				Optional<IStructureProcessorType> optional = Registry.STRUCTURE_PROCESSOR.getValue(name);
+				Optional<IStructureProcessorType<?>> optional = Registry.STRUCTURE_PROCESSOR.getValue(name);
 				if (optional.isPresent())
-					processors.add(optional.get().deserialize(new Dynamic<>(JsonOps.INSTANCE, JSONUtils.getJsonObject(jsonObj, "data"))));
+				{
+					//processors.add(optional.get().deserialize(new Dynamic<>(JsonOps.INSTANCE, JSONUtils.getJsonObject(jsonObj, "data"))));
+					DataResult<StructureProcessor> data = optional.get().codec().parse(new Dynamic<>(JsonOps.INSTANCE, JSONUtils.getJsonObject(jsonObj, "data"))).map(sj -> null);
+					processors.add(data.get().left().get());
+					
+				}
 				else
 					throw new IllegalArgumentException(String.format("%s is not a registered structure processor type.", name));
 			}

@@ -7,12 +7,12 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.monster.HuskEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -65,7 +65,7 @@ public class StructureGelBlock extends Block implements IStructureGel
 	 */
 	public StructureGelBlock(IBehavior... behaviors)
 	{
-		super(Block.Properties.create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.0F).noDrops().notSolid().sound(SoundType.SLIME));
+		super(AbstractBlock.Properties.create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.0F).noDrops().notSolid().sound(SoundType.SLIME).func_235827_a_((state, reader, pos, entity) -> false).func_235842_b_((state, reader, pos) -> false).func_235847_c_((state, reader, pos) -> false));
 		this.behaviors = ImmutableList.copyOf(behaviors);
 
 		this.setDefaultState(this.getDefaultState().with(COUNT, 50));
@@ -291,27 +291,9 @@ public class StructureGelBlock extends Block implements IStructureGel
 	 * 
 	 */
 	@Override
-	public boolean isNormalCube(BlockState state, IBlockReader worldIn, BlockPos pos)
-	{
-		return false;
-	}
-
-	/**
-	 * 
-	 */
-	@Override
 	public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos)
 	{
 		return true;
-	}
-
-	/**
-	 * 
-	 */
-	@Override
-	public boolean causesSuffocation(BlockState state, IBlockReader worldIn, BlockPos pos)
-	{
-		return false;
 	}
 
 	/**
@@ -332,14 +314,5 @@ public class StructureGelBlock extends Block implements IStructureGel
 	public float getAmbientOcclusionLightValue(BlockState state, IBlockReader worldIn, BlockPos pos)
 	{
 		return 1.0F;
-	}
-
-	/**
-	 * 
-	 */
-	@Override
-	public boolean canEntitySpawn(BlockState state, IBlockReader worldIn, BlockPos pos, EntityType<?> type)
-	{
-		return false;
 	}
 }

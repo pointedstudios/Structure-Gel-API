@@ -16,14 +16,15 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
+import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
 import net.minecraft.world.gen.feature.jigsaw.SingleJigsawPiece;
 import net.minecraft.world.gen.feature.structure.AbstractVillagePiece;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
+import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.feature.structure.TemplateStructurePiece;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 
@@ -54,11 +55,11 @@ public abstract class GelStructurePiece extends AbstractVillagePiece
 	 * Modification of addComponentParts to allow for data structure block handling.
 	 */
 	@Override
-	public boolean create(IWorld world, ChunkGenerator<?> chunkGen, Random rand, MutableBoundingBox bounds, ChunkPos chunkPos)
+	public boolean func_237001_a_(ISeedReader seedReader, StructureManager structureManager, ChunkGenerator chunkGen, Random rand, MutableBoundingBox bounds, BlockPos pos, boolean isLegacy)
 	{
 		if (this.jigsawPiece instanceof GelJigsawPiece)
-			return ((GelJigsawPiece) this.jigsawPiece).place(this.templateManager, world, chunkGen, this.pos, this.rotation, bounds, rand, this);
-		return this.jigsawPiece.place(this.templateManager, world, chunkGen, this.pos, this.rotation, bounds, rand);
+			return ((GelJigsawPiece) this.jigsawPiece).place(this.templateManager, seedReader, structureManager, chunkGen, this.pos, pos, this.rotation, bounds, rand, isLegacy, this);
+		return this.jigsawPiece.func_230378_a_(this.templateManager, seedReader, structureManager, chunkGen, this.pos, pos, this.rotation, bounds, rand, isLegacy);
 	}
 
 	/**

@@ -1,17 +1,21 @@
 package com.legacy.structure_gel.structures.jigsaw;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
+import java.util.function.Function;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.structures.GelPlacementSettings;
 import com.legacy.structure_gel.structures.GelStructurePiece;
 import com.legacy.structure_gel.structures.GelTemplate;
 import com.legacy.structure_gel.structures.processors.RemoveGelStructureProcessor;
-import com.mojang.datafixers.Dynamic;
-import com.mojang.datafixers.types.DynamicOps;
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.state.properties.StructureMode;
@@ -19,12 +23,14 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.ISeedReader;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.jigsaw.IJigsawDeserializer;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
 import net.minecraft.world.gen.feature.jigsaw.SingleJigsawPiece;
+import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.feature.template.BlockIgnoreStructureProcessor;
+import net.minecraft.world.gen.feature.template.IStructureProcessorType;
 import net.minecraft.world.gen.feature.template.JigsawReplacementStructureProcessor;
 import net.minecraft.world.gen.feature.template.PlacementSettings;
 import net.minecraft.world.gen.feature.template.StructureProcessor;
@@ -42,18 +48,71 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
  */
 public class GelJigsawPiece extends SingleJigsawPiece
 {
+	public static final Codec<Either<ResourceLocation, Template>> POOL_CODEC = Codec.of(GelJigsawPiece::encodePool, ResourceLocation.field_240908_a_.map(Either::left));
+	public static final Codec<GelJigsawPiece> CODEC = RecordCodecBuilder.create((instance) ->
+	{
+		return instance.group(encodeLocaiton(), encodeProcessor(), func_236848_d_(), Codec.BOOL.fieldOf("maintainWater").forGetter(jigsawPiece -> jigsawPiece.maintainWater), Codec.BOOL.fieldOf("ignoreEntities").forGetter(jigsawPiece -> jigsawPiece.ignoreEntities)).apply(instance, GelJigsawPiece::new);
+	});
 	private boolean maintainWater = true;
 	private boolean ignoreEntities = false;
 
+	private static <T> DataResult<T> encodePool(Either<ResourceLocation, Template> locationTemplate, DynamicOps<T> dyn, T data)
+	{
+		Optional<ResourceLocation> optional = locationTemplate.left();
+		return !optional.isPresent() ? DataResult.error("Can not serialize a runtime pool element") : ResourceLocation.field_240908_a_.encode(optional.get(), dyn, data);
+	}
+
+	protected static <E extends GelJigsawPiece> RecordCodecBuilder<E, List<StructureProcessor>> encodeProcessor()
+	{
+		return IStructureProcessorType.field_237137_i_.listOf().fieldOf("processors").forGetter((jigsawPiece) ->
+		{
+			return jigsawPiece.processors;
+		});
+	}
+
+	protected static <E extends GelJigsawPiece> RecordCodecBuilder<E, Either<ResourceLocation, Template>> encodeLocaiton()
+	{
+		return POOL_CODEC.fieldOf("location").forGetter((jigsawPiece) ->
+		{
+			return jigsawPiece.field_236839_c_;
+		});
+	}
+
 	/**
-	 * @see GelJigsawPiece
+	 * 
+	 * @param location : the structure
+	 * @param processors
+	 * @param placementBehavior
+	 * @param maintainWater
+	 * @param ignoreEntities
+	 */
+	public GelJigsawPiece(Either<ResourceLocation, Template> location, List<StructureProcessor> processors, JigsawPattern.PlacementBehaviour placementBehavior, boolean maintainWater, boolean ignoreEntities)
+	{
+		super(location, processors, placementBehavior);
+		this.maintainWater = maintainWater;
+		this.ignoreEntities = ignoreEntities;
+	}
+
+	/**
+	 * 
 	 * @param location : the structure
 	 * @param processors
 	 * @param placementBehavior
 	 */
-	public GelJigsawPiece(ResourceLocation location, List<StructureProcessor> processors, JigsawPattern.PlacementBehaviour placementBehavior)
+	public GelJigsawPiece(Either<ResourceLocation, Template> location, List<StructureProcessor> processors, JigsawPattern.PlacementBehaviour placementBehavior)
 	{
-		super(location.toString(), processors, placementBehavior);
+		super(location, processors, placementBehavior);
+	}
+
+	/**
+	 * 
+	 * @param template
+	 * @param processors
+	 * @param placementBehavior
+	 */
+	public GelJigsawPiece(Template template, List<StructureProcessor> processors, JigsawPattern.PlacementBehaviour placementBehavior)
+	{
+		super(template, processors, placementBehavior);
 	}
 
 	/**
@@ -63,7 +122,7 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	 */
 	public GelJigsawPiece(ResourceLocation location, List<StructureProcessor> processors)
 	{
-		this(location, processors, JigsawPattern.PlacementBehaviour.RIGID);
+		this(Either.left(location), processors, JigsawPattern.PlacementBehaviour.RIGID);
 	}
 
 	/**
@@ -73,18 +132,6 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	public GelJigsawPiece(ResourceLocation location)
 	{
 		this(location, ImmutableList.of());
-	}
-
-	/**
-	 * Used internally for deserialization
-	 * 
-	 * @param dyn
-	 */
-	public GelJigsawPiece(Dynamic<?> dyn)
-	{
-		super(dyn);
-		this.maintainWater = dyn.get("maintainWater").asBoolean(true);
-		this.ignoreEntities = dyn.get("ignoreEntities").asBoolean(false);
 	}
 
 	/**
@@ -116,7 +163,7 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	 * 
 	 */
 	@Override
-	protected PlacementSettings createPlacementSettings(Rotation rotation, MutableBoundingBox boundingBox)
+	protected PlacementSettings func_230379_a_(Rotation rotation, MutableBoundingBox boundingBox, boolean isLegacy)
 	{
 		GelPlacementSettings placementSettings = new GelPlacementSettings();
 		placementSettings.setMaintainWater(this.maintainWater);
@@ -125,7 +172,8 @@ public class GelJigsawPiece extends SingleJigsawPiece
 		placementSettings.func_215223_c(true);
 		placementSettings.setIgnoreEntities(this.ignoreEntities);
 		placementSettings.addProcessor(RemoveGelStructureProcessor.INSTANCE);
-		placementSettings.addProcessor(JigsawReplacementStructureProcessor.INSTANCE);
+		if (!isLegacy)
+			placementSettings.addProcessor(JigsawReplacementStructureProcessor.INSTANCE);
 		this.processors.forEach(placementSettings::addProcessor);
 		this.getPlacementBehaviour().getStructureProcessors().forEach(placementSettings::addProcessor);
 		return placementSettings;
@@ -134,36 +182,38 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	/**
 	 * Changes how the place function works to allow for data structure blocks.
 	 * 
-	 * @param manager
-	 * @param worldIn
-	 * @param chunkGenerator
+	 * @param templateManager
+	 * @param seedManager
+	 * @param structureManager
+	 * @param chunkGen
 	 * @param pos
+	 * @param pos2
 	 * @param rotation
 	 * @param bounds
 	 * @param rand
+	 * @param isLegacy
 	 * @param gelStructurePiece
 	 * @return
 	 */
-	public boolean place(TemplateManager manager, IWorld worldIn, ChunkGenerator<?> chunkGenerator, BlockPos pos, Rotation rotation, MutableBoundingBox bounds, Random rand, GelStructurePiece gelStructurePiece)
+	public boolean place(TemplateManager templateManager, ISeedReader seedManager, StructureManager structureManager, ChunkGenerator chunkGen, BlockPos pos, BlockPos pos2, Rotation rotation, MutableBoundingBox bounds, Random rand, boolean isLegacy, GelStructurePiece gelStructurePiece)
 	{
-		Template template = manager.getTemplateDefaulted(this.location);
-		PlacementSettings placementSettings = this.createPlacementSettings(rotation, bounds);
-		if (!new GelTemplate(template).addBlocksToWorld(worldIn, pos, placementSettings, 18))
+		Template template = this.getTemplate(templateManager);
+		PlacementSettings placementsettings = this.func_230379_a_(rotation, bounds, isLegacy);
+		if (!new GelTemplate(template).func_237146_a_(seedManager, pos, pos2, placementsettings, rand, 18))
 		{
 			return false;
 		}
 		else
 		{
-			// Get all data structure blocks
-			for (Template.BlockInfo blockInfo : Template.processBlockInfos(template, worldIn, pos, placementSettings, this.getDataMarkers(manager, pos, rotation, false)))
+			for (Template.BlockInfo blockInfo : Template.processBlockInfos(seedManager, pos, pos2, placementsettings, this.getDataMarkers(templateManager, pos, rotation, false), template))
 			{
-				this.handleDataMarker(worldIn, blockInfo, pos, rotation, rand, bounds);
-				if (blockInfo.nbt != null && worldIn.getBlockState(blockInfo.pos).getBlock() == Blocks.STRUCTURE_BLOCK)
+				this.handleDataMarker(seedManager, blockInfo, pos, rotation, rand, bounds);
+				if (blockInfo.nbt != null && seedManager.getWorld().getBlockState(blockInfo.pos).getBlock() == Blocks.STRUCTURE_BLOCK)
 				{
 					StructureMode mode = StructureMode.valueOf(blockInfo.nbt.getString("mode"));
 					if (mode == StructureMode.DATA)
 					{
-						gelStructurePiece.handleDataMarker(blockInfo.nbt.getString("metadata"), worldIn, blockInfo.pos, rand, bounds);
+						gelStructurePiece.handleDataMarker(blockInfo.nbt.getString("metadata"), seedManager.getWorld(), blockInfo.pos, rand, bounds);
 					}
 				}
 			}
@@ -179,14 +229,19 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	 */
 	public ResourceLocation getLocation()
 	{
-		return this.location;
+		return this.field_236839_c_.left().get();
+	}
+
+	private Template getTemplate(TemplateManager templateManager)
+	{
+		return this.field_236839_c_.map(templateManager::getTemplateDefaulted, Function.identity());
 	}
 
 	/**
 	 * 
 	 */
 	@Override
-	public IJigsawDeserializer getType()
+	public IJigsawDeserializer<?> getType()
 	{
 		return StructureGelMod.JigsawDeserializers.GEL_SINGLE_POOL_ELEMENT;
 	}
@@ -195,24 +250,8 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	 * 
 	 */
 	@Override
-	public <T> Dynamic<T> serialize0(DynamicOps<T> ops)
-	{
-		//@formatter:off
-		return new Dynamic<>(ops, ops.createMap(ImmutableMap.of(
-				ops.createString("location"), ops.createString(this.location.toString()), 
-				ops.createString("processors"), ops.createList(this.processors.stream().map((processor) -> processor.serialize(ops).getValue())),
-				ops.createString("maintainWater"), ops.createBoolean(this.maintainWater), 
-				ops.createString("ignoreEntities"), ops.createBoolean(this.ignoreEntities) 
-				)));
-		//@formatter:on
-	}
-
-	/**
-	 * 
-	 */
-	@Override
 	public String toString()
 	{
-		return "Gel[" + this.location + "]";
+		return "Gel[" + this.field_236839_c_ + "]";
 	}
 }

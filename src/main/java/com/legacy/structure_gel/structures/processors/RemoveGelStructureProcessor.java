@@ -6,8 +6,7 @@ import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.data.GelTags;
 import com.legacy.structure_gel.structures.GelStructurePiece;
 import com.legacy.structure_gel.structures.jigsaw.GelJigsawPiece;
-import com.mojang.datafixers.Dynamic;
-import com.mojang.datafixers.types.DynamicOps;
+import com.mojang.serialization.Codec;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -35,16 +34,15 @@ import net.minecraft.world.gen.feature.template.Template;
  */
 public class RemoveGelStructureProcessor extends StructureProcessor
 {
-	/**
-	 * @see RemoveGelStructureProcessor
-	 */
-	public static final RemoveGelStructureProcessor INSTANCE = new RemoveGelStructureProcessor();
+	public static final RemoveGelStructureProcessor INSTANCE = new RemoveGelStructureProcessor();	
+	public static final Codec<RemoveGelStructureProcessor> CODEC = Codec.unit(() -> INSTANCE);
 
 	/**
 	 * 
 	 */
 	@Nullable
-	public Template.BlockInfo process(IWorldReader worldReaderIn, BlockPos pos, Template.BlockInfo existing, Template.BlockInfo placed, PlacementSettings settings)
+	@Override
+	public Template.BlockInfo func_230386_a_(IWorldReader worldReaderIn, BlockPos pos, BlockPos pos2, Template.BlockInfo existing, Template.BlockInfo placed, PlacementSettings settings)
 	{
 		if (placed.state.getBlock().isIn(GelTags.GEL))
 			return new Template.BlockInfo(placed.pos, Blocks.AIR.getDefaultState(), null);
@@ -57,16 +55,9 @@ public class RemoveGelStructureProcessor extends StructureProcessor
 	/**
 	 * 
 	 */
-	protected IStructureProcessorType getType()
+	@Override
+	protected IStructureProcessorType<?> getType()
 	{
 		return StructureGelMod.Processors.REMOVE_FILLER;
-	}
-
-	/**
-	 * 
-	 */
-	protected <T> Dynamic<T> serialize0(DynamicOps<T> ops)
-	{
-		return new Dynamic<>(ops, ops.emptyMap());
 	}
 }

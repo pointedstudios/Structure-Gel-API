@@ -14,7 +14,6 @@ import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.placement.IPlacementConfig;
 import net.minecraft.world.gen.placement.NoPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
-import net.minecraftforge.registries.GameData;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
@@ -53,7 +52,7 @@ public class RegistryHelper
 	 * @param structure
 	 * @return {@link Structure}
 	 */
-	public static <C extends IFeatureConfig> Structure<C> registerStructure(IForgeRegistry<Feature<?>> registry, String modid, String key, Structure<C> structure)
+	public static <C extends IFeatureConfig> Structure<C> registerStructure(IForgeRegistry<Structure<?>> registry, String modid, String key, Structure<C> structure)
 	{
 		return registerStructure(registry, new ResourceLocation(modid, key), structure);
 	}
@@ -88,7 +87,7 @@ public class RegistryHelper
 	 * @param pieceType
 	 * @return {@link Pair}
 	 */
-	public static <C extends IFeatureConfig> Pair<Structure<C>, IStructurePieceType> registerStructureAndPiece(IForgeRegistry<Feature<?>> registry, String modid, String key, Structure<C> structure, IStructurePieceType pieceType)
+	public static <C extends IFeatureConfig> Pair<Structure<C>, IStructurePieceType> registerStructureAndPiece(IForgeRegistry<Structure<?>> registry, String modid, String key, Structure<C> structure, IStructurePieceType pieceType)
 	{
 		return registerStructureAndPiece(registry, new ResourceLocation(modid, key), structure, pieceType);
 	}
@@ -102,11 +101,11 @@ public class RegistryHelper
 	 * @param structure
 	 * @return {@link Structure}
 	 */
-	public static <C extends IFeatureConfig> Structure<C> registerStructure(IForgeRegistry<Feature<?>> registry, ResourceLocation key, Structure<C> structure)
+	public static <C extends IFeatureConfig> Structure<C> registerStructure(IForgeRegistry<Structure<?>> registry, ResourceLocation key, Structure<C> structure)
 	{
-		Structure<C> struc = Registry.register(GameData.getStructureFeatures(), key, structure);
-		register(registry, key, struc);
-		return struc;
+		structure.setRegistryName(key);
+		registry.register(structure);
+		return structure;
 	}
 
 	/**
@@ -135,7 +134,7 @@ public class RegistryHelper
 	 * @param pieceType
 	 * @return {@link Pair}
 	 */
-	public static <C extends IFeatureConfig> Pair<Structure<C>, IStructurePieceType> registerStructureAndPiece(IForgeRegistry<Feature<?>> registry, ResourceLocation key, Structure<C> structure, IStructurePieceType pieceType)
+	public static <C extends IFeatureConfig> Pair<Structure<C>, IStructurePieceType> registerStructureAndPiece(IForgeRegistry<Structure<?>> registry, ResourceLocation key, Structure<C> structure, IStructurePieceType pieceType)
 	{
 		Structure<C> struc = registerStructure(registry, key, structure);
 		IStructurePieceType piece = registerStructurePiece(key, pieceType);
@@ -207,7 +206,7 @@ public class RegistryHelper
 	 */
 	public static <C extends IFeatureConfig> void addStructure(Biome biome, Structure<C> structure, C config)
 	{
-		biome.addStructure(structure.withConfiguration(config));
+		biome.func_235063_a_(structure.func_236391_a_(config));
 	}
 
 	/**

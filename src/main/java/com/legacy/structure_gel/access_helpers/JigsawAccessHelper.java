@@ -42,7 +42,7 @@ public class JigsawAccessHelper
 	 */
 	public static void addIllagerStructures(Structure<?>... structures)
 	{
-		Feature.ILLAGER_STRUCTURES = Streams.concat(Feature.ILLAGER_STRUCTURES.stream(), Arrays.asList(structures).stream()).collect(ImmutableList.toImmutableList());
+		Structure.field_236384_t_ = Streams.concat(Structure.field_236384_t_.stream(), Arrays.asList(structures).stream()).collect(ImmutableList.toImmutableList());
 	}
 
 	/**
@@ -103,7 +103,7 @@ public class JigsawAccessHelper
 		{
 			if (piece instanceof SingleJigsawPiece)
 			{
-				return ((SingleJigsawPiece) piece).location.equals(pieceName);
+				return getSingleJigsawPieceLocation((SingleJigsawPiece) piece).equals(pieceName);
 			}
 			else if (piece instanceof ListJigsawPiece)
 			{
@@ -157,7 +157,7 @@ public class JigsawAccessHelper
 		listJigsawPiece.elements.removeIf(piece ->
 		{
 			if (piece instanceof SingleJigsawPiece)
-				return ((SingleJigsawPiece) piece).location.equals(pieceName);
+				return getSingleJigsawPieceLocation((SingleJigsawPiece) piece).equals(pieceName);
 			else if (piece instanceof ListJigsawPiece)
 			{
 				JigsawAccessHelper.removeFromListJigsaw((ListJigsawPiece) piece, pieceName);
@@ -213,7 +213,7 @@ public class JigsawAccessHelper
 	 */
 	public static ResourceLocation getSingleJigsawPieceLocation(SingleJigsawPiece piece)
 	{
-		return piece.location;
+		return piece.field_236839_c_.getLeft().get();
 	}
 
 	/**

@@ -5,7 +5,7 @@ import com.legacy.structure_gel.structures.processors.RemoveGelStructureProcesso
 
 import net.minecraft.block.Block;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 
 /**
  * Stores all tags used by the mod.
@@ -19,15 +19,5 @@ public class GelTags
 	 * Contains all structure gel blocks. This tag is used to determine which blocks
 	 * are turned to air in the {@link RemoveGelStructureProcessor}
 	 */
-	public static final Tag<Block> GEL = tag("gel");
-
-	/**
-	 * 
-	 * @param key
-	 * @return Tag
-	 */
-	private static Tag<Block> tag(String key)
-	{
-		return new BlockTags.Wrapper(StructureGelMod.locate(key));
-	}
+	public static final ITag.INamedTag<Block> GEL = BlockTags.makeWrapperTag(StructureGelMod.locate("gel").toString());
 }

@@ -30,7 +30,7 @@ public class JsonStructure extends GelStructure<NoFeatureConfig>
 
 	public JsonStructure(StructureData data)
 	{
-		super(NoFeatureConfig::deserialize);
+		super(NoFeatureConfig.field_236558_a_);
 		this.data = data;
 	}
 
@@ -59,26 +59,20 @@ public class JsonStructure extends GelStructure<NoFeatureConfig>
 	}
 
 	@Override
-	public int getSize()
-	{
-		return this.data.getChunkSize();
-	}
-
-	@Override
-	public IStartFactory getStartFactory()
+	public IStartFactory<NoFeatureConfig> getStartFactory()
 	{
 		return JsonStart::new;
 	}
 
-	public static class JsonStart extends GelStructureStart
+	public static class JsonStart extends GelStructureStart<NoFeatureConfig>
 	{
-		public JsonStart(Structure<?> structureIn, int chunkX, int chunkZ, MutableBoundingBox boundsIn, int referenceIn, long seed)
+		public JsonStart(Structure<NoFeatureConfig> structureIn, int chunkX, int chunkZ, MutableBoundingBox boundsIn, int referenceIn, long seed)
 		{
 			super(structureIn, chunkX, chunkZ, boundsIn, referenceIn, seed);
 		}
 
 		@Override
-		public void init(ChunkGenerator<?> generator, TemplateManager templateManagerIn, int chunkX, int chunkZ, Biome biomeIn)
+		public void func_230364_a_(ChunkGenerator generator, TemplateManager templateManagerIn, int chunkX, int chunkZ, Biome biomeIn, NoFeatureConfig config)
 		{
 			StructureData data = ((JsonStructure) this.getStructure()).data;
 			
@@ -93,21 +87,21 @@ public class JsonStructure extends GelStructure<NoFeatureConfig>
 
 	public static class JsonPieces
 	{
-		public static void assemble(ChunkGenerator<?> chunkGen, TemplateManager template, BlockPos pos, List<StructurePiece> pieces, SharedSeedRandom seed, ResourceLocation start, int size)
+		public static void assemble(ChunkGenerator chunkGen, TemplateManager template, BlockPos pos, List<StructurePiece> pieces, SharedSeedRandom seed, ResourceLocation start, int size)
 		{
-			JigsawManager.addPieces(start, size, JsonPieces.Piece::new, chunkGen, template, pos, pieces, seed);
+			JigsawManager.func_236823_a_(start, size, JsonPieces.Piece::new, chunkGen, template, pos, pieces, seed, true, true);
 		}
 
 		public static class Piece extends GelStructurePiece
 		{
 			public Piece(TemplateManager template, JigsawPiece jigsawPiece, BlockPos pos, int groundLevelDelta, Rotation rotation, MutableBoundingBox boundingBox)
 			{
-				super(StructureGelMod.FeatureRegistry.JSON_PIECE, template, jigsawPiece, pos, groundLevelDelta, rotation, boundingBox);
+				super(StructureGelMod.StructureRegistry.JSON_PIECE, template, jigsawPiece, pos, groundLevelDelta, rotation, boundingBox);
 			}
 
 			public Piece(TemplateManager template, CompoundNBT nbt)
 			{
-				super(template, nbt, StructureGelMod.FeatureRegistry.JSON_PIECE);
+				super(template, nbt, StructureGelMod.StructureRegistry.JSON_PIECE);
 			}
 
 			@Override

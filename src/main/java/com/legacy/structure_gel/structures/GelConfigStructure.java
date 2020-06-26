@@ -1,9 +1,7 @@
 package com.legacy.structure_gel.structures;
 
-import java.util.function.Function;
-
 import com.legacy.structure_gel.util.ConfigTemplates;
-import com.mojang.datafixers.Dynamic;
+import com.mojang.serialization.Codec;
 
 import net.minecraft.world.gen.feature.IFeatureConfig;
 
@@ -18,9 +16,9 @@ public abstract class GelConfigStructure<C extends IFeatureConfig> extends GelSt
 {
 	private final ConfigTemplates.StructureConfig config;
 
-	public GelConfigStructure(Function<Dynamic<?>, ? extends C> configFactoryIn, ConfigTemplates.StructureConfig config)
+	public GelConfigStructure(Codec<C> codec, ConfigTemplates.StructureConfig config)
 	{
-		super(configFactoryIn);
+		super(codec);
 		this.config = config;
 	}
 

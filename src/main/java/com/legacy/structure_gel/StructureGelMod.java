@@ -30,6 +30,7 @@ import com.legacy.structure_gel.structures.processors.RandomStateSwapProcessor;
 import com.legacy.structure_gel.structures.processors.RandomTagSwapProcessor;
 import com.legacy.structure_gel.structures.processors.RemoveGelStructureProcessor;
 import com.legacy.structure_gel.util.RegistryHelper;
+import com.mojang.serialization.Codec;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderType;
@@ -37,13 +38,13 @@ import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.gen.GenerationStage.Decoration;
-import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.jigsaw.IJigsawDeserializer;
+import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.template.IStructureProcessorType;
+import net.minecraft.world.gen.feature.template.StructureProcessor;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -84,15 +85,11 @@ public class StructureGelMod
 
 	public void commonInit(final FMLCommonSetupEvent event)
 	{
-		FeatureRegistry.STRUCTURES.forEach(structure ->
+		StructureRegistry.STRUCTURES.forEach(structure ->
 		{
 			if (structure instanceof JsonStructure)
 			{
-				((JsonStructure) structure).data.biomes.forEach(biome ->
-				{
-					RegistryHelper.addFeature(biome, Decoration.SURFACE_STRUCTURES, structure);
-					RegistryHelper.addStructure(biome, structure);
-				});
+				((JsonStructure) structure).data.biomes.forEach(biome -> RegistryHelper.addStructure(biome, structure));
 			}
 		});
 	}
@@ -138,34 +135,34 @@ public class StructureGelMod
 	}
 
 	@Mod.EventBusSubscriber(modid = StructureGelMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
-	public static class FeatureRegistry
+	public static class StructureRegistry
 	{
 		public static ImmutableList<Structure<NoFeatureConfig>> STRUCTURES = ImmutableList.of();
 		public static IStructurePieceType JSON_PIECE;
 
 		@SubscribeEvent
-		public static void onRegistry(final RegistryEvent.Register<Feature<?>> event)
+		public static void onRegistry(final RegistryEvent.Register<Structure<?>> event)
 		{
-			FeatureRegistry.JSON_PIECE = RegistryHelper.registerStructurePiece(locate("json_piece"), JsonStructure.JsonPieces.Piece::new);
+			StructureRegistry.JSON_PIECE = RegistryHelper.registerStructurePiece(locate("json_piece"), JsonStructure.JsonPieces.Piece::new);
 			registerProcessors(event);
 			registerDeserializers(event);
 			registerStructures(event);
 		}
 
-		private static void registerProcessors(final RegistryEvent.Register<Feature<?>> event)
+		private static void registerProcessors(final RegistryEvent.Register<Structure<?>> event)
 		{
-			Processors.REMOVE_FILLER = Processors.register("remove_filler", (dyn) -> RemoveGelStructureProcessor.INSTANCE);
-			Processors.REPLACE_BLOCK = Processors.register("replace_block", RandomBlockSwapProcessor::new);
-			Processors.REPLACE_TAG = Processors.register("replace_tag", RandomTagSwapProcessor::new);
-			Processors.REPLACE_STATE = Processors.register("replace_state", RandomStateSwapProcessor::new);
+			Processors.REMOVE_FILLER = Processors.register("remove_filler", RemoveGelStructureProcessor.CODEC);
+			Processors.REPLACE_BLOCK = Processors.register("replace_block", RandomBlockSwapProcessor.CODEC);
+			Processors.REPLACE_TAG = Processors.register("replace_tag", RandomTagSwapProcessor.CODEC);
+			Processors.REPLACE_STATE = Processors.register("replace_state", RandomStateSwapProcessor.CODEC);
 		}
 
-		private static void registerDeserializers(final RegistryEvent.Register<Feature<?>> event)
+		private static void registerDeserializers(final RegistryEvent.Register<Structure<?>> event)
 		{
-			JigsawDeserializers.GEL_SINGLE_POOL_ELEMENT = JigsawDeserializers.register("gel_single_pool_element", GelJigsawPiece::new);
+			JigsawDeserializers.GEL_SINGLE_POOL_ELEMENT = JigsawDeserializers.register("gel_single_pool_element", GelJigsawPiece.CODEC);
 		}
 
-		private static void registerStructures(final RegistryEvent.Register<Feature<?>> event)
+		private static void registerStructures(final RegistryEvent.Register<Structure<?>> event)
 		{
 			List<Structure<NoFeatureConfig>> structures = new ArrayList<>();
 			getJsonStructures().forEach((path, json) ->
@@ -182,7 +179,7 @@ public class StructureGelMod
 					e.printStackTrace();
 				}
 			});
-			FeatureRegistry.STRUCTURES = ImmutableList.copyOf(structures);
+			StructureRegistry.STRUCTURES = ImmutableList.copyOf(structures);
 		}
 
 		private static Map<String, JsonObject> getJsonStructures()
@@ -226,24 +223,24 @@ public class StructureGelMod
 
 	public static class Processors
 	{
-		public static IStructureProcessorType REMOVE_FILLER;
-		public static IStructureProcessorType REPLACE_BLOCK;
-		public static IStructureProcessorType REPLACE_TAG;
-		public static IStructureProcessorType REPLACE_STATE;
+		public static IStructureProcessorType<RemoveGelStructureProcessor> REMOVE_FILLER;
+		public static IStructureProcessorType<RandomBlockSwapProcessor> REPLACE_BLOCK;
+		public static IStructureProcessorType<RandomTagSwapProcessor> REPLACE_TAG;
+		public static IStructureProcessorType<RandomStateSwapProcessor> REPLACE_STATE;
 
-		protected static IStructureProcessorType register(String key, IStructureProcessorType type)
+		protected static <P extends StructureProcessor> IStructureProcessorType<P> register(String key, Codec<P> codec)
 		{
-			return Registry.register(Registry.STRUCTURE_PROCESSOR, locate(key), type);
+			return Registry.register(Registry.STRUCTURE_PROCESSOR, key, () -> codec);
 		}
 	}
 
 	public static class JigsawDeserializers
 	{
-		public static IJigsawDeserializer GEL_SINGLE_POOL_ELEMENT;
+		public static IJigsawDeserializer<GelJigsawPiece> GEL_SINGLE_POOL_ELEMENT;
 
-		protected static IJigsawDeserializer register(String key, IJigsawDeserializer type)
+		protected static <P extends JigsawPiece> IJigsawDeserializer<P> register(String key, Codec<P> codec)
 		{
-			return Registry.register(Registry.STRUCTURE_POOL_ELEMENT, locate(key), type);
+			return Registry.register(Registry.STRUCTURE_POOL_ELEMENT, key, () -> codec);
 		}
 	}
 }
