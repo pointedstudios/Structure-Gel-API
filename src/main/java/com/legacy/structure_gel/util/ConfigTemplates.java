@@ -131,8 +131,7 @@ public class ConfigTemplates
 		@SubscribeEvent
 		protected void onConfigLoad(ModConfig.ModConfigEvent event)
 		{
-			this.biomes.clear();
-			parseBiomes(this.biomeString.get());
+			this.biomes = parseBiomes(this.biomeString.get());
 		}
 
 		/**
@@ -164,9 +163,11 @@ public class ConfigTemplates
 		 * biomes list. Used internally.
 		 * 
 		 * @param key
+		 * @return List
 		 */
-		protected void parseBiomes(String key)
+		public static List<Biome> parseBiomes(String key)
 		{
+			List<Biome> biomes = new ArrayList<>();
 			Arrays.asList(key.replace(" ", "").split(",")).stream().forEach(s ->
 			{
 				boolean not = s.startsWith("!");
@@ -177,13 +178,14 @@ public class ConfigTemplates
 				{
 					ResourceLocation biome = new ResourceLocation(biomeString);
 					if (ForgeRegistries.BIOMES.containsKey(biome))
-						updateBiomeList(ForgeRegistries.BIOMES.getValue(biome), not);
+						updateBiomeList(biomes, ForgeRegistries.BIOMES.getValue(biome), not);
 				}
 				else if (BiomeDictionary.Type.getType(biomeString) != null)
 				{
-					BiomeDictionary.getBiomes(BiomeDictionary.Type.getType(biomeString)).forEach(biome -> updateBiomeList(biome, not));
+					BiomeDictionary.getBiomes(BiomeDictionary.Type.getType(biomeString)).forEach(biome -> updateBiomeList(biomes, biome, not));
 				}
 			});
+			return biomes;
 		}
 
 		/**
@@ -192,15 +194,15 @@ public class ConfigTemplates
 		 * @param biome
 		 * @param not
 		 */
-		protected void updateBiomeList(Biome biome, boolean not)
+		protected static void updateBiomeList(List<Biome> biomes, Biome biome, boolean not)
 		{
 			if (not)
 			{
-				if (this.biomes.contains(biome))
-					this.biomes.remove(biome);
+				if (biomes.contains(biome))
+					biomes.remove(biome);
 			}
-			else if (!this.biomes.contains(biome))
-				this.biomes.add(biome);
+			else if (!biomes.contains(biome))
+				biomes.add(biome);
 		}
 	}
 }
