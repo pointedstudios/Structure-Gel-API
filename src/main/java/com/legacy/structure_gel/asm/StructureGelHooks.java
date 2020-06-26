@@ -25,8 +25,7 @@ public class StructureGelHooks
 	{
 		for (Structure<?> structure : StructureAccessHelper.LAKE_STRUCTURES)
 			if (structureManager.func_235011_a_(SectionPos.from(pos), structure).findAny().isPresent())
-				return false;
-
-		return true;
+				return true;
+		return false;
 	}
 }
