@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[31,)"
+loaderVersion="[32,)"
 issueTrackerURL="https://gitlab.com/groups/modding-legacy/-/issues"
 [[mods]]
 	modId="structure_gel"
@@ -13,12 +13,12 @@ issueTrackerURL="https://gitlab.com/groups/modding-legacy/-/issues"
 [[dependencies.structure_gel]]
     modId="forge"
     mandatory=true
-    versionRange="[31.1.0,)"
+    versionRange="[32.0.7,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.structure_gel]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.15.2]"
+    versionRange="[1.16.1]"
     ordering="NONE"
     side="BOTH"
