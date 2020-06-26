@@ -4,4 +4,5 @@ If you're looking to download the mod to play, go to the Curse page and grab it 
 https://www.curseforge.com/minecraft/mc-mods/structure-gel-api
 
 MCP Mappings Versions
-1.14.2-1.0.0 - 20200119-1.14.3 
+1.14.4-1.0.0 - 20200119-1.14.3 
+1.14.4-1.1.0 - 20200119-1.14.3 
