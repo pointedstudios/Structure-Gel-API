@@ -45,6 +45,15 @@ public class JigsawAccessHelper
 		Feature.ILLAGER_STRUCTURES = Streams.concat(Feature.ILLAGER_STRUCTURES.stream(), Arrays.asList(structures).stream()).collect(ImmutableList.toImmutableList());
 	}
 
+	
+	public static void removePool(ResourceLocation pool)
+	{
+		if (JigsawManager.REGISTRY.registry.containsKey(pool))
+			JigsawManager.REGISTRY.registry.remove(pool);
+		else
+			StructureGelMod.LOGGER.warn(String.format("Could not remove the pool %s as it does not exist.", pool));
+	}
+	
 	/**
 	 * Adds the input jigsaw pieces to the pool passed in. Make sure the pool you're
 	 * adding to has been initialized.<br>
