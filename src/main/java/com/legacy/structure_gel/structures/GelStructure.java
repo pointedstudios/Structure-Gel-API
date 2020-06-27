@@ -1,7 +1,6 @@
 package com.legacy.structure_gel.structures;
 
 import java.util.List;
-import java.util.Random;
 
 import javax.annotation.Nullable;
 
@@ -10,17 +9,13 @@ import com.mojang.serialization.Codec;
 
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.util.SharedSeedRandom;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeManager;
 import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.feature.structure.StructureStart;
-import net.minecraft.world.gen.feature.template.TemplateManager;
 import net.minecraft.world.gen.settings.StructureSeparationSettings;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
@@ -69,25 +64,29 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	@Override
 	public ChunkPos func_236392_a_(StructureSeparationSettings settings, long seed, SharedSeedRandom random, int x, int z)
 	{
-		int spacing = this.getSpacing();
+		/*int spacing = this.getSpacing();
 		int gridX = ((x / spacing) * spacing);
 		int gridZ = ((z / spacing) * spacing);
-
+		
 		int offset = this.getOffset() + 1;
 		((SharedSeedRandom) random).setLargeFeatureSeedWithSalt(seed, gridX, gridZ, this.getSeed());
 		int offsetX = random.nextInt(offset);
 		int offsetZ = random.nextInt(offset);
-
+		
 		int gridOffsetX = gridX + offsetX;
 		int gridOffsetZ = gridZ + offsetZ;
-
-		return new ChunkPos(gridOffsetX, gridOffsetZ);
+		
+		return new ChunkPos(gridOffsetX, gridOffsetZ);*/
+		return super.func_236392_a_(settings, seed, random, x, z);
 	}
 
+	@Override
 	protected boolean func_230363_a_(ChunkGenerator chunkGen, BiomeProvider biomeProvider, long seed, SharedSeedRandom sharedSeedRand, int chunkPosX, int chunkPosZ, Biome biomeIn, ChunkPos chunkPos, C config)
 	{
-		((SharedSeedRandom) sharedSeedRand).setLargeFeatureSeedWithSalt(seed, chunkPosX, chunkPosZ, this.getSeed());
-		return sharedSeedRand.nextDouble() < getProbability();
+		// ((SharedSeedRandom) sharedSeedRand).setLargeFeatureSeedWithSalt(seed,
+		// chunkPosX, chunkPosZ, this.getSeed());
+		// return sharedSeedRand.nextDouble() < getProbability();
+		return super.func_230363_a_(chunkGen, biomeProvider, seed, sharedSeedRand, chunkPosX, chunkPosZ, biomeIn, chunkPos, config);
 	}
 
 	/**
@@ -142,6 +141,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	 * nothing.
 	 */
 	@Nullable
+	@Override
 	public List<Biome.SpawnListEntry> getSpawnList()
 	{
 		return null;
@@ -152,6 +152,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	 * nothing.
 	 */
 	@Nullable
+	@Override
 	public List<Biome.SpawnListEntry> getCreatureSpawnList()
 	{
 		return null;
@@ -178,5 +179,11 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 				event.getList().addAll(this.getCreatureSpawnList());
 			}
 		}
+	}
+
+	//TODO
+	public GenerationStage.Decoration func_236396_f_()
+	{
+		return GenerationStage.Decoration.SURFACE_STRUCTURES;
 	}
 }

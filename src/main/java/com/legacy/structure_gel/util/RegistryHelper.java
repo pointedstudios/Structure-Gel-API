@@ -105,6 +105,7 @@ public class RegistryHelper
 	{
 		structure.setRegistryName(key);
 		registry.register(structure);
+		Structure.field_236365_a_.put(key.toString(), structure);
 		return structure;
 	}
 
