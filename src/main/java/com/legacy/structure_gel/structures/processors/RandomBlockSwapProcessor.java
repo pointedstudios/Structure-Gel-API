@@ -28,8 +28,10 @@ import net.minecraft.world.gen.feature.template.Template;
  */
 public class RandomBlockSwapProcessor extends StructureProcessor
 {
+	@SuppressWarnings("deprecation")
 	public static final Codec<RandomBlockSwapProcessor> CODEC = RecordCodecBuilder.create((instance) ->
 	{
+		//TODO Use forge registry when possible
 		return instance.group(Registry.BLOCK.fieldOf("condition").forGetter(processor ->
 		{
 			return processor.condition;
