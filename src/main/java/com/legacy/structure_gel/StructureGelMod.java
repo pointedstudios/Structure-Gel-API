@@ -29,8 +29,6 @@ import com.legacy.structure_gel.structures.processors.RandomBlockSwapProcessor;
 import com.legacy.structure_gel.structures.processors.RandomStateSwapProcessor;
 import com.legacy.structure_gel.structures.processors.RandomTagSwapProcessor;
 import com.legacy.structure_gel.structures.processors.RemoveGelStructureProcessor;
-import com.legacy.structure_gel.test.TowerPieces;
-import com.legacy.structure_gel.test.TowerStructure;
 import com.legacy.structure_gel.util.RegistryHelper;
 import com.mojang.serialization.Codec;
 
@@ -42,6 +40,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.jigsaw.IJigsawDeserializer;
+import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.template.IStructureProcessorType;
@@ -54,7 +53,6 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 
 /**
@@ -93,12 +91,6 @@ public class StructureGelMod
 			{
 				((JsonStructure) structure).data.biomes.forEach(biome -> RegistryHelper.addStructure(biome, structure));
 			}
-		});
-
-		// TODO
-		ForgeRegistries.BIOMES.forEach(b ->
-		{
-			RegistryHelper.addStructure(b, StructureRegistry.test);
 		});
 	}
 
@@ -148,10 +140,6 @@ public class StructureGelMod
 		public static ImmutableList<Structure<NoFeatureConfig>> STRUCTURES = ImmutableList.of();
 		public static IStructurePieceType JSON_PIECE;
 
-		// TODO
-		public static Structure<NoFeatureConfig> test;
-		public static IStructurePieceType testPiece;
-
 		@SubscribeEvent
 		public static void onRegistry(final RegistryEvent.Register<Structure<?>> event)
 		{
@@ -159,10 +147,6 @@ public class StructureGelMod
 			registerProcessors(event);
 			registerDeserializers(event);
 			registerStructures(event);
-
-			// TODO
-			test = RegistryHelper.registerStructure(event.getRegistry(), new ResourceLocation("dungeons_plus", "tower"), new TowerStructure(NoFeatureConfig.field_236558_a_));
-			testPiece = RegistryHelper.registerStructurePiece(new ResourceLocation("dungeons_plus", "tower"), TowerPieces.Piece::new);
 		}
 
 		private static void registerProcessors(final RegistryEvent.Register<Structure<?>> event)
@@ -175,7 +159,7 @@ public class StructureGelMod
 
 		private static void registerDeserializers(final RegistryEvent.Register<Structure<?>> event)
 		{
-			JigsawDeserializers.GEL_SINGLE_POOL_ELEMENT = Registry.register(Registry.STRUCTURE_POOL_ELEMENT, locate("gel_single_pool_element"), () -> GelJigsawPiece.CODEC);
+			JigsawDeserializers.GEL_SINGLE_POOL_ELEMENT = JigsawDeserializers.register("gel_single_pool_element", GelJigsawPiece.CODEC);
 		}
 
 		private static void registerStructures(final RegistryEvent.Register<Structure<?>> event)
@@ -253,5 +237,10 @@ public class StructureGelMod
 	public static class JigsawDeserializers
 	{
 		public static IJigsawDeserializer<GelJigsawPiece> GEL_SINGLE_POOL_ELEMENT;
+		
+		protected static <P extends JigsawPiece> IJigsawDeserializer<P> register(String key, Codec<P> codec)
+		{
+			return Registry.register(Registry.STRUCTURE_POOL_ELEMENT, locate(key), () -> codec);
+		}
 	}
 }

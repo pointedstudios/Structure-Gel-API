@@ -61,32 +61,31 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	 * @see #getSpacing()
 	 * @see #getOffset()
 	 */
+	// getChunkPosForPos
 	@Override
-	public ChunkPos func_236392_a_(StructureSeparationSettings settings, long seed, SharedSeedRandom random, int x, int z)
+	public ChunkPos func_236392_a_(StructureSeparationSettings settings, long seed, SharedSeedRandom sharedSeedRand, int x, int z)
 	{
-		/*int spacing = this.getSpacing();
+		int spacing = this.getSpacing();
 		int gridX = ((x / spacing) * spacing);
 		int gridZ = ((z / spacing) * spacing);
 		
 		int offset = this.getOffset() + 1;
-		((SharedSeedRandom) random).setLargeFeatureSeedWithSalt(seed, gridX, gridZ, this.getSeed());
-		int offsetX = random.nextInt(offset);
-		int offsetZ = random.nextInt(offset);
+		sharedSeedRand.setLargeFeatureSeedWithSalt(seed, gridX, gridZ, this.getSeed());
+		int offsetX = sharedSeedRand.nextInt(offset);
+		int offsetZ = sharedSeedRand.nextInt(offset);
 		
 		int gridOffsetX = gridX + offsetX;
 		int gridOffsetZ = gridZ + offsetZ;
 		
-		return new ChunkPos(gridOffsetX, gridOffsetZ);*/
-		return super.func_236392_a_(settings, seed, random, x, z);
+		return new ChunkPos(gridOffsetX, gridOffsetZ);
 	}
 
+	// canGenerate
 	@Override
 	protected boolean func_230363_a_(ChunkGenerator chunkGen, BiomeProvider biomeProvider, long seed, SharedSeedRandom sharedSeedRand, int chunkPosX, int chunkPosZ, Biome biomeIn, ChunkPos chunkPos, C config)
 	{
-		// ((SharedSeedRandom) sharedSeedRand).setLargeFeatureSeedWithSalt(seed,
-		// chunkPosX, chunkPosZ, this.getSeed());
-		// return sharedSeedRand.nextDouble() < getProbability();
-		return super.func_230363_a_(chunkGen, biomeProvider, seed, sharedSeedRand, chunkPosX, chunkPosZ, biomeIn, chunkPos, config);
+		sharedSeedRand.setLargeFeatureSeedWithSalt(seed, chunkPosX, chunkPosZ, this.getSeed());
+		return sharedSeedRand.nextDouble() < getProbability();
 	}
 
 	/**
