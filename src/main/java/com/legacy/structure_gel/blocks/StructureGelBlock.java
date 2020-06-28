@@ -157,7 +157,7 @@ public class StructureGelBlock extends Block implements IStructureGel
 						removeGel(state, worldIn, offset.offset(d.rotateY()));
 				}
 			}
-			worldIn.setBlockState(pos, Blocks.AIR.getDefaultState());
+			worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
 			this.removalHookPost(state, worldIn, pos, random);
 		}
 	}
@@ -242,7 +242,7 @@ public class StructureGelBlock extends Block implements IStructureGel
 	 */
 	public void setGel(BlockState state, World worldIn, BlockPos pos, int count)
 	{
-		worldIn.setBlockState(pos, state.with(COUNT, count));
+		worldIn.setBlockState(pos, state.with(COUNT, count), 2);
 		worldIn.getPendingBlockTicks().scheduleTick(pos, worldIn.getBlockState(pos).getBlock(), 2);
 	}
 
