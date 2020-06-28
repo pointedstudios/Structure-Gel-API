@@ -5,7 +5,6 @@
 		"spacing": 4,
 		"offset": 0,
 		"probability": 1.0,
-		"chunk_size": 1,
 		"biomes": "#ocean, minecraft:plains, !minecraft:frozen_ocean",
 		"placement": {
 			"min_y": 70,

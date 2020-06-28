@@ -145,10 +145,8 @@ public class StructureData
 				Optional<IStructureProcessorType<?>> optional = Registry.STRUCTURE_PROCESSOR.getValue(name);
 				if (optional.isPresent())
 				{
-					//processors.add(optional.get().deserialize(new Dynamic<>(JsonOps.INSTANCE, JSONUtils.getJsonObject(jsonObj, "data"))));
 					DataResult<StructureProcessor> data = optional.get().codec().parse(new Dynamic<>(JsonOps.INSTANCE, JSONUtils.getJsonObject(jsonObj, "data"))).map(sj -> null);
 					processors.add(data.get().left().get());
-					
 				}
 				else
 					throw new IllegalArgumentException(String.format("%s is not a registered structure processor type.", name));
