@@ -116,6 +116,30 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	}
 
 	/**
+	 * 
+	 * @param location
+	 * @param processors
+	 * @param placementBehavior
+	 * @param maintainWater
+	 * @param ignoreEntities
+	 */
+	public GelJigsawPiece(ResourceLocation location, List<StructureProcessor> processors, JigsawPattern.PlacementBehaviour placementBehavior, boolean maintainWater, boolean ignoreEntities)
+	{
+		this(Either.left(location), processors, placementBehavior, maintainWater, ignoreEntities);
+	}
+
+	/**
+	 * 
+	 * @param location
+	 * @param processors
+	 * @param placementBehavior
+	 */
+	public GelJigsawPiece(ResourceLocation location, List<StructureProcessor> processors, JigsawPattern.PlacementBehaviour placementBehavior)
+	{
+		this(Either.left(location), processors, placementBehavior);
+	}
+
+	/**
 	 * @see GelJigsawPiece
 	 * @param location : the structure
 	 * @param processors
@@ -183,7 +207,7 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	 * Changes how the place function works to allow for data structure blocks.
 	 * 
 	 * @param templateManager
-	 * @param seedManager
+	 * @param seedReader
 	 * @param structureManager
 	 * @param chunkGen
 	 * @param pos
@@ -195,25 +219,25 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	 * @param gelStructurePiece
 	 * @return
 	 */
-	public boolean place(TemplateManager templateManager, ISeedReader seedManager, StructureManager structureManager, ChunkGenerator chunkGen, BlockPos pos, BlockPos pos2, Rotation rotation, MutableBoundingBox bounds, Random rand, boolean isLegacy, GelStructurePiece gelStructurePiece)
+	public boolean place(TemplateManager templateManager, ISeedReader seedReader, StructureManager structureManager, ChunkGenerator chunkGen, BlockPos pos, BlockPos pos2, Rotation rotation, MutableBoundingBox bounds, Random rand, boolean isLegacy, GelStructurePiece gelStructurePiece)
 	{
 		Template template = this.getTemplate(templateManager);
-		PlacementSettings placementsettings = this.func_230379_a_(rotation, bounds, isLegacy);
-		if (!new GelTemplate(template).func_237146_a_(seedManager, pos, pos2, placementsettings, rand, 18))
+		PlacementSettings placementSettings = this.func_230379_a_(rotation, bounds, isLegacy);
+		if (!new GelTemplate(template).func_237146_a_(seedReader, pos, pos2, placementSettings, rand, 18))
 		{
 			return false;
 		}
 		else
 		{
-			for (Template.BlockInfo blockInfo : Template.processBlockInfos(seedManager, pos, pos2, placementsettings, this.getDataMarkers(templateManager, pos, rotation, false), template))
+			for (Template.BlockInfo blockInfo : Template.processBlockInfos(seedReader, pos, pos2, placementSettings, this.getDataMarkers(templateManager, pos, rotation, false), template))
 			{
-				this.handleDataMarker(seedManager, blockInfo, pos, rotation, rand, bounds);
-				if (blockInfo.nbt != null && seedManager.getWorld().getBlockState(blockInfo.pos).getBlock() == Blocks.STRUCTURE_BLOCK)
+				this.handleDataMarker(seedReader, blockInfo, pos, rotation, rand, bounds);
+				if (blockInfo.nbt != null && seedReader.getBlockState(blockInfo.pos).getBlock() == Blocks.STRUCTURE_BLOCK)
 				{
 					StructureMode mode = StructureMode.valueOf(blockInfo.nbt.getString("mode"));
 					if (mode == StructureMode.DATA)
 					{
-						gelStructurePiece.handleDataMarker(blockInfo.nbt.getString("metadata"), seedManager.getWorld(), blockInfo.pos, rand, bounds);
+						gelStructurePiece.handleDataMarker(blockInfo.nbt.getString("metadata"), seedReader, blockInfo.pos, rand, bounds);
 					}
 				}
 			}

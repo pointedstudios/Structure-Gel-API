@@ -52,14 +52,14 @@ public class GelTemplate extends Template
 	// addBlocksToWorld
 	public boolean func_237146_a_(IWorld worldIn, BlockPos pos, BlockPos pos2, PlacementSettings placementSettings, Random rand, int flags)
 	{
-		if (this.blocks.isEmpty())
+		if (this.template.blocks.isEmpty())
 		{
 			return false;
 		}
 		else
 		{
 			List<Template.BlockInfo> list = placementSettings.func_237132_a_(this.template.blocks, pos).func_237157_a_();
-			if ((!list.isEmpty() || !placementSettings.getIgnoreEntities() && !this.entities.isEmpty()) && this.template.getSize().getX() >= 1 && this.template.getSize().getY() >= 1 && this.template.getSize().getZ() >= 1)
+			if ((!list.isEmpty() || !placementSettings.getIgnoreEntities() && !this.template.entities.isEmpty()) && this.template.getSize().getX() >= 1 && this.template.getSize().getY() >= 1 && this.template.getSize().getZ() >= 1)
 			{
 				MutableBoundingBox mutableboundingbox = placementSettings.getBoundingBox();
 				List<BlockPos> list1 = Lists.newArrayListWithCapacity(placementSettings.func_204763_l() ? list.size() : 0);
@@ -77,7 +77,7 @@ public class GelTemplate extends Template
 					if (mutableboundingbox == null || mutableboundingbox.isVecInside(blockpos))
 					{
 						FluidState fluidstate = placementSettings.func_204763_l() ? worldIn.getFluidState(blockpos) : null;
-						BlockState blockstate = template$blockinfo.state.mirror(placementSettings.getMirror()).rotate(placementSettings.getRotation());
+						BlockState blockstate = template$blockinfo.state.mirror(placementSettings.getMirror()).rotate(worldIn, pos, placementSettings.getRotation());
 						if (template$blockinfo.nbt != null)
 						{
 							TileEntity tileentity = worldIn.getTileEntity(blockpos);

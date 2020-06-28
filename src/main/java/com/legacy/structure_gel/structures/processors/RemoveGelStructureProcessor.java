@@ -46,10 +46,7 @@ public class RemoveGelStructureProcessor extends StructureProcessor
 	{
 		if (placed.state.getBlock().isIn(GelTags.GEL))
 			return new Template.BlockInfo(placed.pos, Blocks.AIR.getDefaultState(), null);
-		else if (placed.state.getBlock() == Blocks.AIR)
-			return null;
-		else
-			return placed;
+		return placed.state.getBlock() == Blocks.AIR ? null : placed;
 	}
 
 	/**

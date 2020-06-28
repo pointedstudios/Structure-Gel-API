@@ -184,7 +184,7 @@ public class TowerPieces
 				Direction facing = Direction.byName(data[1]);
 				ChestType chestType = data[2].equals(ChestType.LEFT.func_176610_l()) ? ChestType.LEFT : (data[2].equals(ChestType.RIGHT.func_176610_l()) ? ChestType.RIGHT : ChestType.SINGLE);
 
-				worldIn.setBlockState(pos, Blocks.CHEST.getDefaultState().with(ChestBlock.FACING, facing).with(ChestBlock.TYPE, chestType).rotate(this.rotation), 3);
+				worldIn.setBlockState(pos, Blocks.CHEST.getDefaultState().with(ChestBlock.FACING, facing).with(ChestBlock.TYPE, chestType).rotate(worldIn, pos, this.rotation), 3);
 				if (worldIn.getTileEntity(pos) instanceof ChestTileEntity)
 				{
 					((ChestTileEntity) worldIn.getTileEntity(pos)).setLootTable(LootTables.CHESTS_SIMPLE_DUNGEON, rand.nextLong());

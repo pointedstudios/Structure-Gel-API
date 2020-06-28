@@ -17,6 +17,7 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
+import net.minecraft.world.gen.feature.jigsaw.SingleJigsawPiece;
 import net.minecraft.world.gen.feature.template.StructureProcessor;
 
 /**
@@ -210,7 +211,7 @@ public class JigsawPoolBuilder
 	public List<Pair<JigsawPiece, Integer>> build()
 	{
 		List<Pair<JigsawPiece, Integer>> jigsawList = new ArrayList<>();
-		this.names.forEach((rl, i) -> jigsawList.add(Pair.of(new GelJigsawPiece(Either.left(rl), this.processors, this.placementBehavior).maintainWater(this.maintainWater), i)));
+		this.names.forEach((rl, i) -> jigsawList.add(Pair.of(new GelJigsawPiece(rl, this.processors, this.placementBehavior, this.maintainWater, false), i)));
 		
 		return jigsawList.stream().collect(ImmutableList.toImmutableList());
 	}

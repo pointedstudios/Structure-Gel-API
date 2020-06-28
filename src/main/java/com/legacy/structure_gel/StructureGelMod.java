@@ -42,7 +42,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.jigsaw.IJigsawDeserializer;
-import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.template.IStructureProcessorType;
@@ -176,7 +175,7 @@ public class StructureGelMod
 
 		private static void registerDeserializers(final RegistryEvent.Register<Structure<?>> event)
 		{
-			JigsawDeserializers.GEL_SINGLE_POOL_ELEMENT = JigsawDeserializers.register("gel_single_pool_element", GelJigsawPiece.CODEC);
+			JigsawDeserializers.GEL_SINGLE_POOL_ELEMENT = Registry.register(Registry.STRUCTURE_POOL_ELEMENT, locate("gel_single_pool_element"), () -> GelJigsawPiece.CODEC);
 		}
 
 		private static void registerStructures(final RegistryEvent.Register<Structure<?>> event)
@@ -247,17 +246,12 @@ public class StructureGelMod
 
 		protected static <P extends StructureProcessor> IStructureProcessorType<P> register(String key, Codec<P> codec)
 		{
-			return Registry.register(Registry.STRUCTURE_PROCESSOR, key, () -> codec);
+			return Registry.register(Registry.STRUCTURE_PROCESSOR, locate(key), () -> codec);
 		}
 	}
 
 	public static class JigsawDeserializers
 	{
 		public static IJigsawDeserializer<GelJigsawPiece> GEL_SINGLE_POOL_ELEMENT;
-
-		protected static <P extends JigsawPiece> IJigsawDeserializer<P> register(String key, Codec<P> codec)
-		{
-			return Registry.register(Registry.STRUCTURE_POOL_ELEMENT, key, () -> codec);
-		}
 	}
 }

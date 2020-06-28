@@ -1,9 +1,7 @@
 package com.legacy.structure_gel.test;
 
-import com.legacy.structure_gel.structures.GelConfigStructure;
 import com.legacy.structure_gel.structures.GelStructure;
 import com.legacy.structure_gel.structures.GelStructureStart;
-import com.legacy.structure_gel.util.ConfigTemplates.StructureConfig;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.util.math.BlockPos;
@@ -62,7 +60,7 @@ public class TowerStructure extends GelStructure<NoFeatureConfig>
 		@Override
 		public void func_230364_a_(ChunkGenerator generator, TemplateManager templateManagerIn, int chunkX, int chunkZ, Biome biomeIn, NoFeatureConfig config)
 		{
-			BlockPos pos = new BlockPos(chunkX * 16 + this.rand.nextInt(5), 90, chunkZ * 16 + this.rand.nextInt(5));
+			BlockPos pos = new BlockPos(chunkX * 16 + this.rand.nextInt(5), 0, chunkZ * 16 + this.rand.nextInt(5));
 			TowerPieces.assemble(generator, templateManagerIn, pos, this.components, this.rand);
 			this.recalculateStructureSize();
 		}
