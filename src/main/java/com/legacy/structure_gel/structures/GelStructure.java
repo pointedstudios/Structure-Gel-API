@@ -1,6 +1,8 @@
 package com.legacy.structure_gel.structures;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
@@ -9,13 +11,21 @@ import com.mojang.serialization.Codec;
 
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.util.SharedSeedRandom;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.SectionPos;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biome.SpawnListEntry;
 import net.minecraft.world.biome.provider.BiomeProvider;
+import net.minecraft.world.chunk.ChunkStatus;
+import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
+import net.minecraft.world.gen.feature.structure.StructureManager;
+import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.world.gen.settings.StructureSeparationSettings;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
@@ -31,6 +41,8 @@ import net.minecraftforge.event.world.WorldEvent;
  */
 public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C>
 {
+	public final Map<EntityClassification, List<SpawnListEntry>> SPAWNS = new HashMap<>();
+
 	public GelStructure(Codec<C> codec)
 	{
 		super(codec);
@@ -54,6 +66,12 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 		return this;
 	}
 
+	public GelStructure<C> setSpawnList(EntityClassification classification, List<SpawnListEntry> spawns)
+	{
+		this.SPAWNS.put(classification, spawns);
+		return this;
+	}
+
 	/**
 	 * Checks to see if this structure can generate in the given chunk using a grid
 	 * with custom spacing and offsets.
@@ -68,15 +86,15 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 		int spacing = this.getSpacing();
 		int gridX = ((x / spacing) * spacing);
 		int gridZ = ((z / spacing) * spacing);
-		
+
 		int offset = this.getOffset() + 1;
 		sharedSeedRand.setLargeFeatureSeedWithSalt(seed, gridX, gridZ, this.getSeed());
 		int offsetX = sharedSeedRand.nextInt(offset);
 		int offsetZ = sharedSeedRand.nextInt(offset);
-		
+
 		int gridOffsetX = gridX + offsetX;
 		int gridOffsetZ = gridZ + offsetZ;
-		
+
 		return new ChunkPos(gridOffsetX, gridOffsetZ);
 	}
 
@@ -86,6 +104,63 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	{
 		sharedSeedRand.setLargeFeatureSeedWithSalt(seed, chunkPosX, chunkPosZ, this.getSeed());
 		return sharedSeedRand.nextDouble() < getProbability();
+	}
+
+	// findNearest
+	@Override
+	public BlockPos func_236388_a_(IWorldReader worldIn, StructureManager structureManager, BlockPos startPos, int searchRadius, boolean skipExistingChunks, long seed, StructureSeparationSettings settings)
+	{
+		int spacing = this.getSpacing();
+		System.out.println(spacing);
+		int chunkX = startPos.getX() >> 4;
+		int chunkZ = startPos.getZ() >> 4;
+		int i = 0;
+
+		for (SharedSeedRandom rand = new SharedSeedRandom(); i <= searchRadius; ++i)
+		{
+			for (int xOffset = -i; xOffset <= i; ++xOffset)
+			{
+				boolean flag = xOffset == -i || xOffset == i;
+
+				for (int zOffset = -i; zOffset <= i; ++zOffset)
+				{
+					boolean flag1 = zOffset == -i || zOffset == i;
+					if (flag || flag1)
+					{
+						int newChunkX = chunkX + spacing * xOffset;
+						int newChunkZ = chunkZ + spacing * zOffset;
+						ChunkPos chunkpos = this.func_236392_a_(settings, seed, rand, newChunkX, newChunkZ);
+						IChunk chunk = worldIn.getChunk(chunkpos.x, chunkpos.z, ChunkStatus.STRUCTURE_STARTS);
+						StructureStart<?> start = structureManager.func_235013_a_(SectionPos.from(chunk.getPos(), 0), this, chunk);
+						if (start != null && start.isValid())
+						{
+							if (skipExistingChunks && start.isRefCountBelowMax())
+							{
+								start.incrementRefCount();
+								return start.getPos();
+							}
+
+							if (!skipExistingChunks)
+							{
+								return start.getPos();
+							}
+						}
+
+						if (i == 0)
+						{
+							break;
+						}
+					}
+				}
+
+				if (i == 0)
+				{
+					break;
+				}
+			}
+		}
+
+		return null;
 	}
 
 	/**
@@ -136,30 +211,59 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	}
 
 	/**
+	 * Deprecated: Use {@link #getSpawns(EntityClassification)} and
+	 * {@link #setSpawnList(EntityClassification, List)}.
+	 * <p>
 	 * Return a list of hostile mobs to change spawn behavior. Return null to do
 	 * nothing.
 	 */
 	@Nullable
+	@Deprecated
 	@Override
 	public List<Biome.SpawnListEntry> getSpawnList()
 	{
-		return null;
+		return this.SPAWNS.get(EntityClassification.MONSTER);
 	}
 
 	/**
+	 * Deprecated: Use {@link #getSpawns(EntityClassification)} and
+	 * {@link #setSpawnList(EntityClassification, List)}.
+	 * <p>
 	 * Return a list of passive mobs to change spawn behavior. Return null to do
 	 * nothing.
 	 */
 	@Nullable
+	@Deprecated
 	@Override
 	public List<Biome.SpawnListEntry> getCreatureSpawnList()
 	{
-		return null;
+		return this.SPAWNS.get(EntityClassification.CREATURE);
 	}
 
 	/**
-	 * Automatically registered to the event bus. Use {@link #getSpawnList()} or
-	 * {@link #getCreatureSpawnList()} to set the mob spawns that should occur.
+	 * Returns a list of mobs to spawn based on the classification put in. Any
+	 * classification not set in {@link #SPAWNS} will return null, and be ignored.
+	 * 
+	 * @param classification
+	 * @return
+	 */
+	@Nullable
+	public List<SpawnListEntry> getSpawns(EntityClassification classification)
+	{
+		switch (classification)
+		{
+		case MONSTER:
+			return getSpawnList();
+		case CREATURE:
+			return getCreatureSpawnList();
+		default:
+			return this.SPAWNS.get(classification);
+		}
+	}
+
+	/**
+	 * Automatically registered to the event bus. Uses
+	 * {@link #getSpawns(EntityClassification)} to get what mobs should spawn.
 	 * 
 	 * @param event
 	 */
@@ -167,20 +271,17 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	{
 		if (event.getWorld() instanceof ServerWorld && ((ServerWorld) event.getWorld()).func_241112_a_().func_235010_a_(event.getPos(), false, this).isValid())
 		{
-			if (event.getType() == EntityClassification.MONSTER && this.getSpawnList() != null)
+			if (this.getSpawns(event.getType()) != null)
 			{
 				event.getList().clear();
-				event.getList().addAll(this.getSpawnList());
-			}
-			if (event.getType() == EntityClassification.CREATURE && this.getCreatureSpawnList() != null)
-			{
-				event.getList().clear();
-				event.getList().addAll(this.getCreatureSpawnList());
+				event.getList().addAll(this.getSpawns(event.getType()));
 			}
 		}
 	}
 
-	//TODO
+	/**
+	 * What stage of generation your structure should be generated during.
+	 */
 	public GenerationStage.Decoration func_236396_f_()
 	{
 		return GenerationStage.Decoration.SURFACE_STRUCTURES;
