@@ -1,7 +1,9 @@
 package com.legacy.structure_gel.data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.google.gson.JsonArray;
@@ -14,10 +16,12 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
 
+import net.minecraft.entity.EntityClassification;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biome.SpawnListEntry;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPattern.PlacementBehaviour;
 import net.minecraft.world.gen.feature.template.IStructureProcessorType;
 import net.minecraft.world.gen.feature.template.StructureProcessor;
@@ -28,8 +32,9 @@ public class StructureData
 	public final double probability;
 	public final ResourceLocation registryName, startPool;
 	public final List<Biome> biomes;
+	public final Map<EntityClassification, List<SpawnListEntry>> spawns;
 
-	public StructureData(ResourceLocation name, ResourceLocation startPool, int seed, int spacing, int offset, double probability, List<Biome> biomes, int minY, int maxY)
+	public StructureData(ResourceLocation name, ResourceLocation startPool, int seed, int spacing, int offset, double probability, List<Biome> biomes, Map<EntityClassification, List<SpawnListEntry>> spawns, int minY, int maxY)
 	{
 		this.registryName = name;
 		this.startPool = startPool;
@@ -38,6 +43,7 @@ public class StructureData
 		this.offset = offset;
 		this.probability = probability;
 		this.biomes = biomes;
+		this.spawns = spawns;
 		this.minY = minY;
 		this.maxY = maxY;
 	}
@@ -77,7 +83,11 @@ public class StructureData
 		int spacing = JSONUtils.getInt(properties, "spacing", 12);
 		int offset = JSONUtils.getInt(properties, "offset", 5);
 		double probability = JSONUtils.getFloat(properties, "probability", 1.0F);
-		List<Biome> biomes = ConfigTemplates.BiomeStructureConfig.parseBiomes(JSONUtils.getString(properties, "biomes", ""));
+		List<Biome> biomes = ConfigTemplates.StructureConfigBuilder.parseBiomes(JSONUtils.getString(properties, "biomes", ""));
+		
+		//TODO
+		Map<EntityClassification, List<SpawnListEntry>> spawns = new HashMap<EntityClassification, List<SpawnListEntry>>();
+		
 		JsonObject placement = JSONUtils.getJsonObject(properties, "placement", new JsonObject());
 		int minY = placement.has("min_y") ? JSONUtils.getInt(placement, "min_y") : -1;
 		int maxY = placement.has("max_y") ? JSONUtils.getInt(placement, "max_y") : -1;
@@ -88,7 +98,7 @@ public class StructureData
 				parsePool(j.getAsJsonObject(), path);
 		});
 
-		return new StructureData(name, startPool, seed, spacing, offset, probability, biomes, minY, maxY);
+		return new StructureData(name, startPool, seed, spacing, offset, probability, biomes, spawns, minY, maxY);
 	}
 
 	private static void parsePool(JsonObject json, String path) throws JsonSyntaxException

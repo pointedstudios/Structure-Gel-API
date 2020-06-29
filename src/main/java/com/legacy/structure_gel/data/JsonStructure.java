@@ -3,11 +3,14 @@ package com.legacy.structure_gel.data;
 import java.util.List;
 import java.util.Random;
 
+import javax.annotation.Nullable;
+
 import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.structures.GelStructure;
 import com.legacy.structure_gel.structures.GelStructurePiece;
 import com.legacy.structure_gel.structures.GelStructureStart;
 
+import net.minecraft.entity.EntityClassification;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
@@ -16,6 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biome.SpawnListEntry;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.jigsaw.JigsawManager;
@@ -32,6 +36,7 @@ public class JsonStructure extends GelStructure<NoFeatureConfig>
 	{
 		super(NoFeatureConfig.field_236558_a_);
 		this.data = data;
+		this.SPAWNS.putAll(data.spawns);
 	}
 
 	@Override
@@ -58,6 +63,13 @@ public class JsonStructure extends GelStructure<NoFeatureConfig>
 		return this.data.getOffset();
 	}
 
+	@Override
+	@Nullable
+	public List<SpawnListEntry> getSpawns(EntityClassification classification)
+	{
+		return this.SPAWNS.get(classification);
+	}
+	
 	@Override
 	public IStartFactory<NoFeatureConfig> getStartFactory()
 	{
