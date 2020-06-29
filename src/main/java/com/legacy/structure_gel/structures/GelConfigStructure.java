@@ -14,9 +14,9 @@ import net.minecraft.world.gen.feature.IFeatureConfig;
  */
 public abstract class GelConfigStructure<C extends IFeatureConfig> extends GelStructure<C>
 {
-	private final ConfigTemplates.StructureConfig config;
+	private final ConfigTemplates.StructureConfigBuilder config;
 
-	public GelConfigStructure(Codec<C> codec, ConfigTemplates.StructureConfig config)
+	public GelConfigStructure(Codec<C> codec, ConfigTemplates.StructureConfigBuilder config)
 	{
 		super(codec);
 		this.config = config;
@@ -40,7 +40,7 @@ public abstract class GelConfigStructure<C extends IFeatureConfig> extends GelSt
 		return this.config.getOffset();
 	}
 	
-	public ConfigTemplates.StructureConfig getConfig()
+	public ConfigTemplates.StructureConfigBuilder getConfig()
 	{
 		return this.config;
 	}
