@@ -39,6 +39,7 @@ public class ConfigTemplates
 		private ForgeConfigSpec.ConfigValue<String> biomeString;
 		private ForgeConfigSpec.BooleanValue isWhitelist;
 		private List<Biome> biomes = new ArrayList<>();
+		private List<ForgeConfigSpec.ConfigValue<String>> spawnsStrings;
 		private Map<EntityClassification, List<SpawnListEntry>> spawns = new HashMap<>();
 
 		public StructureConfigBuilder(ForgeConfigSpec.Builder builder, String name)
@@ -50,7 +51,7 @@ public class ConfigTemplates
 
 		public StructureConfigBuilder probability(double probability)
 		{
-			this.probability = this.builder.comment("Chance of generating in an allowed chunk").defineInRange(this.name + ".probability", probability, 0.0D, 1.0D);
+			this.probability = builder.comment("Chance of generating in an allowed chunk").defineInRange(name + ".probability", probability, 0.0D, 1.0D);
 			return this;
 		}
 
@@ -73,16 +74,12 @@ public class ConfigTemplates
 			return this;
 		}
 
-		public StructureConfigBuilder biomes(boolean isWhitelist, Biome... biomes)
+		public StructureConfigBuilder spawns(Map<EntityClassification, String> spawns)
 		{
-			String biomeString = "";
-			for (int i = 0; i < biomes.length; i++)
-			{
-				biomeString = biomeString + biomes[i].getRegistryName();
-				if (i < biomes.length - 1)
-					biomeString = biomeString + ", ";
-			}
-			return biomes(isWhitelist, biomeString);
+			for (EntityClassification classification : EntityClassification.values())
+				if (spawns.containsKey(classification))
+					this.spawnsStrings.add(builder.define(name + ".spawns." + classification.getName(), spawns.get(classification)));
+			return this;
 		}
 
 		/**
