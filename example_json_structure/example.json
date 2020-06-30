@@ -9,6 +9,10 @@
 		"placement": {
 			"min_y": 70,
 			"max_y": 90
+		},
+		"spawns": {
+			"monster": "[minecraft:zombie, 1, 3, 4]",
+			"creature": "[pig, 1, 2, 4]"
 		}
 	},
 	"start_pool": "structure_gel:red_start",

@@ -5,6 +5,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.annotation.Nullable;
 
 import com.legacy.structure_gel.structures.GelStructure;
 
@@ -20,9 +24,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 
 /**
- * These are templates that you can use for your structure's config settings. I
- * reccomend using {@link BiomeStructureConfig} as it lets you configure what
- * biome your structure can spawn in.
+ * These are templates that you can use for your structure's config settings.
  * 
  * @author David
  *
@@ -36,10 +38,10 @@ public class ConfigTemplates
 		private ForgeConfigSpec.DoubleValue probability;
 		private ForgeConfigSpec.IntValue spacing;
 		private ForgeConfigSpec.IntValue offset;
-		private ForgeConfigSpec.ConfigValue<String> biomeString;
 		private ForgeConfigSpec.BooleanValue isWhitelist;
+		private ForgeConfigSpec.ConfigValue<String> biomeString;
 		private List<Biome> biomes = new ArrayList<>();
-		private List<ForgeConfigSpec.ConfigValue<String>> spawnsStrings;
+		private Map<EntityClassification, ForgeConfigSpec.ConfigValue<String>> spawnsStrings = new HashMap<>();
 		private Map<EntityClassification, List<SpawnListEntry>> spawns = new HashMap<>();
 
 		public StructureConfigBuilder(ForgeConfigSpec.Builder builder, String name)
@@ -78,7 +80,7 @@ public class ConfigTemplates
 		{
 			for (EntityClassification classification : EntityClassification.values())
 				if (spawns.containsKey(classification))
-					this.spawnsStrings.add(builder.define(name + ".spawns." + classification.getName(), spawns.get(classification)));
+					this.getSpawnsStrings().put(classification, builder.define(name + ".spawns." + classification.getName(), spawns.get(classification)));
 			return this;
 		}
 
@@ -147,12 +149,67 @@ public class ConfigTemplates
 		}
 
 		/**
+		 * Returns all spawns strings as a map.
+		 * 
+		 * @return Map
+		 */
+		public Map<EntityClassification, ForgeConfigSpec.ConfigValue<String>> getSpawnsStrings()
+		{
+			return this.spawnsStrings != null ? this.spawnsStrings : new HashMap<>();
+		}
+
+		/**
+		 * Returns the specific spawns string for the classification passed. Null if not
+		 * present. You shouldn't need this one. Check
+		 * {@link #getSpawnsForClassification(EntityClassification)}
+		 * 
+		 * @param classification
+		 * @return String
+		 */
+		public String getSpawnsString(EntityClassification classification)
+		{
+			return this.getSpawnsStrings().containsKey(classification) ? this.getSpawnsStrings().get(classification).get() : "";
+		}
+
+		/**
+		 * Returns the spawn list for the specific classification.
+		 * 
+		 * @param classification
+		 * @return List
+		 */
+		@Nullable
+		public List<SpawnListEntry> getSpawnsForClassification(EntityClassification classification)
+		{
+			return this.getSpawns().get(classification);
+		}
+
+		/**
+		 * Returns all spawn entries.
+		 * 
+		 * @return Map
+		 */
+		public Map<EntityClassification, List<SpawnListEntry>> getSpawns()
+		{
+			return this.spawns;
+		}
+
+		/**
 		 * 
 		 * @param event
 		 */
 		protected void onConfigLoad(ModConfig.ModConfigEvent event)
 		{
 			this.biomes = parseBiomes(this.getBiomeString());
+			this.spawns = new HashMap<EntityClassification, List<SpawnListEntry>>()
+			{
+				private static final long serialVersionUID = 64168135463438L;
+
+				{
+					for (EntityClassification EC : EntityClassification.values())
+						if (!getSpawnsString(EC).isEmpty())
+							put(EC, parseSpawns(getSpawnsString(EC)));
+				}
+			};
 		}
 
 		/**
@@ -169,7 +226,8 @@ public class ConfigTemplates
 
 		/**
 		 * Reads the biomes and tags from the config string and assigns them to the
-		 * biomes list. Used internally.
+		 * biomes list. Used internally.<br>
+		 * "#overworld, !#forest, !minecraft:snowy_taiga, minecraft:flower_forest"
 		 * 
 		 * @param key
 		 * @return List
@@ -215,6 +273,37 @@ public class ConfigTemplates
 			}
 			else if (!biomes.contains(biome))
 				biomes.add(biome);
+		}
+
+		/**
+		 * Reads the spawns set from the string and puts them into a list. Used
+		 * internally.<br>
+		 * "[zombie, 1, 2, 4][skeleton, 2, 2, 4]"
+		 * 
+		 * @param key
+		 * @return List
+		 */
+		public static List<SpawnListEntry> parseSpawns(String key)
+		{
+			List<SpawnListEntry> spawns = new ArrayList<>();
+			if (!key.isEmpty())
+			{
+				try
+				{
+					Matcher matcher = Pattern.compile("(\\[([a-z0-9/_:[-][.]]*),\\s*([0-9]*),\\s*([0-9]*),\\s*([0-9*])\\])").matcher(key);
+					while (matcher.find())
+					{
+						ResourceLocation entity = new ResourceLocation(matcher.group(2));
+						if (ForgeRegistries.ENTITIES.containsKey(entity))
+							spawns.add(new SpawnListEntry(ForgeRegistries.ENTITIES.getValue(entity), Integer.parseInt(matcher.group(3)), Integer.parseInt(matcher.group(4)), Integer.parseInt(matcher.group(5))));
+					}
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+			return spawns;
 		}
 	}
 

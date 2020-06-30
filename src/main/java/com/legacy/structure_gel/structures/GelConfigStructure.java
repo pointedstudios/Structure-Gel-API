@@ -20,6 +20,7 @@ public abstract class GelConfigStructure<C extends IFeatureConfig> extends GelSt
 	{
 		super(codec);
 		this.config = config;
+		this.SPAWNS.putAll(config.getSpawns());
 	}
 
 	@Override
