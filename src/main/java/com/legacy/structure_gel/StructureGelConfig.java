@@ -17,16 +17,22 @@ public class StructureGelConfig
 
 	public static class Common
 	{
-		public final ForgeConfigSpec.BooleanValue extraLakeProofing;
+		public final ForgeConfigSpec.BooleanValue extraLakeProofing, debugMode;
 
 		public Common(ForgeConfigSpec.Builder builder)
 		{
 			this.extraLakeProofing = builder.comment("Adds more vanilla structures to the list of structures that lakes cannot generate inside of. Only villages when set to false. Requires reload.").define("features.extra_lake_proofing", true);
+			this.debugMode = builder.comment("Outputs debug text to the console and gives some items special debugging utilities.").define("dev.debug_mode", false);
 		}
-
-		public boolean getExtraLakeProofing()
-		{
-			return this.extraLakeProofing.get();
-		}
+	}
+	
+	public static boolean getExtraLakeProofing()
+	{
+		return COMMON.extraLakeProofing.get();
+	}
+	
+	public static boolean isDebugMode()
+	{
+		return COMMON.debugMode.get();
 	}
 }

@@ -20,7 +20,7 @@ public class StructureAccessHelper
 	static
 	{
 		StructureAccessHelper.LAKE_STRUCTURES.add(Structure.field_236381_q_);
-		if (StructureGelConfig.COMMON.getExtraLakeProofing())
+		if (StructureGelConfig.getExtraLakeProofing())
 		{
 			StructureAccessHelper.LAKE_STRUCTURES.addAll(ImmutableList.of(Structure.field_236368_d_, Structure.field_236369_e_, Structure.field_236370_f_, Structure.field_236371_g_, Structure.field_236375_k_));
 		}
