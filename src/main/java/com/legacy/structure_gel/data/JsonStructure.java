@@ -88,7 +88,7 @@ public class JsonStructure extends GelStructure<NoFeatureConfig>
 		{
 			StructureData data = ((JsonStructure) this.getStructure()).data;
 			
-			BlockPos pos = new BlockPos(chunkX * 16 + rand.nextInt(15), 0, chunkZ * 16 + rand.nextInt(15));
+			BlockPos pos = new BlockPos(chunkX * 16 + rand.nextInt(15), 90, chunkZ * 16 + rand.nextInt(15));
 			JsonPieces.assemble(generator, templateManagerIn, pos, this.components, this.rand, data.startPool, 7);
 			this.recalculateStructureSize();
 
