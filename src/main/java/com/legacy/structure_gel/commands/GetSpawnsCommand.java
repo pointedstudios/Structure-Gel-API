@@ -39,13 +39,7 @@ public class GetSpawnsCommand
 		Map<EntityClassification, List<SpawnListEntry>> map = new LinkedHashMap<>();
 		for (EntityClassification classification : EntityClassification.values())
 		{
-			ServerWorld world = context.getSource().getWorld();
-			BlockPos pos = new BlockPos(context.getSource().getPos());
-			Biome biome = world.getBiome(pos);
-			ChunkGenerator chunkGen = world.getChunkProvider().generator;
-			StructureManager manager = world.func_241112_a_();
-			List<SpawnListEntry> list = chunkGen.func_230353_a_(biome, manager, classification, pos);
-			list = net.minecraftforge.event.ForgeEventFactory.getPotentialSpawns(world, classification, pos, list);
+			List<SpawnListEntry> list = getSpawnList(classification, context);
 			if (!list.isEmpty())
 				map.put(classification, list);
 		}
@@ -59,18 +53,23 @@ public class GetSpawnsCommand
 
 	private static int getSpawns(EntityClassification classification, CommandContext<CommandSource> context)
 	{
+		List<SpawnListEntry> list = getSpawnList(classification, context);
+		if (!list.isEmpty())
+			printSpawns(classification, list, context);
+		else if (context.getSource().getEntity() instanceof ServerPlayerEntity)
+			((ServerPlayerEntity) context.getSource().getEntity()).sendMessage(new StringTextComponent("No spawn data for " + classification.getName() + "."), Util.field_240973_b_);
+		return 1;
+	}
+	
+	private static List<SpawnListEntry> getSpawnList(EntityClassification classification, CommandContext<CommandSource> context)
+	{
 		ServerWorld world = context.getSource().getWorld();
 		BlockPos pos = new BlockPos(context.getSource().getPos());
 		Biome biome = world.getBiome(pos);
 		ChunkGenerator chunkGen = world.getChunkProvider().generator;
 		StructureManager manager = world.func_241112_a_();
 		List<SpawnListEntry> list = chunkGen.func_230353_a_(biome, manager, classification, pos);
-		list = net.minecraftforge.event.ForgeEventFactory.getPotentialSpawns(world, classification, pos, list);
-		if (!list.isEmpty())
-			printSpawns(classification, list, context);
-		else if (context.getSource().getEntity() instanceof ServerPlayerEntity)
-			((ServerPlayerEntity) context.getSource().getEntity()).sendMessage(new StringTextComponent("No spawn data for " + classification.getName() + "."), Util.field_240973_b_);
-		return 1;
+		return net.minecraftforge.event.ForgeEventFactory.getPotentialSpawns(world, classification, pos, list);
 	}
 
 	private static void printSpawns(EntityClassification classification, List<SpawnListEntry> spawns, CommandContext<CommandSource> context)
