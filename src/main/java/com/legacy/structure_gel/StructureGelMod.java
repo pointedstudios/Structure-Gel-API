@@ -66,6 +66,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 @Mod(StructureGelMod.MODID)
 public class StructureGelMod
 {
+	public static final String NAME = "Structure Gel API";
 	public static final String MODID = "structure_gel";
 	public static final Logger LOGGER = LogManager.getLogger();
 
