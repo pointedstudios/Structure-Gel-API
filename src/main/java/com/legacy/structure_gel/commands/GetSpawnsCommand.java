@@ -1,6 +1,8 @@
 package com.legacy.structure_gel.commands;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -34,6 +36,7 @@ public class GetSpawnsCommand
 
 	private static int getSpawns(CommandContext<CommandSource> context)
 	{
+		Map<EntityClassification, List<SpawnListEntry>> map = new LinkedHashMap<>();
 		for (EntityClassification classification : EntityClassification.values())
 		{
 			ServerWorld world = context.getSource().getWorld();
@@ -43,8 +46,14 @@ public class GetSpawnsCommand
 			StructureManager manager = world.func_241112_a_();
 			List<SpawnListEntry> list = chunkGen.func_230353_a_(biome, manager, classification, pos);
 			list = net.minecraftforge.event.ForgeEventFactory.getPotentialSpawns(world, classification, pos, list);
-			printSpawns(classification, list, context);
+			if (!list.isEmpty())
+				map.put(classification, list);
 		}
+		if (!map.isEmpty())
+			map.forEach((classification, list) -> printSpawns(classification, list, context));
+		else if (context.getSource().getEntity() instanceof ServerPlayerEntity)
+			((ServerPlayerEntity) context.getSource().getEntity()).sendMessage(new StringTextComponent("No spawn data for any type."), Util.field_240973_b_);
+
 		return 1;
 	}
 
@@ -60,7 +69,7 @@ public class GetSpawnsCommand
 		if (!list.isEmpty())
 			printSpawns(classification, list, context);
 		else if (context.getSource().getEntity() instanceof ServerPlayerEntity)
-			((ServerPlayerEntity) context.getSource().getEntity()).sendMessage(new StringTextComponent("No spawn data for " + classification.getName()), Util.field_240973_b_);
+			((ServerPlayerEntity) context.getSource().getEntity()).sendMessage(new StringTextComponent("No spawn data for " + classification.getName() + "."), Util.field_240973_b_);
 		return 1;
 	}
 
