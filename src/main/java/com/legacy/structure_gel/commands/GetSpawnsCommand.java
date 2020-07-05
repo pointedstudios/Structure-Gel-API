@@ -26,41 +26,35 @@ public class GetSpawnsCommand
 {
 	public static void register(CommandDispatcher<CommandSource> dispatcher)
 	{
-		LiteralArgumentBuilder<CommandSource> command = Commands.literal("getspawns").requires(source -> source.hasPermissionLevel(2)).executes(context -> getSpawns(context));
+		LiteralArgumentBuilder<CommandSource> command = Commands.literal("getspawns").requires(source -> source.hasPermissionLevel(2)).executes(context -> getSpawns(context, EntityClassification.values()));
 
 		for (EntityClassification classification : EntityClassification.values())
-			command.then(Commands.literal(classification.getName()).executes(context -> getSpawns(classification, context)));
+			command.then(Commands.literal(classification.getName()).executes(context -> getSpawns(context, classification)));
 
 		dispatcher.register(command);
 	}
 
-	private static int getSpawns(CommandContext<CommandSource> context)
+	private static int getSpawns(CommandContext<CommandSource> context, EntityClassification... classifications)
 	{
 		Map<EntityClassification, List<SpawnListEntry>> map = new LinkedHashMap<>();
-		for (EntityClassification classification : EntityClassification.values())
+		for (EntityClassification classification : classifications)
 		{
 			List<SpawnListEntry> list = getSpawnList(classification, context);
 			if (!list.isEmpty())
 				map.put(classification, list);
 		}
+		ServerPlayerEntity player = ((ServerPlayerEntity) context.getSource().getEntity());
 		if (!map.isEmpty())
+		{
+			player.sendMessage(new StringTextComponent("--Spawn Data--"), Util.field_240973_b_);
 			map.forEach((classification, list) -> printSpawns(classification, list, context));
+		}
 		else if (context.getSource().getEntity() instanceof ServerPlayerEntity)
-			((ServerPlayerEntity) context.getSource().getEntity()).sendMessage(new StringTextComponent("No spawn data for any type."), Util.field_240973_b_);
+			player.sendMessage(new StringTextComponent("No spawn data."), Util.field_240973_b_);
 
 		return 1;
 	}
 
-	private static int getSpawns(EntityClassification classification, CommandContext<CommandSource> context)
-	{
-		List<SpawnListEntry> list = getSpawnList(classification, context);
-		if (!list.isEmpty())
-			printSpawns(classification, list, context);
-		else if (context.getSource().getEntity() instanceof ServerPlayerEntity)
-			((ServerPlayerEntity) context.getSource().getEntity()).sendMessage(new StringTextComponent("No spawn data for " + classification.getName() + "."), Util.field_240973_b_);
-		return 1;
-	}
-	
 	private static List<SpawnListEntry> getSpawnList(EntityClassification classification, CommandContext<CommandSource> context)
 	{
 		ServerWorld world = context.getSource().getWorld();

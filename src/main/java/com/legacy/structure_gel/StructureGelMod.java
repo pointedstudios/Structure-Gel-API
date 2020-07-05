@@ -95,7 +95,7 @@ public class StructureGelMod
 			}
 		});
 	}
-	
+
 	public void serverStarting(final FMLServerStartingEvent event)
 	{
 		GetSpawnsCommand.register(event.getCommandDispatcher());
@@ -244,7 +244,7 @@ public class StructureGelMod
 	public static class JigsawDeserializers
 	{
 		public static IJigsawDeserializer<GelJigsawPiece> GEL_SINGLE_POOL_ELEMENT;
-		
+
 		protected static <P extends JigsawPiece> IJigsawDeserializer<P> register(String key, Codec<P> codec)
 		{
 			return Registry.register(Registry.STRUCTURE_POOL_ELEMENT, locate(key), () -> codec);

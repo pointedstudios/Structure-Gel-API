@@ -13,19 +13,15 @@ import net.minecraft.entity.EntityClassification;
 import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.SectionPos;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.SpawnListEntry;
 import net.minecraft.world.biome.provider.BiomeProvider;
-import net.minecraft.world.chunk.ChunkStatus;
-import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructureManager;
-import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.world.gen.settings.StructureSeparationSettings;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
@@ -110,56 +106,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	@Override
 	public BlockPos func_236388_a_(IWorldReader worldIn, StructureManager structureManager, BlockPos startPos, int searchRadius, boolean skipExistingChunks, long seed, StructureSeparationSettings settings)
 	{
-		int spacing = this.getSpacing();
-		int chunkX = startPos.getX() >> 4;
-		int chunkZ = startPos.getZ() >> 4;
-		int i = 0;
-
-		for (SharedSeedRandom rand = new SharedSeedRandom(); i <= searchRadius; ++i)
-		{
-			for (int xOffset = -i; xOffset <= i; ++xOffset)
-			{
-				boolean flag = xOffset == -i || xOffset == i;
-
-				for (int zOffset = -i; zOffset <= i; ++zOffset)
-				{
-					boolean flag1 = zOffset == -i || zOffset == i;
-					if (flag || flag1)
-					{
-						int newChunkX = chunkX + spacing * xOffset;
-						int newChunkZ = chunkZ + spacing * zOffset;
-						ChunkPos chunkpos = this.func_236392_a_(settings, seed, rand, newChunkX, newChunkZ);
-						IChunk chunk = worldIn.getChunk(chunkpos.x, chunkpos.z, ChunkStatus.STRUCTURE_STARTS);
-						StructureStart<?> start = structureManager.func_235013_a_(SectionPos.from(chunk.getPos(), 0), this, chunk);
-						if (start != null && start.isValid())
-						{
-							if (skipExistingChunks && start.isRefCountBelowMax())
-							{
-								start.incrementRefCount();
-								return start.getPos();
-							}
-
-							if (!skipExistingChunks)
-							{
-								return start.getPos();
-							}
-						}
-
-						if (i == 0)
-						{
-							break;
-						}
-					}
-				}
-
-				if (i == 0)
-				{
-					break;
-				}
-			}
-		}
-
-		return null;
+		return super.func_236388_a_(worldIn, structureManager, startPos, searchRadius, skipExistingChunks, seed, new StructureSeparationSettings(this.getSpacing(), this.getOffset(), this.getSeed()));
 	}
 
 	/**
