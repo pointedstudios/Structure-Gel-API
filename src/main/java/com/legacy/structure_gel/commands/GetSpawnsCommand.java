@@ -46,11 +46,11 @@ public class GetSpawnsCommand
 		ServerPlayerEntity player = ((ServerPlayerEntity) context.getSource().getEntity());
 		if (!map.isEmpty())
 		{
-			player.sendMessage(new StringTextComponent("--Spawn Data--"), Util.field_240973_b_);
+			player.sendMessage(new StringTextComponent("--Spawn Data--"), Util.DUMMY_UUID);
 			map.forEach((classification, list) -> printSpawns(classification, list, context));
 		}
 		else if (context.getSource().getEntity() instanceof ServerPlayerEntity)
-			player.sendMessage(new StringTextComponent("No spawn data."), Util.field_240973_b_);
+			player.sendMessage(new StringTextComponent("No spawn data."), Util.DUMMY_UUID);
 
 		return 1;
 	}
@@ -73,8 +73,8 @@ public class GetSpawnsCommand
 			if (!spawns.isEmpty())
 			{
 				ServerPlayerEntity player = ((ServerPlayerEntity) context.getSource().getEntity());
-				player.sendMessage(new StringTextComponent("[" + classification.getName() + "]").func_240699_a_(TextFormatting.GREEN), Util.field_240973_b_);
-				spawns.forEach(spawn -> player.sendMessage(new StringTextComponent(String.format(" - %s, weight:%d, min:%d, max:%d", spawn.entityType.getRegistryName(), spawn.itemWeight, spawn.minGroupCount, spawn.maxGroupCount)), Util.field_240973_b_));
+				player.sendMessage(new StringTextComponent("[" + classification.getName() + "]").mergeStyle(TextFormatting.GREEN), Util.DUMMY_UUID);
+				spawns.forEach(spawn -> player.sendMessage(new StringTextComponent(String.format(" - %s, weight:%d, min:%d, max:%d", spawn.entityType.getRegistryName(), spawn.itemWeight, spawn.minGroupCount, spawn.maxGroupCount)), Util.DUMMY_UUID));
 			}
 		}
 	}

@@ -65,7 +65,7 @@ public class StructureGelBlock extends Block implements IStructureGel
 	 */
 	public StructureGelBlock(IBehavior... behaviors)
 	{
-		super(AbstractBlock.Properties.create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.0F).noDrops().notSolid().sound(SoundType.SLIME).func_235827_a_((state, reader, pos, entity) -> false).func_235842_b_((state, reader, pos) -> false).func_235847_c_((state, reader, pos) -> false));
+		super(AbstractBlock.Properties.create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.0F).noDrops().notSolid().sound(SoundType.SLIME).setAllowsSpawn((state, reader, pos, entity) -> false).setSuffocates((state, reader, pos) -> false).setBlocksVision((state, reader, pos) -> false));
 		this.behaviors = ImmutableList.copyOf(behaviors);
 
 		this.setDefaultState(this.getDefaultState().with(COUNT, 50));

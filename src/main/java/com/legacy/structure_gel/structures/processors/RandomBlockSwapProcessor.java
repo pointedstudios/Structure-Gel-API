@@ -38,7 +38,7 @@ public class RandomBlockSwapProcessor extends StructureProcessor
 		}), Codec.FLOAT.fieldOf("chance").forGetter(processor ->
 		{
 			return processor.chance;
-		}), BlockState.field_235877_b_.fieldOf("change_to").forGetter(processor ->
+		}), BlockState.BLOCKSTATE_CODEC.fieldOf("change_to").forGetter(processor ->
 		{
 			return processor.changeTo;
 		})).apply(instance, RandomBlockSwapProcessor::new);

@@ -48,7 +48,7 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
  */
 public class GelJigsawPiece extends SingleJigsawPiece
 {
-	public static final Codec<Either<ResourceLocation, Template>> POOL_CODEC = Codec.of(GelJigsawPiece::encodePool, ResourceLocation.field_240908_a_.map(Either::left));
+	public static final Codec<Either<ResourceLocation, Template>> POOL_CODEC = Codec.of(GelJigsawPiece::encodePool, ResourceLocation.RESOURCE_LOCATION_CODEC.map(Either::left));
 	public static final Codec<GelJigsawPiece> CODEC = RecordCodecBuilder.create((instance) ->
 	{
 		return instance.group(encodeLocaiton(), encodeProcessor(), func_236848_d_(), Codec.BOOL.fieldOf("maintainWater").forGetter(jigsawPiece -> jigsawPiece.maintainWater), Codec.BOOL.fieldOf("ignoreEntities").forGetter(jigsawPiece -> jigsawPiece.ignoreEntities)).apply(instance, GelJigsawPiece::new);
@@ -59,7 +59,7 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	private static <T> DataResult<T> encodePool(Either<ResourceLocation, Template> locationTemplate, DynamicOps<T> dyn, T data)
 	{
 		Optional<ResourceLocation> optional = locationTemplate.left();
-		return !optional.isPresent() ? DataResult.error("Can not serialize a runtime pool element") : ResourceLocation.field_240908_a_.encode(optional.get(), dyn, data);
+		return !optional.isPresent() ? DataResult.error("Can not serialize a runtime pool element") : ResourceLocation.RESOURCE_LOCATION_CODEC.encode(optional.get(), dyn, data);
 	}
 
 	protected static <E extends GelJigsawPiece> RecordCodecBuilder<E, List<StructureProcessor>> encodeProcessor()

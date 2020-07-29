@@ -107,7 +107,7 @@ public class GelTemplate extends Template
 										template$blockinfo.nbt.putLong("LootTableSeed", rand.nextLong());
 									}
 
-									tileentity1.func_230337_a_(template$blockinfo.state, template$blockinfo.nbt);
+									tileentity1.read(template$blockinfo.state, template$blockinfo.nbt);
 									tileentity1.mirror(placementSettings.getMirror());
 									tileentity1.rotate(placementSettings.getRotation());
 								}

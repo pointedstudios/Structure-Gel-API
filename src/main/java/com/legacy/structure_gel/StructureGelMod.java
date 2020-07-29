@@ -47,6 +47,7 @@ import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.template.IStructureProcessorType;
 import net.minecraft.world.gen.feature.template.StructureProcessor;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -54,7 +55,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.IForgeRegistry;
 
@@ -77,7 +77,7 @@ public class StructureGelMod
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, StructureGelConfig.COMMON_SPEC);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientInit);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonInit);
-		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
+		MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
 	}
 
 	public void clientInit(final FMLClientSetupEvent event)
@@ -96,9 +96,9 @@ public class StructureGelMod
 		});
 	}
 
-	public void serverStarting(final FMLServerStartingEvent event)
+	public void registerCommands(final RegisterCommandsEvent event)
 	{
-		GetSpawnsCommand.register(event.getCommandDispatcher());
+		GetSpawnsCommand.register(event.getDispatcher());
 	}
 
 	public static ResourceLocation locate(String key)

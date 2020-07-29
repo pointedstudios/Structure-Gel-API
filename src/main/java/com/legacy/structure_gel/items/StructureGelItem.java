@@ -60,24 +60,24 @@ public class StructureGelItem extends BlockItem
 	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
 	{
-		if (!Screen.func_231173_s_())
-			tooltip.add(new TranslationTextComponent("info." + StructureGelMod.MODID + ".hold_shift").func_240699_a_(TextFormatting.GRAY));
+		if (!Screen.hasShiftDown())
+			tooltip.add(new TranslationTextComponent("info." + StructureGelMod.MODID + ".hold_shift").mergeStyle(TextFormatting.GRAY));
 		else
 		{
 			if (this.getBlock() instanceof StructureGelBlock)
 			{
-				tooltip.add(new TranslationTextComponent("info." + StructureGelMod.MODID + ".place").func_240699_a_(TextFormatting.GRAY));
-				tooltip.add(new TranslationTextComponent("info." + StructureGelMod.MODID + ".gunpowder").func_240699_a_(TextFormatting.GRAY));
+				tooltip.add(new TranslationTextComponent("info." + StructureGelMod.MODID + ".place").mergeStyle(TextFormatting.GRAY));
+				tooltip.add(new TranslationTextComponent("info." + StructureGelMod.MODID + ".gunpowder").mergeStyle(TextFormatting.GRAY));
 				tooltip.add(new TranslationTextComponent(""));
 
 				if (((StructureGelBlock) this.getBlock()).behaviors.isEmpty())
-					tooltip.add(new TranslationTextComponent(Behavior.DEFAULT.getTranslation()).func_240699_a_(TextFormatting.GRAY));
+					tooltip.add(new TranslationTextComponent(Behavior.DEFAULT.getTranslation()).mergeStyle(TextFormatting.GRAY));
 
 				for (IBehavior behavior : ((StructureGelBlock) this.getBlock()).behaviors)
-					tooltip.add(new TranslationTextComponent(behavior.getTranslation()).func_240699_a_(TextFormatting.GRAY));
+					tooltip.add(new TranslationTextComponent(behavior.getTranslation()).mergeStyle(TextFormatting.GRAY));
 			}
 			else
-				tooltip.add(new TranslationTextComponent("info." + StructureGelMod.MODID + ".unknown_behavior").func_240699_a_(TextFormatting.RED));
+				tooltip.add(new TranslationTextComponent("info." + StructureGelMod.MODID + ".unknown_behavior").mergeStyle(TextFormatting.RED));
 		}
 	}
 }
