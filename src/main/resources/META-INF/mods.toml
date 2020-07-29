@@ -10,6 +10,7 @@ issueTrackerURL="https://gitlab.com/groups/modding-legacy/-/issues"
 	credits="KingPhygieBoo"
 	authors="Silver_David"
 	description='''An API mod to improve the developer side of structure gen'''
+    license="https://www.gnu.org/licenses/gpl-3.0.en.html"
 [[dependencies.structure_gel]]
     modId="forge"
     mandatory=true
