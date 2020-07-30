@@ -10,8 +10,6 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
-import com.legacy.structure_gel.structures.GelStructure;
-
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
@@ -31,7 +29,7 @@ import net.minecraftforge.registries.ForgeRegistries;
  */
 public class ConfigTemplates
 {
-	public static class StructureConfigBuilder
+	public static class StructureConfig
 	{
 		private final ForgeConfigSpec.Builder builder;
 		private final String name;
@@ -44,39 +42,58 @@ public class ConfigTemplates
 		private Map<EntityClassification, ForgeConfigSpec.ConfigValue<String>> spawnsStrings = new HashMap<>();
 		private Map<EntityClassification, List<SpawnListEntry>> spawns = new HashMap<>();
 
-		public StructureConfigBuilder(ForgeConfigSpec.Builder builder, String name)
+		/**
+		 * 
+		 * @param builder
+		 * @param name
+		 */
+		public StructureConfig(ForgeConfigSpec.Builder builder, String name)
 		{
 			this.builder = builder;
 			this.name = name;
 			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onConfigLoad);
 		}
 
-		public StructureConfigBuilder probability(double probability)
+		/**
+		 * 
+		 * @param builder
+		 * @param name
+		 * @param probability
+		 * @param spacing
+		 * @param offset
+		 */
+		public StructureConfig(ForgeConfigSpec.Builder builder, String name, double probability, int spacing, int offset)
+		{
+			this(builder, name);
+			this.probability(probability).spacing(spacing).offset(offset);
+		}
+
+		public StructureConfig probability(double probability)
 		{
 			this.probability = builder.comment("Chance of generating in an allowed chunk").defineInRange(name + ".probability", probability, 0.0D, 1.0D);
 			return this;
 		}
 
-		public StructureConfigBuilder spacing(int spacing)
+		public StructureConfig spacing(int spacing)
 		{
 			this.spacing = builder.comment("Spacing between structures").defineInRange(name + ".spacing", spacing, 1, Integer.MAX_VALUE);
 			return this;
 		}
 
-		public StructureConfigBuilder offset(int offset)
+		public StructureConfig offset(int offset)
 		{
 			this.offset = builder.comment("Offsets the spacing of the structures randomly").defineInRange(name + ".offset", offset, 0, Integer.MAX_VALUE);
 			return this;
 		}
 
-		public StructureConfigBuilder biomes(boolean isWhitelist, String biomes)
+		public StructureConfig biomes(boolean isWhitelist, String biomes)
 		{
 			this.biomeString = builder.comment("A biome filter to determine where the structure should generate. Works with the biome dictionary (#overworld) and \"not\" statements (!plains). These can be combined (!#nether). Operates in the order presented. So \"#forest, !flower_forest\" will add all forests and then remove the flower forest.").define(name + ".biomes", biomes);
 			this.isWhitelist = builder.comment("How should the code treate biomes? true = whitelist, false = blacklist. Biomes defined with ! do the opposite.").define(name + ".is_whitelist", isWhitelist);
 			return this;
 		}
 
-		public StructureConfigBuilder spawns(Map<EntityClassification, String> spawns)
+		public StructureConfig spawns(Map<EntityClassification, String> spawns)
 		{
 			for (EntityClassification classification : EntityClassification.values())
 				if (spawns.containsKey(classification))
@@ -304,30 +321,6 @@ public class ConfigTemplates
 				}
 			}
 			return spawns;
-		}
-	}
-
-	/**
-	 * Useful in conjunction with {@link GelStructure} to make generation settings
-	 * configurable.
-	 * 
-	 * @author David
-	 *
-	 */
-	public static class StructureConfig extends StructureConfigBuilder
-	{
-		/**
-		 * 
-		 * @param builder
-		 * @param name
-		 * @param probability
-		 * @param spacing
-		 * @param offset
-		 */
-		public StructureConfig(ForgeConfigSpec.Builder builder, String name, double probability, int spacing, int offset)
-		{
-			super(builder, name);
-			this.probability(probability).spacing(spacing).offset(offset);
 		}
 	}
 

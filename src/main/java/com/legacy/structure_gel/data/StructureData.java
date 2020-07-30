@@ -97,7 +97,7 @@ public class StructureData
 		int spacing = JSONUtils.getInt(properties, "spacing", 12);
 		int offset = JSONUtils.getInt(properties, "offset", 5);
 		double probability = JSONUtils.getFloat(properties, "probability", 1.0F);
-		List<Biome> biomes = ConfigTemplates.StructureConfigBuilder.parseBiomes(JSONUtils.getString(properties, "biomes", ""));
+		List<Biome> biomes = ConfigTemplates.StructureConfig.parseBiomes(JSONUtils.getString(properties, "biomes", ""));
 
 		JsonObject placement = JSONUtils.getJsonObject(properties, "placement", new JsonObject());
 		int minY = placement.has("min_y") ? JSONUtils.getInt(placement, "min_y") : -1;
@@ -111,7 +111,7 @@ public class StructureData
 			{
 				for (EntityClassification EC : EntityClassification.values())
 					if (JSONUtils.hasField(spawnsObj, EC.getName()) && JSONUtils.isString(spawnsObj, EC.getName()))
-						put(EC, ConfigTemplates.StructureConfigBuilder.parseSpawns(JSONUtils.getString(spawnsObj, EC.getName(), "")));
+						put(EC, ConfigTemplates.StructureConfig.parseSpawns(JSONUtils.getString(spawnsObj, EC.getName(), "")));
 			}
 		};
 
