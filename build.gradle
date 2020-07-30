@@ -14,7 +14,7 @@ apply plugin: 'maven-publish'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
-version = '1.2.0'
+version = '1.2.1'
 group = 'com.legacy.structure_gel'
 archivesBaseName = 'structure-gel-api-1.16.1'
 
