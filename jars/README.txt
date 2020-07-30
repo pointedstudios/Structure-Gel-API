@@ -6,4 +6,4 @@ https://www.curseforge.com/minecraft/mc-mods/structure-gel-api
 MCP Mappings Versions
 1.16.1-1.1.0 - 20200514-1.16
 1.16.1-1.1.1 - 20200514-1.16
-1.16.1-1.2.0 - 20200723-1.16.1
+1.16.1-1.2.1 - 20200723-1.16.1
