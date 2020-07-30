@@ -28,15 +28,29 @@ import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructurePiece;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 
+/**
+ * @deprecated Planned to be removed or heavily modified once 1.16.2 comes out.
+ *             It remains here for compatibility.
+ * @author David
+ *
+ */
+@Deprecated
 public class JsonStructure extends GelStructure<NoFeatureConfig>
 {
 	public final StructureData data;
 
+	/**
+	 * @deprecated Planned to be removed or heavily modified once 1.16.2 comes out.
+	 *             It remains here for compatibility.
+	 * @author David
+	 *
+	 */
+	@Deprecated
 	public JsonStructure(StructureData data)
 	{
 		super(NoFeatureConfig.field_236558_a_);
 		this.data = data;
-		this.SPAWNS.putAll(data.spawns);
+		this.spawns.putAll(data.spawns);
 	}
 
 	@Override
@@ -67,9 +81,9 @@ public class JsonStructure extends GelStructure<NoFeatureConfig>
 	@Nullable
 	public List<SpawnListEntry> getSpawns(EntityClassification classification)
 	{
-		return this.SPAWNS.get(classification);
+		return this.spawns.get(classification);
 	}
-	
+
 	@Override
 	public IStartFactory<NoFeatureConfig> getStartFactory()
 	{
@@ -87,7 +101,7 @@ public class JsonStructure extends GelStructure<NoFeatureConfig>
 		public void func_230364_a_(ChunkGenerator generator, TemplateManager templateManagerIn, int chunkX, int chunkZ, Biome biomeIn, NoFeatureConfig config)
 		{
 			StructureData data = ((JsonStructure) this.getStructure()).data;
-			
+
 			BlockPos pos = new BlockPos(chunkX * 16 + rand.nextInt(15), 0, chunkZ * 16 + rand.nextInt(15));
 			JsonPieces.assemble(generator, templateManagerIn, pos, this.components, this.rand, data.startPool, 7);
 			this.recalculateStructureSize();

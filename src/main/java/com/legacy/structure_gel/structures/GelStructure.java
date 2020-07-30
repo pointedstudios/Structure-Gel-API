@@ -37,7 +37,7 @@ import net.minecraftforge.event.world.WorldEvent;
  */
 public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C>
 {
-	public final Map<EntityClassification, List<SpawnListEntry>> SPAWNS = new HashMap<>();
+	public final Map<EntityClassification, List<SpawnListEntry>> spawns = new HashMap<>();
 
 	public GelStructure(Codec<C> codec)
 	{
@@ -64,7 +64,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 
 	public GelStructure<C> setSpawnList(EntityClassification classification, List<SpawnListEntry> spawns)
 	{
-		this.SPAWNS.put(classification, spawns);
+		this.spawns.put(classification, spawns);
 		return this;
 	}
 
@@ -168,7 +168,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	@Override
 	public List<Biome.SpawnListEntry> getSpawnList()
 	{
-		return this.SPAWNS.get(EntityClassification.MONSTER);
+		return this.spawns.get(EntityClassification.MONSTER);
 	}
 
 	/**
@@ -183,12 +183,12 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	@Override
 	public List<Biome.SpawnListEntry> getCreatureSpawnList()
 	{
-		return this.SPAWNS.get(EntityClassification.CREATURE);
+		return this.spawns.get(EntityClassification.CREATURE);
 	}
 
 	/**
 	 * Returns a list of mobs to spawn based on the classification put in. Any
-	 * classification not set in {@link #SPAWNS} will return null, and be ignored.
+	 * classification not set in {@link #spawns} will return null, and be ignored.
 	 * 
 	 * @param classification
 	 * @return
@@ -203,7 +203,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 		case CREATURE:
 			return getCreatureSpawnList();
 		default:
-			return this.SPAWNS.get(classification);
+			return this.spawns.get(classification);
 		}
 	}
 

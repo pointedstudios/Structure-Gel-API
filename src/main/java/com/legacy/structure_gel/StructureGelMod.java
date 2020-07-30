@@ -66,6 +66,7 @@ import net.minecraftforge.registries.IForgeRegistry;
  * @author David
  *
  */
+@SuppressWarnings("deprecation")
 @Mod(StructureGelMod.MODID)
 public class StructureGelMod
 {

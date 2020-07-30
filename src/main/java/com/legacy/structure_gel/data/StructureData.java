@@ -26,6 +26,13 @@ import net.minecraft.world.gen.feature.jigsaw.JigsawPattern.PlacementBehaviour;
 import net.minecraft.world.gen.feature.template.IStructureProcessorType;
 import net.minecraft.world.gen.feature.template.StructureProcessor;
 
+/**
+ * @deprecated Planned to be removed or heavily modified once 1.16.2 comes out.
+ *             It remains here for compatibility.
+ * @author David
+ *
+ */
+@Deprecated
 public class StructureData
 {
 	public final int seed, spacing, offset, minY, maxY;
@@ -34,6 +41,13 @@ public class StructureData
 	public final List<Biome> biomes;
 	public final Map<EntityClassification, List<SpawnListEntry>> spawns;
 
+	/**
+	 * @deprecated Planned to be removed or heavily modified once 1.16.2 comes out.
+	 *             It remains here for compatibility.
+	 * @author David
+	 *
+	 */
+	@Deprecated
 	public StructureData(ResourceLocation name, ResourceLocation startPool, int seed, int spacing, int offset, double probability, List<Biome> biomes, Map<EntityClassification, List<SpawnListEntry>> spawns, int minY, int maxY)
 	{
 		this.registryName = name;
