@@ -4,16 +4,9 @@ import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.GenerationStage.Decoration;
-import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.IFeatureConfig;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.placement.IPlacementConfig;
-import net.minecraft.world.gen.placement.NoPlacementConfig;
-import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
@@ -140,85 +133,5 @@ public class RegistryHelper
 		S struc = registerStructure(registry, key, structure);
 		IStructurePieceType piece = registerStructurePiece(key, pieceType);
 		return Pair.of(struc, piece);
-	}
-
-	/**
-	 * Adds the feature to the biome with the given settings.
-	 * 
-	 * @param biome
-	 * @param stage
-	 * @param feature
-	 * @param config
-	 * @param placement
-	 * @param placementConfig
-	 */
-	public static <C extends IFeatureConfig, PC extends IPlacementConfig> void addFeature(Biome biome, Decoration stage, Feature<C> feature, C config, Placement<PC> placement, PC placementConfig)
-	{
-		biome.addFeature(stage, feature.withConfiguration(config).withPlacement(placement.configure(placementConfig)));
-	}
-
-	/**
-	 * @see RegistryHelper#addFeature(Biome, Decoration, Feature, IFeatureConfig,
-	 *      Placement, IPlacementConfig)
-	 * @param biome
-	 * @param stage
-	 * @param feature
-	 * @param config
-	 * @param placement
-	 */
-	public static <C extends IFeatureConfig> void addFeature(Biome biome, Decoration stage, Feature<C> feature, C config, Placement<NoPlacementConfig> placement)
-	{
-		addFeature(biome, stage, feature, config, placement, IPlacementConfig.NO_PLACEMENT_CONFIG);
-	}
-
-	/**
-	 * @see RegistryHelper#addFeature(Biome, Decoration, Feature, IFeatureConfig,
-	 *      Placement, IPlacementConfig)
-	 * @param biome
-	 * @param stage
-	 * @param feature
-	 * @param config
-	 */
-	public static <C extends IFeatureConfig> void addFeature(Biome biome, Decoration stage, Feature<C> feature, C config)
-	{
-		addFeature(biome, stage, feature, config, Placement.NOPE);
-	}
-
-	/**
-	 * Adds the input feature to the biome assuming no configs.
-	 * 
-	 * @see RegistryHelper#addFeature(Biome, Decoration, Feature, IFeatureConfig,
-	 *      Placement, IPlacementConfig)
-	 * @param biome
-	 * @param stage
-	 * @param feature
-	 */
-	public static void addFeature(Biome biome, Decoration stage, Feature<NoFeatureConfig> feature)
-	{
-		addFeature(biome, stage, feature, IFeatureConfig.NO_FEATURE_CONFIG);
-	}
-
-	/**
-	 * Adds the input structure to generate in the biome.
-	 * 
-	 * @param biome
-	 * @param structure
-	 * @param config
-	 */
-	public static <C extends IFeatureConfig> void addStructure(Biome biome, Structure<C> structure, C config)
-	{
-		biome.func_235063_a_(structure.func_236391_a_(config));
-	}
-
-	/**
-	 * Adds the input structure to generate in the biome with no config.
-	 * 
-	 * @see RegistryHelper#addStructure(Biome, Structure, IFeatureConfig)
-	 * @param biome
-	 * @param structure
-	 */
-	public static void addStructure(Biome biome, Structure<NoFeatureConfig> structure)
-	{
-		addStructure(biome, structure, IFeatureConfig.NO_FEATURE_CONFIG);
 	}
 }

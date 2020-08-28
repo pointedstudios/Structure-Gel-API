@@ -1,12 +1,14 @@
 package com.legacy.structure_gel.structures.jigsaw;
 
 import java.util.List;
+import java.util.function.Function;
 
 import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.gen.feature.jigsaw.JigsawManager;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
+import net.minecraft.world.gen.feature.jigsaw.JigsawPatternRegistry;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPattern.PlacementBehaviour;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
 
@@ -101,9 +103,9 @@ public class JigsawRegistryHelper
 	 *            {@link JigsawPoolBuilder} from {@link #builder()} for simplicity.
 	 * @param placement : How the structure will place. Rigid by default.
 	 */
-	public void register(String poolName, String defaultPool, List<Pair<JigsawPiece, Integer>> pool, JigsawPattern.PlacementBehaviour placement)
+	public void register(String poolName, String defaultPool, List<Pair<Function<JigsawPattern.PlacementBehaviour, ? extends JigsawPiece>, Integer>> pool, JigsawPattern.PlacementBehaviour placement)
 	{
-		JigsawManager.REGISTRY.register(new JigsawPattern(locatePiece(poolName), locatePiece(defaultPool), pool, placement));
+		JigsawPatternRegistry.func_244094_a(new JigsawPattern(locatePiece(poolName), locatePiece(defaultPool), pool, placement));
 	}
 
 	/**
@@ -112,7 +114,7 @@ public class JigsawRegistryHelper
 	 * @param defaultPool
 	 * @param pool
 	 */
-	public void register(String poolName, String defaultPool, List<Pair<JigsawPiece, Integer>> pool)
+	public void register(String poolName, String defaultPool, List<Pair<Function<JigsawPattern.PlacementBehaviour, ? extends JigsawPiece>, Integer>> pool)
 	{
 		register(poolName, defaultPool, pool, JigsawPattern.PlacementBehaviour.RIGID);
 	}
@@ -123,7 +125,7 @@ public class JigsawRegistryHelper
 	 * @param pool
 	 * @param placement
 	 */
-	public void register(String poolName, List<Pair<JigsawPiece, Integer>> pool, JigsawPattern.PlacementBehaviour placement)
+	public void register(String poolName, List<Pair<Function<JigsawPattern.PlacementBehaviour, ? extends JigsawPiece>, Integer>> pool, JigsawPattern.PlacementBehaviour placement)
 	{
 		register(locatePiece(poolName), new ResourceLocation("empty"), pool, placement);
 	}
@@ -138,7 +140,7 @@ public class JigsawRegistryHelper
 	 * @param pool : The structurs that this pool can generate. Use a
 	 *            {@link JigsawPoolBuilder} from {@link #builder()} for simplicity.
 	 */
-	public void register(String poolName, List<Pair<JigsawPiece, Integer>> pool)
+	public void register(String poolName, List<Pair<Function<JigsawPattern.PlacementBehaviour, ? extends JigsawPiece>, Integer>> pool)
 	{
 		register(poolName, pool, JigsawPattern.PlacementBehaviour.RIGID);
 	}
@@ -146,9 +148,9 @@ public class JigsawRegistryHelper
 	/**
 	 * @see #register(String, String, List, PlacementBehaviour)
 	 */
-	public void register(ResourceLocation poolName, ResourceLocation defaultPool, List<Pair<JigsawPiece, Integer>> pool, JigsawPattern.PlacementBehaviour placement)
+	public void register(ResourceLocation poolName, ResourceLocation defaultPool, List<Pair<Function<JigsawPattern.PlacementBehaviour, ? extends JigsawPiece>, Integer>> pool, JigsawPattern.PlacementBehaviour placement)
 	{
-		JigsawManager.REGISTRY.register(new JigsawPattern(poolName, defaultPool, pool, placement));
+		JigsawPatternRegistry.func_244094_a(new JigsawPattern(poolName, defaultPool, pool, placement));
 	}
 
 	/**
@@ -157,7 +159,7 @@ public class JigsawRegistryHelper
 	 * @param defaultPool
 	 * @param pool
 	 */
-	public void register(ResourceLocation poolName, ResourceLocation defaultPool, List<Pair<JigsawPiece, Integer>> pool)
+	public void register(ResourceLocation poolName, ResourceLocation defaultPool, List<Pair<Function<JigsawPattern.PlacementBehaviour, ? extends JigsawPiece>, Integer>> pool)
 	{
 		register(poolName, defaultPool, pool, JigsawPattern.PlacementBehaviour.RIGID);
 	}
@@ -168,7 +170,7 @@ public class JigsawRegistryHelper
 	 * @param pool
 	 * @param placement
 	 */
-	public void register(ResourceLocation poolName, List<Pair<JigsawPiece, Integer>> pool, JigsawPattern.PlacementBehaviour placement)
+	public void register(ResourceLocation poolName, List<Pair<Function<JigsawPattern.PlacementBehaviour, ? extends JigsawPiece>, Integer>> pool, JigsawPattern.PlacementBehaviour placement)
 	{
 		register(poolName, new ResourceLocation("empty"), pool, placement);
 	}
@@ -182,7 +184,7 @@ public class JigsawRegistryHelper
 	 * @param pool : The structurs that this pool can generate. Use a
 	 *            {@link JigsawPoolBuilder} from {@link #builder()} for simplicity.
 	 */
-	public void register(ResourceLocation poolName, List<Pair<JigsawPiece, Integer>> pool)
+	public void register(ResourceLocation poolName, List<Pair<Function<JigsawPattern.PlacementBehaviour, ? extends JigsawPiece>, Integer>> pool)
 	{
 		register(poolName, pool, JigsawPattern.PlacementBehaviour.RIGID);
 	}

@@ -32,13 +32,13 @@ public class RandomTagSwapProcessor extends StructureProcessor
 {
 	public static final Codec<RandomTagSwapProcessor> CODEC = RecordCodecBuilder.create((instance) ->
 	{
-		return instance.group(ITag.getTagCodec(TagCollectionManager.func_232928_e_()::func_232923_a_).fieldOf("condition").forGetter(processor ->
+		return instance.group(ITag.getTagCodec(() -> TagCollectionManager.func_242178_a().func_241835_a()).fieldOf("condition").forGetter(processor ->
 		{
 			return processor.condition;
 		}), Codec.FLOAT.fieldOf("chance").forGetter(processor ->
 		{
 			return processor.chance;
-		}), BlockState.BLOCKSTATE_CODEC.fieldOf("change_to").forGetter(processor ->
+		}), BlockState.CODEC.fieldOf("change_to").forGetter(processor ->
 		{
 			return processor.changeTo;
 		})).apply(instance, RandomTagSwapProcessor::new);

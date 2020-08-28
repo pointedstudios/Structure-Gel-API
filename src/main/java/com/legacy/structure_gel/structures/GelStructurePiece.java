@@ -19,11 +19,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
 import net.minecraft.world.gen.feature.jigsaw.SingleJigsawPiece;
 import net.minecraft.world.gen.feature.structure.AbstractVillagePiece;
-import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.feature.structure.TemplateStructurePiece;
 import net.minecraft.world.gen.feature.template.TemplateManager;
@@ -39,14 +39,14 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
  */
 public abstract class GelStructurePiece extends AbstractVillagePiece
 {
-	public GelStructurePiece(IStructurePieceType structurePieceType, TemplateManager templateManager, JigsawPiece jigsawPiece, BlockPos pos, int groundLevelDelta, Rotation rotation, MutableBoundingBox bounds)
+	public GelStructurePiece(TemplateManager templateManager, JigsawPiece jigsawPiece, BlockPos pos, int groundLevelDelta, Rotation rotation, MutableBoundingBox bounds)
 	{
-		super(structurePieceType, templateManager, jigsawPiece, pos, groundLevelDelta, rotation, bounds);
+		super(templateManager, jigsawPiece, pos, groundLevelDelta, rotation, bounds);
 	}
 
-	public GelStructurePiece(TemplateManager templateManager, CompoundNBT nbt, IStructurePieceType structurePieceType)
+	public GelStructurePiece(TemplateManager templateManager, CompoundNBT nbt)
 	{
-		super(templateManager, nbt, structurePieceType);
+		super(templateManager, nbt);
 	}
 
 	/**
@@ -71,7 +71,7 @@ public abstract class GelStructurePiece extends AbstractVillagePiece
 	 * @param pos
 	 * @param bounds
 	 */
-	public abstract void handleDataMarker(String key, IWorld world, BlockPos pos, Random rand, MutableBoundingBox bounds);
+	public abstract void handleDataMarker(String key, ISeedReader world, BlockPos pos, Random rand, MutableBoundingBox bounds);
 
 	/**
 	 * Shorthand method to create an entity with the given pos (offset by 0.5) and
@@ -84,9 +84,9 @@ public abstract class GelStructurePiece extends AbstractVillagePiece
 	 * @param rotation
 	 * @return {@link Entity}
 	 */
-	public <T extends Entity> T createEntity(EntityType<T> entityType, IWorld worldIn, BlockPos pos, Rotation rotation)
+	public <T extends Entity> T createEntity(EntityType<T> entityType, World worldIn, BlockPos pos, Rotation rotation)
 	{
-		T entity = entityType.create(worldIn.getWorld());
+		T entity = entityType.create(worldIn);
 		entity.setLocationAndAngles(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, rotation.rotate(Direction.SOUTH).getHorizontalAngle(), 0);
 		return entity;
 	}

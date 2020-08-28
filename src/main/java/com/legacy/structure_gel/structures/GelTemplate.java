@@ -28,6 +28,7 @@ import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.math.shapes.BitSetVoxelShapePart;
 import net.minecraft.util.math.shapes.VoxelShapePart;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.IServerWorld;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.feature.template.PlacementSettings;
 import net.minecraft.world.gen.feature.template.Template;
@@ -50,7 +51,7 @@ public class GelTemplate extends Template
 	}
 
 	// addBlocksToWorld
-	public boolean func_237146_a_(IWorld worldIn, BlockPos pos, BlockPos pos2, PlacementSettings placementSettings, Random rand, int flags)
+	public boolean func_237146_a_(IServerWorld worldIn, BlockPos pos, BlockPos pos2, PlacementSettings placementSettings, Random rand, int flags)
 	{
 		if (this.template.blocks.isEmpty())
 		{
@@ -222,7 +223,7 @@ public class GelTemplate extends Template
 		}
 	}
 
-	private void addEntitiesToWorld(IWorld worldIn, BlockPos pos, PlacementSettings placementIn)
+	private void addEntitiesToWorld(IServerWorld worldIn, BlockPos pos, PlacementSettings placementIn)
 	{
 		for (Template.EntityInfo entityInfo : processEntityInfos(this.template, worldIn, pos, placementIn, this.template.entities))
 		{
@@ -240,7 +241,7 @@ public class GelTemplate extends Template
 				listnbt.add(DoubleNBT.valueOf(vec3d.z));
 				compoundnbt.put("Pos", listnbt);
 				compoundnbt.remove("UUID");
-				loadEntity(worldIn, compoundnbt).ifPresent((entity) ->
+				Template.loadEntity(worldIn, compoundnbt).ifPresent((entity) ->
 				{
 					// entity.getMirroredYaw(Mirror) has it's mirroring flipped, so I flip it here
 					// to correct that.

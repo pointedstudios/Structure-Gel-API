@@ -1,11 +1,10 @@
 package com.legacy.structure_gel.structures.jigsaw;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
-import com.google.common.collect.ImmutableList;
 import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.structures.GelPlacementSettings;
 import com.legacy.structure_gel.structures.GelStructurePiece;
@@ -33,7 +32,7 @@ import net.minecraft.world.gen.feature.template.BlockIgnoreStructureProcessor;
 import net.minecraft.world.gen.feature.template.IStructureProcessorType;
 import net.minecraft.world.gen.feature.template.JigsawReplacementStructureProcessor;
 import net.minecraft.world.gen.feature.template.PlacementSettings;
-import net.minecraft.world.gen.feature.template.StructureProcessor;
+import net.minecraft.world.gen.feature.template.StructureProcessorList;
 import net.minecraft.world.gen.feature.template.Template;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 
@@ -48,7 +47,7 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
  */
 public class GelJigsawPiece extends SingleJigsawPiece
 {
-	public static final Codec<Either<ResourceLocation, Template>> POOL_CODEC = Codec.of(GelJigsawPiece::encodePool, ResourceLocation.RESOURCE_LOCATION_CODEC.map(Either::left));
+	public static final Codec<Either<ResourceLocation, Template>> POOL_CODEC = Codec.of(GelJigsawPiece::encodePool, ResourceLocation.CODEC.map(Either::left));
 	public static final Codec<GelJigsawPiece> CODEC = RecordCodecBuilder.create((instance) ->
 	{
 		return instance.group(encodeLocaiton(), encodeProcessor(), func_236848_d_(), Codec.BOOL.fieldOf("maintainWater").forGetter(jigsawPiece -> jigsawPiece.maintainWater), Codec.BOOL.fieldOf("ignoreEntities").forGetter(jigsawPiece -> jigsawPiece.ignoreEntities)).apply(instance, GelJigsawPiece::new);
@@ -59,12 +58,12 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	private static <T> DataResult<T> encodePool(Either<ResourceLocation, Template> locationTemplate, DynamicOps<T> dyn, T data)
 	{
 		Optional<ResourceLocation> optional = locationTemplate.left();
-		return !optional.isPresent() ? DataResult.error("Can not serialize a runtime pool element") : ResourceLocation.RESOURCE_LOCATION_CODEC.encode(optional.get(), dyn, data);
+		return !optional.isPresent() ? DataResult.error("Can not serialize a runtime pool element") : ResourceLocation.CODEC.encode(optional.get(), dyn, data);
 	}
 
-	protected static <E extends GelJigsawPiece> RecordCodecBuilder<E, List<StructureProcessor>> encodeProcessor()
+	protected static <E extends GelJigsawPiece> RecordCodecBuilder<E, Supplier<StructureProcessorList>> encodeProcessor()
 	{
-		return IStructureProcessorType.field_237137_i_.listOf().fieldOf("processors").forGetter((jigsawPiece) ->
+		return IStructureProcessorType.field_242922_m.fieldOf("processors").forGetter((jigsawPiece) ->
 		{
 			return jigsawPiece.processors;
 		});
@@ -86,7 +85,7 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	 * @param maintainWater
 	 * @param ignoreEntities
 	 */
-	public GelJigsawPiece(Either<ResourceLocation, Template> location, List<StructureProcessor> processors, JigsawPattern.PlacementBehaviour placementBehavior, boolean maintainWater, boolean ignoreEntities)
+	public GelJigsawPiece(Either<ResourceLocation, Template> location, Supplier<StructureProcessorList> processors, JigsawPattern.PlacementBehaviour placementBehavior, boolean maintainWater, boolean ignoreEntities)
 	{
 		super(location, processors, placementBehavior);
 		this.maintainWater = maintainWater;
@@ -99,20 +98,9 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	 * @param processors
 	 * @param placementBehavior
 	 */
-	public GelJigsawPiece(Either<ResourceLocation, Template> location, List<StructureProcessor> processors, JigsawPattern.PlacementBehaviour placementBehavior)
+	public GelJigsawPiece(Either<ResourceLocation, Template> location, Supplier<StructureProcessorList> processors, JigsawPattern.PlacementBehaviour placementBehavior)
 	{
 		super(location, processors, placementBehavior);
-	}
-
-	/**
-	 * 
-	 * @param template
-	 * @param processors
-	 * @param placementBehavior
-	 */
-	public GelJigsawPiece(Template template, List<StructureProcessor> processors, JigsawPattern.PlacementBehaviour placementBehavior)
-	{
-		super(template, processors, placementBehavior);
 	}
 
 	/**
@@ -123,7 +111,7 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	 * @param maintainWater
 	 * @param ignoreEntities
 	 */
-	public GelJigsawPiece(ResourceLocation location, List<StructureProcessor> processors, JigsawPattern.PlacementBehaviour placementBehavior, boolean maintainWater, boolean ignoreEntities)
+	public GelJigsawPiece(ResourceLocation location, Supplier<StructureProcessorList> processors, JigsawPattern.PlacementBehaviour placementBehavior, boolean maintainWater, boolean ignoreEntities)
 	{
 		this(Either.left(location), processors, placementBehavior, maintainWater, ignoreEntities);
 	}
@@ -134,7 +122,7 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	 * @param processors
 	 * @param placementBehavior
 	 */
-	public GelJigsawPiece(ResourceLocation location, List<StructureProcessor> processors, JigsawPattern.PlacementBehaviour placementBehavior)
+	public GelJigsawPiece(ResourceLocation location, Supplier<StructureProcessorList> processors, JigsawPattern.PlacementBehaviour placementBehavior)
 	{
 		this(Either.left(location), processors, placementBehavior);
 	}
@@ -144,18 +132,9 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	 * @param location : the structure
 	 * @param processors
 	 */
-	public GelJigsawPiece(ResourceLocation location, List<StructureProcessor> processors)
+	public GelJigsawPiece(ResourceLocation location, Supplier<StructureProcessorList> processors)
 	{
 		this(Either.left(location), processors, JigsawPattern.PlacementBehaviour.RIGID);
-	}
-
-	/**
-	 * @see GelJigsawPiece
-	 * @param location : the structure
-	 */
-	public GelJigsawPiece(ResourceLocation location)
-	{
-		this(location, ImmutableList.of());
 	}
 
 	/**
@@ -198,7 +177,7 @@ public class GelJigsawPiece extends SingleJigsawPiece
 		placementSettings.addProcessor(RemoveGelStructureProcessor.INSTANCE);
 		if (!isLegacy)
 			placementSettings.addProcessor(JigsawReplacementStructureProcessor.INSTANCE);
-		this.processors.forEach(placementSettings::addProcessor);
+		this.processors.get().func_242919_a().forEach(placementSettings::addProcessor);
 		this.getPlacementBehaviour().getStructureProcessors().forEach(placementSettings::addProcessor);
 		return placementSettings;
 	}

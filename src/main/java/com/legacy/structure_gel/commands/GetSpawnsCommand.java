@@ -17,7 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biome.SpawnListEntry;
+import net.minecraft.world.biome.MobSpawnInfo;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.server.ServerWorld;
@@ -36,10 +36,10 @@ public class GetSpawnsCommand
 
 	private static int getSpawns(CommandContext<CommandSource> context, EntityClassification... classifications)
 	{
-		Map<EntityClassification, List<SpawnListEntry>> map = new LinkedHashMap<>();
+		Map<EntityClassification, List<MobSpawnInfo.Spawners>> map = new LinkedHashMap<>();
 		for (EntityClassification classification : classifications)
 		{
-			List<SpawnListEntry> list = getSpawnList(classification, context);
+			List<MobSpawnInfo.Spawners> list = getSpawnList(classification, context);
 			if (!list.isEmpty())
 				map.put(classification, list);
 		}
@@ -55,18 +55,18 @@ public class GetSpawnsCommand
 		return 1;
 	}
 
-	private static List<SpawnListEntry> getSpawnList(EntityClassification classification, CommandContext<CommandSource> context)
+	private static List<MobSpawnInfo.Spawners> getSpawnList(EntityClassification classification, CommandContext<CommandSource> context)
 	{
 		ServerWorld world = context.getSource().getWorld();
 		BlockPos pos = new BlockPos(context.getSource().getPos());
 		Biome biome = world.getBiome(pos);
 		ChunkGenerator chunkGen = world.getChunkProvider().generator;
 		StructureManager manager = world.func_241112_a_();
-		List<SpawnListEntry> list = chunkGen.func_230353_a_(biome, manager, classification, pos);
+		List<MobSpawnInfo.Spawners> list = chunkGen.func_230353_a_(biome, manager, classification, pos);
 		return net.minecraftforge.event.ForgeEventFactory.getPotentialSpawns(world, classification, pos, list);
 	}
 
-	private static void printSpawns(EntityClassification classification, List<SpawnListEntry> spawns, CommandContext<CommandSource> context)
+	private static void printSpawns(EntityClassification classification, List<MobSpawnInfo.Spawners> spawns, CommandContext<CommandSource> context)
 	{
 		if (context.getSource().getEntity() instanceof ServerPlayerEntity)
 		{
@@ -74,7 +74,7 @@ public class GetSpawnsCommand
 			{
 				ServerPlayerEntity player = ((ServerPlayerEntity) context.getSource().getEntity());
 				player.sendMessage(new StringTextComponent("[" + classification.getName() + "]").mergeStyle(TextFormatting.GREEN), Util.DUMMY_UUID);
-				spawns.forEach(spawn -> player.sendMessage(new StringTextComponent(String.format(" - %s, weight:%d, min:%d, max:%d", spawn.entityType.getRegistryName(), spawn.itemWeight, spawn.minGroupCount, spawn.maxGroupCount)), Util.DUMMY_UUID));
+				spawns.forEach(spawn -> player.sendMessage(new StringTextComponent(String.format(" - %s, weight:%d, min:%d, max:%d", spawn.field_242588_c.getRegistryName(), spawn.itemWeight, spawn.field_242589_d, spawn.field_242590_e)), Util.DUMMY_UUID));
 			}
 		}
 	}

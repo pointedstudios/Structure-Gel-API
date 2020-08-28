@@ -15,7 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biome.SpawnListEntry;
+import net.minecraft.world.biome.MobSpawnInfo;
 import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationStage;
@@ -37,7 +37,7 @@ import net.minecraftforge.event.world.WorldEvent;
  */
 public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C>
 {
-	public final Map<EntityClassification, List<SpawnListEntry>> spawns = new HashMap<>();
+	public final Map<EntityClassification, List<MobSpawnInfo.Spawners>> spawns = new HashMap<>();
 
 	public GelStructure(Codec<C> codec)
 	{
@@ -62,7 +62,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 		return this;
 	}
 
-	public GelStructure<C> setSpawnList(EntityClassification classification, List<SpawnListEntry> spawns)
+	public GelStructure<C> setSpawnList(EntityClassification classification, List<MobSpawnInfo.Spawners> spawns)
 	{
 		this.spawns.put(classification, spawns);
 		return this;
@@ -166,7 +166,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	@Nullable
 	@Deprecated
 	@Override
-	public List<Biome.SpawnListEntry> getSpawnList()
+	public List<MobSpawnInfo.Spawners> getSpawnList()
 	{
 		return this.spawns.get(EntityClassification.MONSTER);
 	}
@@ -181,7 +181,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	@Nullable
 	@Deprecated
 	@Override
-	public List<Biome.SpawnListEntry> getCreatureSpawnList()
+	public List<MobSpawnInfo.Spawners> getCreatureSpawnList()
 	{
 		return this.spawns.get(EntityClassification.CREATURE);
 	}
@@ -194,7 +194,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	 * @return
 	 */
 	@Nullable
-	public List<SpawnListEntry> getSpawns(EntityClassification classification)
+	public List<MobSpawnInfo.Spawners> getSpawns(EntityClassification classification)
 	{
 		switch (classification)
 		{

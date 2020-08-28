@@ -14,12 +14,12 @@ issueTrackerURL="https://gitlab.com/groups/modding-legacy/-/issues"
 [[dependencies.structure_gel]]
     modId="forge"
     mandatory=true
-    versionRange="[32.0.97,)"
+    versionRange="[33.0.22,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.structure_gel]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16.1]"
+    versionRange="[1.16.2]"
     ordering="NONE"
     side="BOTH"

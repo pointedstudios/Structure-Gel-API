@@ -16,7 +16,8 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
-import net.minecraft.world.gen.feature.template.StructureProcessor;
+import net.minecraft.world.gen.feature.template.ProcessorLists;
+import net.minecraft.world.gen.feature.template.StructureProcessorList;
 
 /**
  * Assists in the creation of jigsaw pools, allowing multiple pools to be
@@ -30,7 +31,7 @@ public class JigsawPoolBuilder
 	private final JigsawRegistryHelper jigsawRegistryHelper;
 	private Map<ResourceLocation, Integer> names = ImmutableMap.of();
 	private int weight = 1;
-	private List<StructureProcessor> processors = ImmutableList.of();
+	private StructureProcessorList processors = ProcessorLists.field_244101_a;
 	private boolean maintainWater = true;
 	private JigsawPattern.PlacementBehaviour placementBehavior = JigsawPattern.PlacementBehaviour.RIGID;
 
@@ -150,27 +151,14 @@ public class JigsawPoolBuilder
 	}
 
 	/**
-	 * Structure processors that all pieces in this builder will use. This functions
-	 * as an append.
+	 * Structure processors that all pieces in this builder will use.
 	 * 
 	 * @param processors : empty by default
 	 * @return {@link JigsawPoolBuilder}
 	 */
-	public JigsawPoolBuilder processors(StructureProcessor... processors)
+	public JigsawPoolBuilder processors(StructureProcessorList processors)
 	{
-		return processors(Arrays.asList(processors));
-	}
-
-	/**
-	 * Structure processors that all pieces in this builder will use. This functions
-	 * as an append.
-	 * 
-	 * @param processors : empty by default
-	 * @return {@link JigsawPoolBuilder}
-	 */
-	public JigsawPoolBuilder processors(List<StructureProcessor> processors)
-	{
-		this.processors = Streams.concat(this.processors.stream(), ImmutableList.copyOf(processors).stream()).collect(ImmutableList.toImmutableList());
+		this.processors = processors;
 		return this;
 	}
 
@@ -209,8 +197,8 @@ public class JigsawPoolBuilder
 	public List<Pair<JigsawPiece, Integer>> build()
 	{
 		List<Pair<JigsawPiece, Integer>> jigsawList = new ArrayList<>();
-		this.names.forEach((rl, i) -> jigsawList.add(Pair.of(new GelJigsawPiece(rl, this.processors, this.placementBehavior, this.maintainWater, false), i)));
-		
+		this.names.forEach((rl, i) -> jigsawList.add(Pair.of(new GelJigsawPiece(rl, () -> this.processors, this.placementBehavior, this.maintainWater, false), i)));
+
 		return jigsawList.stream().collect(ImmutableList.toImmutableList());
 	}
 

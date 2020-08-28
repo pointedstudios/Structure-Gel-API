@@ -13,8 +13,7 @@ import javax.annotation.Nullable;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biome.SpawnListEntry;
-import net.minecraftforge.common.BiomeDictionary;
+import net.minecraft.world.biome.MobSpawnInfo;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -40,7 +39,7 @@ public class ConfigTemplates
 		private ForgeConfigSpec.ConfigValue<String> biomeString;
 		private List<Biome> biomes = new ArrayList<>();
 		private Map<EntityClassification, ForgeConfigSpec.ConfigValue<String>> spawnsStrings = new HashMap<>();
-		private Map<EntityClassification, List<SpawnListEntry>> spawns = new HashMap<>();
+		private Map<EntityClassification, List<MobSpawnInfo.Spawners>> spawns = new HashMap<>();
 
 		/**
 		 * 
@@ -195,7 +194,7 @@ public class ConfigTemplates
 		 * @return List
 		 */
 		@Nullable
-		public List<SpawnListEntry> getSpawnsForClassification(EntityClassification classification)
+		public List<MobSpawnInfo.Spawners> getSpawnsForClassification(EntityClassification classification)
 		{
 			return this.getSpawns().get(classification);
 		}
@@ -205,7 +204,7 @@ public class ConfigTemplates
 		 * 
 		 * @return Map
 		 */
-		public Map<EntityClassification, List<SpawnListEntry>> getSpawns()
+		public Map<EntityClassification, List<MobSpawnInfo.Spawners>> getSpawns()
 		{
 			return this.spawns;
 		}
@@ -217,7 +216,7 @@ public class ConfigTemplates
 		protected void onConfigLoad(ModConfig.ModConfigEvent event)
 		{
 			this.biomes = parseBiomes(this.getBiomeString());
-			this.spawns = new HashMap<EntityClassification, List<SpawnListEntry>>()
+			this.spawns = new HashMap<EntityClassification, List<MobSpawnInfo.Spawners>>()
 			{
 				private static final long serialVersionUID = 64168135463438L;
 
@@ -249,6 +248,7 @@ public class ConfigTemplates
 		 * @param key
 		 * @return List
 		 */
+		// TODO Removed biome dictionary support for now
 		public static List<Biome> parseBiomes(String key)
 		{
 			List<Biome> biomes = new ArrayList<>();
@@ -257,19 +257,19 @@ public class ConfigTemplates
 				Arrays.asList(key.replace(" ", "").split(",")).stream().forEach(s ->
 				{
 					boolean not = s.startsWith("!");
-					boolean isTag = s.replace("!", "").startsWith("#");
+					//boolean isTag = s.replace("!", "").startsWith("#");
 					String biomeString = s.replace("!", "").replace("#", "");
 
-					if (!isTag)
-					{
+					//if (!isTag)
+					//{
 						ResourceLocation biome = new ResourceLocation(biomeString);
 						if (ForgeRegistries.BIOMES.containsKey(biome))
 							updateBiomeList(biomes, ForgeRegistries.BIOMES.getValue(biome), not);
-					}
-					else if (BiomeDictionary.Type.getType(biomeString) != null)
+					//}
+					/*else if (BiomeDictionary.Type.getType(biomeString) != null)
 					{
 						BiomeDictionary.getBiomes(BiomeDictionary.Type.getType(biomeString)).forEach(biome -> updateBiomeList(biomes, biome, not));
-					}
+					}*/
 				});
 			}
 			return biomes;
@@ -300,9 +300,9 @@ public class ConfigTemplates
 		 * @param key
 		 * @return List
 		 */
-		public static List<SpawnListEntry> parseSpawns(String key)
+		public static List<MobSpawnInfo.Spawners> parseSpawns(String key)
 		{
-			List<SpawnListEntry> spawns = new ArrayList<>();
+			List<MobSpawnInfo.Spawners> spawns = new ArrayList<>();
 			if (!key.isEmpty())
 			{
 				try
@@ -312,7 +312,7 @@ public class ConfigTemplates
 					{
 						ResourceLocation entity = new ResourceLocation(matcher.group(2));
 						if (ForgeRegistries.ENTITIES.containsKey(entity))
-							spawns.add(new SpawnListEntry(ForgeRegistries.ENTITIES.getValue(entity), Integer.parseInt(matcher.group(3)), Integer.parseInt(matcher.group(4)), Integer.parseInt(matcher.group(5))));
+							spawns.add(new MobSpawnInfo.Spawners(ForgeRegistries.ENTITIES.getValue(entity), Integer.parseInt(matcher.group(3)), Integer.parseInt(matcher.group(4)), Integer.parseInt(matcher.group(5))));
 					}
 				}
 				catch (Exception e)

@@ -29,13 +29,13 @@ public class RandomStateSwapProcessor extends StructureProcessor
 {
 	public static final Codec<RandomStateSwapProcessor> CODEC = RecordCodecBuilder.create((instance) ->
 	{
-		return instance.group(BlockState.BLOCKSTATE_CODEC.fieldOf("condition").forGetter(processor ->
+		return instance.group(BlockState.CODEC.fieldOf("condition").forGetter(processor ->
 		{
 			return processor.condition;
 		}), Codec.FLOAT.fieldOf("chance").forGetter(processor ->
 		{
 			return processor.chance;
-		}), BlockState.BLOCKSTATE_CODEC.fieldOf("change_to").forGetter(processor ->
+		}), BlockState.CODEC.fieldOf("change_to").forGetter(processor ->
 		{
 			return processor.changeTo;
 		})).apply(instance, RandomStateSwapProcessor::new);
