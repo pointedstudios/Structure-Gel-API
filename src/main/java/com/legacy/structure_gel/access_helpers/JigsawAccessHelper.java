@@ -2,19 +2,18 @@ package com.legacy.structure_gel.access_helpers;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Streams;
 import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.structures.jigsaw.JigsawPoolBuilder;
+import com.legacy.structure_gel.util.GelCollectors;
 import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.jigsaw.FeatureJigsawPiece;
-import net.minecraft.world.gen.feature.jigsaw.JigsawManager;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
 import net.minecraft.world.gen.feature.jigsaw.ListJigsawPiece;
@@ -42,21 +41,20 @@ public class JigsawAccessHelper
 	 */
 	public static void addIllagerStructures(Structure<?>... structures)
 	{
-		Structure.field_236384_t_ = Streams.concat(Structure.field_236384_t_.stream(), Arrays.asList(structures).stream()).collect(ImmutableList.toImmutableList());
+		Structure.field_236384_t_ = GelCollectors.addToList(Structure.field_236384_t_, Arrays.asList(structures));
 	}
 
 	/**
-	 * Removed the input registered jigsaw pool completely. Make sure to re-register
-	 * it to prevent issues.
+	 * Clears the input registered jigsaw pool.
 	 * 
 	 * @param pool
 	 */
-	public static void removePool(ResourceLocation pool)
+	public static void clearPool(ResourceLocation pool)
 	{
-		if (JigsawManager.REGISTRY.registry.containsKey(pool))
-			JigsawManager.REGISTRY.registry.remove(pool);
+		if (getJigsawPattern(pool).isPresent())
+			getJigsawPattern(pool).get().jigsawPieces.clear();
 		else
-			StructureGelMod.LOGGER.warn(String.format("Could not remove the pool %s as it does not exist.", pool));
+			StructureGelMod.LOGGER.warn(String.format("Could not clear the pool %s as it does not exist.", pool));
 	}
 
 	/**
@@ -71,17 +69,19 @@ public class JigsawAccessHelper
 	 */
 	public static void addToPool(ResourceLocation pool, List<Pair<JigsawPiece, Integer>> pieces)
 	{
-		if (JigsawManager.REGISTRY.get(pool) == JigsawPattern.INVALID)
+		if (getJigsawPattern(pool).isPresent())
+		{
+			getJigsawPattern(pool).ifPresent(jigsawPattern ->
+			{
+				for (Pair<JigsawPiece, Integer> pair : pieces)
+					for (int i = 0; i < pair.getSecond(); i++)
+						jigsawPattern.jigsawPieces.add(pair.getFirst());
+			});
+		}
+		else
 		{
 			StructureGelMod.LOGGER.warn(String.format("Could not add to %s because it has not been created yet.", pool));
 			return;
-		}
-		for (Pair<JigsawPiece, Integer> pair : pieces)
-		{
-			for (Integer integer = 0; integer < pair.getSecond(); integer = integer + 1)
-			{
-				JigsawManager.REGISTRY.get(pool).jigsawPieces.add(pair.getFirst());
-			}
 		}
 	}
 
@@ -94,24 +94,26 @@ public class JigsawAccessHelper
 	 */
 	public static void removeFromPool(ResourceLocation pool, ResourceLocation pieceName)
 	{
-		if (JigsawManager.REGISTRY.get(pool) == JigsawPattern.INVALID)
+		if (getJigsawPattern(pool).isPresent())
+		{
+			getJigsawPattern(pool).get().jigsawPieces.removeIf(piece ->
+			{
+				if (piece instanceof SingleJigsawPiece)
+				{
+					return getSingleJigsawPieceLocation((SingleJigsawPiece) piece).equals(pieceName);
+				}
+				else if (piece instanceof ListJigsawPiece)
+				{
+					return JigsawAccessHelper.removeFromListJigsaw((ListJigsawPiece) piece, pieceName);
+				}
+				else
+					return false;
+			});
+		}
+		else
 		{
 			StructureGelMod.LOGGER.warn(String.format("Could not remove from %s because it has not been created yet.", pool));
-			return;
 		}
-		JigsawManager.REGISTRY.get(pool).jigsawPieces.removeIf(piece ->
-		{
-			if (piece instanceof SingleJigsawPiece)
-			{
-				return getSingleJigsawPieceLocation((SingleJigsawPiece) piece).equals(pieceName);
-			}
-			else if (piece instanceof ListJigsawPiece)
-			{
-				return JigsawAccessHelper.removeFromListJigsaw((ListJigsawPiece) piece, pieceName);
-			}
-			else
-				return false;
-		});
 	}
 
 	/**
@@ -123,24 +125,26 @@ public class JigsawAccessHelper
 	 */
 	public static void removeFromPool(ResourceLocation pool, Feature<?> feature)
 	{
-		if (JigsawManager.REGISTRY.get(pool) == JigsawPattern.INVALID)
+		if (getJigsawPattern(pool).isPresent())
+		{
+			getJigsawPattern(pool).get().jigsawPieces.removeIf(piece ->
+			{
+				if (piece instanceof FeatureJigsawPiece)
+				{
+					return ((FeatureJigsawPiece) piece).configuredFeature.get().feature == feature;
+				}
+				else if (piece instanceof ListJigsawPiece)
+				{
+					return JigsawAccessHelper.removeFromListJigsaw((ListJigsawPiece) piece, feature);
+				}
+				else
+					return false;
+			});
+		}
+		else
 		{
 			StructureGelMod.LOGGER.warn(String.format("Could not remove from %s because it has not been created yet.", pool));
-			return;
 		}
-		JigsawManager.REGISTRY.get(pool).jigsawPieces.removeIf(piece ->
-		{
-			if (piece instanceof FeatureJigsawPiece)
-			{
-				return ((FeatureJigsawPiece) piece).configuredFeature.feature == feature;
-			}
-			else if (piece instanceof ListJigsawPiece)
-			{
-				return JigsawAccessHelper.removeFromListJigsaw((ListJigsawPiece) piece, feature);
-			}
-			else
-				return false;
-		});
 	}
 
 	/**
@@ -183,7 +187,7 @@ public class JigsawAccessHelper
 		listJigsawPiece.elements.removeIf(piece ->
 		{
 			if (piece instanceof FeatureJigsawPiece)
-				return ((FeatureJigsawPiece) piece).configuredFeature.feature == feature;
+				return ((FeatureJigsawPiece) piece).configuredFeature.get().feature == feature;
 			else if (piece instanceof ListJigsawPiece)
 			{
 				JigsawAccessHelper.removeFromListJigsaw((ListJigsawPiece) piece, feature);
@@ -193,16 +197,6 @@ public class JigsawAccessHelper
 		});
 
 		return listJigsawPiece.elements.isEmpty();
-	}
-
-	/**
-	 * Gives access to the registry that stores all jigsaw patterns.
-	 * 
-	 * @return {@link Map}
-	 */
-	public static Map<ResourceLocation, JigsawPattern> getJigsawPatternRegistry()
-	{
-		return JigsawManager.REGISTRY.registry;
 	}
 
 	/**
@@ -235,6 +229,17 @@ public class JigsawAccessHelper
 	 */
 	public static ConfiguredFeature<?, ?> getFeatureJigsawPieceFeatures(FeatureJigsawPiece piece)
 	{
-		return piece.configuredFeature;
+		return piece.configuredFeature.get();
+	}
+
+	/**
+	 * Accessor for the jigsaw pattern registry. Mainly for mapped convenience.
+	 * 
+	 * @param location
+	 * @return
+	 */
+	public static Optional<JigsawPattern> getJigsawPattern(ResourceLocation location)
+	{
+		return WorldGenRegistries.field_243656_h.func_241873_b(location);
 	}
 }

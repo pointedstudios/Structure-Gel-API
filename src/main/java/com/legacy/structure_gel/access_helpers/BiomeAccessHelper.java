@@ -13,6 +13,7 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import com.legacy.structure_gel.util.GelCollectors;
 import com.legacy.structure_gel.util.RegistryHelper;
 
 import net.minecraft.entity.EntityClassification;
@@ -66,7 +67,7 @@ public class BiomeAccessHelper
 	{
 		// Make list mutable before I try to mess with it in case it isn't
 		if (getGenSettings(biome).field_242484_f instanceof ImmutableList)
-			getGenSettings(biome).field_242484_f = Lists.newArrayList(getGenSettings(biome).field_242484_f);
+			getGenSettings(biome).field_242484_f = GelCollectors.makeListMutable(getGenSettings(biome).field_242484_f);
 
 		// If the generation stage isn't present, add it and make sure other stages
 		// exist because Mojang didn't use a map.
@@ -86,8 +87,7 @@ public class BiomeAccessHelper
 	 */
 	public static <C extends IFeatureConfig> void addStructure(Biome biome, Structure<C> structure, C config)
 	{
-		List<Supplier<StructureFeature<?, ?>>> newStructure = Arrays.asList(() -> structure.func_236391_a_(config));
-		getGenSettings(biome).field_242485_g = Stream.concat(getGenSettings(biome).field_242485_g.stream(), newStructure.stream()).collect(ImmutableList.toImmutableList());
+		getGenSettings(biome).field_242485_g = GelCollectors.addToList(getGenSettings(biome).field_242485_g, () -> structure.func_236391_a_(config));
 	}
 
 	/**
@@ -136,8 +136,8 @@ public class BiomeAccessHelper
 	{
 		// Make the map and it's lists mutable
 		if (getGenSettings(biome).field_242483_e instanceof ImmutableMap || (getGenSettings(biome).field_242483_e.containsKey(carvingType) && getGenSettings(biome).field_242483_e.get(carvingType) instanceof ImmutableList))
-			getGenSettings(biome).field_242483_e = getGenSettings(biome).field_242483_e.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, (e) -> Lists.newArrayList(e.getValue())));
-
+			getGenSettings(biome).field_242483_e = GelCollectors.makeMapMutable(getGenSettings(biome).field_242483_e, Map.Entry::getKey, (e) -> Lists.newArrayList(e.getValue()));
+		
 		// Add an entry to the map for the required carver if it's absent
 		if (!getGenSettings(biome).field_242483_e.containsKey(carvingType))
 			getGenSettings(biome).field_242483_e.put(carvingType, Lists.newArrayList());
@@ -170,11 +170,11 @@ public class BiomeAccessHelper
 	 */
 	public static <C extends IFeatureConfig, PC extends IPlacementConfig> void addFlowerFeature(Biome biome, Decoration stage, ConfiguredFeature<?, ?> feature)
 	{
-		addFeature(biome, stage, feature, config, placement, placementConfig);
+		addFeature(biome, stage, feature);
 
 		// Make list mutable before I try to mess with it in case it isn't
 		if (getGenSettings(biome).field_242486_h instanceof ImmutableList)
-			getGenSettings(biome).field_242486_h = Lists.newArrayList(getGenSettings(biome).field_242486_h);
+			getGenSettings(biome).field_242486_h = GelCollectors.makeListMutable(getGenSettings(biome).field_242486_h);
 
 		// Add the feature to the proper stage
 		getGenSettings(biome).field_242486_h.add(feature);
@@ -191,8 +191,8 @@ public class BiomeAccessHelper
 	{
 		// Make the map and it's lists mutable
 		if (biome.func_242433_b().field_242554_e instanceof ImmutableMap || (biome.func_242433_b().field_242554_e.containsKey(classification) && biome.func_242433_b().field_242554_e.get(classification) instanceof ImmutableList))
-			biome.func_242433_b().field_242554_e = biome.func_242433_b().field_242554_e.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, (e) -> Lists.newArrayList(e.getValue())));
-
+			biome.func_242433_b().field_242554_e = GelCollectors.makeMapMutable(biome.func_242433_b().field_242554_e, Map.Entry::getKey, (e) -> GelCollectors.makeListMutable(e.getValue()));
+		
 		// Add an entry to the map for the required spawner if it's absent
 		if (!biome.func_242433_b().field_242554_e.containsKey(classification))
 			biome.func_242433_b().field_242554_e.put(classification, Lists.newArrayList());
@@ -213,7 +213,7 @@ public class BiomeAccessHelper
 	{
 		// Make the map and it's lists mutable
 		if (biome.func_242433_b().field_242555_f instanceof ImmutableMap)
-			biome.func_242433_b().field_242555_f = biome.func_242433_b().field_242555_f.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+			biome.func_242433_b().field_242555_f = GelCollectors.makeMapMutable(biome.func_242433_b().field_242555_f);
 		
 		// Add the spawn
 		biome.func_242433_b().field_242555_f.put(entity, spawnCost);

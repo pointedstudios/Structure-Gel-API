@@ -10,7 +10,7 @@ import java.util.Map;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Streams;
-import com.legacy.structure_gel.util.Collectors;
+import com.legacy.structure_gel.util.GelCollectors;
 import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.util.ResourceLocation;
@@ -54,7 +54,7 @@ public class JigsawPoolBuilder
 	 *            {@link JigsawRegistryHelper#locatePiece(String)} from the
 	 *            {@link #jigsawRegistryHelper}. Piece weights are set in the map.
 	 * @return {@link JigsawPoolBuilder}
-	 * @see Collectors#mapOf(Class, Class, Object...)
+	 * @see GelCollectors#mapOf(Class, Class, Object...)
 	 * @see ImmutableMap#of()
 	 */
 	public JigsawPoolBuilder names(Map<String, Integer> nameMap)
@@ -70,7 +70,7 @@ public class JigsawPoolBuilder
 	 * 
 	 * @param nameMap : Names are left as is with no conversion
 	 * @return {@link JigsawPoolBuilder}
-	 * @see Collectors#mapOf(Class, Class, Object...)
+	 * @see GelCollectors#mapOf(Class, Class, Object...)
 	 * @see ImmutableMap#of()
 	 */
 	public JigsawPoolBuilder namesR(Map<ResourceLocation, Integer> nameMap)
