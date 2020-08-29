@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 import com.legacy.structure_gel.StructureGelConfig;
-import com.legacy.structure_gel.asm.StructureGelHooks;
+import com.legacy.structure_gel.core.asm.StructureGelHooks;
 
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;

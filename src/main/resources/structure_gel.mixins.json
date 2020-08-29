@@ -1,0 +1,15 @@
+{
+	"required": true,
+	"package": "com.legacy.structure_gel.core.mixin",
+	"compatibilityLevel": "JAVA_8",
+	"refmap": "structure_gel.refmap.json",
+	"mixins": [
+		"LakesFeatureMixin"
+	],
+	"client": [
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"minVersion": "0.8"
+}

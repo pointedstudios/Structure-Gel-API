@@ -17,7 +17,7 @@ public class StructureGelConfig
 
 	public static class Common
 	{
-		public final ForgeConfigSpec.BooleanValue extraLakeProofing;
+		private final ForgeConfigSpec.BooleanValue extraLakeProofing;
 
 		public Common(ForgeConfigSpec.Builder builder)
 		{

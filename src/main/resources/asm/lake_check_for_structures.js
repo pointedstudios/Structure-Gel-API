@@ -1,11 +1,13 @@
+// Unused in 1.16.2 in favor of Mixins
+
 function initializeCoreMod() {
 	return {
 		'lake-hook': {
 			'target': {
 				'type': 'METHOD',
 				'class': 'net.minecraft.world.gen.feature.LakesFeature',
-				'methodName': 'func_230362_a_', // place
-				'methodDesc': '(Lnet/minecraft/world/ISeedReader;Lnet/minecraft/world/gen/feature/structure/StructureManager;Lnet/minecraft/world/gen/ChunkGenerator;Ljava/util/Random;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/gen/feature/BlockStateFeatureConfig;)Z'
+				'methodName': 'func_241855_a', // place
+				'methodDesc': '(Lnet/minecraft/world/ISeedReader;Lnet/minecraft/world/gen/ChunkGenerator;Ljava/util/Random;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/gen/feature/BlockStateFeatureConfig;)Z'
 			},
 			'transformer': function(methodNode) {
 				var ASM = Java.type('net.minecraftforge.coremod.api.ASMAPI');
@@ -26,7 +28,7 @@ function initializeCoreMod() {
 							
 							// + INVOKESTATIC com/legacy/structure_gel/asm/StructureGelHooks.lakeCheckForStructures(Lnet/minecraft/world/IWorld;Lnet/minecraft/util/math/ChunkPos;)Z
 							inst.add(ASM.buildMethodCall(
-								'com/legacy/structure_gel/asm/StructureGelHooks',
+								'com/legacy/structure_gel/core/asm/StructureGelHooks',
 								'lakeCheckForStructures',
 								'(Lnet/minecraft/world/gen/feature/structure/StructureManager;Lnet/minecraft/util/math/BlockPos;)Z',
 								ASM.MethodType.STATIC
