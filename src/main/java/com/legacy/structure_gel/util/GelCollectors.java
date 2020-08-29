@@ -78,6 +78,19 @@ public class GelCollectors
 	}
 
 	/**
+	 * Creates a mutable version of the list passed in, applies the passed function
+	 * to all entries, and returns it.
+	 * 
+	 * @param list
+	 * @param listFunction
+	 * @return List
+	 */
+	public static <T> List<T> makeListMutable(List<T> list, Function<T, T> listFunction)
+	{
+		return list.stream().map(listFunction).collect(Collectors.toList());
+	}
+
+	/**
 	 * Adds the object passed to the set and returns the result.
 	 * 
 	 * @param set
@@ -110,6 +123,19 @@ public class GelCollectors
 	public static <T> Set<T> makeSetMutable(Set<T> set)
 	{
 		return set.stream().collect(Collectors.toSet());
+	}
+	
+	/**
+	 * Creates a mutable version of the set passed in, applies the passed function
+	 * to all entries, and returns it.
+	 * 
+	 * @param set
+	 * @param setFunction
+	 * @return Set
+	 */
+	public static <T> Set<T> makeSetMutable(Set<T> set, Function<T, T> setFunction)
+	{
+		return set.stream().map(setFunction).collect(Collectors.toSet());
 	}
 
 	/**
