@@ -62,11 +62,11 @@ public class BiomeAccessHelper
 	 * @param placementConfig
 	 */
 	public static <C extends IFeatureConfig, PC extends IPlacementConfig> void addFeature(Biome biome, Decoration stage, ConfiguredFeature<?, ?> feature)
-	{
+	{	
 		// Make list mutable before I try to mess with it in case it isn't
 		if (getGenSettings(biome).field_242484_f instanceof ImmutableList)
-			getGenSettings(biome).field_242484_f = GelCollectors.makeListMutable(getGenSettings(biome).field_242484_f);
-
+			getGenSettings(biome).field_242484_f = GelCollectors.makeListMutable(getGenSettings(biome).field_242484_f, GelCollectors::makeListMutable);
+		
 		// If the generation stage isn't present, add it and make sure other stages
 		// exist because Mojang didn't use a map.
 		while (getGenSettings(biome).field_242484_f.size() <= stage.ordinal())

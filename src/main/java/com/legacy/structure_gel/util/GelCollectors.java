@@ -15,7 +15,9 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Streams;
 
 /**
- * Contains helper methods for various types of {@link Collection}.
+ * Contains helper methods for various types of {@link Collection}, including an
+ * alternative to creating a {@link Map} and various ways to make immutable
+ * collections mutable.
  * 
  * @author David
  *
@@ -124,7 +126,7 @@ public class GelCollectors
 	{
 		return set.stream().collect(Collectors.toSet());
 	}
-	
+
 	/**
 	 * Creates a mutable version of the set passed in, applies the passed function
 	 * to all entries, and returns it.

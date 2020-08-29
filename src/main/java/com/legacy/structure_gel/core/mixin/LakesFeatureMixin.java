@@ -22,7 +22,7 @@ import net.minecraft.world.gen.feature.structure.Structure;
 public class LakesFeatureMixin
 {
 	@Inject(method = "func_241855_a", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/math/BlockPos;down(I)Lnet/minecraft/util/math/BlockPos;"), cancellable = true)
-	private void checkForRSVillages(ISeedReader seedReader, ChunkGenerator chunkGen, Random random, BlockPos pos, BlockStateFeatureConfig config, CallbackInfoReturnable<Boolean> callback)
+	private void checkForStructures(ISeedReader seedReader, ChunkGenerator chunkGen, Random random, BlockPos pos, BlockStateFeatureConfig config, CallbackInfoReturnable<Boolean> callback)
 	{
 		if (StructureGelConfig.COMMON.getExtraLakeProofing())
 		{
@@ -30,7 +30,6 @@ public class LakesFeatureMixin
 			{
 				if (seedReader.func_241827_a(SectionPos.from(pos), structure).findAny().isPresent())
 				{
-					System.out.println("Preventing lake at " + pos.toString());
 					callback.setReturnValue(false);
 					break;
 				}
