@@ -11,6 +11,13 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.feature.structure.Structure;
 
+/**
+ * Contains methods to interact with structure fields. At the moment, it only
+ * works for setting up structures that lakes are blocked from generating in.
+ * 
+ * @author David
+ *
+ */
 public class StructureAccessHelper
 {
 	/**

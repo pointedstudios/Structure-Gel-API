@@ -29,6 +29,13 @@ import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.placement.IPlacementConfig;
 import net.minecraft.world.gen.surfacebuilders.ConfiguredSurfaceBuilder;
 
+/**
+ * Contains methods to add various things to biomes, such as features,
+ * structures, carvers, mob spawns, etc. Thanks 1.16.2.
+ * 
+ * @author David
+ *
+ */
 public class BiomeAccessHelper
 {
 	/**
@@ -128,7 +135,7 @@ public class BiomeAccessHelper
 		// Make the map and it's lists mutable
 		if (getGenSettings(biome).field_242483_e instanceof ImmutableMap || (getGenSettings(biome).field_242483_e.containsKey(carvingType) && getGenSettings(biome).field_242483_e.get(carvingType) instanceof ImmutableList))
 			getGenSettings(biome).field_242483_e = GelCollectors.makeMapMutable(getGenSettings(biome).field_242483_e, Map.Entry::getKey, (e) -> Lists.newArrayList(e.getValue()));
-		
+
 		// Add an entry to the map for the required carver if it's absent
 		if (!getGenSettings(biome).field_242483_e.containsKey(carvingType))
 			getGenSettings(biome).field_242483_e.put(carvingType, Lists.newArrayList());
@@ -183,7 +190,7 @@ public class BiomeAccessHelper
 		// Make the map and it's lists mutable
 		if (biome.func_242433_b().field_242554_e instanceof ImmutableMap || (biome.func_242433_b().field_242554_e.containsKey(classification) && biome.func_242433_b().field_242554_e.get(classification) instanceof ImmutableList))
 			biome.func_242433_b().field_242554_e = GelCollectors.makeMapMutable(biome.func_242433_b().field_242554_e, Map.Entry::getKey, (e) -> GelCollectors.makeListMutable(e.getValue()));
-		
+
 		// Add an entry to the map for the required spawner if it's absent
 		if (!biome.func_242433_b().field_242554_e.containsKey(classification))
 			biome.func_242433_b().field_242554_e.put(classification, Lists.newArrayList());
@@ -205,11 +212,11 @@ public class BiomeAccessHelper
 		// Make the map and it's lists mutable
 		if (biome.func_242433_b().field_242555_f instanceof ImmutableMap)
 			biome.func_242433_b().field_242555_f = GelCollectors.makeMapMutable(biome.func_242433_b().field_242555_f);
-		
+
 		// Add the spawn
 		biome.func_242433_b().field_242555_f.put(entity, spawnCost);
 	}
-	
+
 	/**
 	 * Sets the ambience for the biome.
 	 * 

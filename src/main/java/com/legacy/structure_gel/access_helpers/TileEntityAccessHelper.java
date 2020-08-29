@@ -9,6 +9,13 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.MobSpawnerTileEntity;
 import net.minecraft.util.WeightedSpawnerEntity;
 
+/**
+ * Contains a handful of methods to interface with tile entities, namely
+ * spawners at the moment.
+ * 
+ * @author David
+ *
+ */
 public class TileEntityAccessHelper
 {
 	/**
