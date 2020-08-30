@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import com.legacy.structure_gel.StructureGelMod;
-import com.legacy.structure_gel.structures.jigsaw.JigsawPoolBuilder;
 import com.legacy.structure_gel.util.GelCollectors;
+import com.legacy.structure_gel.worldgen.jigsaw.JigsawPoolBuilder;
 import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.util.ResourceLocation;

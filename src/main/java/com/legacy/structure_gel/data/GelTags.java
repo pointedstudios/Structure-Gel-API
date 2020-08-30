@@ -1,7 +1,7 @@
 package com.legacy.structure_gel.data;
 
 import com.legacy.structure_gel.StructureGelMod;
-import com.legacy.structure_gel.structures.processors.RemoveGelStructureProcessor;
+import com.legacy.structure_gel.worldgen.processors.RemoveGelStructureProcessor;
 
 import net.minecraft.block.Block;
 import net.minecraft.tags.BlockTags;

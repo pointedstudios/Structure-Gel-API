@@ -1,17 +1,29 @@
 package com.legacy.structure_gel.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.WorldGenRegistries;
+import net.minecraft.world.gen.GenerationStage.Decoration;
 import net.minecraft.world.gen.feature.IFeatureConfig;
+import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.Structure;
+import net.minecraft.world.gen.feature.template.StructureProcessor;
+import net.minecraft.world.gen.feature.template.StructureProcessorList;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 /**
  * A simple class that gives methods to ease the registry process by a bit.
+ * 
+ * Note: As of 1.16.2, jigsaw structures no longer require a piece type.
  * 
  * @author David
  *
@@ -37,68 +49,18 @@ public class RegistryHelper
 	 * Registers the input structure to both the forge Feature registry and the
 	 * Structure Feature registry
 	 * 
-	 * @see RegistryHelper#registerStructure(IForgeRegistry, ResourceLocation,
-	 *      Structure)
-	 * @param registry
-	 * @param modid
-	 * @param key
-	 * @param structure
-	 * @return {@link Structure}
-	 */
-	public static <C extends IFeatureConfig, S extends Structure<C>> S registerStructure(IForgeRegistry<Structure<?>> registry, String modid, String key, S structure)
-	{
-		return registerStructure(registry, new ResourceLocation(modid, key), structure);
-	}
-
-	/**
-	 * Registers the input {@link IStructurePieceType}
-	 * 
-	 * @see RegistryHelper#registerStructurePiece(ResourceLocation,
-	 *      IStructurePieceType)
-	 * @param modid
-	 * @param key
-	 * @param structure
-	 * @param pieceType
-	 * @return {@link IStructurePieceType}
-	 */
-	public static <C extends IFeatureConfig> IStructurePieceType registerStructurePiece(String modid, String key, IStructurePieceType pieceType)
-	{
-		return registerStructurePiece(new ResourceLocation(modid, key), pieceType);
-	}
-
-	/**
-	 * Registers the input {@link Structure} and {@link IStructurePieceType}
-	 * 
-	 * @see RegistryHelper#registerStructure(IForgeRegistry, ResourceLocation,
-	 *      Structure)
-	 * @see RegistryHelper#registerStructurePiece(ResourceLocation,
-	 *      IStructurePieceType)
-	 * @param registry
-	 * @param modid
-	 * @param key
-	 * @param structure
-	 * @param pieceType
-	 * @return {@link Pair}
-	 */
-	public static <C extends IFeatureConfig, S extends Structure<C>> Pair<S, IStructurePieceType> registerStructureAndPiece(IForgeRegistry<Structure<?>> registry, String modid, String key, S structure, IStructurePieceType pieceType)
-	{
-		return registerStructureAndPiece(registry, new ResourceLocation(modid, key), structure, pieceType);
-	}
-
-	/**
-	 * Registers the input structure to both the forge Feature registry and the
-	 * Structure Feature registry
-	 * 
 	 * @param registry
 	 * @param key
 	 * @param structure
-	 * @return {@link Structure}
+	 * @param generationStage
+	 * @return Structure
 	 */
-	public static <C extends IFeatureConfig, S extends Structure<C>> S registerStructure(IForgeRegistry<Structure<?>> registry, ResourceLocation key, S structure)
+	public static <C extends IFeatureConfig, S extends Structure<C>> S registerStructure(IForgeRegistry<Structure<?>> registry, ResourceLocation key, S structure, Decoration generationStage)
 	{
 		structure.setRegistryName(key);
 		registry.register(structure);
 		Structure.field_236365_a_.put(key.toString(), structure);
+		Structure.field_236385_u_.put(structure, generationStage);
 		return structure;
 	}
 
@@ -108,9 +70,9 @@ public class RegistryHelper
 	 * @param key
 	 * @param structure
 	 * @param pieceType
-	 * @return {@link IStructurePieceType}
+	 * @return IStructurePieceType
 	 */
-	public static <C extends IFeatureConfig> IStructurePieceType registerStructurePiece(ResourceLocation key, IStructurePieceType pieceType)
+	public static <P extends IStructurePieceType> P registerStructurePiece(ResourceLocation key, P pieceType)
 	{
 		return Registry.register(Registry.STRUCTURE_PIECE, key, pieceType);
 	}
@@ -125,13 +87,88 @@ public class RegistryHelper
 	 * @param registry
 	 * @param key
 	 * @param structure
+	 * @param generationStage
 	 * @param pieceType
-	 * @return {@link Pair}
+	 * @return Pair
 	 */
-	public static <C extends IFeatureConfig, S extends Structure<C>> Pair<S, IStructurePieceType> registerStructureAndPiece(IForgeRegistry<Structure<?>> registry, ResourceLocation key, S structure, IStructurePieceType pieceType)
+	public static <C extends IFeatureConfig, S extends Structure<C>, P extends IStructurePieceType> Pair<S, P> registerStructureAndPiece(IForgeRegistry<Structure<?>> registry, ResourceLocation key, S structure, Decoration generationStage, P pieceType)
 	{
-		S struc = registerStructure(registry, key, structure);
-		IStructurePieceType piece = registerStructurePiece(key, pieceType);
+		S struc = registerStructure(registry, key, structure, generationStage);
+		P piece = registerStructurePiece(key, pieceType);
 		return Pair.of(struc, piece);
+	}
+
+	/**
+	 * Registers the structure as a feature for world generation.
+	 * 
+	 * @param key
+	 * @param structureFeature
+	 * @return StructureFeature
+	 */
+	public static <C extends IFeatureConfig, S extends Structure<C>, SF extends StructureFeature<C, S>> SF registerStructureFeature(ResourceLocation key, SF structureFeature)
+	{
+		return WorldGenRegistries.func_243664_a(WorldGenRegistries.field_243654_f, key, structureFeature);
+	}
+
+	/**
+	 * Registers the structure as a feature for world generation. Uses the
+	 * structure's registry name as the key.
+	 * 
+	 * @param structureFeature
+	 * @return StructureFeature
+	 */
+	public static <C extends IFeatureConfig, S extends Structure<C>, SF extends StructureFeature<C, S>> SF registerStructureFeature(SF structureFeature)
+	{
+		return registerStructureFeature(structureFeature.field_236268_b_.getRegistryName(), structureFeature);
+	}
+
+	/**
+	 * Registers the structure, it's piece, and it's structure feature, and returns
+	 * a {@link StructureRegistrar} to hold the results.
+	 * 
+	 * @param registry
+	 * @param key
+	 * @param structure
+	 * @param generationStage
+	 * @param pieceType
+	 * @param config
+	 * @return StructureRegistrar
+	 */
+	@SuppressWarnings("unchecked")
+	public static <C extends IFeatureConfig, S extends Structure<C>, SF extends StructureFeature<C, S>, P extends IStructurePieceType> StructureRegistrar<S, P, SF> handleRegistrar(IForgeRegistry<Structure<?>> registry, ResourceLocation key, S structure, Decoration generationStage, P pieceType, C config)
+	{
+		S struct = registerStructure(registry, key, structure, generationStage);
+		P piece = registerStructurePiece(key, pieceType);
+		SF feature = (SF) registerStructureFeature(key, structure.func_236391_a_(config));
+		return StructureRegistrar.of(struct, piece, feature);
+	}
+
+	public static StructureProcessorList registerProcessor(ResourceLocation key, StructureProcessor processor)
+	{
+		return WorldGenRegistries.func_243664_a(WorldGenRegistries.field_243655_g, key, new StructureProcessorList(ImmutableList.of(processor)));
+	}
+
+	public static StructureProcessorList registerProcessor(ResourceLocation key, StructureProcessorList processorList)
+	{
+		return WorldGenRegistries.func_243664_a(WorldGenRegistries.field_243655_g, key, processorList);
+	}
+
+	public static StructureProcessorList registerProcessor(ResourceLocation key, ImmutableList<StructureProcessor> processors)
+	{
+		return WorldGenRegistries.func_243664_a(WorldGenRegistries.field_243655_g, key, new StructureProcessorList(processors));
+	}
+
+	public static StructureProcessorList combineProcessors(StructureProcessorList... lists)
+	{
+		List<StructureProcessor> processors = new ArrayList<>();
+		Arrays.asList(lists).forEach(spl -> processors.addAll(spl.func_242919_a()));
+		return new StructureProcessorList(processors);
+	}
+
+	public static StructureProcessorList combineProcessors(StructureProcessorList list, List<StructureProcessor> processors)
+	{
+		List<StructureProcessor> processors2 = list.func_242919_a();
+		processors2.addAll(processors);
+		return new StructureProcessorList(processors2);
 	}
 }

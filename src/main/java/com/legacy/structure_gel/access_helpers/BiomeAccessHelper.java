@@ -10,7 +10,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.legacy.structure_gel.util.GelCollectors;
-import com.legacy.structure_gel.util.RegistryHelper;
 
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
@@ -24,7 +23,7 @@ import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.IFeatureConfig;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.placement.IPlacementConfig;
 import net.minecraft.world.gen.surfacebuilders.ConfiguredSurfaceBuilder;
@@ -62,11 +61,11 @@ public class BiomeAccessHelper
 	 * @param placementConfig
 	 */
 	public static <C extends IFeatureConfig, PC extends IPlacementConfig> void addFeature(Biome biome, Decoration stage, ConfiguredFeature<?, ?> feature)
-	{	
+	{
 		// Make list mutable before I try to mess with it in case it isn't
 		if (getGenSettings(biome).field_242484_f instanceof ImmutableList)
 			getGenSettings(biome).field_242484_f = GelCollectors.makeListMutable(getGenSettings(biome).field_242484_f, GelCollectors::makeListMutable);
-		
+
 		// If the generation stage isn't present, add it and make sure other stages
 		// exist because Mojang didn't use a map.
 		while (getGenSettings(biome).field_242484_f.size() <= stage.ordinal())
@@ -83,21 +82,9 @@ public class BiomeAccessHelper
 	 * @param structure
 	 * @param config
 	 */
-	public static <C extends IFeatureConfig> void addStructure(Biome biome, Structure<C> structure, C config)
+	public static <C extends IFeatureConfig, S extends Structure<C>> void addStructure(Biome biome, StructureFeature<C, S> structure)
 	{
-		getGenSettings(biome).field_242485_g = GelCollectors.addToList(getGenSettings(biome).field_242485_g, () -> structure.func_236391_a_(config));
-	}
-
-	/**
-	 * Adds the input structure to generate in the biome with no config.
-	 * 
-	 * @see RegistryHelper#addStructure(Biome, Structure, IFeatureConfig)
-	 * @param biome
-	 * @param structure
-	 */
-	public static void addStructure(Biome biome, Structure<NoFeatureConfig> structure)
-	{
-		addStructure(biome, structure, IFeatureConfig.NO_FEATURE_CONFIG);
+		getGenSettings(biome).field_242485_g = GelCollectors.addToList(getGenSettings(biome).field_242485_g, () -> structure);
 	}
 
 	/**

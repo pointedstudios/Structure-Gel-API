@@ -11,12 +11,13 @@ import com.legacy.structure_gel.blocks.IStructureGel.Behavior;
 import com.legacy.structure_gel.blocks.StructureGelBlock;
 import com.legacy.structure_gel.commands.GetSpawnsCommand;
 import com.legacy.structure_gel.items.StructureGelItem;
-import com.legacy.structure_gel.structures.jigsaw.GelJigsawPiece;
-import com.legacy.structure_gel.structures.processors.RandomBlockSwapProcessor;
-import com.legacy.structure_gel.structures.processors.RandomStateSwapProcessor;
-import com.legacy.structure_gel.structures.processors.RandomTagSwapProcessor;
-import com.legacy.structure_gel.structures.processors.RemoveGelStructureProcessor;
 import com.legacy.structure_gel.util.RegistryHelper;
+import com.legacy.structure_gel.worldgen.jigsaw.GelJigsawPiece;
+import com.legacy.structure_gel.worldgen.jigsaw.GelStructurePiece;
+import com.legacy.structure_gel.worldgen.processors.RandomBlockSwapProcessor;
+import com.legacy.structure_gel.worldgen.processors.RandomStateSwapProcessor;
+import com.legacy.structure_gel.worldgen.processors.RandomTagSwapProcessor;
+import com.legacy.structure_gel.worldgen.processors.RemoveGelStructureProcessor;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.block.Block;
@@ -27,6 +28,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.feature.jigsaw.IJigsawDeserializer;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
+import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.template.IStructureProcessorType;
 import net.minecraft.world.gen.feature.template.StructureProcessor;
@@ -118,11 +120,12 @@ public class StructureGelMod
 		@SubscribeEvent
 		public static void onRegistry(final RegistryEvent.Register<Structure<?>> event)
 		{
-			registerProcessors(event);
-			registerDeserializers(event);
+			registerProcessors();
+			registerDeserializers();
+			registerStructurePieces();
 		}
 
-		private static void registerProcessors(final RegistryEvent.Register<Structure<?>> event)
+		private static void registerProcessors()
 		{
 			Processors.REMOVE_FILLER = Processors.register("remove_filler", RemoveGelStructureProcessor.CODEC);
 			Processors.REPLACE_BLOCK = Processors.register("replace_block", RandomBlockSwapProcessor.CODEC);
@@ -130,9 +133,14 @@ public class StructureGelMod
 			Processors.REPLACE_STATE = Processors.register("replace_state", RandomStateSwapProcessor.CODEC);
 		}
 
-		private static void registerDeserializers(final RegistryEvent.Register<Structure<?>> event)
+		private static void registerDeserializers()
 		{
 			JigsawDeserializers.GEL_SINGLE_POOL_ELEMENT = JigsawDeserializers.register("gel_single_pool_element", GelJigsawPiece.CODEC);
+		}
+
+		private static void registerStructurePieces()
+		{
+			StructurePieceTypes.GEL_JIGSAW = RegistryHelper.registerStructurePiece(locate("gel_jigsaw"), GelStructurePiece::new);
 		}
 	}
 
@@ -157,5 +165,10 @@ public class StructureGelMod
 		{
 			return Registry.register(Registry.STRUCTURE_POOL_ELEMENT, locate(key), () -> codec);
 		}
+	}
+
+	public static class StructurePieceTypes
+	{
+		public static IStructurePieceType GEL_JIGSAW;
 	}
 }
