@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Streams;
 import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.util.ResourceLocation;
@@ -167,8 +168,6 @@ public class RegistryHelper
 
 	public static StructureProcessorList combineProcessors(StructureProcessorList list, List<StructureProcessor> processors)
 	{
-		List<StructureProcessor> processors2 = list.func_242919_a();
-		processors2.addAll(processors);
-		return new StructureProcessorList(processors2);
+		return new StructureProcessorList(Streams.concat(list.func_242919_a().stream(), processors.stream()).collect(ImmutableList.toImmutableList()));
 	}
 }
