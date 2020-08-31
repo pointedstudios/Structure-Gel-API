@@ -10,10 +10,14 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
+import com.legacy.structure_gel.StructureGelMod;
+
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.MobSpawnInfo;
+import net.minecraft.world.gen.DimensionSettings;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -32,14 +36,21 @@ public class ConfigTemplates
 	{
 		private final ForgeConfigSpec.Builder builder;
 		private final String name;
+
+		// Placement settings
 		private ForgeConfigSpec.DoubleValue probability;
 		private ForgeConfigSpec.IntValue spacing;
 		private ForgeConfigSpec.IntValue offset;
+		// Biome settings
 		private ForgeConfigSpec.BooleanValue isWhitelist;
 		private ForgeConfigSpec.ConfigValue<String> biomeString;
 		private List<Biome> biomes = new ArrayList<>();
+		// Mob spawn settings
 		private Map<EntityClassification, ForgeConfigSpec.ConfigValue<String>> spawnsStrings = new HashMap<>();
 		private Map<EntityClassification, List<MobSpawnInfo.Spawners>> spawns = new HashMap<>();
+		// Worldgen noise settings... settings. That's a mouthful
+		private ForgeConfigSpec.ConfigValue<String> noiseSettingsString;
+		private List<DimensionSettings> noiseSettings = new ArrayList<>();
 
 		/**
 		 * 
@@ -100,10 +111,28 @@ public class ConfigTemplates
 			return this;
 		}
 
+		public StructureConfig noiseSettings(String noiseSettings)
+		{
+			this.noiseSettingsString = builder.comment("What dimension noise settings should this structure be placed in. Default options are \"overworld\", \"amplified\", \"end\", \"nether\", \"caves\", and \"floating_islands\"").define(name + ".noise_settings", noiseSettings);
+			return this;
+		}
+
+		public StructureConfig noiseSettings(DimensionSettings... noiseSettings)
+		{
+			String string = "";
+			for (int i = 0; i < noiseSettings.length; i++)
+			{
+				string = string + WorldGenRegistries.field_243658_j.getKey(noiseSettings[i]).toString();
+				if (i < noiseSettings.length - 1)
+					string = string + ", ";
+			}
+			return this.noiseSettings(string);
+		}
+
 		/**
 		 * Gets the probability for the structure to generate. 1.0 by default.
 		 * 
-		 * @return double
+		 * @return {@link Double}
 		 */
 		public double getProbability()
 		{
@@ -113,7 +142,7 @@ public class ConfigTemplates
 		/**
 		 * Gets the spacing for the structure in chunks. 16 by default.
 		 * 
-		 * @return int
+		 * @return {@link Integer}
 		 */
 		public int getSpacing()
 		{
@@ -123,7 +152,7 @@ public class ConfigTemplates
 		/**
 		 * Gets the offset for the structure in chunks. 7 by default.
 		 * 
-		 * @return int
+		 * @return {@link Integer}
 		 */
 		public int getOffset()
 		{
@@ -134,7 +163,7 @@ public class ConfigTemplates
 		 * Gets the whitelist mode for picking what biomes a structure should generate
 		 * in. True by default.
 		 * 
-		 * @return boolean
+		 * @return {@link Boolean}
 		 */
 		public boolean isWhitelist()
 		{
@@ -145,7 +174,7 @@ public class ConfigTemplates
 		 * Returns the biome filter for determining where the structure should be
 		 * allowed to generate. "" by default.
 		 * 
-		 * @return String
+		 * @return {@link String}
 		 */
 		public String getBiomeString()
 		{
@@ -167,7 +196,7 @@ public class ConfigTemplates
 		/**
 		 * Returns all spawns strings as a map.
 		 * 
-		 * @return Map
+		 * @return {@link Map}
 		 */
 		public Map<EntityClassification, ForgeConfigSpec.ConfigValue<String>> getSpawnsStrings()
 		{
@@ -180,7 +209,7 @@ public class ConfigTemplates
 		 * {@link #getSpawnsForClassification(EntityClassification)}
 		 * 
 		 * @param classification
-		 * @return String
+		 * @return {@link String}
 		 */
 		public String getSpawnsString(EntityClassification classification)
 		{
@@ -191,7 +220,7 @@ public class ConfigTemplates
 		 * Returns the spawn list for the specific classification.
 		 * 
 		 * @param classification
-		 * @return List
+		 * @return {@link List}
 		 */
 		@Nullable
 		public List<MobSpawnInfo.Spawners> getSpawnsForClassification(EntityClassification classification)
@@ -202,7 +231,7 @@ public class ConfigTemplates
 		/**
 		 * Returns all spawn entries.
 		 * 
-		 * @return Map
+		 * @return {@link Map}
 		 */
 		public Map<EntityClassification, List<MobSpawnInfo.Spawners>> getSpawns()
 		{
@@ -210,12 +239,35 @@ public class ConfigTemplates
 		}
 
 		/**
+		 * Returns the dimension noise settings that this structure is allowed to
+		 * generate with. "minecraft:overworld, minecraft:amplified, minecraft:nether,
+		 * minecraft:end, minecraft:caves, minecraft:floating_islands" by default.
+		 * 
+		 * @return {@link String}
+		 */
+		public String getNoiseSettingsString()
+		{
+			return this.noiseSettingsString != null ? this.noiseSettingsString.get() : "minecraft:overworld, minecraft:amplified, minecraft:nether, minecraft:end, minecraft:caves, minecraft:floating_islands";
+		}
+
+		/**
+		 * Returns the dimension noise settings that this structure is allowed to
+		 * generate with. Only contains all vanilla settings by default.
+		 * 
+		 * @return {@link List}
+		 */
+		public List<DimensionSettings> getNoiseSettings()
+		{
+			return this.noiseSettings;
+		}
+
+		/**
+		 * Parses config strings and resets lists. Some things may need restarting.
 		 * 
 		 * @param event
 		 */
 		protected void onConfigLoad(ModConfig.ModConfigEvent event)
 		{
-			this.biomes = parseBiomes(this.getBiomeString());
 			this.spawns = new HashMap<EntityClassification, List<MobSpawnInfo.Spawners>>()
 			{
 				private static final long serialVersionUID = 64168135463438L;
@@ -226,6 +278,9 @@ public class ConfigTemplates
 							put(EC, parseSpawns(getSpawnsString(EC)));
 				}
 			};
+
+			this.biomes = parseBiomes(this.getBiomeString());
+			this.noiseSettings = parseNoiseSettings(this.getNoiseSettingsString());
 		}
 
 		/**
@@ -233,7 +288,7 @@ public class ConfigTemplates
 		 * use whitelist or blacklist mode.
 		 * 
 		 * @param biome
-		 * @return boolean
+		 * @return {@link Boolean}
 		 */
 		public boolean isBiomeAllowed(Biome biome)
 		{
@@ -246,10 +301,9 @@ public class ConfigTemplates
 		 * "#overworld, !#forest, !minecraft:snowy_taiga, minecraft:flower_forest"
 		 * 
 		 * @param key
-		 * @return List
+		 * @return {@link List}
 		 */
-		// TODO Removed biome dictionary support for now
-		public static List<Biome> parseBiomes(String key)
+		public List<Biome> parseBiomes(String key)
 		{
 			List<Biome> biomes = new ArrayList<>();
 			if (!key.isEmpty())
@@ -257,19 +311,18 @@ public class ConfigTemplates
 				Arrays.asList(key.replace(" ", "").split(",")).stream().forEach(s ->
 				{
 					boolean not = s.startsWith("!");
-					//boolean isTag = s.replace("!", "").startsWith("#");
+					boolean isTag = s.replace("!", "").startsWith("#");
 					String biomeString = s.replace("!", "").replace("#", "");
 
-					//if (!isTag)
-					//{
+					if (!isTag)
+					{
 						ResourceLocation biome = new ResourceLocation(biomeString);
 						if (ForgeRegistries.BIOMES.containsKey(biome))
 							updateBiomeList(biomes, ForgeRegistries.BIOMES.getValue(biome), not);
-					//}
-					/*else if (BiomeDictionary.Type.getType(biomeString) != null)
-					{
-						BiomeDictionary.getBiomes(BiomeDictionary.Type.getType(biomeString)).forEach(biome -> updateBiomeList(biomes, biome, not));
-					}*/
+						else
+							this.warnUnknownValue("biome", biome.toString());
+					}
+					// TODO Check tag
 				});
 			}
 			return biomes;
@@ -298,9 +351,9 @@ public class ConfigTemplates
 		 * "[zombie, 1, 2, 4][skeleton, 2, 2, 4]"
 		 * 
 		 * @param key
-		 * @return List
+		 * @return {@link List}
 		 */
-		public static List<MobSpawnInfo.Spawners> parseSpawns(String key)
+		public List<MobSpawnInfo.Spawners> parseSpawns(String key)
 		{
 			List<MobSpawnInfo.Spawners> spawns = new ArrayList<>();
 			if (!key.isEmpty())
@@ -313,6 +366,8 @@ public class ConfigTemplates
 						ResourceLocation entity = new ResourceLocation(matcher.group(2));
 						if (ForgeRegistries.ENTITIES.containsKey(entity))
 							spawns.add(new MobSpawnInfo.Spawners(ForgeRegistries.ENTITIES.getValue(entity), Integer.parseInt(matcher.group(3)), Integer.parseInt(matcher.group(4)), Integer.parseInt(matcher.group(5))));
+						else
+							this.warnUnknownValue("entity", entity.toString());
 					}
 				}
 				catch (Exception e)
@@ -322,6 +377,41 @@ public class ConfigTemplates
 			}
 			return spawns;
 		}
+
+		/**
+		 * Reads the dimension noise settings listed in the string and returns a list
+		 * containing their registered versions.
+		 * 
+		 * @param key
+		 * @return {@link List}
+		 */
+		public List<DimensionSettings> parseNoiseSettings(String key)
+		{
+			List<DimensionSettings> noiseSettings = new ArrayList<>();
+			if (!key.isEmpty())
+			{
+				Arrays.asList(key.replace(" ", "").split(",")).stream().forEach(s ->
+				{
+					ResourceLocation settings = new ResourceLocation(s);
+					if (WorldGenRegistries.field_243658_j.containsKey(settings))
+						noiseSettings.add(WorldGenRegistries.field_243658_j.getOrDefault(settings));
+					else
+						this.warnUnknownValue("dimension noise setting", settings.toString());
+				});
+			}
+			return noiseSettings;
+		}
+
+		/**
+		 * Warning message when a value written in the config can not be found.
+		 * 
+		 * @param obj
+		 * @param objName
+		 */
+		public void warnUnknownValue(String obj, String objName)
+		{
+			StructureGelMod.LOGGER.warn(String.format("Could not find a(n) %s registered with name %s in the config for %s", obj, objName, this.name));
+		}
 	}
 
 	/**
@@ -330,8 +420,9 @@ public class ConfigTemplates
 	 * to register the structure in the appropriate biomes.
 	 * 
 	 * @author David
-	 *
+	 * @deprecated Use {@link StructureConfig}
 	 */
+	@Deprecated
 	public static class BiomeStructureConfig extends StructureConfig
 	{
 

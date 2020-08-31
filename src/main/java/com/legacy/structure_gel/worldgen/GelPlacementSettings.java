@@ -4,7 +4,7 @@ import net.minecraft.world.gen.feature.template.PlacementSettings;
 
 /**
  * Literally just exists to let you determine how waterloggable blocks should
- * generate when placed in water.
+ * generate when placed in water with a mapped method.
  * 
  * @author David
  *

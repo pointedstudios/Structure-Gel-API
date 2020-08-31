@@ -15,7 +15,7 @@ public class EntityAccessHelper
 	 * Gets the death loot table of the entity.
 	 * 
 	 * @param entity
-	 * @return ResourceLocation
+	 * @return {@link ResourceLocation}
 	 */
 	public static ResourceLocation getDeathLootTable(MobEntity entity)
 	{

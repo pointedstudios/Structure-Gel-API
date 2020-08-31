@@ -5,6 +5,15 @@ import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructureStart;
 
+/**
+ * An extension of {@link StructureStart} with a few methods for adjusting the y
+ * coordinate of your structure. Not sure how useful it is, but it doesn't hurt
+ * to keep.
+ * 
+ * @author David
+ *
+ * @param <C>
+ */
 public abstract class GelStructureStart<C extends IFeatureConfig> extends StructureStart<C>
 {
 	public GelStructureStart(Structure<C> structureIn, int chunkX, int chunkZ, MutableBoundingBox boundsIn, int referenceIn, long seed)

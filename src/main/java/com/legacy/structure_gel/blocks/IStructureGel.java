@@ -95,7 +95,7 @@ public interface IStructureGel
 	 * @param worldIn
 	 * @param pos
 	 * @param random
-	 * @return boolean
+	 * @return {@link Boolean}
 	 */
 	default boolean spreadHookPre(BlockState state, World worldIn, BlockPos pos, Random random)
 	{
@@ -110,7 +110,7 @@ public interface IStructureGel
 	 * @param worldIn
 	 * @param pos
 	 * @param random
-	 * @return boolean
+	 * @return {@link Boolean}
 	 */
 	default boolean removalHookPre(BlockState state, World worldIn, BlockPos pos, Random random)
 	{
@@ -148,7 +148,7 @@ public interface IStructureGel
 	 * @param worldIn
 	 * @param spreadPos : where the gel is trying to spread
 	 * @param count : the {@link StructureGelBlock#COUNT} property to place as
-	 * @return boolean
+	 * @return {@link Boolean}
 	 */
 	default boolean checkPlacementHook(World worldIn, BlockPos spreadPos, int count)
 	{

@@ -90,7 +90,7 @@ public class GelJigsawPiece extends SingleJigsawPiece
 		this.maintainWater = maintainWater;
 		this.ignoreEntities = ignoreEntities;
 	}
-	
+
 	/**
 	 * Determins if blocks should become waterlogged when placed in water.
 	 * 
@@ -117,7 +117,12 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	}
 
 	/**
+	 * Gets the {@link PlacementSettings} for the piece to use.
 	 * 
+	 * @param rotation
+	 * @param boundingBox
+	 * @param isLegacy
+	 * @return {@link PlacementSettings}
 	 */
 	@Override
 	protected PlacementSettings func_230379_a_(Rotation rotation, MutableBoundingBox boundingBox, boolean isLegacy)
@@ -150,7 +155,7 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	 * @param rand
 	 * @param isLegacy
 	 * @param gelStructurePiece
-	 * @return
+	 * @return {@link Boolean}
 	 */
 	public boolean place(TemplateManager templateManager, ISeedReader seedReader, StructureManager structureManager, ChunkGenerator chunkGen, BlockPos pos, BlockPos pos2, Rotation rotation, MutableBoundingBox bounds, Random rand, boolean isLegacy, AbstractGelStructurePiece gelStructurePiece)
 	{
@@ -189,13 +194,21 @@ public class GelJigsawPiece extends SingleJigsawPiece
 		return this.field_236839_c_.left().get();
 	}
 
+	/**
+	 * Gets the template from the {@link TemplateManager}
+	 * 
+	 * @param templateManager
+	 * @return {@link Template}
+	 */
 	private Template getTemplate(TemplateManager templateManager)
 	{
 		return this.field_236839_c_.map(templateManager::getTemplateDefaulted, Function.identity());
 	}
 
 	/**
+	 * Used internally.
 	 * 
+	 * @return {@link IJigsawDeserializer}
 	 */
 	@Override
 	public IJigsawDeserializer<?> getType()

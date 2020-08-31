@@ -1,6 +1,7 @@
 package com.legacy.structure_gel.core.asm;
 
 import com.legacy.structure_gel.access_helpers.StructureAccessHelper;
+import com.legacy.structure_gel.core.mixin.LakesFeatureMixin;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.SectionPos;
@@ -8,6 +9,13 @@ import net.minecraft.world.ISeedReader;
 import net.minecraft.world.gen.feature.LakesFeature;
 import net.minecraft.world.gen.feature.structure.Structure;
 
+/**
+ * Unused as of 1.16.2-v1.3.0 in favor of Mixins.
+ * 
+ * @see LakesFeatureMixin
+ * @author David
+ *
+ */
 public class StructureGelHooks
 {
 	/**
@@ -19,7 +27,7 @@ public class StructureGelHooks
 	 * @see StructureAccessHelper#addLakeProofStructure(Structure)
 	 * @param seedReader
 	 * @param pos
-	 * @return
+	 * @return {@link Boolean}
 	 */
 	public static boolean lakeCheckForStructures(ISeedReader seedReader, BlockPos pos)
 	{

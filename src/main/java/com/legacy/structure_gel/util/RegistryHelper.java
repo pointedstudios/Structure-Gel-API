@@ -54,7 +54,7 @@ public class RegistryHelper
 	 * @param key
 	 * @param structure
 	 * @param generationStage
-	 * @return Structure
+	 * @return {@link Structure}
 	 */
 	public static <C extends IFeatureConfig, S extends Structure<C>> S registerStructure(IForgeRegistry<Structure<?>> registry, ResourceLocation key, S structure, Decoration generationStage)
 	{
@@ -71,7 +71,7 @@ public class RegistryHelper
 	 * @param key
 	 * @param structure
 	 * @param pieceType
-	 * @return IStructurePieceType
+	 * @return {@link IStructurePieceType}
 	 */
 	public static <P extends IStructurePieceType> P registerStructurePiece(ResourceLocation key, P pieceType)
 	{
@@ -79,7 +79,7 @@ public class RegistryHelper
 	}
 
 	/**
-	 * Registers the input {@link Structure} and {@link IStructurePieceType}
+	 * Registers the input {@link Structure} and {@link IStructurePieceType}.
 	 * 
 	 * @see RegistryHelper#registerStructure(IForgeRegistry, ResourceLocation,
 	 *      Structure)
@@ -90,8 +90,11 @@ public class RegistryHelper
 	 * @param structure
 	 * @param generationStage
 	 * @param pieceType
-	 * @return Pair
+	 * @return {@link Pair}
+	 * @deprecated Use
+	 *             {@link RegistryHelper#handleRegistrar(IForgeRegistry, ResourceLocation, Structure, Decoration, IStructurePieceType, IFeatureConfig)}
 	 */
+	@Deprecated
 	public static <C extends IFeatureConfig, S extends Structure<C>, P extends IStructurePieceType> Pair<S, P> registerStructureAndPiece(IForgeRegistry<Structure<?>> registry, ResourceLocation key, S structure, Decoration generationStage, P pieceType)
 	{
 		S struc = registerStructure(registry, key, structure, generationStage);
@@ -104,7 +107,7 @@ public class RegistryHelper
 	 * 
 	 * @param key
 	 * @param structureFeature
-	 * @return StructureFeature
+	 * @return {@link StructureFeature}
 	 */
 	public static <C extends IFeatureConfig, S extends Structure<C>, SF extends StructureFeature<C, S>> SF registerStructureFeature(ResourceLocation key, SF structureFeature)
 	{
@@ -116,7 +119,7 @@ public class RegistryHelper
 	 * structure's registry name as the key.
 	 * 
 	 * @param structureFeature
-	 * @return StructureFeature
+	 * @return {@link StructureFeature}
 	 */
 	public static <C extends IFeatureConfig, S extends Structure<C>, SF extends StructureFeature<C, S>> SF registerStructureFeature(SF structureFeature)
 	{
@@ -133,10 +136,10 @@ public class RegistryHelper
 	 * @param generationStage
 	 * @param pieceType
 	 * @param config
-	 * @return StructureRegistrar
+	 * @return {@link StructureRegistrar}
 	 */
 	@SuppressWarnings("unchecked")
-	public static <C extends IFeatureConfig, S extends Structure<C>, SF extends StructureFeature<C, S>, P extends IStructurePieceType> StructureRegistrar<S, P, SF> handleRegistrar(IForgeRegistry<Structure<?>> registry, ResourceLocation key, S structure, Decoration generationStage, P pieceType, C config)
+	public static <C extends IFeatureConfig, S extends Structure<C>, SF extends StructureFeature<C, S>, P extends IStructurePieceType> StructureRegistrar<C, S> handleRegistrar(IForgeRegistry<Structure<?>> registry, ResourceLocation key, S structure, Decoration generationStage, P pieceType, C config)
 	{
 		S struct = registerStructure(registry, key, structure, generationStage);
 		P piece = registerStructurePiece(key, pieceType);
@@ -144,21 +147,50 @@ public class RegistryHelper
 		return StructureRegistrar.of(struct, piece, feature);
 	}
 
+	/**
+	 * Registers the {@link StructureProcessor} as a {@link StructureProcessorList}.
+	 * 
+	 * @param key
+	 * @param processor
+	 * @return {@link StructureProcessorList}
+	 */
 	public static StructureProcessorList registerProcessor(ResourceLocation key, StructureProcessor processor)
 	{
 		return WorldGenRegistries.func_243664_a(WorldGenRegistries.field_243655_g, key, new StructureProcessorList(ImmutableList.of(processor)));
 	}
 
+	/**
+	 * Registers the {@link StructureProcessorList}.
+	 * 
+	 * @param key
+	 * @param processor
+	 * @return {@link StructureProcessorList}
+	 */
 	public static StructureProcessorList registerProcessor(ResourceLocation key, StructureProcessorList processorList)
 	{
 		return WorldGenRegistries.func_243664_a(WorldGenRegistries.field_243655_g, key, processorList);
 	}
 
-	public static StructureProcessorList registerProcessor(ResourceLocation key, ImmutableList<StructureProcessor> processors)
+	/**
+	 * Registers the list of {@link StructureProcessor}s as a
+	 * {@link StructureProcessorList}
+	 * 
+	 * @param key
+	 * @param processors
+	 * @return {@link StructureProcessorList}
+	 */
+	public static StructureProcessorList registerProcessor(ResourceLocation key, List<StructureProcessor> processors)
 	{
 		return WorldGenRegistries.func_243664_a(WorldGenRegistries.field_243655_g, key, new StructureProcessorList(processors));
 	}
 
+	/**
+	 * Merges the passed {@link StructureProcessorList} array and returns the
+	 * result.
+	 * 
+	 * @param lists
+	 * @return {@link StructureProcessorList}
+	 */
 	public static StructureProcessorList combineProcessors(StructureProcessorList... lists)
 	{
 		List<StructureProcessor> processors = new ArrayList<>();
@@ -166,6 +198,15 @@ public class RegistryHelper
 		return new StructureProcessorList(processors);
 	}
 
+	/**
+	 * Merges the {@link StructureProcessorList} with the list of
+	 * {@link StructureProcessor}s and returns the resulting
+	 * {@link StructureProcessorList}.
+	 * 
+	 * @param list
+	 * @param processors
+	 * @return {@link StructureProcessorList}
+	 */
 	public static StructureProcessorList combineProcessors(StructureProcessorList list, List<StructureProcessor> processors)
 	{
 		return new StructureProcessorList(Streams.concat(list.func_242919_a().stream(), processors.stream()).collect(ImmutableList.toImmutableList()));

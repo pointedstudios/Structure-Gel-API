@@ -2,8 +2,11 @@ package com.legacy.structure_gel;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.legacy.structure_gel.util.Internal;
+
 import net.minecraftforge.common.ForgeConfigSpec;
 
+@Internal
 public class StructureGelConfig
 {
 	public static final Common COMMON;

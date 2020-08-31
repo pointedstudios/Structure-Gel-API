@@ -31,7 +31,7 @@ public class GelCollectors
 	 * @param keyClass
 	 * @param valueClass
 	 * @param objects
-	 * @return Map
+	 * @return {@link Map}
 	 * @throws ClassCastException
 	 * @throws ArrayIndexOutOfBoundsException
 	 */
@@ -49,7 +49,7 @@ public class GelCollectors
 	 * 
 	 * @param list
 	 * @param obj
-	 * @return List
+	 * @return {@link List}
 	 */
 	public static <T> List<T> addToList(List<T> list, T obj)
 	{
@@ -61,7 +61,7 @@ public class GelCollectors
 	 * 
 	 * @param list
 	 * @param list2
-	 * @return List
+	 * @return {@link List}
 	 */
 	public static <T> List<T> addToList(List<T> list, List<T> list2)
 	{
@@ -72,7 +72,7 @@ public class GelCollectors
 	 * Creates a mutable version of the list passed in and returns it.
 	 * 
 	 * @param list
-	 * @return List
+	 * @return {@link List}
 	 */
 	public static <T> List<T> makeListMutable(List<T> list)
 	{
@@ -85,7 +85,7 @@ public class GelCollectors
 	 * 
 	 * @param list
 	 * @param listFunction
-	 * @return List
+	 * @return {@link List}
 	 */
 	public static <T> List<T> makeListMutable(List<T> list, Function<T, T> listFunction)
 	{
@@ -97,7 +97,7 @@ public class GelCollectors
 	 * 
 	 * @param set
 	 * @param obj
-	 * @return Set
+	 * @return {@link Set}
 	 */
 	public static <T> Set<T> addToSet(Set<T> set, T obj)
 	{
@@ -109,7 +109,7 @@ public class GelCollectors
 	 * 
 	 * @param set
 	 * @param set2
-	 * @return Set
+	 * @return {@link Set}
 	 */
 	public static <T> Set<T> addToSet(Set<T> set, Set<T> set2)
 	{
@@ -120,7 +120,7 @@ public class GelCollectors
 	 * Creates a mutable version of the set passed in and returns it.
 	 * 
 	 * @param set
-	 * @return Set
+	 * @return {@link Set}
 	 */
 	public static <T> Set<T> makeSetMutable(Set<T> set)
 	{
@@ -133,7 +133,7 @@ public class GelCollectors
 	 * 
 	 * @param set
 	 * @param setFunction
-	 * @return Set
+	 * @return {@link Set}
 	 */
 	public static <T> Set<T> makeSetMutable(Set<T> set, Function<T, T> setFunction)
 	{
@@ -148,7 +148,7 @@ public class GelCollectors
 	 * @param map2
 	 * @param keyFunction
 	 * @param valueFunction
-	 * @return Map
+	 * @return {@link Map}
 	 */
 	public static <K, V> Map<K, V> addToMap(Map<K, V> map, Map<K, V> map2, Function<Entry<K, V>, K> keyFunction, Function<Entry<K, V>, V> valueFunction)
 	{
@@ -160,7 +160,7 @@ public class GelCollectors
 	 * 
 	 * @param map
 	 * @param map2
-	 * @return Map
+	 * @return {@link Map}
 	 */
 	public static <K, V> Map<K, V> addToMap(Map<K, V> map, Map<K, V> map2)
 	{
@@ -176,7 +176,7 @@ public class GelCollectors
 	 * @param value
 	 * @param keyFunction
 	 * @param valueFunction
-	 * @return Map
+	 * @return {@link Map}
 	 */
 	public static <K, V> Map<K, V> addToMap(Map<K, V> map, K key, V value, Function<Entry<K, V>, K> keyFunction, Function<Entry<K, V>, V> valueFunction)
 	{
@@ -189,7 +189,7 @@ public class GelCollectors
 	 * @param map
 	 * @param key
 	 * @param value
-	 * @return Map
+	 * @return {@link Map}
 	 */
 	public static <K, V> Map<K, V> addToMap(Map<K, V> map, K key, V value)
 	{
@@ -203,7 +203,7 @@ public class GelCollectors
 	 * @param map
 	 * @param keyFunction
 	 * @param valueFunction
-	 * @return Map
+	 * @return {@link Map}
 	 */
 	public static <K, V> Map<K, V> makeMapMutable(Map<K, V> map, Function<Entry<K, V>, K> keyFunction, Function<Entry<K, V>, V> valueFunction)
 	{
@@ -214,7 +214,7 @@ public class GelCollectors
 	 * Creates a mutable version of the map passed in and returns it.
 	 * 
 	 * @param map
-	 * @return Map
+	 * @return {@link Map}
 	 */
 	public static <K, V> Map<K, V> makeMapMutable(Map<K, V> map)
 	{

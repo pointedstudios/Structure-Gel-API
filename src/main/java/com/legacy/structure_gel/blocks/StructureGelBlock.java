@@ -14,7 +14,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.monster.HuskEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
@@ -99,7 +98,7 @@ public class StructureGelBlock extends Block implements IStructureGel
 	}
 
 	/**
-	 * 
+	 * Schedule a block update after this places.
 	 */
 	@Override
 	public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack)
@@ -252,7 +251,7 @@ public class StructureGelBlock extends Block implements IStructureGel
 	 * 
 	 * @param worldIn
 	 * @param pos
-	 * @return boolean {@link HuskEntity}
+	 * @return {@link Boolean}
 	 */
 	public boolean checkAbove(World worldIn, BlockPos pos)
 	{

@@ -3,6 +3,7 @@ package com.legacy.structure_gel.worldgen.jigsaw;
 import java.util.Random;
 
 import com.legacy.structure_gel.StructureGelMod;
+import com.legacy.structure_gel.util.Internal;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Rotation;
@@ -18,9 +19,9 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
  * The default implementation of {@link AbstractGelStructurePiece}.
  * 
  * @author David
- *
  */
-public class GelStructurePiece extends AbstractGelStructurePiece
+@Internal
+public final class GelStructurePiece extends AbstractGelStructurePiece
 {
 	public GelStructurePiece(TemplateManager templateManager, JigsawPiece jigsawPiece, BlockPos pos, int groundLevelDelta, Rotation rotation, MutableBoundingBox bounds)
 	{
@@ -31,7 +32,7 @@ public class GelStructurePiece extends AbstractGelStructurePiece
 	{
 		super(templateManager, nbt);
 	}
-	
+
 	@Override
 	public IStructurePieceType getStructurePieceType()
 	{
@@ -47,6 +48,7 @@ public class GelStructurePiece extends AbstractGelStructurePiece
 	 * @param world
 	 * @param bounds
 	 */
+	@Override
 	public void handleDataMarker(String key, BlockPos pos, IServerWorld world, Random rand, MutableBoundingBox bounds)
 	{
 

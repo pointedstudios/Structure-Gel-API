@@ -4,6 +4,7 @@ import java.util.Random;
 import java.util.function.Function;
 
 import com.legacy.structure_gel.access_helpers.JigsawAccessHelper;
+import com.legacy.structure_gel.util.Internal;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -65,7 +66,7 @@ public abstract class AbstractGelStructurePiece extends AbstractVillagePiece
 	/**
 	 * Returns the {@link IStructurePieceType} for this piece.
 	 * 
-	 * @return IStructurePieceType
+	 * @return {@link IStructurePieceType}
 	 */
 	public abstract IStructurePieceType getStructurePieceType();
 
@@ -74,6 +75,7 @@ public abstract class AbstractGelStructurePiece extends AbstractVillagePiece
 	 * 
 	 * @param structurePieceType
 	 */
+	@Internal
 	public void setStructurePieceType(IStructurePieceType structurePieceType)
 	{
 		this.structurePieceType = structurePieceType;
@@ -83,8 +85,11 @@ public abstract class AbstractGelStructurePiece extends AbstractVillagePiece
 	 * addComponentParts<br>
 	 * <br>
 	 * Modification of addComponentParts to allow for data structure block handling.
+	 * 
+	 * @return {@link Boolean}
 	 */
 	@Override
+	@Internal
 	public boolean func_237001_a_(ISeedReader seedReader, StructureManager structureManager, ChunkGenerator chunkGen, Random rand, MutableBoundingBox bounds, BlockPos pos, boolean isLegacy)
 	{
 		if (this.jigsawPiece instanceof GelJigsawPiece)

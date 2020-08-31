@@ -10,6 +10,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.legacy.structure_gel.util.GelCollectors;
+import com.legacy.structure_gel.worldgen.structure.GelStructure;
 
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
@@ -17,6 +18,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeAmbience;
 import net.minecraft.world.biome.BiomeGenerationSettings;
 import net.minecraft.world.biome.MobSpawnInfo;
+import net.minecraft.world.gen.DimensionSettings;
 import net.minecraft.world.gen.GenerationStage.Carving;
 import net.minecraft.world.gen.GenerationStage.Decoration;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
@@ -26,6 +28,7 @@ import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.placement.IPlacementConfig;
+import net.minecraft.world.gen.settings.StructureSeparationSettings;
 import net.minecraft.world.gen.surfacebuilders.ConfiguredSurfaceBuilder;
 
 /**
@@ -42,7 +45,7 @@ public class BiomeAccessHelper
 	 * convenience.
 	 * 
 	 * @param biome
-	 * @return BiomeGenerationSettings
+	 * @return {@link BiomeGenerationSettings}
 	 */
 	public static BiomeGenerationSettings getGenSettings(Biome biome)
 	{
@@ -76,22 +79,45 @@ public class BiomeAccessHelper
 	}
 
 	/**
-	 * Adds the input structure to generate in the biome.
+	 * Sets the input {@link GelStructure} to generate in the biome.
+	 * 
+	 * @param biome
+	 * @param gelStructure
+	 */
+	public static <C extends IFeatureConfig, S extends GelStructure<C>> void addStructure(Biome biome, StructureFeature<C, S> gelStructure)
+	{
+		addStructure(biome, gelStructure, gelStructure.field_236268_b_.getSeparationSettings(), gelStructure.field_236268_b_.getNoiseSettingsToGenerateIn());
+	}
+
+	/**
+	 * Sets the input {@link Structure} to generate in the biome.
 	 * 
 	 * @param biome
 	 * @param structure
-	 * @param config
+	 * @param separationSettings
+	 * @param noiseSettings
 	 */
-	public static <C extends IFeatureConfig, S extends Structure<C>> void addStructure(Biome biome, StructureFeature<C, S> structure)
+	public static <C extends IFeatureConfig, S extends Structure<C>> void addStructure(Biome biome, StructureFeature<C, S> structure, StructureSeparationSettings separationSettings, List<DimensionSettings> noiseSettings)
 	{
+		// Add structure to the biome's structure list
 		getGenSettings(biome).field_242485_g = GelCollectors.addToList(getGenSettings(biome).field_242485_g, () -> structure);
+
+		// Add structure to starts map
+		// Make map mutable before I try to add to it in case it isn't
+		if (biome.field_242421_g instanceof ImmutableMap || biome.field_242421_g.get(structure.field_236268_b_.func_236396_f_().ordinal()) instanceof ImmutableList)
+			biome.field_242421_g = GelCollectors.makeMapMutable(biome.field_242421_g, Map.Entry::getKey, e -> GelCollectors.makeListMutable(e.getValue()));
+
+		biome.field_242421_g.get(structure.field_236268_b_.func_236396_f_().ordinal()).add(structure.field_236268_b_);
+
+		// Add separation settings to noise settings
+		noiseSettings.forEach(noiseSetting -> noiseSetting.getStructures().field_236193_d_.put(structure.field_236268_b_, separationSettings));
 	}
 
 	/**
 	 * Gets the surface builder for the biome passed in.
 	 * 
 	 * @param biome
-	 * @return ConfiguredSurfaceBuilder
+	 * @return {@link ConfiguredSurfaceBuilder}
 	 */
 	@Nullable
 	public static ConfiguredSurfaceBuilder<?> getSurfaceBuilder(Biome biome)
@@ -120,8 +146,8 @@ public class BiomeAccessHelper
 	public static void addCarver(Biome biome, Carving carvingType, ConfiguredCarver<?> configuredCarver)
 	{
 		// Make the map and it's lists mutable
-		if (getGenSettings(biome).field_242483_e instanceof ImmutableMap || (getGenSettings(biome).field_242483_e.containsKey(carvingType) && getGenSettings(biome).field_242483_e.get(carvingType) instanceof ImmutableList))
-			getGenSettings(biome).field_242483_e = GelCollectors.makeMapMutable(getGenSettings(biome).field_242483_e, Map.Entry::getKey, (e) -> Lists.newArrayList(e.getValue()));
+		if (getGenSettings(biome).field_242483_e instanceof ImmutableMap || getGenSettings(biome).field_242483_e.get(carvingType) instanceof ImmutableList)
+			getGenSettings(biome).field_242483_e = GelCollectors.makeMapMutable(getGenSettings(biome).field_242483_e, Map.Entry::getKey, e -> GelCollectors.makeListMutable(e.getValue()));
 
 		// Add an entry to the map for the required carver if it's absent
 		if (!getGenSettings(biome).field_242483_e.containsKey(carvingType))
@@ -136,7 +162,7 @@ public class BiomeAccessHelper
 	 * 
 	 * @param biome
 	 * @param carvingType
-	 * @return List
+	 * @return {@link List}
 	 */
 	public static List<Supplier<ConfiguredCarver<?>>> getCarvers(Biome biome, Carving carvingType)
 	{
@@ -175,7 +201,7 @@ public class BiomeAccessHelper
 	public static void addSpawn(Biome biome, EntityClassification classification, MobSpawnInfo.Spawners spawner)
 	{
 		// Make the map and it's lists mutable
-		if (biome.func_242433_b().field_242554_e instanceof ImmutableMap || (biome.func_242433_b().field_242554_e.containsKey(classification) && biome.func_242433_b().field_242554_e.get(classification) instanceof ImmutableList))
+		if (biome.func_242433_b().field_242554_e instanceof ImmutableMap || biome.func_242433_b().field_242554_e.get(classification) instanceof ImmutableList)
 			biome.func_242433_b().field_242554_e = GelCollectors.makeMapMutable(biome.func_242433_b().field_242554_e, Map.Entry::getKey, (e) -> GelCollectors.makeListMutable(e.getValue()));
 
 		// Add an entry to the map for the required spawner if it's absent

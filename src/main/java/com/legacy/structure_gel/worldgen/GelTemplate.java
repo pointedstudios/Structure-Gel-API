@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import com.google.common.collect.Lists;
+import com.legacy.structure_gel.util.Internal;
 import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.block.Block;
@@ -40,10 +41,12 @@ import net.minecraft.world.gen.feature.template.Template;
  * @author David
  *
  */
+@Internal
 public class GelTemplate extends Template
 {
 	public final Template template;
 
+	@Internal
 	public GelTemplate(Template template)
 	{
 		this.template = template;

@@ -5,6 +5,7 @@ import java.util.Random;
 import javax.annotation.Nullable;
 
 import com.legacy.structure_gel.StructureGelMod;
+import com.legacy.structure_gel.util.Internal;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -99,6 +100,7 @@ public class RandomTagSwapProcessor extends StructureProcessor
 	 * 
 	 */
 	@Nullable
+	@Internal
 	@Override
 	public Template.BlockInfo func_230386_a_(IWorldReader worldReaderIn, BlockPos pos, BlockPos pos2, Template.BlockInfo existing, Template.BlockInfo placed, PlacementSettings settings)
 	{
@@ -110,6 +112,7 @@ public class RandomTagSwapProcessor extends StructureProcessor
 	/**
 	 * 
 	 */
+	@Internal
 	@Override
 	protected IStructureProcessorType<?> getType()
 	{

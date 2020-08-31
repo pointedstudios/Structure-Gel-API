@@ -281,7 +281,7 @@ public class JigsawPoolBuilder
 	 * @param processors
 	 * @param maintainWater
 	 * @param ignoreEntities
-	 * @return Function
+	 * @return {@link Function}
 	 */
 	public static Function<JigsawPattern.PlacementBehaviour, GelJigsawPiece> createGelPiece(ResourceLocation name, StructureProcessorList processors, boolean maintainWater, boolean ignoreEntities)
 	{

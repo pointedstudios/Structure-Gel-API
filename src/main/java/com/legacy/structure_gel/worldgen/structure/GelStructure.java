@@ -6,19 +6,25 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import com.google.common.collect.ImmutableList;
 import com.legacy.structure_gel.access_helpers.StructureAccessHelper;
+import com.legacy.structure_gel.util.Internal;
+import com.legacy.structure_gel.worldgen.jigsaw.GelJigsawStructure;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.MobSpawnInfo;
 import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.DimensionSettings;
 import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.gen.GenerationStage.Decoration;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructureManager;
@@ -29,7 +35,8 @@ import net.minecraftforge.event.world.WorldEvent;
 
 /**
  * An extension of {@link Structure} that allows for more precise tweaking and
- * handles structure spacing.
+ * handles structure spacing. For jigsaw related structures, use
+ * {@link GelJigsawStructure} or it's children.
  * 
  * @author David
  *
@@ -51,7 +58,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	 * automatically set to true when you create the structure.
 	 * 
 	 * @param lakeProof
-	 * @return
+	 * @return {@link GelStructure}
 	 */
 	public GelStructure<C> setLakeProof(boolean lakeProof)
 	{
@@ -62,6 +69,15 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 		return this;
 	}
 
+	/**
+	 * Sets the spawns that can exist in this structure for the passed mob
+	 * classification. Set to an empty list to prevent spawns, and leave as null to
+	 * change nothing.
+	 * 
+	 * @param classification
+	 * @param spawns
+	 * @return {@link GelStructure}
+	 */
 	public GelStructure<C> setSpawnList(EntityClassification classification, List<MobSpawnInfo.Spawners> spawns)
 	{
 		this.spawns.put(classification, spawns);
@@ -74,8 +90,10 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	 * 
 	 * @see #getSpacing()
 	 * @see #getOffset()
+	 * @return {@link ChunkPos}
 	 */
 	// getChunkPosForPos
+	@Internal
 	@Override
 	public ChunkPos func_236392_a_(StructureSeparationSettings settings, long seed, SharedSeedRandom sharedSeedRand, int x, int z)
 	{
@@ -95,6 +113,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	}
 
 	// canGenerate
+	@Internal
 	@Override
 	protected boolean func_230363_a_(ChunkGenerator chunkGen, BiomeProvider biomeProvider, long seed, SharedSeedRandom sharedSeedRand, int chunkPosX, int chunkPosZ, Biome biomeIn, ChunkPos chunkPos, C config)
 	{
@@ -103,10 +122,11 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	}
 
 	// findNearest
+	@Internal
 	@Override
 	public BlockPos func_236388_a_(IWorldReader worldIn, StructureManager structureManager, BlockPos startPos, int searchRadius, boolean skipExistingChunks, long seed, StructureSeparationSettings settings)
 	{
-		return super.func_236388_a_(worldIn, structureManager, startPos, searchRadius, skipExistingChunks, seed, new StructureSeparationSettings(this.getSpacing(), this.getOffset(), this.getSeed()));
+		return super.func_236388_a_(worldIn, structureManager, startPos, searchRadius, skipExistingChunks, seed, this.getSeparationSettings());
 	}
 
 	/**
@@ -150,6 +170,11 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	 */
 	public abstract int getOffset();
 
+	/**
+	 * Gets the registry name of the structure.
+	 * 
+	 * @return {@link String}
+	 */
 	@Override
 	public String getStructureName()
 	{
@@ -157,11 +182,12 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	}
 
 	/**
-	 * Deprecated: Use {@link #getSpawns(EntityClassification)} and
-	 * {@link #setSpawnList(EntityClassification, List)}.
-	 * <p>
 	 * Return a list of hostile mobs to change spawn behavior. Return null to do
 	 * nothing.
+	 * 
+	 * @deprecated Use {@link #getSpawns(EntityClassification)} and
+	 *             {@link #setSpawnList(EntityClassification, List)}.
+	 * @return {@link List}
 	 */
 	@Nullable
 	@Deprecated
@@ -172,11 +198,12 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	}
 
 	/**
-	 * Deprecated: Use {@link #getSpawns(EntityClassification)} and
-	 * {@link #setSpawnList(EntityClassification, List)}.
-	 * <p>
 	 * Return a list of passive mobs to change spawn behavior. Return null to do
 	 * nothing.
+	 * 
+	 * @deprecated Use {@link #getSpawns(EntityClassification)} and
+	 *             {@link #setSpawnList(EntityClassification, List)}.
+	 * @return {@link List}
 	 */
 	@Nullable
 	@Deprecated
@@ -191,7 +218,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	 * classification not set in {@link #spawns} will return null, and be ignored.
 	 * 
 	 * @param classification
-	 * @return
+	 * @return {@link List}
 	 */
 	@Nullable
 	public List<MobSpawnInfo.Spawners> getSpawns(EntityClassification classification)
@@ -213,6 +240,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	 * 
 	 * @param event
 	 */
+	@Internal
 	public void potentialSpawnsEvent(WorldEvent.PotentialSpawns event)
 	{
 		if (event.getWorld() instanceof ServerWorld && ((ServerWorld) event.getWorld()).func_241112_a_().func_235010_a_(event.getPos(), false, this).isValid())
@@ -227,9 +255,37 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 
 	/**
 	 * What stage of generation your structure should be generated during.
+	 * 
+	 * @return {@link Decoration}
 	 */
+	@Internal
+	@Override
 	public GenerationStage.Decoration func_236396_f_()
 	{
 		return GenerationStage.Decoration.SURFACE_STRUCTURES;
+	}
+
+	/**
+	 * Gets a {@link StructureSeparationSettings} based on the API values.
+	 * 
+	 * @return {@link StructureSeparationSettings}
+	 */
+	@Internal
+	public StructureSeparationSettings getSeparationSettings()
+	{
+		return new StructureSeparationSettings(this.getSpacing(), this.getOffset(), this.getSeed());
+	}
+
+	/**
+	 * Gets a list of {@link DimensionSettings} to tell your structure where to
+	 * generate. Can be set using configs. You should only need to modify this if a
+	 * dimension that this structure generates in does not use a vanilla noise
+	 * setting.
+	 * 
+	 * @return {@link List}
+	 */
+	public List<DimensionSettings> getNoiseSettingsToGenerateIn()
+	{
+		return ImmutableList.of(DimensionSettings.field_242734_c, DimensionSettings.field_242735_d, DimensionSettings.field_242736_e, DimensionSettings.field_242737_f, DimensionSettings.field_242738_g, DimensionSettings.field_242739_h).stream().map(WorldGenRegistries.field_243658_j::getValueForKey).collect(ImmutableList.toImmutableList());
 	}
 }

@@ -153,7 +153,7 @@ public class JigsawAccessHelper
 	 * 
 	 * @param listJigsawPiece
 	 * @param pieceName
-	 * @return boolean
+	 * @return {@link Boolean}
 	 * @see JigsawAccessHelper#removeFromPool(ResourceLocation, ResourceLocation)
 	 */
 	public static boolean removeFromListJigsaw(ListJigsawPiece listJigsawPiece, ResourceLocation pieceName)
@@ -179,7 +179,7 @@ public class JigsawAccessHelper
 	 * 
 	 * @param listJigsawPiece
 	 * @param feature
-	 * @return boolean
+	 * @return {@link Boolean}
 	 * @see JigsawAccessHelper#removeFromPool(ResourceLocation, Feature)
 	 */
 	public static boolean removeFromListJigsaw(ListJigsawPiece listJigsawPiece, Feature<?> feature)
@@ -236,7 +236,7 @@ public class JigsawAccessHelper
 	 * Accessor for the jigsaw pattern registry. Mainly for mapped convenience.
 	 * 
 	 * @param location
-	 * @return
+	 * @return {@link Optional}
 	 */
 	public static Optional<JigsawPattern> getJigsawPattern(ResourceLocation location)
 	{

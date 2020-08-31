@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 
 import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.data.GelTags;
+import com.legacy.structure_gel.util.Internal;
 import com.legacy.structure_gel.worldgen.jigsaw.GelJigsawPiece;
 import com.legacy.structure_gel.worldgen.jigsaw.GelStructurePiece;
 import com.mojang.serialization.Codec;
@@ -41,6 +42,7 @@ public class RemoveGelStructureProcessor extends StructureProcessor
 	 * 
 	 */
 	@Nullable
+	@Internal
 	@Override
 	public Template.BlockInfo func_230386_a_(IWorldReader worldReaderIn, BlockPos pos, BlockPos pos2, Template.BlockInfo existing, Template.BlockInfo placed, PlacementSettings settings)
 	{
@@ -52,6 +54,7 @@ public class RemoveGelStructureProcessor extends StructureProcessor
 	/**
 	 * 
 	 */
+	@Internal
 	@Override
 	protected IStructureProcessorType<?> getType()
 	{

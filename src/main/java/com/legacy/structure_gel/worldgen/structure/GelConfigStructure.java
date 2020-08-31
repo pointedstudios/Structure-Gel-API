@@ -1,12 +1,16 @@
 package com.legacy.structure_gel.worldgen.structure;
 
+import java.util.List;
+
 import com.legacy.structure_gel.util.ConfigTemplates;
+import com.legacy.structure_gel.util.ConfigTemplates.StructureConfig;
 import com.mojang.serialization.Codec;
 
+import net.minecraft.world.gen.DimensionSettings;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 
 /**
- * Extension of {@link GelStructure} for easy implementation of config files.
+ * Extension of {@link GelStructure} for easy implementation of config files using {@link StructureConfig}.
  * 
  * @author David
  *
@@ -26,23 +30,29 @@ public abstract class GelConfigStructure<C extends IFeatureConfig> extends GelSt
 	@Override
 	public double getProbability()
 	{
-		return this.config.getProbability();
+		return this.getConfig().getProbability();
 	}
 
 	@Override
 	public int getSpacing()
 	{
-		return this.config.getSpacing();
+		return this.getConfig().getSpacing();
 	}
 
 	@Override
 	public int getOffset()
 	{
-		return this.config.getOffset();
+		return this.getConfig().getOffset();
 	}
 
 	public ConfigTemplates.StructureConfig getConfig()
 	{
 		return this.config;
+	}
+	
+	@Override
+	public List<DimensionSettings> getNoiseSettingsToGenerateIn()
+	{
+		return this.getConfig().getNoiseSettings();
 	}
 }
