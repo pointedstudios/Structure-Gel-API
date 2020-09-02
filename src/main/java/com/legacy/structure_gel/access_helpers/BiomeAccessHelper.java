@@ -71,7 +71,7 @@ public class BiomeAccessHelper
 
 		// If the generation stage isn't present, add it and make sure other stages
 		// exist because Mojang didn't use a map.
-		while (getGenSettings(biome).field_242484_f.size() <= stage.ordinal())
+		while (getGenSettings(biome).field_242484_f.size() - 1 < stage.ordinal())
 			getGenSettings(biome).field_242484_f.add(Lists.newArrayList());
 
 		// Add the feature to the proper stage

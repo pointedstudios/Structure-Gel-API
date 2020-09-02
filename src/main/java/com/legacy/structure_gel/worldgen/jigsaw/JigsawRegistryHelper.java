@@ -86,7 +86,7 @@ public class JigsawRegistryHelper
 	}
 
 	/**
-	 * Registers a jigsaw pool in {@link JigsawManager#REGISTRY}. For most simple
+	 * Registers a jigsaw pool in {@link JigsawManager#providers}. For most simple
 	 * cases, you can use {@link #register(String, List)} or
 	 * {@link #register(ResourceLocation, List)}. ResourceLocations are generated
 	 * using {@link #locatePiece(String)} with the modid and prefix. For names not
@@ -183,7 +183,7 @@ public class JigsawRegistryHelper
 	}
 
 	/**
-	 * Registers a jigsaw pool in {@link JigsawManager#REGISTRY}.
+	 * Registers a jigsaw pool in {@link JigsawManager#providers}.
 	 * 
 	 * @see #register(ResourceLocation, List, PlacementBehaviour)
 	 * @param poolName : the name of the pool. Other jigsaw blocks will ask for

@@ -54,7 +54,7 @@ minecraft {
 			arg '-mixin.config=structure_gel.mixins.json'
 			property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
 			property 'forge.logging.console.level', 'debug'
-			args '--mod', 'structure_gel_api', '--all', '--output', file('run/generated/resources')
+			args '--mod', 'structure_gel', '--all', '--output', file('run/generated/resources')
 			mods {
 				examplemod {
 					source sourceSets.main

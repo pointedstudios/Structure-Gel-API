@@ -5,12 +5,15 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.objectweb.asm.Type;
 
 import com.legacy.structure_gel.blocks.AxisStructureGelBlock;
 import com.legacy.structure_gel.blocks.IStructureGel.Behavior;
 import com.legacy.structure_gel.blocks.StructureGelBlock;
 import com.legacy.structure_gel.commands.GetSpawnsCommand;
+import com.legacy.structure_gel.data.BiomeDictionaryManager;
 import com.legacy.structure_gel.items.StructureGelItem;
+import com.legacy.structure_gel.util.Internal;
 import com.legacy.structure_gel.util.RegistryHelper;
 import com.legacy.structure_gel.worldgen.jigsaw.GelJigsawPiece;
 import com.legacy.structure_gel.worldgen.jigsaw.GelStructurePiece;
@@ -26,6 +29,7 @@ import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.jigsaw.IJigsawDeserializer;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
@@ -35,12 +39,16 @@ import net.minecraft.world.gen.feature.template.StructureProcessor;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.javafmlmod.FMLModContainer;
 import net.minecraftforge.registries.IForgeRegistry;
 
 /**
@@ -52,16 +60,30 @@ import net.minecraftforge.registries.IForgeRegistry;
  *
  */
 @Mod(StructureGelMod.MODID)
-public class StructureGelMod
+public class StructureGelMod implements IBiomeDictionary
 {
 	public static final String MODID = "structure_gel";
 	public static final Logger LOGGER = LogManager.getLogger();
+	public static final BiomeDictionaryManager biomeDictionary = new BiomeDictionaryManager();
+	@Internal
+	private static final Type MOD_ANNOTATE = Type.getType(Mod.class);
 
 	public StructureGelMod()
 	{
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, StructureGelConfig.COMMON_SPEC);
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientInit);
-		MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
+		IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
+		modBus.addListener(this::clientInit);
+		modBus.addListener(this::commonInit);
+		// modBus.addListener(this::gatherData);
+		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
+		forgeBus.addListener(this::registerCommands);
+		// forgeBus.addListener(this::registerDataPack);
+		forgeBus.addListener(this::registerBiomeDictionary);
+	}
+
+	@Override
+	public void getBiomes()
+	{
 	}
 
 	public void clientInit(final FMLClientSetupEvent event)
@@ -69,14 +91,49 @@ public class StructureGelMod
 		Blocks.BLOCKS.forEach(b -> RenderTypeLookup.setRenderLayer(b, RenderType.getTranslucent()));
 	}
 
+	public void commonInit(final FMLCommonSetupEvent event)
+	{
+
+	}
+
 	public void registerCommands(final RegisterCommandsEvent event)
 	{
 		GetSpawnsCommand.register(event.getDispatcher());
 	}
 
+	/*public void registerDataPack(final AddReloadListenerEvent event)
+	{
+		event.addListener(StructureGelMod.biomeDictionary);
+	}
+	
+	public void gatherData(final GatherDataEvent event)
+	{
+		DataGenerator gen = event.getGenerator();
+		gen.addProvider(new BiomeDictionaryProvider(gen));
+	}*/
+
 	public static ResourceLocation locate(String key)
 	{
 		return new ResourceLocation(MODID, key);
+	}
+
+	public void registerBiomeDictionary(final RegistryEvent.Register<Biome> event)
+	{
+		ModList.get().forEachModContainer((s, mc) ->
+		{
+			if (mc instanceof FMLModContainer)
+			{
+				StructureGelMod.LOGGER.info("Found mod container for " + s);
+				FMLModContainer fmlContainer = (FMLModContainer) mc;
+				if (fmlContainer.getMod() instanceof IBiomeDictionary)
+				{
+					StructureGelMod.LOGGER.info("Found mod container class : " + fmlContainer.getModId());
+					((IBiomeDictionary) fmlContainer.getMod()).getBiomes();
+				}
+				else
+					StructureGelMod.LOGGER.info("This was not a biome dictionary instance " + fmlContainer.getMod().getClass().getName());
+			}
+		});
 	}
 
 	@Mod.EventBusSubscriber(modid = StructureGelMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)

@@ -13,6 +13,7 @@ import javax.annotation.Nullable;
 import com.legacy.structure_gel.StructureGelMod;
 
 import net.minecraft.entity.EntityClassification;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.biome.Biome;
@@ -293,6 +294,19 @@ public class ConfigTemplates
 		public boolean isBiomeAllowed(Biome biome)
 		{
 			return this.biomes.contains(biome) == this.isWhitelist();
+		}
+
+		/**
+		 * Checks if the input biome is or isn't in the biomes list depending on if you
+		 * use whitelist or blacklist mode.
+		 * 
+		 * @param biome
+		 * @return {@link Boolean}
+		 */
+		@SuppressWarnings("deprecation")
+		public boolean isBiomeAllowed(RegistryKey<Biome> biome)
+		{
+			return this.isBiomeAllowed(WorldGenRegistries.field_243657_i.func_243576_d(biome));
 		}
 
 		/**
