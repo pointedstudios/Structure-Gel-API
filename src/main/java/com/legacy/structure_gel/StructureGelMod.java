@@ -16,6 +16,7 @@ import com.legacy.structure_gel.blocks.StructureGelBlock;
 import com.legacy.structure_gel.commands.GetSpawnsCommand;
 import com.legacy.structure_gel.data.BiomeDictionary;
 import com.legacy.structure_gel.data.BiomeDictionary.BiomeType;
+import com.legacy.structure_gel.data.BiomeDictionaryEvent;
 import com.legacy.structure_gel.items.StructureGelItem;
 import com.legacy.structure_gel.util.Internal;
 import com.legacy.structure_gel.util.RegistryHelper;
@@ -140,6 +141,7 @@ public class StructureGelMod
 	public void registerBiomeDictionary(final RegistryEvent.Register<Biome> event)
 	{
 		StructureGelMod.LOGGER.debug("Setting up Biome Dictionary.");
+		FMLJavaModLoadingContext.get().getModEventBus().post(new BiomeDictionaryEvent());
 		ModList.get().forEachModContainer((s, mc) ->
 		{
 			if (mc instanceof FMLModContainer)
