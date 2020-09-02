@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 
 import com.legacy.structure_gel.StructureGelMod;
+import com.legacy.structure_gel.data.BiomeDictionary;
 
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.util.RegistryKey;
@@ -327,27 +328,34 @@ public class ConfigTemplates
 					boolean not = s.startsWith("!");
 					boolean isTag = s.replace("!", "").startsWith("#");
 					String biomeString = s.replace("!", "").replace("#", "");
+					ResourceLocation value = new ResourceLocation(biomeString);
 
 					if (!isTag)
 					{
-						ResourceLocation biome = new ResourceLocation(biomeString);
-						if (ForgeRegistries.BIOMES.containsKey(biome))
-							updateBiomeList(biomes, ForgeRegistries.BIOMES.getValue(biome), not);
+						if (ForgeRegistries.BIOMES.containsKey(value))
+							updateBiomeList(biomes, ForgeRegistries.BIOMES.getValue(value), not);
 						else
-							this.warnUnknownValue("biome", biome.toString());
+							this.warnUnknownValue("biome", value.toString());
 					}
-					// TODO Check tag
+					else
+					{
+						if (BiomeDictionary.contains(value))
+							BiomeDictionary.get(value).getAllBiomes().forEach(b -> updateBiomeList(biomes, ForgeRegistries.BIOMES.getValue(b.func_240901_a_()), not));
+						else
+							this.warnUnknownValue("biome dictionary entry", value.toString());
+					}
 				});
 			}
 			return biomes;
 		}
 
 		/**
-		 * Adds/removes the biome to/from the biomes list. Used internally.
+		 * Adds/removes the biome to/from the biomes list.
 		 * 
 		 * @param biome
 		 * @param not
 		 */
+		@Internal
 		protected static void updateBiomeList(List<Biome> biomes, Biome biome, boolean not)
 		{
 			if (not)

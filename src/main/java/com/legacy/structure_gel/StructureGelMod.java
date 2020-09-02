@@ -1,17 +1,21 @@
 package com.legacy.structure_gel;
 
+import java.lang.reflect.Method;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.Triple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.objectweb.asm.Type;
 
+import com.google.common.collect.Lists;
 import com.legacy.structure_gel.blocks.AxisStructureGelBlock;
 import com.legacy.structure_gel.blocks.IStructureGel.Behavior;
 import com.legacy.structure_gel.blocks.StructureGelBlock;
 import com.legacy.structure_gel.commands.GetSpawnsCommand;
-import com.legacy.structure_gel.data.BiomeDictionaryManager;
+import com.legacy.structure_gel.data.BiomeDictionary;
+import com.legacy.structure_gel.data.BiomeDictionary.BiomeType;
 import com.legacy.structure_gel.items.StructureGelItem;
 import com.legacy.structure_gel.util.Internal;
 import com.legacy.structure_gel.util.RegistryHelper;
@@ -27,6 +31,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.item.Item;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
@@ -46,7 +51,6 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLModContainer;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -60,79 +64,105 @@ import net.minecraftforge.registries.IForgeRegistry;
  *
  */
 @Mod(StructureGelMod.MODID)
-public class StructureGelMod implements IBiomeDictionary
+public class StructureGelMod
 {
 	public static final String MODID = "structure_gel";
 	public static final Logger LOGGER = LogManager.getLogger();
-	public static final BiomeDictionaryManager biomeDictionary = new BiomeDictionaryManager();
-	@Internal
-	private static final Type MOD_ANNOTATE = Type.getType(Mod.class);
+	private static final String[] BIOME_DICT_METHODS = new String[] { "getBiomesSG" };
 
+	@Internal
 	public StructureGelMod()
 	{
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, StructureGelConfig.COMMON_SPEC);
 		IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
 		modBus.addListener(this::clientInit);
-		modBus.addListener(this::commonInit);
+		// modBus.addListener(this::commonInit);
 		modBus.addGenericListener(Biome.class, this::registerBiomeDictionary);
-		// modBus.addListener(this::gatherData);
 		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
 		forgeBus.addListener(this::registerCommands);
-		// forgeBus.addListener(this::registerDataPack);
 	}
 
-	@Override
-	public void getBiomes()
+	/**
+	 * Create a method with the same name, arguments, and return type as this in
+	 * your main mod class (annotated with {@link Mod}) to register your own biome
+	 * dictionary entries. Structure Gel does not need to be a dependency for this
+	 * to work. <br>
+	 * <br>
+	 * Returns a list containing the required data to register a biome dictionary
+	 * entry. The {@link org.apache.commons.lang3.tuple.Triple} contains a
+	 * {@link ResourceLocation} for the registry name, a {@link Set} of resource
+	 * locations for parenting biome types that this should inherit biomes from, and
+	 * a Set of biome {@link RegistryKey}s for what biomes should be in the
+	 * dictionary entry.
+	 * 
+	 * @return {@link List}<{@link Triple}<{@link ResourceLocation},
+	 *         {@link Set}<{@link ResourceLocation}>,
+	 *         {@link Set}<{@link RegistryKey}<{@link Biome}>>>>
+	 */
+	public List<Triple<ResourceLocation, Set<ResourceLocation>, Set<RegistryKey<Biome>>>> getBiomesSG()
 	{
+		/*
+		List<Triple<ResourceLocation, Set<ResourceLocation>, Set<RegistryKey<Biome>>>> list = new ArrayList<>();
+		
+		list.add(Triple.of(locate("plains"), ImmutableSet.of(locate("oak_forest"), new ResourceLocation("silly_willy")), ImmutableSet.of(Biomes.DESERT)));
+		
+		return list;
+		*/
+		return null;
 	}
 
+	@Internal
 	public void clientInit(final FMLClientSetupEvent event)
 	{
 		Blocks.BLOCKS.forEach(b -> RenderTypeLookup.setRenderLayer(b, RenderType.getTranslucent()));
 	}
 
+	/*@Internal
 	public void commonInit(final FMLCommonSetupEvent event)
 	{
+	
+	}*/
 
-	}
-
+	@Internal
 	public void registerCommands(final RegisterCommandsEvent event)
 	{
 		GetSpawnsCommand.register(event.getDispatcher());
 	}
 
-	/*public void registerDataPack(final AddReloadListenerEvent event)
-	{
-		event.addListener(StructureGelMod.biomeDictionary);
-	}
-	
-	public void gatherData(final GatherDataEvent event)
-	{
-		DataGenerator gen = event.getGenerator();
-		gen.addProvider(new BiomeDictionaryProvider(gen));
-	}*/
-
+	@Internal
 	public static ResourceLocation locate(String key)
 	{
 		return new ResourceLocation(MODID, key);
 	}
 
+	@Internal
+	@SuppressWarnings("unchecked")
 	public void registerBiomeDictionary(final RegistryEvent.Register<Biome> event)
 	{
-		StructureGelMod.LOGGER.info("Setting up Biome Dictionary");
+		StructureGelMod.LOGGER.debug("Setting up Biome Dictionary.");
 		ModList.get().forEachModContainer((s, mc) ->
 		{
 			if (mc instanceof FMLModContainer)
 			{
-				StructureGelMod.LOGGER.info("Found mod container for " + s);
 				FMLModContainer fmlContainer = (FMLModContainer) mc;
-				if (fmlContainer.getMod() instanceof IBiomeDictionary)
+
+				try
 				{
-					StructureGelMod.LOGGER.info("Found mod container class : " + fmlContainer.getMod().getClass().getName());
-					((IBiomeDictionary) fmlContainer.getMod()).getBiomes();
+					for (Method method : fmlContainer.getMod().getClass().getMethods())
+					{
+						List<Triple<ResourceLocation, Set<ResourceLocation>, Set<RegistryKey<Biome>>>> result = Lists.newArrayList();
+
+						if (method.getName().equals(BIOME_DICT_METHODS[0]))
+							result = (List<Triple<ResourceLocation, Set<ResourceLocation>, Set<RegistryKey<Biome>>>>) method.invoke(fmlContainer.getMod());
+
+						if (result != null && !result.isEmpty())
+							result.forEach(t -> BiomeDictionary.register(new BiomeType(t.getLeft(), t.getMiddle(), t.getRight())));
+					}
 				}
-				else
-					StructureGelMod.LOGGER.info("This was not a biome dictionary instance : " + fmlContainer.getMod().getClass().getName());
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
 			}
 		});
 	}
