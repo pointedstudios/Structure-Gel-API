@@ -340,7 +340,13 @@ public class ConfigTemplates
 					else
 					{
 						if (BiomeDictionary.contains(value))
-							BiomeDictionary.get(value).getAllBiomes().forEach(b -> updateBiomeList(biomes, ForgeRegistries.BIOMES.getValue(b.func_240901_a_()), not));
+						{
+							BiomeDictionary.get(value).getAllBiomes().forEach(b ->
+							{
+								if (ForgeRegistries.BIOMES.containsKey(b.func_240901_a_()))
+									updateBiomeList(biomes, ForgeRegistries.BIOMES.getValue(b.func_240901_a_()), not);
+							});
+						}
 						else
 							this.warnUnknownValue("biome dictionary entry", value.toString());
 					}
@@ -425,14 +431,15 @@ public class ConfigTemplates
 		}
 
 		/**
-		 * Warning message when a value written in the config can not be found.
+		 * Warning message when a value written in the config can not be found. Printed
+		 * to debug.
 		 * 
 		 * @param obj
 		 * @param objName
 		 */
 		public void warnUnknownValue(String obj, String objName)
 		{
-			StructureGelMod.LOGGER.warn(String.format("Could not find a(n) %s registered with name %s in the config for %s", obj, objName, this.name));
+			StructureGelMod.LOGGER.debug(String.format("Could not find a(n) %s registered with name %s in the config for %s", obj, objName, this.name));
 		}
 	}
 
