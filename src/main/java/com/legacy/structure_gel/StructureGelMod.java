@@ -74,11 +74,11 @@ public class StructureGelMod implements IBiomeDictionary
 		IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
 		modBus.addListener(this::clientInit);
 		modBus.addListener(this::commonInit);
+		modBus.addGenericListener(Biome.class, this::registerBiomeDictionary);
 		// modBus.addListener(this::gatherData);
 		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
 		forgeBus.addListener(this::registerCommands);
 		// forgeBus.addListener(this::registerDataPack);
-		forgeBus.addListener(this::registerBiomeDictionary);
 	}
 
 	@Override
@@ -119,6 +119,7 @@ public class StructureGelMod implements IBiomeDictionary
 
 	public void registerBiomeDictionary(final RegistryEvent.Register<Biome> event)
 	{
+		StructureGelMod.LOGGER.info("Setting up Biome Dictionary");
 		ModList.get().forEachModContainer((s, mc) ->
 		{
 			if (mc instanceof FMLModContainer)
@@ -127,11 +128,11 @@ public class StructureGelMod implements IBiomeDictionary
 				FMLModContainer fmlContainer = (FMLModContainer) mc;
 				if (fmlContainer.getMod() instanceof IBiomeDictionary)
 				{
-					StructureGelMod.LOGGER.info("Found mod container class : " + fmlContainer.getModId());
+					StructureGelMod.LOGGER.info("Found mod container class : " + fmlContainer.getMod().getClass().getName());
 					((IBiomeDictionary) fmlContainer.getMod()).getBiomes();
 				}
 				else
-					StructureGelMod.LOGGER.info("This was not a biome dictionary instance " + fmlContainer.getMod().getClass().getName());
+					StructureGelMod.LOGGER.info("This was not a biome dictionary instance : " + fmlContainer.getMod().getClass().getName());
 			}
 		});
 	}
