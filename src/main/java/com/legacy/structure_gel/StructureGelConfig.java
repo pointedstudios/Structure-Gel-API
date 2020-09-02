@@ -21,7 +21,7 @@ public class StructureGelConfig
 	public static class Common
 	{
 		private final ForgeConfigSpec.BooleanValue extraLakeProofing;
-
+		
 		public Common(ForgeConfigSpec.Builder builder)
 		{
 			this.extraLakeProofing = builder.comment("Adds more vanilla structures to the list of structures that lakes cannot generate inside of. Only villages when set to false. Requires reload.").define("features.extra_lake_proofing", true);

@@ -17,6 +17,7 @@ import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.registries.ForgeRegistries;
 
 /**
@@ -45,7 +46,7 @@ public class BiomeDictionary
 	@Internal
 	private static final ResourceLocation EMPTY_NAME = StructureGelMod.locate("empty");
 	@Internal
-	private static final BiomeType EMPTY = REGISTRY.put(EMPTY_NAME, new BiomeType(EMPTY_NAME, new HashSet<>(), new HashSet<>()));
+	private static final BiomeType EMPTY = new BiomeType(EMPTY_NAME, new HashSet<>(), new HashSet<>());
 
 	// Feature
 	public static final BiomeType FROZEN_OCEAN = register(BiomeType.create("frozen_ocean").biomes(Biomes.FROZEN_OCEAN, Biomes.DEEP_FROZEN_OCEAN));
@@ -89,12 +90,12 @@ public class BiomeDictionary
 	// Nether
 	public static final BiomeType NETHER_FOREST = register(BiomeType.create("nether_forest").biomes(Biomes.CRIMSON_FOREST, Biomes.WARPED_FOREST));
 	public static final BiomeType NETHER = register(BiomeType.create("nether").parents(NETHER_FOREST).biomes(Biomes.NETHER_WASTES, Biomes.SOUL_SAND_VALLEY, Biomes.BASALT_DELTAS));
-	
+
 	// End
 	public static final BiomeType OUTER_END_ISLAND = register(BiomeType.create("outer_end_island").biomes(Biomes.END_HIGHLANDS, Biomes.END_MIDLANDS).biomes("endergetic", "poise_forest", "chorus_plains", "end_midlands", "end_highlands"));
 	public static final BiomeType OUTER_END = register(BiomeType.create("outer_end").parents(OUTER_END_ISLAND).biomes(Biomes.END_BARRENS, Biomes.SMALL_END_ISLANDS));
 	public static final BiomeType END = register(BiomeType.create("end").parents(OUTER_END).biomes(Biomes.THE_END));
-	
+
 	// Overworld
 	public static final BiomeType OVERWORLD = register(BiomeType.create("overworld").setBiomes(getOverworldBiomes()));
 
@@ -103,6 +104,15 @@ public class BiomeDictionary
 	public static final BiomeType MAGICAL = register(BiomeType.create("magical"));
 	public static final BiomeType SPOOKY = register(BiomeType.create("spooky").parents(DARK_FOREST));
 	public static final BiomeType RARE = register(BiomeType.create("rare").parents(MUSHROOM).biomes(Biomes.JUNGLE_EDGE));
+
+	public static void init()
+	{
+		// Can't register EMPTY directly since I'm preventing it, so I do it like this.
+		REGISTRY.put(EMPTY_NAME, EMPTY);
+
+		// Post event to register biome dictionary entries
+		MinecraftForge.EVENT_BUS.post(new BiomeDictionaryEvent());
+	}
 
 	/**
 	 * Returns all registed vanilla biomes that aren't tagged as nether or end.

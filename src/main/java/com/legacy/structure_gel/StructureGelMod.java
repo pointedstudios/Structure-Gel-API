@@ -36,6 +36,7 @@ import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.gen.feature.jigsaw.IJigsawDeserializer;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
@@ -52,6 +53,7 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLModContainer;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -77,12 +79,25 @@ public class StructureGelMod
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, StructureGelConfig.COMMON_SPEC);
 		IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
 		modBus.addListener(this::clientInit);
-		// modBus.addListener(this::commonInit);
+		modBus.addListener(this::commonInit);
 		modBus.addGenericListener(Biome.class, this::registerBiomeDictionary);
 		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
 		forgeBus.addListener(this::registerCommands);
+		
+		forgeBus.addListener(this::registerBiomeDict);
 	}
-
+	
+	@SuppressWarnings("unchecked")
+	public void registerBiomeDict(final BiomeDictionaryEvent event)
+	{
+		System.out.println("STRUCTURE GEL Fired event");
+		event.register(BiomeType.create(locate("tower_biomes")).biomes(Biomes.PLAINS, Biomes.FOREST, Biomes.DARK_FOREST, Biomes.BIRCH_FOREST, Biomes.MOUNTAINS));
+		event.register(BiomeType.create(locate("leviathan_biomes")).biomes(Biomes.DESERT));
+		event.register(BiomeType.create(locate("snowy_temple_biomes")).biomes(Biomes.SNOWY_TUNDRA, Biomes.SNOWY_TAIGA));
+		event.register(BiomeType.create(locate("bigger_dungeon_biomes")).parents(BiomeDictionary.OVERWORLD));
+		event.register(BiomeType.create(locate("end_ruins_biomes")).parents(BiomeDictionary.OUTER_END_ISLAND));
+	}
+	
 	/**
 	 * Create a method with the same name, arguments, and return type as this in
 	 * your main mod class (annotated with {@link Mod}) to register your own biome
@@ -118,14 +133,11 @@ public class StructureGelMod
 		Blocks.BLOCKS.forEach(b -> RenderTypeLookup.setRenderLayer(b, RenderType.getTranslucent()));
 	}
 
-	/*
 	@Internal
 	public void commonInit(final FMLCommonSetupEvent event)
 	{
-		BiomeType key = BiomeDictionary.get(locate("end"));
-		key.getAllBiomes().forEach(k -> System.out.println(k.func_240901_a_()));;
+
 	}
-	*/
 
 	@Internal
 	public void registerCommands(final RegisterCommandsEvent event)
@@ -144,7 +156,8 @@ public class StructureGelMod
 	public void registerBiomeDictionary(final RegistryEvent.Register<Biome> event)
 	{
 		StructureGelMod.LOGGER.debug("Setting up Biome Dictionary.");
-		FMLJavaModLoadingContext.get().getModEventBus().post(new BiomeDictionaryEvent());
+		BiomeDictionary.init();
+		// Get biome dictionary entries from mod classes
 		ModList.get().forEachModContainer((s, mc) ->
 		{
 			if (mc instanceof FMLModContainer)
@@ -157,9 +170,11 @@ public class StructureGelMod
 					{
 						List<Triple<ResourceLocation, Set<ResourceLocation>, Set<RegistryKey<Biome>>>> result = Lists.newArrayList();
 
+						// 1.16.2-v1.3.0
 						if (method.getName().equals(BIOME_DICT_METHODS[0]))
 							result = (List<Triple<ResourceLocation, Set<ResourceLocation>, Set<RegistryKey<Biome>>>>) method.invoke(fmlContainer.getMod());
 
+						// Register
 						if (result != null && !result.isEmpty())
 							result.forEach(t -> BiomeDictionary.register(new BiomeType(t.getLeft(), t.getMiddle(), t.getRight())));
 					}

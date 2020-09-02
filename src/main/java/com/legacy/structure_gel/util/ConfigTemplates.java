@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
-import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.data.BiomeDictionary;
 
 import net.minecraft.entity.EntityClassification;
@@ -304,10 +303,9 @@ public class ConfigTemplates
 		 * @param biome
 		 * @return {@link Boolean}
 		 */
-		@SuppressWarnings("deprecation")
 		public boolean isBiomeAllowed(RegistryKey<Biome> biome)
 		{
-			return this.isBiomeAllowed(WorldGenRegistries.field_243657_i.func_243576_d(biome));
+			return this.isBiomeAllowed(RegistryKey.func_240903_a_(ForgeRegistries.Keys.BIOMES, biome.func_240901_a_()));
 		}
 
 		/**
@@ -334,8 +332,6 @@ public class ConfigTemplates
 					{
 						if (ForgeRegistries.BIOMES.containsKey(value))
 							updateBiomeList(biomes, ForgeRegistries.BIOMES.getValue(value), not);
-						else
-							this.warnUnknownValue("biome", value.toString());
 					}
 					else
 					{
@@ -347,8 +343,6 @@ public class ConfigTemplates
 									updateBiomeList(biomes, ForgeRegistries.BIOMES.getValue(b.func_240901_a_()), not);
 							});
 						}
-						else
-							this.warnUnknownValue("biome dictionary entry", value.toString());
 					}
 				});
 			}
@@ -394,8 +388,6 @@ public class ConfigTemplates
 						ResourceLocation entity = new ResourceLocation(matcher.group(2));
 						if (ForgeRegistries.ENTITIES.containsKey(entity))
 							spawns.add(new MobSpawnInfo.Spawners(ForgeRegistries.ENTITIES.getValue(entity), Integer.parseInt(matcher.group(3)), Integer.parseInt(matcher.group(4)), Integer.parseInt(matcher.group(5))));
-						else
-							this.warnUnknownValue("entity", entity.toString());
 					}
 				}
 				catch (Exception e)
@@ -423,23 +415,9 @@ public class ConfigTemplates
 					ResourceLocation settings = new ResourceLocation(s);
 					if (WorldGenRegistries.field_243658_j.containsKey(settings))
 						noiseSettings.add(WorldGenRegistries.field_243658_j.getOrDefault(settings));
-					else
-						this.warnUnknownValue("dimension noise setting", settings.toString());
 				});
 			}
 			return noiseSettings;
-		}
-
-		/**
-		 * Warning message when a value written in the config can not be found. Printed
-		 * to debug.
-		 * 
-		 * @param obj
-		 * @param objName
-		 */
-		public void warnUnknownValue(String obj, String objName)
-		{
-			StructureGelMod.LOGGER.debug(String.format("Could not find a(n) %s registered with name %s in the config for %s", obj, objName, this.name));
 		}
 	}
 
