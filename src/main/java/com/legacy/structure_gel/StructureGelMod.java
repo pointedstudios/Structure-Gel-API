@@ -52,6 +52,7 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLModContainer;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -77,7 +78,7 @@ public class StructureGelMod
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, StructureGelConfig.COMMON_SPEC);
 		IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
 		modBus.addListener(this::clientInit);
-		// modBus.addListener(this::commonInit);
+		 modBus.addListener(this::commonInit);
 		modBus.addGenericListener(Biome.class, this::registerBiomeDictionary);
 		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
 		forgeBus.addListener(this::registerCommands);
@@ -118,12 +119,15 @@ public class StructureGelMod
 		Blocks.BLOCKS.forEach(b -> RenderTypeLookup.setRenderLayer(b, RenderType.getTranslucent()));
 	}
 
-	/*@Internal
+	///*
+	@Internal
 	public void commonInit(final FMLCommonSetupEvent event)
 	{
+		BiomeType key = BiomeDictionary.get(locate("end"));
+		key.getAllBiomes().forEach(k -> System.out.println(k.func_240901_a_()));;
+	}
+	//*/
 	
-	}*/
-
 	@Internal
 	public void registerCommands(final RegisterCommandsEvent event)
 	{

@@ -86,12 +86,16 @@ public class BiomeDictionary
 	public static final BiomeType HUMID = register(BiomeType.create("humid").parents(SWAMP, JUNGLE));
 	public static final BiomeType DRY = register(BiomeType.create("dry").parents(DESERT, BADLANDS, SAVANNA, MOUNTAIN_SAVANNA));
 
-	// Dimension
+	// Nether
 	public static final BiomeType NETHER_FOREST = register(BiomeType.create("nether_forest").biomes(Biomes.CRIMSON_FOREST, Biomes.WARPED_FOREST));
 	public static final BiomeType NETHER = register(BiomeType.create("nether").parents(NETHER_FOREST).biomes(Biomes.NETHER_WASTES, Biomes.SOUL_SAND_VALLEY, Biomes.BASALT_DELTAS));
-	public static final BiomeType OUTER_END_ISLAND = register(BiomeType.create("outer_end_island").biomes(Biomes.END_HIGHLANDS, Biomes.END_MIDLANDS));
+	
+	// End
+	public static final BiomeType OUTER_END_ISLAND = register(BiomeType.create("outer_end_island").biomes(Biomes.END_HIGHLANDS, Biomes.END_MIDLANDS).biomes("endergetic", "poise_forest", "chorus_plains", "end_midlands", "end_highlands"));
 	public static final BiomeType OUTER_END = register(BiomeType.create("outer_end").parents(OUTER_END_ISLAND).biomes(Biomes.END_BARRENS, Biomes.SMALL_END_ISLANDS));
 	public static final BiomeType END = register(BiomeType.create("end").parents(OUTER_END).biomes(Biomes.THE_END));
+	
+	// Overworld
 	public static final BiomeType OVERWORLD = register(BiomeType.create("overworld").setBiomes(getOverworldBiomes()));
 
 	// Special
@@ -140,10 +144,10 @@ public class BiomeDictionary
 			// Create new registry
 			else
 				REGISTRY.put(key, biomeType);
-			
+
 			if (!BIOME_TO_BIOMETYPE_CACHE.isEmpty())
 				BIOME_TO_BIOMETYPE_CACHE.clear();
-			
+
 			return biomeType;
 		}
 	}
@@ -234,7 +238,7 @@ public class BiomeDictionary
 		/**
 		 * The biomes in this instance.
 		 */
-		private Set<RegistryKey<Biome>> biomes = new HashSet<>();
+		private Set<ResourceLocation> biomes = new HashSet<>();
 		/**
 		 * When running {@link #getAllBiomes()}, it will return all of the biomes of
 		 * this entry and all of the biomes of any parent listed.
@@ -255,7 +259,7 @@ public class BiomeDictionary
 			if (parents != null)
 				this.parents = new HashSet<>(parents);
 			if (biomes != null)
-				this.biomes = new HashSet<>(biomes);
+				this.biomes = biomes.stream().map(r -> r.func_240901_a_()).collect(Collectors.toSet());
 		}
 
 		/**
@@ -294,19 +298,35 @@ public class BiomeDictionary
 		}
 
 		/**
-		 * Set the biomes for this instance.
+		 * Adds the biomes to this instance
 		 * 
 		 * @param biomes
 		 * @return {@link BiomeType}
 		 */
 		public BiomeType biomes(RegistryKey<Biome>... biomes)
 		{
-			this.setBiomes(new HashSet<>(Arrays.asList(biomes)));
+			this.addBiomes(Arrays.asList(biomes).stream().map(r -> r.func_240901_a_()).collect(Collectors.toSet()));
 			return this;
 		}
 
 		/**
-		 * Set the parents for this instance.
+		 * Adds the biomes to this instance for the modid provided.
+		 * 
+		 * @param modid
+		 * @param biomes
+		 * @return {@link BiomeType}
+		 */
+		public BiomeType biomes(String modid, String... biomes)
+		{
+			Set<ResourceLocation> set = new HashSet<>();
+			for (String biome : biomes)
+				set.add(new ResourceLocation(modid, biome));
+			this.addBiomes(set);
+			return this;
+		}
+
+		/**
+		 * Adds the parents to this instance
 		 * 
 		 * @param parents
 		 * @return {@link BiomeType}
@@ -340,26 +360,26 @@ public class BiomeDictionary
 		}
 
 		/**
-		 * Does not allow duplicates.
+		 * Adds the listed biomes to this instance.
 		 * 
 		 * @param biomes
 		 * @return {@link BiomeType}
 		 */
-		public BiomeType addBiomes(Set<RegistryKey<Biome>> biomes)
+		public BiomeType addBiomes(Set<ResourceLocation> biomes)
 		{
 			this.getBiomes().addAll(biomes);
 			return this;
 		}
 
 		/**
-		 * Does not allow duplicates.
+		 * Add the biome to this instance.
 		 * 
 		 * @param biome
 		 * @return {@link BiomeType}
 		 */
 		public BiomeType addBiome(RegistryKey<Biome> biome)
 		{
-			this.getBiomes().add(biome);
+			this.getBiomes().add(biome.func_240901_a_());
 			return this;
 		}
 
@@ -368,7 +388,7 @@ public class BiomeDictionary
 		 * 
 		 * @return {@link Set}
 		 */
-		public Set<RegistryKey<Biome>> getBiomes()
+		public Set<ResourceLocation> getBiomes()
 		{
 			return this.biomes;
 		}
@@ -381,18 +401,19 @@ public class BiomeDictionary
 		 */
 		public BiomeType setBiomes(Set<RegistryKey<Biome>> biomes)
 		{
-			this.biomes = new HashSet<>(biomes);
+			this.biomes = biomes.stream().map(r -> r.func_240901_a_()).collect(Collectors.toSet());
 			return this;
 		}
 
 		/**
-		 * Gets the biomes from this instance and it's parents.
+		 * Gets the biomes from this instance and it's parents by trying to find their
+		 * registry keys.
 		 * 
 		 * @return {@link Set}
 		 */
 		public Set<RegistryKey<Biome>> getAllBiomes()
 		{
-			Set<RegistryKey<Biome>> biomes = this.getBiomes();
+			Set<RegistryKey<Biome>> biomes = this.getBiomes().stream().filter(ForgeRegistries.BIOMES::containsKey).map(r -> RegistryKey.func_240903_a_(ForgeRegistries.Keys.BIOMES, r)).collect(Collectors.toSet());
 			for (ResourceLocation parent : this.getParents())
 			{
 				if (REGISTRY.containsKey(parent))
@@ -484,10 +505,10 @@ public class BiomeDictionary
 			}
 
 			String biomes = "";
-			Iterator<RegistryKey<Biome>> iterator2 = this.getBiomes().iterator();
+			Iterator<ResourceLocation> iterator2 = this.getBiomes().iterator();
 			while (iterator2.hasNext())
 			{
-				biomes = biomes + iterator2.next().func_240901_a_().toString();
+				biomes = biomes + iterator2.next().toString();
 				if (iterator2.hasNext())
 					biomes = biomes + ", ";
 			}
