@@ -108,7 +108,7 @@ public class StructureGelMod
 		/*
 		List<Triple<ResourceLocation, Set<ResourceLocation>, Set<RegistryKey<Biome>>>> list = new ArrayList<>();
 		
-		list.add(Triple.of(locate("plains"), ImmutableSet.of(locate("oak_forest"), new ResourceLocation("silly_willy")), ImmutableSet.of(Biomes.DESERT)));
+		list.add(Triple.of(locate("plains"), ImmutableSet.of(new ResourceLocation(MODID, "oak_forest")), ImmutableSet.of(Biomes.DESERT)));
 		
 		return list;
 		*/
@@ -120,7 +120,7 @@ public class StructureGelMod
 	{
 		return new ResourceLocation(MODID, key);
 	}
-	
+
 	@Internal
 	public void clientInit(final FMLClientSetupEvent event)
 	{

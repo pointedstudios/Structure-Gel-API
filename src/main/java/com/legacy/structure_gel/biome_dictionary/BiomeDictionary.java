@@ -29,7 +29,8 @@ import net.minecraftforge.registries.RegistryManager;
  * checks to merge entries together.<br>
  * <br>
  * To add support for your mod without needing the API as a dependency, create a
- * method in your main mod class like the one in {@link StructureGelMod}<br>
+ * method in your main mod class like this one
+ * {@link StructureGelMod#getBiomesSG()}.<br>
  * <br>
  * When using a {@link ConfigTemplates.StructureConfig} and adding biome tags to
  * the config, it will reference this dictionary.
@@ -47,7 +48,7 @@ public class BiomeDictionary
 	private static final Map<RegistryKey<Biome>, Set<BiomeType>> BIOME_TO_BIOMETYPE_CACHE = new HashMap<>();
 
 	@Internal
-	public static final ResourceLocation EMPTY_NAME = StructureGelMod.locate("empty");
+	protected static final ResourceLocation EMPTY_NAME = StructureGelMod.locate("empty");
 	@Internal
 	public static final BiomeType EMPTY = new BiomeType(EMPTY_NAME, new HashSet<>(), new HashSet<>());
 
@@ -78,7 +79,7 @@ public class BiomeDictionary
 	public static final BiomeType BEACH = register(BiomeType.create("beach").biomes(Biomes.BEACH));
 	public static final BiomeType WOODED = register(BiomeType.create("wooded").parents(OAK_FOREST, BIRCH_FOREST, SPRUCE_FOREST, SNOWY_SPRUCE_FOREST, LARGE_SPRUCE_FOREST, JUNGLE, DARK_FOREST).biomes(Biomes.FLOWER_FOREST));
 	public static final BiomeType SANDY = register(BiomeType.create("sandy").parents(DESERT, BEACH).biomes(Biomes.SOUL_SAND_VALLEY, Biomes.BADLANDS));
-	
+
 	// Temperature
 	public static final BiomeType FROZEN = register(BiomeType.create("frozen").biomes(Biomes.FROZEN_RIVER, Biomes.ICE_SPIKES));
 	public static final BiomeType SNOWY = register(BiomeType.create("snowy").parents(SNOWY_SPRUCE_FOREST, SNOWY_PLAINS).biomes(Biomes.FROZEN_RIVER, Biomes.SNOWY_BEACH));
@@ -113,7 +114,6 @@ public class BiomeDictionary
 	static
 	{
 		// Can't register EMPTY directly since I'm preventing it, so I do it like this.
-		EMPTY.setRegistryName(EMPTY_NAME);
 		REGISTRY.register(EMPTY);
 	}
 
@@ -140,10 +140,7 @@ public class BiomeDictionary
 				REGISTRY.getValue(key).addBiomes(biomeType.getBiomes()).addParents(biomeType.getParents());
 			// Create new registry
 			else
-			{
-				biomeType.setRegistryName(key);
 				REGISTRY.register(biomeType);
-			}
 			if (!BIOME_TO_BIOMETYPE_CACHE.isEmpty())
 				BIOME_TO_BIOMETYPE_CACHE.clear();
 

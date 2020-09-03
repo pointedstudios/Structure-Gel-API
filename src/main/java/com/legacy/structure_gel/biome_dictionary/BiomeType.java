@@ -30,16 +30,17 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 public class BiomeType implements IForgeRegistryEntry<BiomeType>
 {
 	/**
-	 * The name that this is registered as.
+	 * The name that this is registered as. Defaults to "structure_gel:empty"
 	 */
 	private ResourceLocation registryName = BiomeDictionary.EMPTY_NAME;
 	/**
-	 * The biomes in this instance.
+	 * The biomes in this instance. Defaults to an empty set.
 	 */
 	private Set<ResourceLocation> biomes = new HashSet<>();
 	/**
 	 * When running {@link #getAllBiomes()}, it will return all of the biomes of
-	 * this entry and all of the biomes of any parent listed.
+	 * this entry and all of the biomes of any parent listed. Defaults to an empty
+	 * set.
 	 */
 	private Set<ResourceLocation> parents = new HashSet<>();
 
@@ -200,7 +201,8 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 	}
 
 	/**
-	 * Sets the biomes of this entry manually.
+	 * Sets the biomes of this entry, overriding old ones. You probably shouldn't
+	 * use this unless you're creating a new instance.
 	 * 
 	 * @param biomes
 	 * @return {@link BiomeType}
@@ -209,24 +211,6 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 	{
 		this.biomes = biomes.stream().map(r -> r.func_240901_a_()).collect(Collectors.toSet());
 		return this;
-	}
-
-	/**
-	 * Gets the biomes from this instance and it's parents by trying to find their
-	 * registry keys.
-	 * 
-	 * @return {@link Set}
-	 */
-	public Set<RegistryKey<Biome>> getAllBiomes()
-	{
-		Set<RegistryKey<Biome>> biomes = this.getBiomes().stream().filter(ForgeRegistries.BIOMES::containsKey).map(r -> RegistryKey.func_240903_a_(ForgeRegistries.Keys.BIOMES, r)).collect(Collectors.toSet());
-		for (ResourceLocation parent : this.getParents())
-		{
-			if (BiomeDictionary.REGISTRY.containsKey(parent))
-				biomes.addAll(BiomeDictionary.REGISTRY.getValue(parent).getAllBiomes());
-		}
-
-		return biomes;
 	}
 
 	/**
@@ -262,7 +246,8 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 	}
 
 	/**
-	 * Sets the parents of this entry manually.
+	 * Sets the parents of this entry, overriding old ones. sYou probably shouldn't
+	 * use this unless you're creating a new instance.
 	 * 
 	 * @param parents
 	 * @return {@link BiomeType}
@@ -271,6 +256,24 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 	{
 		this.parents = new HashSet<>(parents);
 		return this;
+	}
+
+	/**
+	 * Gets the biomes from this instance and it's parents by trying to find their
+	 * registry keys.
+	 * 
+	 * @return {@link Set}
+	 */
+	public Set<RegistryKey<Biome>> getAllBiomes()
+	{
+		Set<RegistryKey<Biome>> biomes = this.getBiomes().stream().filter(ForgeRegistries.BIOMES::containsKey).map(r -> RegistryKey.func_240903_a_(ForgeRegistries.Keys.BIOMES, r)).collect(Collectors.toSet());
+		for (ResourceLocation parent : this.getParents())
+		{
+			if (BiomeDictionary.REGISTRY.containsKey(parent))
+				biomes.addAll(BiomeDictionary.REGISTRY.getValue(parent).getAllBiomes());
+		}
+
+		return biomes;
 	}
 
 	/**
