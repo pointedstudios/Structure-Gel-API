@@ -76,7 +76,9 @@ public class BiomeDictionary
 	public static final BiomeType MUSHROOM = register(BiomeType.create("mushroom").biomes(Biomes.MUSHROOM_FIELD_SHORE, Biomes.MUSHROOM_FIELDS));
 	public static final BiomeType RIVER = register(BiomeType.create("river").biomes(Biomes.RIVER, Biomes.FROZEN_RIVER));
 	public static final BiomeType BEACH = register(BiomeType.create("beach").biomes(Biomes.BEACH));
-
+	public static final BiomeType WOODED = register(BiomeType.create("wooded").parents(OAK_FOREST, BIRCH_FOREST, SPRUCE_FOREST, SNOWY_SPRUCE_FOREST, LARGE_SPRUCE_FOREST, JUNGLE, DARK_FOREST).biomes(Biomes.FLOWER_FOREST));
+	public static final BiomeType SANDY = register(BiomeType.create("sandy").parents(DESERT, BEACH).biomes(Biomes.SOUL_SAND_VALLEY, Biomes.BADLANDS));
+	
 	// Temperature
 	public static final BiomeType FROZEN = register(BiomeType.create("frozen").biomes(Biomes.FROZEN_RIVER, Biomes.ICE_SPIKES));
 	public static final BiomeType SNOWY = register(BiomeType.create("snowy").parents(SNOWY_SPRUCE_FOREST, SNOWY_PLAINS).biomes(Biomes.FROZEN_RIVER, Biomes.SNOWY_BEACH));
