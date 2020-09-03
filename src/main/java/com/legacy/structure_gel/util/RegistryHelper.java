@@ -12,6 +12,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.gen.GenerationStage.Decoration;
+import net.minecraft.world.gen.feature.ConfiguredFeature;
+import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
@@ -37,13 +39,26 @@ public class RegistryHelper
 	 * @param registry
 	 * @param key
 	 * @param registryObject
-	 * @return T
+	 * @return The registryObject
 	 */
 	public static <T extends IForgeRegistryEntry<T>> T register(IForgeRegistry<T> registry, ResourceLocation key, T registryObject)
 	{
 		registryObject.setRegistryName(key);
 		registry.register(registryObject);
 		return registryObject;
+	}
+
+	/**
+	 * Registers the configured feature. If you don't add register a configured
+	 * feature, things break when you try to add it to a biome.
+	 * 
+	 * @param key
+	 * @param configuredFeature
+	 * @return {@link ConfiguredFeature}
+	 */
+	public static <FC extends IFeatureConfig, F extends Feature<FC>> ConfiguredFeature<FC, F> registerConfiguredFeature(ResourceLocation key, ConfiguredFeature<FC, F> configuredFeature)
+	{
+		return Registry.register(WorldGenRegistries.field_243653_e, key, configuredFeature);
 	}
 
 	/**

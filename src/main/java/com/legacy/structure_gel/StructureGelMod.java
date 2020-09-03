@@ -150,7 +150,7 @@ public class StructureGelMod
 	public void registerBiomeDictionary(final RegistryEvent.Register<BiomeType> event)
 	{
 		// Get biome dictionary entries from mod classes
-		StructureGelMod.LOGGER.debug("Setting up Biome Dictionary.");
+		StructureGelMod.LOGGER.debug("Checking for other mods' biome dictionary methods.");
 		ModList.get().forEachModContainer((s, mc) ->
 		{
 			if (mc instanceof FMLModContainer)
