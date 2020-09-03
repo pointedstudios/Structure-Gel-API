@@ -54,7 +54,8 @@ public class BiomeAccessHelper
 
 	/**
 	 * Adds the feature to the biome with the given settings. For flowers, use
-	 * {@link #addFlowerFeature(Biome, Decoration, Feature)}.
+	 * {@link #addFlowerFeature(Biome, Decoration, Feature)}. Make sure that the
+	 * {@link ConfiguredFeature} is registered first.
 	 * 
 	 * @param biome
 	 * @param stage
@@ -64,7 +65,7 @@ public class BiomeAccessHelper
 	 * @param placementConfig
 	 */
 	public static <C extends IFeatureConfig, F extends Feature<C>> void addFeature(Biome biome, Decoration stage, ConfiguredFeature<C, F> feature)
-	{		
+	{
 		// Make list mutable before I try to mess with it in case it isn't
 		if (getGenSettings(biome).field_242484_f instanceof ImmutableList || (getGenSettings(biome).field_242484_f.size() > stage.ordinal() && getGenSettings(biome).field_242484_f.get(stage.ordinal()) instanceof ImmutableList))
 			getGenSettings(biome).field_242484_f = GelCollectors.makeListMutable(getGenSettings(biome).field_242484_f, GelCollectors::makeListMutable);
