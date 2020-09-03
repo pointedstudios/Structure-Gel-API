@@ -305,7 +305,7 @@ public class ConfigTemplates
 		 */
 		public boolean isBiomeAllowed(RegistryKey<Biome> biome)
 		{
-			return this.isBiomeAllowed(RegistryKey.func_240903_a_(ForgeRegistries.Keys.BIOMES, biome.func_240901_a_()));
+			return this.isBiomeAllowed(ForgeRegistries.BIOMES.getValue(biome.func_240901_a_()));
 		}
 
 		/**
