@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Streams;
+import com.legacy.structure_gel.registrars.StructureRegistrar;
 import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.util.ResourceLocation;

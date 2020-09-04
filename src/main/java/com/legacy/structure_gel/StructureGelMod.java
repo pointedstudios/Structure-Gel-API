@@ -4,6 +4,9 @@ import java.lang.reflect.Method;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.logging.log4j.LogManager;
@@ -17,8 +20,10 @@ import com.legacy.structure_gel.blocks.AxisStructureGelBlock;
 import com.legacy.structure_gel.blocks.IStructureGel.Behavior;
 import com.legacy.structure_gel.blocks.StructureGelBlock;
 import com.legacy.structure_gel.commands.GetSpawnsCommand;
-import com.legacy.structure_gel.events.RegisterDimensionsEvent;
+import com.legacy.structure_gel.events.RegisterDimensionEvent;
 import com.legacy.structure_gel.items.StructureGelItem;
+import com.legacy.structure_gel.registrars.DimensionRegistrar;
+import com.legacy.structure_gel.util.DimensionTypeBuilder;
 import com.legacy.structure_gel.util.Internal;
 import com.legacy.structure_gel.util.RegistryHelper;
 import com.legacy.structure_gel.worldgen.jigsaw.GelJigsawPiece;
@@ -36,11 +41,10 @@ import net.minecraft.item.Item;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.WorldGenRegistries;
-import net.minecraft.world.Dimension;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.provider.EndBiomeProvider;
+import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.DimensionSettings;
 import net.minecraft.world.gen.NoiseChunkGenerator;
 import net.minecraft.world.gen.feature.jigsaw.IJigsawDeserializer;
@@ -92,19 +96,22 @@ public class StructureGelMod
 		modBus.addGenericListener(BiomeType.class, this::registerBiomeDictionary);
 		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
 		forgeBus.addListener(this::registerCommands);
-		forgeBus.addListener(this::registerDim);
+		//forgeBus.addListener(this::registerDim);
 
 	}
 
-	public void registerDim(RegisterDimensionsEvent event)
+	/*
+	public void registerDim(RegisterDimensionEvent event)
 	{
-		RegistryKey<Dimension> custom = RegistryKey.func_240903_a_(Registry.DIMENSION_KEY, locate("custom"));
-		RegistryKey<DimensionType> customType = RegistryKey.func_240903_a_(Registry.DIMENSION_TYPE_KEY, locate("custom_type"));
-		RegistryKey<DimensionSettings> customSettingsKey = RegistryKey.func_240903_a_(Registry.field_243549_ar, locate("custom_settings"));
-		DimensionSettings customSettings = WorldGenRegistries.func_243664_a(WorldGenRegistries.field_243658_j, customSettingsKey.func_240901_a_(), DimensionAccessHelper.newFloatingIslandSettings(new DimensionStructuresSettings(true), net.minecraft.block.Blocks.SMOOTH_QUARTZ.getDefaultState(), net.minecraft.block.Blocks.WATER.getDefaultState(), customSettingsKey.func_240901_a_(), true, true));
-
-		event.register(custom, new Dimension(() -> event.getDimensionTypeRegistry().func_243576_d(customType), new NoiseChunkGenerator(new EndBiomeProvider(event.getBiomeRegistry(), event.getSeed()), event.getSeed(), () -> customSettings)));
+		Function<RegistryKey<DimensionSettings>, DimensionSettings> settings = (rk) -> DimensionAccessHelper.newFloatingIslandSettings(new DimensionStructuresSettings(true), net.minecraft.block.Blocks.SMOOTH_QUARTZ.getDefaultState(), net.minecraft.block.Blocks.WATER.getDefaultState(), rk.func_240901_a_(), true, true);
+		
+		BiFunction<RegisterDimensionEvent, DimensionSettings, ChunkGenerator> generator = (e, s) -> new NoiseChunkGenerator(new EndBiomeProvider(e.getBiomeRegistry(), e.getSeed()), e.getSeed(), () -> s); 
+		
+		Supplier<DimensionType> dimensionType = () -> DimensionTypeBuilder.of().effects(DimensionType.field_242711_b).ambientLight(0.5F).hasSkyLight(false).build();
+				
+		new DimensionRegistrar(event, locate("custom"), dimensionType, settings, generator);
 	}
+	*/
 
 	/**
 	 * Create a method with the same name, arguments, and return type as this in
@@ -169,7 +176,7 @@ public class StructureGelMod
 	@SuppressWarnings("unchecked")
 	public void registerBiomeDictionary(final RegistryEvent.Register<BiomeType> event)
 	{
-		// Get biome dictionary entries from mod classes
+		// Get biome dictionary entries from other mods' classes
 		StructureGelMod.LOGGER.debug("Checking for other mods' biome dictionary methods.");
 		ModList.get().forEachModContainer((s, mc) ->
 		{

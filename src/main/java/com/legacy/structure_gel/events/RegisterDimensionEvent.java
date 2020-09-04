@@ -1,5 +1,6 @@
 package com.legacy.structure_gel.events;
 
+import com.legacy.structure_gel.registrars.DimensionRegistrar;
 import com.mojang.serialization.Lifecycle;
 
 import net.minecraft.util.RegistryKey;
@@ -10,17 +11,21 @@ import net.minecraft.world.DimensionType;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.DimensionSettings;
 import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
 /**
  * Called when creating a new world. Register your dimensions in here to create
- * one without being stuck with a set seed. Do not have your dimension in the
- * data folder of your mod or else the dimension registered here will be
- * overritten.
+ * one without being stuck with a set seed. Anything in the data folder will
+ * override values set here. Check out the {@link DimensionRegistrar} for
+ * assistance with registering a dimension.<br>
+ * <br>
+ * {@link Bus#FORGE}
  * 
+ * @see DimensionRegistrar
  * @author David
  *
  */
-public class RegisterDimensionsEvent extends Event
+public class RegisterDimensionEvent extends Event
 {
 	private final SimpleRegistry<Dimension> dimensionRegistry;
 	private final Registry<DimensionType> dimensionTypeRegistry;
@@ -28,7 +33,7 @@ public class RegisterDimensionsEvent extends Event
 	private final Registry<DimensionSettings> dimensionSettingsRegistry;
 	private final long seed;
 
-	public RegisterDimensionsEvent(SimpleRegistry<Dimension> dimensionRegistry, Registry<DimensionType> dimensionTypeRegistry, Registry<Biome> biomeRegistry, Registry<DimensionSettings> dimensionSettingsRegistry, long seed)
+	public RegisterDimensionEvent(SimpleRegistry<Dimension> dimensionRegistry, Registry<DimensionType> dimensionTypeRegistry, Registry<Biome> biomeRegistry, Registry<DimensionSettings> dimensionSettingsRegistry, long seed)
 	{
 		this.dimensionRegistry = dimensionRegistry;
 		this.dimensionTypeRegistry = dimensionTypeRegistry;

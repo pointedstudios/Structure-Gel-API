@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.legacy.structure_gel.events.RegisterDimensionsEvent;
+import com.legacy.structure_gel.events.RegisterDimensionEvent;
 
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.SimpleRegistry;
@@ -31,7 +31,7 @@ public class DimensionTypeMixin
 	private static void func_242718_a(Registry<DimensionType> dimTypeRegistry, Registry<Biome> biomeRegistry, Registry<DimensionSettings> dimSettingsRegistry, long seed, CallbackInfoReturnable<SimpleRegistry<Dimension>> callback)
 	{
 		SimpleRegistry<Dimension> simpleRegistry = callback.getReturnValue();
-		MinecraftForge.EVENT_BUS.post(new RegisterDimensionsEvent(simpleRegistry, dimTypeRegistry, biomeRegistry, dimSettingsRegistry, seed));
+		MinecraftForge.EVENT_BUS.post(new RegisterDimensionEvent(simpleRegistry, dimTypeRegistry, biomeRegistry, dimSettingsRegistry, seed));
 		callback.setReturnValue(simpleRegistry);
 	}
 }

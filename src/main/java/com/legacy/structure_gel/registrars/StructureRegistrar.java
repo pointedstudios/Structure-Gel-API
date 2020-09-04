@@ -1,4 +1,6 @@
-package com.legacy.structure_gel.util;
+package com.legacy.structure_gel.registrars;
+
+import com.legacy.structure_gel.util.RegistryHelper;
 
 import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
