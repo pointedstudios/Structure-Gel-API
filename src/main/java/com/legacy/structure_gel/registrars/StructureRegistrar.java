@@ -2,11 +2,14 @@ package com.legacy.structure_gel.registrars;
 
 import com.legacy.structure_gel.util.RegistryHelper;
 
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructurePiece;
+import net.minecraftforge.registries.IForgeRegistry;
 
 /**
  * Stores a registered {@link Structure}, {@link IStructurePieceType}, and
@@ -19,22 +22,31 @@ import net.minecraft.world.gen.feature.structure.StructurePiece;
  * @param <C>
  * @param <S>
  */
-public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>>
+public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>> implements IRegistrar<StructureRegistrar<C, S>>
 {
+	private final IForgeRegistry<Structure<?>> registry;
+	private final ResourceLocation name;
 	private final S structure;
 	private final IStructurePieceType pieceType;
 	private final StructureFeature<C, S> structureFeature;
+	private final C config;
+	private final GenerationStage.Decoration generationStage;
 
-	private StructureRegistrar(S structure, IStructurePieceType pieceType, StructureFeature<C, S> structureFeature)
+	@SuppressWarnings("unchecked")
+	public StructureRegistrar(IForgeRegistry<Structure<?>> registry, ResourceLocation name, S structure, IStructurePieceType pieceType, C config, GenerationStage.Decoration generationStage)
 	{
+		this.registry = registry;
+		this.name = name;
 		this.structure = structure;
 		this.pieceType = pieceType;
-		this.structureFeature = structureFeature;
+		this.structureFeature = (StructureFeature<C, S>) structure.func_236391_a_(config);
+		this.config = config;
+		this.generationStage = generationStage;
 	}
-
-	public static <C extends IFeatureConfig, S extends Structure<C>> StructureRegistrar<C, S> of(S structure, IStructurePieceType pieceType, StructureFeature<C, S> structureFeature)
+	
+	public static <C extends IFeatureConfig, S extends Structure<C>> StructureRegistrar<C, S> of(IForgeRegistry<Structure<?>> registry, ResourceLocation name, S structure, IStructurePieceType pieceType, C config, GenerationStage.Decoration generationStage)
 	{
-		return new StructureRegistrar<C, S>(structure, pieceType, structureFeature);
+		return new StructureRegistrar<C, S>(registry, name, structure, pieceType, config, generationStage);
 	}
 
 	/**
@@ -66,5 +78,14 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 	public StructureFeature<C, S> getStructureFeature()
 	{
 		return this.structureFeature;
+	}
+
+	@Override
+	public StructureRegistrar<C, S> handle()
+	{
+		RegistryHelper.registerStructure(this.registry, this.name, this.structure, this.generationStage);
+		RegistryHelper.registerStructurePiece(this.name, this.pieceType);
+		RegistryHelper.registerStructureFeature(this.name, this.structure.func_236391_a_(this.config));
+		return this;
 	}
 }

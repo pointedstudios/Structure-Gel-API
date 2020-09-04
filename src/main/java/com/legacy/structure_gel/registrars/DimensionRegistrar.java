@@ -6,7 +6,6 @@ import java.util.function.Supplier;
 
 import com.legacy.structure_gel.events.RegisterDimensionEvent;
 import com.legacy.structure_gel.util.DimensionTypeBuilder;
-import com.legacy.structure_gel.util.Internal;
 import com.mojang.serialization.Lifecycle;
 
 import net.minecraft.util.RegistryKey;
@@ -29,8 +28,9 @@ import net.minecraft.world.gen.DimensionSettings;
  * @author David
  *
  */
-public class DimensionRegistrar
+public class DimensionRegistrar implements IRegistrar<DimensionRegistrar>
 {
+	private final RegisterDimensionEvent event;
 	private final RegistryKey<Dimension> dimensionKey;
 	private final RegistryKey<DimensionType> typeKey;
 	private final RegistryKey<DimensionSettings> settingsKey;
@@ -53,13 +53,13 @@ public class DimensionRegistrar
 	 */
 	public DimensionRegistrar(RegisterDimensionEvent event, ResourceLocation key, Supplier<DimensionType> type, Function<RegistryKey<DimensionSettings>, DimensionSettings> settings, BiFunction<RegisterDimensionEvent, DimensionSettings, ChunkGenerator> chunkGenerator)
 	{
+		this.event = event;
 		this.dimensionKey = RegistryKey.func_240903_a_(Registry.DIMENSION_KEY, key);
 		this.typeKey = RegistryKey.func_240903_a_(Registry.DIMENSION_TYPE_KEY, key);
 		this.settingsKey = RegistryKey.func_240903_a_(Registry.field_243549_ar, key);
 		this.type = type;
 		this.settings = settings;
 		this.chunkGenerator = chunkGenerator;
-		this.register(event);
 	}
 
 	/**
@@ -92,17 +92,13 @@ public class DimensionRegistrar
 		return this.settingsKey;
 	}
 
-	/**
-	 * Registers the dimension with the provided values.
-	 * 
-	 * @param event
-	 */
-	@Internal
-	public void register(RegisterDimensionEvent event)
+	@Override
+	public DimensionRegistrar handle()
 	{
 		DimensionSettings settings = WorldGenRegistries.func_243664_a(WorldGenRegistries.field_243658_j, this.settingsKey.func_240901_a_(), this.settings.apply(this.settingsKey));
 		DimensionType type = DynamicRegistries.func_239770_b_().func_243612_b(Registry.DIMENSION_TYPE_KEY).register(this.typeKey, this.type.get(), Lifecycle.stable());
 
 		event.register(this.dimensionKey, new Dimension(() -> type, this.chunkGenerator.apply(event, settings)));
+		return this;
 	}
 }
