@@ -12,10 +12,9 @@ import net.minecraft.world.gen.feature.structure.StructurePiece;
 import net.minecraftforge.registries.IForgeRegistry;
 
 /**
- * Stores a registered {@link Structure}, {@link IStructurePieceType}, and
- * {@link StructureFeature} with accessors. Use with
- * {@link RegistryHelper#handleRegistrar(net.minecraftforge.registries.IForgeRegistry, net.minecraft.util.ResourceLocation, Structure, net.minecraft.world.gen.GenerationStage.Decoration, IStructurePieceType, IFeatureConfig)}
- * during registry.
+ * Stores a {@link Structure}, {@link IStructurePieceType}, and
+ * {@link StructureFeature} and registers with {@link #handle()} or
+ * {@link RegistryHelper#handleRegistrar(IRegistrar)}.
  * 
  * @author David
  *
@@ -43,7 +42,18 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 		this.config = config;
 		this.generationStage = generationStage;
 	}
-	
+
+	/**
+	 * Handy method so you don't have to type the generic type parameters.
+	 * 
+	 * @param registry
+	 * @param name
+	 * @param structure
+	 * @param pieceType
+	 * @param config
+	 * @param generationStage
+	 * @return {@link StructureRegistrar}
+	 */
 	public static <C extends IFeatureConfig, S extends Structure<C>> StructureRegistrar<C, S> of(IForgeRegistry<Structure<?>> registry, ResourceLocation name, S structure, IStructurePieceType pieceType, C config, GenerationStage.Decoration generationStage)
 	{
 		return new StructureRegistrar<C, S>(registry, name, structure, pieceType, config, generationStage);

@@ -58,9 +58,11 @@ import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 
 /**
- * This is an API mod designed with the purpose of simplifying the work required
- * to create generated structures, particularly with jigsaws. All methods and
- * classes that you will interact with are documented with how they function.
+ * This is an API with the purpose of giving access and shortcuts to various
+ * aspects of worldgen, such as structures, biomes, and dimensions. Methods and
+ * classes are documented with details on how they work and where to use them.
+ * Anywhere that you see the {@link Internal} annotation means that you
+ * shouldn't need to call the thing annotated.
  * 
  * @author David
  *
@@ -96,7 +98,7 @@ public class StructureGelMod
 		
 		Supplier<DimensionType> dimensionType = () -> DimensionTypeBuilder.of().effects(DimensionType.field_242711_b).ambientLight(0.5F).hasSkyLight(false).build();
 				
-		new DimensionRegistrar(event, locate("custom"), dimensionType, settings, generator);
+		RegistryHelper.handleRegistrar(new DimensionRegistrar(event, locate("custom"), dimensionType, settings, generator));
 	}
 	*/
 
