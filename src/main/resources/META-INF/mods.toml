@@ -8,8 +8,8 @@ license="https://www.gnu.org/licenses/gpl-3.0.en.html"
 	displayName="Structure Gel API"
 	displayURL="https://moddinglegacy.com/"
 	logoFile="logo.png"
-	credits="KingPhygieBoo for helping with development"
-	authors="Silver_David"
+	credits=""
+	authors="Silver_David, KingPhygieBoo"
 	description='''An API mod to improve the developer side of structure gen'''
     license="https://www.gnu.org/licenses/gpl-3.0.en.html"
 [[dependencies.structure_gel]]
