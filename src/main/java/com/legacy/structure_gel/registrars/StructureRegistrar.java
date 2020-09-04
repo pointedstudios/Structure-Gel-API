@@ -28,7 +28,6 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 	private final S structure;
 	private final IStructurePieceType pieceType;
 	private final StructureFeature<C, S> structureFeature;
-	private final C config;
 	private final GenerationStage.Decoration generationStage;
 
 	@SuppressWarnings("unchecked")
@@ -39,7 +38,6 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 		this.structure = structure;
 		this.pieceType = pieceType;
 		this.structureFeature = (StructureFeature<C, S>) structure.func_236391_a_(config);
-		this.config = config;
 		this.generationStage = generationStage;
 	}
 
@@ -95,7 +93,7 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 	{
 		RegistryHelper.registerStructure(this.registry, this.name, this.structure, this.generationStage);
 		RegistryHelper.registerStructurePiece(this.name, this.pieceType);
-		RegistryHelper.registerStructureFeature(this.name, this.structure.func_236391_a_(this.config));
+		RegistryHelper.registerStructureFeature(this.name, this.structureFeature);
 		return this;
 	}
 }
