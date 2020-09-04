@@ -7,7 +7,7 @@ clear
 MCGradleArgs=$1
 
 MCGradleAuthor="Jonathing"
-MCGradleVersion="0.5.3"
+MCGradleVersion="0.5.4"
 
 # Print script information
 MCGradleGreeting1="MCGradle Scripts by $MCGradleAuthor"
@@ -50,8 +50,6 @@ if [ "$MCHubUpdVer" != "$MCGradleVersion" ]; then
     done
 
     if [ "$MCWantsToUpdate" -eq 1 ]; then
-        printf "We want to update\n"
-
         # Check for curl
         if command -v git &> /dev/null; then
             printf "Downloading MCGradle Scripts...\n"
@@ -86,11 +84,11 @@ if [ "$MCHubUpdVer" != "$MCGradleVersion" ]; then
             printf "\nMCGradle Scripts has been successfully updated!\n"
             printf "Restarting MCGradle Scripts...\n"
 
-            MCHasUpdated=1
-
             sleep 3s
 
             ./MCGradle\ Scripts.sh
+
+            MCHasUpdated=1
         else
             printf "We weren't able to find git on your system!\n"
             printf "MCGradle Scripts will not be able to update.\n\n"

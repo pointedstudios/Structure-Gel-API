@@ -30,7 +30,7 @@ $MCGradleTitle = "MCGradle Scripts"
 [System.Console]::Title = $MCGradleTitle
 
 $MCGradleAuthor = "Jonathing"
-$MCGradleVersion = "0.5.3"
+$MCGradleVersion = "0.5.4"
 
 # Print script information
 $MCGradleGreeting1 = "MCGradle Scripts by " + $MCGradleAuthor
@@ -70,8 +70,6 @@ if ($MCHubUpdVer -ne $MCGradleVersion)
 
     if ($MCWantsToUpdate -eq 1)
     {
-        Write-Host "We want to update."
-
         $MCOldPreference = $ErrorActionPreference
         $ErrorActionPreference = "SilentlyContinue"
 
@@ -116,9 +114,9 @@ if ($MCHubUpdVer -ne $MCGradleVersion)
 
             Start-Sleep -s 3
 
-            $MCHasUpdated = 1
-
             & '.\MCGradle Scripts.ps1'
+
+            $MCHasUpdated = 1
         }
         else
         {
