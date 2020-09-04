@@ -87,7 +87,7 @@ public class StructureGelMod
 		forgeBus.addListener(this::registerCommands);
 		// forgeBus.addListener(this::registerDim);
 	}
-
+	
 	/*
 	// Exists as a sample for how to register a dimension
 	public void registerDim(RegisterDimensionEvent event)

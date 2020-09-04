@@ -8,8 +8,8 @@ import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
 /**
- * Called when rendering the sky to create your own skybox. Make sure to cancel
- * the event when you're done rendering.<br>
+ * Called when rendering clouds. Make sure to cancel the event when you're done
+ * rendering.<br>
  * <br>
  * {@link Bus#FORGE}
  * 
@@ -18,16 +18,22 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
  */
 @Cancelable
 @OnlyIn(value = Dist.CLIENT)
-public class RenderSkyEvent extends WorldRenderEvent
+public class RenderCloudsEvent extends WorldRenderEvent
 {
 	private final MatrixStack matrixStack;
 	private final float partialTicks;
+	private final double viewEntityX;
+	private final double viewEntityY;
+	private final double viewEntityZ;
 
-	public RenderSkyEvent(MatrixStack matrixStack, float partialTicks)
+	public RenderCloudsEvent(MatrixStack matrixStack, float partialTicks, double viewEntityX, double viewEntityY, double viewEntityZ)
 	{
 		super();
 		this.matrixStack = matrixStack;
 		this.partialTicks = partialTicks;
+		this.viewEntityX = viewEntityX;
+		this.viewEntityY = viewEntityY;
+		this.viewEntityZ = viewEntityZ;
 	}
 
 	public MatrixStack getMatrixStack()
@@ -38,5 +44,20 @@ public class RenderSkyEvent extends WorldRenderEvent
 	public float getPartialTicks()
 	{
 		return this.partialTicks;
+	}
+
+	public double getViewEntityX()
+	{
+		return this.viewEntityX;
+	}
+
+	public double getViewEntityY()
+	{
+		return this.viewEntityY;
+	}
+
+	public double getViewEntityZ()
+	{
+		return this.viewEntityZ;
 	}
 }

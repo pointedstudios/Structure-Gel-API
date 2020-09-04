@@ -1,7 +1,6 @@
 package com.legacy.structure_gel.events;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
+import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.Cancelable;
@@ -18,25 +17,18 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
  */
 @Cancelable
 @OnlyIn(value = Dist.CLIENT)
-public class RenderSkyEvent extends WorldRenderEvent
+public class RenderRainParticlesEvent extends WorldRenderEvent
 {
-	private final MatrixStack matrixStack;
-	private final float partialTicks;
+	private final ActiveRenderInfo activeRenderInfo;
 
-	public RenderSkyEvent(MatrixStack matrixStack, float partialTicks)
+	public RenderRainParticlesEvent(ActiveRenderInfo activeRenderInfo)
 	{
 		super();
-		this.matrixStack = matrixStack;
-		this.partialTicks = partialTicks;
+		this.activeRenderInfo = activeRenderInfo;
 	}
 
-	public MatrixStack getMatrixStack()
+	public ActiveRenderInfo getActiveRenderInfo()
 	{
-		return this.matrixStack;
-	}
-
-	public float getPartialTicks()
-	{
-		return this.partialTicks;
+		return this.activeRenderInfo;
 	}
 }

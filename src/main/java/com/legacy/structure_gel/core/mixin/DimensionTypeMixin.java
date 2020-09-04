@@ -18,14 +18,8 @@ import net.minecraftforge.common.MinecraftForge;
 @Mixin(DimensionType.class)
 public class DimensionTypeMixin
 {
-	/**
+	/*
 	 * {@link DimensionType#func_242718_a(Registry, Registry, Registry, long)}
-	 * 
-	 * @param dimTypeRegistry
-	 * @param biomeRegistry
-	 * @param dimSettingsRegistry
-	 * @param seed
-	 * @param callback
 	 */
 	@Inject(at = @At("RETURN"), method = "func_242718_a(Lnet/minecraft/util/registry/Registry;Lnet/minecraft/util/registry/Registry;Lnet/minecraft/util/registry/Registry;J)Lnet/minecraft/util/registry/SimpleRegistry;", cancellable = true)
 	private static void func_242718_a(Registry<DimensionType> dimTypeRegistry, Registry<Biome> biomeRegistry, Registry<DimensionSettings> dimSettingsRegistry, long seed, CallbackInfoReturnable<SimpleRegistry<Dimension>> callback)

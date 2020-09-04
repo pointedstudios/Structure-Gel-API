@@ -21,15 +21,8 @@ import net.minecraft.world.gen.feature.structure.Structure;
 @Mixin(LakesFeature.class)
 public class LakesFeatureMixin
 {
-	/**
+	/*
 	 * {@link LakesFeature#func_241855_a(ISeedReader, ChunkGenerator, Random, BlockPos, BlockStateFeatureConfig)}
-	 * 
-	 * @param seedReader
-	 * @param chunkGen
-	 * @param random
-	 * @param pos
-	 * @param config
-	 * @param callback
 	 */
 	@Inject(method = "func_241855_a", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/math/BlockPos;down(I)Lnet/minecraft/util/math/BlockPos;"), cancellable = true)
 	private void checkForStructures(ISeedReader seedReader, ChunkGenerator chunkGen, Random random, BlockPos pos, BlockStateFeatureConfig config, CallbackInfoReturnable<Boolean> callback)
