@@ -1,10 +1,12 @@
 package com.legacy.structure_gel.worldgen.jigsaw;
 
-import com.legacy.structure_gel.util.ConfigTemplates;
+import java.util.List;
+
 import com.legacy.structure_gel.util.ConfigTemplates.StructureConfig;
 import com.legacy.structure_gel.worldgen.structure.IConfigStructure;
 import com.mojang.serialization.Codec;
 
+import net.minecraft.world.gen.DimensionSettings;
 import net.minecraft.world.gen.feature.structure.VillageConfig;
 
 /**
@@ -15,17 +17,42 @@ import net.minecraft.world.gen.feature.structure.VillageConfig;
  */
 public abstract class GelConfigJigsawStructure extends GelJigsawStructure implements IConfigStructure
 {
-	private final ConfigTemplates.StructureConfig config;
+	private final StructureConfig config;
 
-	public GelConfigJigsawStructure(Codec<VillageConfig> codec, ConfigTemplates.StructureConfig config, int deltaY, boolean flag1, boolean placesOnSurface)
+	public GelConfigJigsawStructure(Codec<VillageConfig> codec, StructureConfig config, int deltaY, boolean flag1, boolean placesOnSurface)
 	{
 		super(codec, deltaY, flag1, placesOnSurface);
 		this.config = config;
 		this.spawns.putAll(config.getSpawns());
 	}
 
-	public ConfigTemplates.StructureConfig getConfig()
+	@Override
+	public StructureConfig getConfig()
 	{
 		return this.config;
+	}
+
+	@Override
+	public double getProbability()
+	{
+		return this.getConfig().getProbability();
+	}
+
+	@Override
+	public int getSpacing()
+	{
+		return this.getConfig().getSpacing();
+	}
+
+	@Override
+	public int getOffset()
+	{
+		return this.getConfig().getOffset();
+	}
+
+	@Override
+	public List<DimensionSettings> getNoiseSettingsToGenerateIn()
+	{
+		return this.getConfig().getNoiseSettings();
 	}
 }
