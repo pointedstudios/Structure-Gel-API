@@ -4,26 +4,19 @@ import java.lang.reflect.Method;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.Lists;
-import com.legacy.structure_gel.access_helpers.DimensionAccessHelper;
 import com.legacy.structure_gel.biome_dictionary.BiomeDictionary;
 import com.legacy.structure_gel.biome_dictionary.BiomeType;
 import com.legacy.structure_gel.blocks.AxisStructureGelBlock;
 import com.legacy.structure_gel.blocks.IStructureGel.Behavior;
 import com.legacy.structure_gel.blocks.StructureGelBlock;
 import com.legacy.structure_gel.commands.GetSpawnsCommand;
-import com.legacy.structure_gel.events.RegisterDimensionEvent;
 import com.legacy.structure_gel.items.StructureGelItem;
-import com.legacy.structure_gel.registrars.DimensionRegistrar;
-import com.legacy.structure_gel.util.DimensionTypeBuilder;
 import com.legacy.structure_gel.util.Internal;
 import com.legacy.structure_gel.util.RegistryHelper;
 import com.legacy.structure_gel.worldgen.jigsaw.GelJigsawPiece;
@@ -41,19 +34,13 @@ import net.minecraft.item.Item;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.DimensionType;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.provider.EndBiomeProvider;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.DimensionSettings;
-import net.minecraft.world.gen.NoiseChunkGenerator;
 import net.minecraft.world.gen.feature.jigsaw.IJigsawDeserializer;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.template.IStructureProcessorType;
 import net.minecraft.world.gen.feature.template.StructureProcessor;
-import net.minecraft.world.gen.settings.DimensionStructuresSettings;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
@@ -96,11 +83,11 @@ public class StructureGelMod
 		modBus.addGenericListener(BiomeType.class, this::registerBiomeDictionary);
 		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
 		forgeBus.addListener(this::registerCommands);
-		//forgeBus.addListener(this::registerDim);
-
+		// forgeBus.addListener(this::registerDim);
 	}
 
 	/*
+	// Exists as a sample for how to register a dimension
 	public void registerDim(RegisterDimensionEvent event)
 	{
 		Function<RegistryKey<DimensionSettings>, DimensionSettings> settings = (rk) -> DimensionAccessHelper.newFloatingIslandSettings(new DimensionStructuresSettings(true), net.minecraft.block.Blocks.SMOOTH_QUARTZ.getDefaultState(), net.minecraft.block.Blocks.WATER.getDefaultState(), rk.func_240901_a_(), true, true);

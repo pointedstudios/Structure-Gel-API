@@ -5,7 +5,8 @@
 	"refmap": "structure_gel.refmap.json",
 	"mixins": [
 		"LakesFeatureMixin",
-		"DimensionTypeMixin"
+		"DimensionTypeMixin",
+		"WorldRendererMixin"
 	],
 	"client": [
 	],
