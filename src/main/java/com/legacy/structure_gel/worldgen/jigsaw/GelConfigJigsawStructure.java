@@ -1,12 +1,10 @@
 package com.legacy.structure_gel.worldgen.jigsaw;
 
-import java.util.List;
-
 import com.legacy.structure_gel.util.ConfigTemplates;
 import com.legacy.structure_gel.util.ConfigTemplates.StructureConfig;
+import com.legacy.structure_gel.worldgen.structure.IConfigStructure;
 import com.mojang.serialization.Codec;
 
-import net.minecraft.world.gen.DimensionSettings;
 import net.minecraft.world.gen.feature.structure.VillageConfig;
 
 /**
@@ -15,7 +13,7 @@ import net.minecraft.world.gen.feature.structure.VillageConfig;
  * 
  * @author David
  */
-public abstract class GelConfigJigsawStructure extends GelJigsawStructure
+public abstract class GelConfigJigsawStructure extends GelJigsawStructure implements IConfigStructure
 {
 	private final ConfigTemplates.StructureConfig config;
 
@@ -26,32 +24,8 @@ public abstract class GelConfigJigsawStructure extends GelJigsawStructure
 		this.spawns.putAll(config.getSpawns());
 	}
 
-	@Override
-	public double getProbability()
-	{
-		return this.getConfig().getProbability();
-	}
-
-	@Override
-	public int getSpacing()
-	{
-		return this.getConfig().getSpacing();
-	}
-
-	@Override
-	public int getOffset()
-	{
-		return this.getConfig().getOffset();
-	}
-
 	public ConfigTemplates.StructureConfig getConfig()
 	{
 		return this.config;
-	}
-
-	@Override
-	public List<DimensionSettings> getNoiseSettingsToGenerateIn()
-	{
-		return this.getConfig().getNoiseSettings();
 	}
 }

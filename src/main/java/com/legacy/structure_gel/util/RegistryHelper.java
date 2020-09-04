@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Streams;
-import com.legacy.structure_gel.registrars.StructureRegistrar;
+import com.legacy.structure_gel.registrars.IRegistrar;
 import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.util.ResourceLocation;
@@ -143,24 +143,14 @@ public class RegistryHelper
 	}
 
 	/**
-	 * Registers the structure, it's piece, and it's structure feature, and returns
-	 * a {@link StructureRegistrar} to hold the results.
+	 * Executes the handle method in the registrar.
 	 * 
-	 * @param registry
-	 * @param key
-	 * @param structure
-	 * @param generationStage
-	 * @param pieceType
-	 * @param config
-	 * @return {@link StructureRegistrar}
+	 * @param registrar
+	 * @return {@link IRegistrar}
 	 */
-	@SuppressWarnings("unchecked")
-	public static <C extends IFeatureConfig, S extends Structure<C>, SF extends StructureFeature<C, S>, P extends IStructurePieceType> StructureRegistrar<C, S> handleRegistrar(IForgeRegistry<Structure<?>> registry, ResourceLocation key, S structure, Decoration generationStage, P pieceType, C config)
+	public static <R extends IRegistrar<R>> R handleRegistrar(R registrar)
 	{
-		S struct = registerStructure(registry, key, structure, generationStage);
-		P piece = registerStructurePiece(key, pieceType);
-		SF feature = (SF) registerStructureFeature(key, structure.func_236391_a_(config));
-		return StructureRegistrar.of(struct, piece, feature);
+		return registrar.handle();
 	}
 
 	/**
