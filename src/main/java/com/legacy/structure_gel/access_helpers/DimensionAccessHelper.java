@@ -1,12 +1,20 @@
 package com.legacy.structure_gel.access_helpers;
 
+import java.util.Arrays;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import com.legacy.structure_gel.worldgen.structure.GelStructure;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.gen.DimensionSettings;
+import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.settings.DimensionStructuresSettings;
 import net.minecraft.world.gen.settings.NoiseSettings;
 import net.minecraft.world.gen.settings.ScalingSettings;
 import net.minecraft.world.gen.settings.SlideSettings;
+import net.minecraft.world.gen.settings.StructureSeparationSettings;
 
 /**
  * Gives access to various methods to create {@link DimensionSettings}.
@@ -94,5 +102,17 @@ public class DimensionAccessHelper
 	public static DimensionSettings newCustomSurfaceSettings(DimensionStructuresSettings structureSettingsIn, boolean isAmplified, BlockState defaultBlock, BlockState defaultFluid, ResourceLocation name)
 	{
 		return new DimensionSettings(structureSettingsIn, new NoiseSettings(256, new ScalingSettings(0.9999999814507745D, 0.9999999814507745D, 80.0D, 160.0D), new SlideSettings(-10, 3, 0), new SlideSettings(-30, 0, 0), 1, 2, 1.0D, -0.46875D, true, true, false, isAmplified), defaultBlock, defaultFluid, -10, 0, 63, false);
+	}
+
+	/**
+	 * Creates a map {@link Structure}s and {@link StructureSeparationSettings} for
+	 * use in {@link DimensionSettings}. Requires use of {@link GelStructure}.
+	 * 
+	 * @param structures
+	 * @return {@link Map}
+	 */
+	public static Map<Structure<?>, StructureSeparationSettings> separationSettingsMap(GelStructure<?>... structures)
+	{
+		return Arrays.asList(structures).stream().collect(Collectors.toMap((s) -> s, GelStructure::getSeparationSettings));
 	}
 }
