@@ -19,7 +19,7 @@ public class GelEntityProvider implements ICapabilitySerializable<CompoundNBT>
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side)
 	{
-		return this.playerOptional.cast();
+		return cap == GelCapability.INSTANCE ? this.playerOptional.cast() : LazyOptional.empty();
 	}
 
 	@Override
