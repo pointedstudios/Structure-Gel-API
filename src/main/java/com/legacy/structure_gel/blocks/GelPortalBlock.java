@@ -2,14 +2,15 @@ package com.legacy.structure_gel.blocks;
 
 import java.util.Random;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import com.legacy.structure_gel.util.GelTeleporter;
+import com.legacy.structure_gel.util.Internal;
+import com.legacy.structure_gel.util.capability.GelCapability;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.NetherPortalBlock;
-import net.minecraft.block.PortalSize;
 import net.minecraft.entity.Entity;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.Direction;
@@ -26,10 +27,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class GelPortalBlock extends NetherPortalBlock
 {
 	private final Function<ServerWorld, GelTeleporter> teleporter;
-	private final RegistryKey<World> dimension1;
-	private final RegistryKey<World> dimension2;
-	
-	public GelPortalBlock(AbstractBlock.Properties properties, Function<ServerWorld, GelTeleporter> teleporter, RegistryKey<World> dimension1, RegistryKey<World> dimension2)
+	private final Supplier<RegistryKey<World>> dimension1;
+	private final Supplier<RegistryKey<World>> dimension2;
+
+	public GelPortalBlock(AbstractBlock.Properties properties, Function<ServerWorld, GelTeleporter> teleporter, Supplier<RegistryKey<World>> dimension1, Supplier<RegistryKey<World>> dimension2)
 	{
 		super(properties);
 		this.teleporter = teleporter;
@@ -37,19 +38,26 @@ public class GelPortalBlock extends NetherPortalBlock
 		this.dimension2 = dimension2;
 	}
 
-	public GelTeleporter getTeleporter(ServerWorld world)
+	@Internal
+	public final GelTeleporter getTeleporter(ServerWorld world)
 	{
 		return this.teleporter.apply(world);
 	}
-	
-	public RegistryKey<World> getDestination(Entity entityIn)
+
+	@Internal
+	public final RegistryKey<World> getDestination(Entity entityIn)
 	{
-		if (entityIn.world.getDimensionKey().func_240901_a_().equals(this.dimension1.func_240901_a_()))
-			return this.dimension2;
+		if (entityIn.world.getDimensionKey().func_240901_a_().equals(this.dimension1.get().func_240901_a_()))
+			return this.dimension2.get();
 		else
-			return this.dimension1;
+			return this.dimension1.get();
 	}
-	
+
+	public int getMaxTimeInside(Entity entityIn)
+	{
+		return entityIn.getMaxInPortalTime();
+	}
+
 	@Override
 	public void randomTick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random)
 	{
@@ -59,17 +67,23 @@ public class GelPortalBlock extends NetherPortalBlock
 	@Override
 	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos)
 	{
-/*		Direction.Axis direction$axis = facing.getAxis();
-		Direction.Axis direction$axis1 = stateIn.get(AXIS);
-		boolean flag = direction$axis1 != direction$axis && direction$axis.isHorizontal();
-		return !flag && !facingState.isIn(this) && !(new PortalSize(worldIn, currentPos, direction$axis1)).validatePortal() ? Blocks.AIR.getDefaultState() : super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
-*/		return stateIn;
+		/*		Direction.Axis direction$axis = facing.getAxis();
+				Direction.Axis direction$axis1 = stateIn.get(AXIS);
+				boolean flag = direction$axis1 != direction$axis && direction$axis.isHorizontal();
+				return !flag && !facingState.isIn(this) && !(new PortalSize(worldIn, currentPos, direction$axis1)).validatePortal() ? Blocks.AIR.getDefaultState() : super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+		*/ return stateIn;
 	}
 
 	public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn)
 	{
-		if (!entityIn.isPassenger() && !entityIn.isBeingRidden() && entityIn.isNonBoss())
+		/*if (!entityIn.isPassenger() && !entityIn.isBeingRidden() && entityIn.isNonBoss())
+			entityIn.setPortal(pos);*/
+
+		if (!entityIn.isPassenger() && !entityIn.isBeingRidden() && entityIn.isNonBoss() && entityIn.getCapability(GelCapability.INSTANCE).isPresent())
+		{
 			entityIn.setPortal(pos);
+			entityIn.getCapability(GelCapability.INSTANCE).ifPresent(c -> c.setPortal(this));
+		}
 	}
 
 	@Override

@@ -7,10 +7,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.legacy.structure_gel.blocks.GelPortalBlock;
+import com.legacy.structure_gel.util.capability.GelCapability;
+import com.legacy.structure_gel.util.capability.IGelEntity;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -32,24 +32,20 @@ public class EntityMixin
 	@Inject(at = @At("HEAD"), method = "updatePortal()V", cancellable = true)
 	private void updatePortal(CallbackInfo callback)
 	{
-		// TODO store portal in capability
-		// TODO test vanilla portal just in case
-		if (this.world.getBlockState(this.getPosition()).getBlock() instanceof GelPortalBlock)
+		if (getThis().getCapability(GelCapability.INSTANCE).isPresent())
 		{
+			IGelEntity gelEntity = getThis().getCapability(GelCapability.INSTANCE).resolve().get();
 			if (this.world instanceof ServerWorld)
 			{
-				int i = this.getMaxInPortalTime();
-				ServerWorld currentWorld = (ServerWorld) this.world;
-				if (this.inPortal)
+				if (this.inPortal && gelEntity.getPortal() != null)
 				{
-					MinecraftServer server = currentWorld.getServer();
-					GelPortalBlock portal = (GelPortalBlock) currentWorld.getBlockState(this.getPosition()).getBlock();
-					RegistryKey<World> destinationKey = portal.getDestination(getThis());
-					ServerWorld destinationWorld = server.getWorld(destinationKey);
-					if (destinationWorld != null && !this.isPassenger() && this.portalCounter++ >= i)
+					GelPortalBlock portal = gelEntity.getPortal();
+					int maxTime = portal.getMaxTimeInside(getThis());
+					ServerWorld destinationWorld = ((ServerWorld) this.world).getServer().getWorld(portal.getDestination(getThis()));
+					if (destinationWorld != null && !this.isPassenger() && this.portalCounter++ >= maxTime)
 					{
 						this.world.getProfiler().startSection("portal");
-						this.portalCounter = i;
+						this.portalCounter = maxTime;
 						this.func_242279_ag();
 						this.changeDimension(destinationWorld, portal.getTeleporter(destinationWorld));
 						this.world.getProfiler().endSection();
@@ -57,6 +53,7 @@ public class EntityMixin
 				}
 
 				this.inPortal = false;
+				gelEntity.setPortal(null);
 			}
 			else
 			{
