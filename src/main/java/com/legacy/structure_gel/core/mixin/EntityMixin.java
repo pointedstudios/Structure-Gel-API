@@ -27,7 +27,7 @@ public class EntityMixin
 	protected int portalCounter;
 
 	/*
-	 * Entity#updatePortal
+	 * Entity#updatePortal insert a modified version of vanilla code at the head of the method, only to execute if the player has stepped in a GelPortal.
 	 */
 	@Inject(at = @At("HEAD"), method = "updatePortal()V", cancellable = true)
 	private void updatePortal(CallbackInfo callback)
@@ -35,36 +35,40 @@ public class EntityMixin
 		if (getThis().getCapability(GelCapability.INSTANCE).isPresent())
 		{
 			IGelEntity gelEntity = getThis().getCapability(GelCapability.INSTANCE).resolve().get();
-			if (this.world instanceof ServerWorld)
+			// not null when a player steps in a GelPortal
+			if (gelEntity.getPortal() != null)
 			{
-				if (this.inPortal && gelEntity.getPortal() != null)
+				if (this.world instanceof ServerWorld)
 				{
-					GelPortalBlock portal = gelEntity.getPortal();
-					int maxTime = portal.getMaxTimeInside(getThis());
-					ServerWorld destinationWorld = ((ServerWorld) this.world).getServer().getWorld(portal.getDestination(getThis()));
-					if (destinationWorld != null && !this.isPassenger() && this.portalCounter++ >= maxTime)
+					if (this.inPortal)
 					{
-						this.world.getProfiler().startSection("portal");
-						this.portalCounter = maxTime;
-						this.func_242279_ag();
-						this.changeDimension(destinationWorld, portal.getTeleporter(destinationWorld));
-						this.world.getProfiler().endSection();
+						GelPortalBlock portal = gelEntity.getPortal();
+						int maxTime = portal.getMaxTimeInside(getThis());
+						ServerWorld destinationWorld = ((ServerWorld) this.world).getServer().getWorld(portal.getDestination(getThis()));
+						if (destinationWorld != null && !this.isPassenger() && this.portalCounter++ >= maxTime)
+						{
+							this.world.getProfiler().startSection("portal");
+							this.portalCounter = maxTime;
+							this.func_242279_ag();
+							this.changeDimension(destinationWorld, portal.getTeleporter(destinationWorld));
+							this.world.getProfiler().endSection();
+						}
 					}
+
+					this.inPortal = false;
+					gelEntity.setPortal(null);
+				}
+				else
+				{
+					if (this.portalCounter > 0)
+						this.portalCounter -= 4;
+					if (this.portalCounter < 0)
+						this.portalCounter = 0;
 				}
 
-				this.inPortal = false;
-				gelEntity.setPortal(null);
+				this.decrementTimeUntilPortal();
+				callback.cancel();
 			}
-			else
-			{
-				if (this.portalCounter > 0)
-					this.portalCounter -= 4;
-				if (this.portalCounter < 0)
-					this.portalCounter = 0;
-			}
-
-			this.decrementTimeUntilPortal();
-			callback.cancel();
 		}
 	}
 
