@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Streams;
+import com.legacy.structure_gel.registrars.IForgeRegistrar;
 import com.legacy.structure_gel.registrars.IRegistrar;
 import com.mojang.datafixers.util.Pair;
 
@@ -151,6 +152,18 @@ public class RegistryHelper
 	public static <R extends IRegistrar<R>> R handleRegistrar(R registrar)
 	{
 		return registrar.handle();
+	}
+
+	/**
+	 * Executes the handleForge method in the registrar.
+	 * 
+	 * @param registrar
+	 * @param registry
+	 * @return {@link IForgeRegistrar}
+	 */
+	public static <R extends IForgeRegistrar<R, V>, V extends IForgeRegistryEntry<V>> R handleRegistrar(R registrar, IForgeRegistry<V> registry)
+	{
+		return registrar.handleForge(registry);
 	}
 
 	/**

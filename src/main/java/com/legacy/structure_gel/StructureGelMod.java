@@ -4,12 +4,16 @@ import java.lang.reflect.Method;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.Lists;
+import com.legacy.structure_gel.access_helpers.DimensionAccessHelper;
 import com.legacy.structure_gel.biome_dictionary.BiomeDictionary;
 import com.legacy.structure_gel.biome_dictionary.BiomeType;
 import com.legacy.structure_gel.blocks.AxisStructureGelBlock;
@@ -17,7 +21,10 @@ import com.legacy.structure_gel.blocks.GelPortalBlock;
 import com.legacy.structure_gel.blocks.IStructureGel.Behavior;
 import com.legacy.structure_gel.blocks.StructureGelBlock;
 import com.legacy.structure_gel.commands.GetSpawnsCommand;
+import com.legacy.structure_gel.events.RegisterDimensionEvent;
 import com.legacy.structure_gel.items.StructureGelItem;
+import com.legacy.structure_gel.registrars.DimensionRegistrar;
+import com.legacy.structure_gel.util.DimensionTypeBuilder;
 import com.legacy.structure_gel.util.GelTeleporter;
 import com.legacy.structure_gel.util.Internal;
 import com.legacy.structure_gel.util.RegistryHelper;
@@ -39,14 +46,20 @@ import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.village.PointOfInterestType;
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.provider.EndBiomeProvider;
+import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.DimensionSettings;
+import net.minecraft.world.gen.NoiseChunkGenerator;
 import net.minecraft.world.gen.feature.jigsaw.IJigsawDeserializer;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.template.IStructureProcessorType;
 import net.minecraft.world.gen.feature.template.StructureProcessor;
+import net.minecraft.world.gen.settings.DimensionStructuresSettings;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
@@ -55,11 +68,13 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLModContainer;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 
@@ -95,11 +110,13 @@ public class StructureGelMod
 		modBus.addGenericListener(BiomeType.class, this::registerBiomeDictionary);
 		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
 		forgeBus.addListener(this::registerCommands);
-		// forgeBus.addListener(this::registerDim);
+		 forgeBus.addListener(this::registerDim);
 	}
 
-	/*
+	///*
 	// Exists as a sample for how to register a dimension
+	public static RegistryKey<World> CUSTOM_WORLD = RegistryKey.func_240903_a_(Registry.WORLD_KEY, locate("custom"));
+	
 	public void registerDim(RegisterDimensionEvent event)
 	{
 		Function<RegistryKey<DimensionSettings>, DimensionSettings> settings = (rk) -> DimensionAccessHelper.newFloatingIslandSettings(new DimensionStructuresSettings(true), net.minecraft.block.Blocks.SMOOTH_QUARTZ.getDefaultState(), net.minecraft.block.Blocks.WATER.getDefaultState(), rk.func_240901_a_(), true, true);
@@ -107,10 +124,10 @@ public class StructureGelMod
 		BiFunction<RegisterDimensionEvent, DimensionSettings, ChunkGenerator> generator = (e, s) -> new NoiseChunkGenerator(new EndBiomeProvider(e.getBiomeRegistry(), e.getSeed()), e.getSeed(), () -> s); 
 		
 		Supplier<DimensionType> dimensionType = () -> DimensionTypeBuilder.of().effects(DimensionType.field_242711_b).ambientLight(0.5F).hasSkyLight(false).build();
-				
-		RegistryHelper.handleRegistrar(new DimensionRegistrar(event, locate("custom"), dimensionType, settings, generator));
+		
+		RegistryHelper.handleRegistrar(new DimensionRegistrar(event, CUSTOM_WORLD.func_240901_a_(), dimensionType, settings, generator));
 	}
-	*/
+	//*/
 
 	/**
 	 * Create a method with the same name, arguments, and return type as this in
@@ -164,7 +181,7 @@ public class StructureGelMod
 	{
 		new RegistryBuilder<BiomeType>().setName(locate("biome_dictionary")).setType(BiomeType.class).setDefaultKey(locate("empty")).create();
 	}
-
+	
 	@Internal
 	public void registerCommands(final RegisterCommandsEvent event)
 	{
@@ -206,7 +223,7 @@ public class StructureGelMod
 		});
 	}
 
-	@Mod.EventBusSubscriber(modid = StructureGelMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+	@Mod.EventBusSubscriber(modid = StructureGelMod.MODID, bus = Bus.MOD)
 	public static class GelBlocks
 	{
 		public static Set<Block> BLOCKS = new LinkedHashSet<Block>();
@@ -226,7 +243,7 @@ public class StructureGelMod
 			ORANGE_GEL = registerBlock(registry, "orange_gel", new StructureGelBlock(Behavior.DYNAMIC_SPREAD_DIST));
 			YELLOW_GEL = registerBlock(registry, "yellow_gel", new AxisStructureGelBlock(Behavior.AXIS_SPREAD));
 
-			PORTAL = RegistryHelper.register(registry, locate("portal"), new GelPortalBlock(Properties.from(Blocks.NETHER_PORTAL), (s) -> new GelTeleporter(s, GelBlocks.PORTAL_POI, () -> (GelPortalBlock) GelBlocks.PORTAL, () -> Blocks.SMOOTH_QUARTZ.getDefaultState(), GelTeleporter.CreatePortalBehavior.NETHER), World.OVERWORLD, World.THE_END));
+			PORTAL = RegistryHelper.register(registry, locate("portal"), new GelPortalBlock(Properties.from(Blocks.NETHER_PORTAL), (s) -> new GelTeleporter(s, GelBlocks.PORTAL_POI, () -> (GelPortalBlock) GelBlocks.PORTAL, () -> Blocks.SMOOTH_QUARTZ.getDefaultState(), GelTeleporter.CreatePortalBehavior.NETHER), () -> World.OVERWORLD, () -> CUSTOM_WORLD));
 		}
 
 		@SubscribeEvent
@@ -242,7 +259,7 @@ public class StructureGelMod
 		}
 	}
 
-	@Mod.EventBusSubscriber(modid = StructureGelMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+	@Mod.EventBusSubscriber(modid = StructureGelMod.MODID, bus = Bus.MOD)
 	public static class Items
 	{
 		@SubscribeEvent
@@ -252,7 +269,7 @@ public class StructureGelMod
 		}
 	}
 
-	@Mod.EventBusSubscriber(modid = StructureGelMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+	@Mod.EventBusSubscriber(modid = StructureGelMod.MODID, bus = Bus.MOD)
 	public static class StructureRegistry
 	{
 		@SubscribeEvent

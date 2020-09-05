@@ -21,9 +21,8 @@ import net.minecraftforge.registries.IForgeRegistry;
  * @param <C>
  * @param <S>
  */
-public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>> implements IRegistrar<StructureRegistrar<C, S>>
+public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>> implements IForgeRegistrar<StructureRegistrar<C, S>, Structure<?>>
 {
-	private final IForgeRegistry<Structure<?>> registry;
 	private final ResourceLocation name;
 	private final S structure;
 	private final IStructurePieceType pieceType;
@@ -31,9 +30,8 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 	private final GenerationStage.Decoration generationStage;
 
 	@SuppressWarnings("unchecked")
-	public StructureRegistrar(IForgeRegistry<Structure<?>> registry, ResourceLocation name, S structure, IStructurePieceType pieceType, C config, GenerationStage.Decoration generationStage)
+	public StructureRegistrar(ResourceLocation name, S structure, IStructurePieceType pieceType, C config, GenerationStage.Decoration generationStage)
 	{
-		this.registry = registry;
 		this.name = name;
 		this.structure = structure;
 		this.pieceType = pieceType;
@@ -52,9 +50,9 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 	 * @param generationStage
 	 * @return {@link StructureRegistrar}
 	 */
-	public static <C extends IFeatureConfig, S extends Structure<C>> StructureRegistrar<C, S> of(IForgeRegistry<Structure<?>> registry, ResourceLocation name, S structure, IStructurePieceType pieceType, C config, GenerationStage.Decoration generationStage)
+	public static <C extends IFeatureConfig, S extends Structure<C>> StructureRegistrar<C, S> of(ResourceLocation name, S structure, IStructurePieceType pieceType, C config, GenerationStage.Decoration generationStage)
 	{
-		return new StructureRegistrar<C, S>(registry, name, structure, pieceType, config, generationStage);
+		return new StructureRegistrar<C, S>(name, structure, pieceType, config, generationStage);
 	}
 
 	/**
@@ -91,9 +89,15 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 	@Override
 	public StructureRegistrar<C, S> handle()
 	{
-		RegistryHelper.registerStructure(this.registry, this.name, this.structure, this.generationStage);
 		RegistryHelper.registerStructurePiece(this.name, this.pieceType);
 		RegistryHelper.registerStructureFeature(this.name, this.structureFeature);
+		return this;
+	}
+	
+	@Override
+	public StructureRegistrar<C, S> handleForge(IForgeRegistry<Structure<?>> registry)
+	{
+		RegistryHelper.registerStructure(registry, this.name, this.structure, this.generationStage);
 		return this;
 	}
 }

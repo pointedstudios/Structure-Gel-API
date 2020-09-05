@@ -15,6 +15,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.Dimension;
 import net.minecraft.world.DimensionType;
+import net.minecraft.world.World;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.DimensionSettings;
 
@@ -34,6 +35,7 @@ public class DimensionRegistrar implements IRegistrar<DimensionRegistrar>
 	private final RegistryKey<Dimension> dimensionKey;
 	private final RegistryKey<DimensionType> typeKey;
 	private final RegistryKey<DimensionSettings> settingsKey;
+	private final RegistryKey<World> worldKey;
 	private final Supplier<DimensionType> type;
 	private final Function<RegistryKey<DimensionSettings>, DimensionSettings> settings;
 	private final BiFunction<RegisterDimensionEvent, DimensionSettings, ChunkGenerator> chunkGenerator;
@@ -57,6 +59,7 @@ public class DimensionRegistrar implements IRegistrar<DimensionRegistrar>
 		this.dimensionKey = RegistryKey.func_240903_a_(Registry.DIMENSION_KEY, key);
 		this.typeKey = RegistryKey.func_240903_a_(Registry.DIMENSION_TYPE_KEY, key);
 		this.settingsKey = RegistryKey.func_240903_a_(Registry.field_243549_ar, key);
+		this.worldKey = RegistryKey.func_240903_a_(Registry.WORLD_KEY, key);
 		this.type = type;
 		this.settings = settings;
 		this.chunkGenerator = chunkGenerator;
@@ -90,6 +93,16 @@ public class DimensionRegistrar implements IRegistrar<DimensionRegistrar>
 	public RegistryKey<DimensionSettings> getSettingsKey()
 	{
 		return this.settingsKey;
+	}
+
+	/**
+	 * Returns the world key.
+	 * 
+	 * @return {@link RegistryKey}
+	 */
+	public RegistryKey<World> getWorldKey()
+	{
+		return this.worldKey;
 	}
 
 	@Override
