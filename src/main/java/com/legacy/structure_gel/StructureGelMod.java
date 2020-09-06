@@ -20,6 +20,7 @@ import com.legacy.structure_gel.blocks.AxisStructureGelBlock;
 import com.legacy.structure_gel.blocks.GelPortalBlock;
 import com.legacy.structure_gel.blocks.IStructureGel.Behavior;
 import com.legacy.structure_gel.blocks.StructureGelBlock;
+import com.legacy.structure_gel.commands.BiomeDictCommand;
 import com.legacy.structure_gel.commands.GetSpawnsCommand;
 import com.legacy.structure_gel.events.RegisterDimensionEvent;
 import com.legacy.structure_gel.items.StructureGelItem;
@@ -118,7 +119,6 @@ public class StructureGelMod
 	
 	public void registerDim(RegisterDimensionEvent event)
 	{
-		System.out.println("Event fired");
 		Function<RegistryKey<DimensionSettings>, DimensionSettings> settings = (rk) -> DimensionAccessHelper.newFloatingIslandSettings(new DimensionStructuresSettings(true), net.minecraft.block.Blocks.SMOOTH_QUARTZ.getDefaultState(), net.minecraft.block.Blocks.WATER.getDefaultState(), rk.func_240901_a_(), true, true);
 		
 		BiFunction<RegisterDimensionEvent, DimensionSettings, ChunkGenerator> generator = (e, s) -> new NoiseChunkGenerator(new EndBiomeProvider(e.getBiomeRegistry(), e.getSeed()), e.getSeed(), () -> s); 
@@ -186,12 +186,14 @@ public class StructureGelMod
 	public void registerCommands(final RegisterCommandsEvent event)
 	{
 		GetSpawnsCommand.register(event.getDispatcher());
+		BiomeDictCommand.register(event.getDispatcher());
 	}
 
 	@Internal
 	@SuppressWarnings("unchecked")
 	public void registerBiomeDictionary(final RegistryEvent.Register<BiomeType> event)
 	{
+		BiomeDictionary.init();
 		// Get biome dictionary entries from other mods' classes
 		StructureGelMod.LOGGER.debug("Checking for other mods' biome dictionary methods.");
 		ModList.get().forEachModContainer((s, mc) ->
