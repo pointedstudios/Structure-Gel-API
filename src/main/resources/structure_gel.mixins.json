@@ -5,9 +5,9 @@
 	"refmap": "structure_gel.refmap.json",
 	"mixins": [
 		"LakesFeatureMixin",
-		"DimensionTypeMixin",
 		"WorldRendererMixin",
-		"EntityMixin"
+		"EntityMixin",
+		"MinecraftServerMixin"
 	],
 	"client": [
 	],

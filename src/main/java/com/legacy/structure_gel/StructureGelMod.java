@@ -118,11 +118,12 @@ public class StructureGelMod
 	
 	public void registerDim(RegisterDimensionEvent event)
 	{
+		System.out.println("Event fired");
 		Function<RegistryKey<DimensionSettings>, DimensionSettings> settings = (rk) -> DimensionAccessHelper.newFloatingIslandSettings(new DimensionStructuresSettings(true), net.minecraft.block.Blocks.SMOOTH_QUARTZ.getDefaultState(), net.minecraft.block.Blocks.WATER.getDefaultState(), rk.func_240901_a_(), true, true);
 		
 		BiFunction<RegisterDimensionEvent, DimensionSettings, ChunkGenerator> generator = (e, s) -> new NoiseChunkGenerator(new EndBiomeProvider(e.getBiomeRegistry(), e.getSeed()), e.getSeed(), () -> s); 
 		
-		Supplier<DimensionType> dimensionType = () -> DimensionTypeBuilder.of().effects(DimensionType.field_242711_b).ambientLight(0.5F).hasSkyLight(false).build();
+		Supplier<DimensionType> dimensionType = () -> DimensionTypeBuilder.of().ambientLight(10F).hasSkyLight(false).build();
 		
 		RegistryHelper.handleRegistrar(new DimensionRegistrar(event, CUSTOM_WORLD.func_240901_a_(), dimensionType, settings, generator));
 	}
