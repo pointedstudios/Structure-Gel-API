@@ -126,8 +126,7 @@ public class DimensionTypeBuilder
 	}
 
 	/**
-	 * Determines if this dimension should have data for the ender dragon fight.
-	 * Usually you should leave this set to false.
+	 * Allows the dragon fight to function properly when set to true.
 	 * 
 	 * @param hasDragonFight
 	 * @return {@link DimensionTypeBuilder}

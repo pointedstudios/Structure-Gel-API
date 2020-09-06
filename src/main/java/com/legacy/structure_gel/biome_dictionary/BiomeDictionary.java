@@ -123,7 +123,7 @@ public class BiomeDictionary
 	public static final BiomeType SPOOKY = register(BiomeType.create("spooky").parents(DARK_FOREST).biomes(BOP, "ominous_woods", "pumpkin_patch", "silkglade", "visceral_heap", "withered_abyss"));
 	public static final BiomeType RARE = register(BiomeType.create("rare").parents(MUSHROOM).biomes(Biomes.JUNGLE_EDGE).biomes(BOP, "mystic_grove", "origin_hills", "rainbow_valley"));
 
-	static
+	public static void init()
 	{
 		// Can't register EMPTY directly since I'm preventing it, so I do it like this.
 		REGISTRY.register(EMPTY);

@@ -1,0 +1,79 @@
+package com.legacy.structure_gel.commands;
+
+import java.util.Optional;
+
+import com.legacy.structure_gel.StructureGelMod;
+import com.legacy.structure_gel.biome_dictionary.BiomeDictionary;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
+
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.ISuggestionProvider;
+import net.minecraft.command.arguments.ResourceLocationArgument;
+import net.minecraft.command.arguments.SuggestionProviders;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Util;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.MutableRegistry;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.WorldGenRegistries;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.biome.Biome;
+import net.minecraftforge.registries.ForgeRegistries;
+
+public class BiomeDictCommand
+{
+	public static final SuggestionProvider<CommandSource> BIOME_DICTIONARY_ENTRIES = SuggestionProviders.register(StructureGelMod.locate("biome_dictionary_entries"), (context, builder) ->
+	{
+		return ISuggestionProvider.suggestIterable(BiomeDictionary.REGISTRY.getKeys(), builder);
+	});
+
+	public static void register(CommandDispatcher<CommandSource> dispatcher)
+	{
+		LiteralArgumentBuilder<CommandSource> command = Commands.literal("biomedict");
+
+		command.then(Commands.literal("gettypes").executes(BiomeDictCommand::getTypes).then(Commands.argument("biome", ResourceLocationArgument.resourceLocation()).suggests(SuggestionProviders.field_239574_d_).executes(context -> getTypes(context, context.getArgument("biome", ResourceLocation.class)))));
+		command.then(Commands.literal("getbiomes").then(Commands.argument("dictionaryentry", ResourceLocationArgument.resourceLocation()).suggests(BIOME_DICTIONARY_ENTRIES).executes(context -> getBiomes(context, context.getArgument("dictionaryentry", ResourceLocation.class)))));
+
+		dispatcher.register(command);
+	}
+
+	private static int getTypes(CommandContext<CommandSource> context)
+	{
+		Optional<MutableRegistry<Biome>> registry = context.getSource().getWorld().func_241828_r().func_230521_a_(Registry.BIOME_KEY);
+		if (registry.isPresent())
+		{
+			ResourceLocation biome = registry.get().func_230519_c_(context.getSource().getWorld().getBiome(new BlockPos(context.getSource().getPos()))).get().func_240901_a_();
+			return getTypes(context, biome);
+		}
+		return 0;
+	}
+	
+	private static int getTypes(CommandContext<CommandSource> context, ResourceLocation key)
+	{
+		if (context.getSource().getEntity() instanceof ServerPlayerEntity)
+		{
+			ServerPlayerEntity player = (ServerPlayerEntity) context.getSource().getEntity();
+			player.sendMessage(new StringTextComponent("[" + key.toString() + "]").mergeStyle(TextFormatting.GREEN), Util.DUMMY_UUID);
+			BiomeDictionary.getAllTypes(RegistryKey.func_240903_a_(Registry.BIOME_KEY, key)).forEach(t -> player.sendMessage(new StringTextComponent(" - " + t.getRegistryName().toString()), Util.DUMMY_UUID));
+		}
+		return 1;
+	}
+
+	private static int getBiomes(CommandContext<CommandSource> context, ResourceLocation key)
+	{
+		if (context.getSource().getEntity() instanceof ServerPlayerEntity)
+		{
+			ServerPlayerEntity player = (ServerPlayerEntity) context.getSource().getEntity();
+			player.sendMessage(new StringTextComponent("[" + key.toString() + "]").mergeStyle(TextFormatting.GREEN), Util.DUMMY_UUID);
+			BiomeDictionary.get(key).getAllBiomes().forEach(b -> player.sendMessage(new StringTextComponent(" - " + b.func_240901_a_().toString()), Util.DUMMY_UUID));
+		}
+		return 1;
+	}
+}

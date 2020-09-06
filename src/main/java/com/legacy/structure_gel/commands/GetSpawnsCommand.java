@@ -26,7 +26,7 @@ public class GetSpawnsCommand
 {
 	public static void register(CommandDispatcher<CommandSource> dispatcher)
 	{
-		LiteralArgumentBuilder<CommandSource> command = Commands.literal("getspawns").requires(source -> source.hasPermissionLevel(2)).executes(context -> getSpawns(context, EntityClassification.values()));
+		LiteralArgumentBuilder<CommandSource> command = Commands.literal("getspawns").executes(context -> getSpawns(context, EntityClassification.values()));
 
 		for (EntityClassification classification : EntityClassification.values())
 			command.then(Commands.literal(classification.getName()).executes(context -> getSpawns(context, classification)));
