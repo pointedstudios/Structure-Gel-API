@@ -14,10 +14,9 @@ import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
 /**
- * Called when creating a new world. Register your dimensions in here to create
- * one without being stuck with a set seed. Anything in the data folder will
- * override values set here. Check out the {@link DimensionRegistrar} for
- * assistance with registering a dimension.<br>
+ * Called when the server starts. Register your dimensions in here. Check out
+ * the {@link DimensionRegistrar} for assistance with registering a
+ * dimension.<br>
  * <br>
  * {@link Bus#FORGE}
  * 
