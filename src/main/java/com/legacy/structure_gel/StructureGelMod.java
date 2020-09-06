@@ -123,7 +123,7 @@ public class StructureGelMod
 		
 		BiFunction<RegisterDimensionEvent, DimensionSettings, ChunkGenerator> generator = (e, s) -> new NoiseChunkGenerator(new EndBiomeProvider(e.getBiomeRegistry(), e.getSeed()), e.getSeed(), () -> s); 
 		
-		Supplier<DimensionType> dimensionType = () -> DimensionTypeBuilder.of().ambientLight(-1F).hasDragonFight(true).hasSkyLight(false).build();
+		Supplier<DimensionType> dimensionType = () -> DimensionTypeBuilder.of().ambientLight(0.8F).hasDragonFight(true).hasSkyLight(false).build();
 		
 		RegistryHelper.handleRegistrar(new DimensionRegistrar(event, CUSTOM_WORLD.func_240901_a_(), dimensionType, settings, generator));
 	}
