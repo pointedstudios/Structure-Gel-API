@@ -5,20 +5,17 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.legacy.structure_gel.events.RenderRainParticlesEvent;
 import com.legacy.structure_gel.events.RenderCloudsEvent;
 import com.legacy.structure_gel.events.RenderRainEvent;
+import com.legacy.structure_gel.events.RenderRainParticlesEvent;
 import com.legacy.structure_gel.events.RenderSkyEvent;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 
-@OnlyIn(value = Dist.CLIENT)
 @Mixin(WorldRenderer.class)
 public class WorldRendererMixin
 {
