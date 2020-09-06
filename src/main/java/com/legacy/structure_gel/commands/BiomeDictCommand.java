@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.biome_dictionary.BiomeDictionary;
+import com.legacy.structure_gel.util.RegistryHelper;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -19,10 +20,10 @@ import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.MutableRegistry;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 
 public class BiomeDictCommand
@@ -44,11 +45,11 @@ public class BiomeDictCommand
 
 	private static int getTypes(CommandContext<CommandSource> context)
 	{
-		Optional<MutableRegistry<Biome>> registry = context.getSource().getWorld().func_241828_r().func_230521_a_(Registry.BIOME_KEY);
-		if (registry.isPresent())
+		World world = context.getSource().getWorld();
+		Optional<RegistryKey<Biome>> biome = RegistryHelper.getKey(world, Registry.BIOME_KEY, world.getBiome(new BlockPos(context.getSource().getPos())));
+		if (biome.isPresent())
 		{
-			ResourceLocation biome = registry.get().func_230519_c_(context.getSource().getWorld().getBiome(new BlockPos(context.getSource().getPos()))).get().func_240901_a_();
-			return getTypes(context, biome);
+			return getTypes(context, biome.get().func_240901_a_());
 		}
 		return 0;
 	}

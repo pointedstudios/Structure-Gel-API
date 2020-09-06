@@ -3,6 +3,7 @@ package com.legacy.structure_gel.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Streams;
@@ -10,9 +11,11 @@ import com.legacy.structure_gel.registrars.IForgeRegistrar;
 import com.legacy.structure_gel.registrars.IRegistrar;
 import com.mojang.datafixers.util.Pair;
 
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.WorldGenRegistries;
+import net.minecraft.world.World;
 import net.minecraft.world.gen.GenerationStage.Decoration;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
@@ -35,6 +38,33 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
  */
 public class RegistryHelper
 {
+	/**
+	 * Returns an optional containing the registry key associated with the value
+	 * passed.
+	 * 
+	 * @param world
+	 * @param registry
+	 * @param value
+	 * @return {@link Optional}
+	 */
+	public static <T> Optional<RegistryKey<T>> getKey(World world, RegistryKey<Registry<T>> registry, T value)
+	{
+		return world.func_241828_r().func_243612_b(registry).func_230519_c_(value);
+	}
+
+	/**
+	 * Returns an optional containing the value of the registry key passed.
+	 * 
+	 * @param world
+	 * @param registry
+	 * @param key
+	 * @return {@link Optional}
+	 */
+	public static <T> Optional<T> getValue(World world, RegistryKey<Registry<T>> registry, RegistryKey<T> key)
+	{
+		return Optional.ofNullable(world.func_241828_r().func_243612_b(registry).getValueForKey(key));
+	}
+
 	/**
 	 * Simply means of registering to a forge registry.
 	 * 
