@@ -17,6 +17,7 @@ import com.legacy.structure_gel.blocks.IStructureGel.Behavior;
 import com.legacy.structure_gel.blocks.StructureGelBlock;
 import com.legacy.structure_gel.commands.BiomeDictCommand;
 import com.legacy.structure_gel.commands.GetSpawnsCommand;
+import com.legacy.structure_gel.commands.SaveStructuresCommand;
 import com.legacy.structure_gel.items.StructureGelItem;
 import com.legacy.structure_gel.util.Internal;
 import com.legacy.structure_gel.util.RegistryHelper;
@@ -158,6 +159,7 @@ public class StructureGelMod
 	{
 		GetSpawnsCommand.register(event.getDispatcher());
 		BiomeDictCommand.register(event.getDispatcher());
+		SaveStructuresCommand.register(event.getDispatcher());
 	}
 
 	@Internal
