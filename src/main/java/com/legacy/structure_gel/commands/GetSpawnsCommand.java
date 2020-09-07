@@ -4,7 +4,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 
@@ -24,14 +23,14 @@ import net.minecraft.world.server.ServerWorld;
 
 public class GetSpawnsCommand
 {
-	public static void register(CommandDispatcher<CommandSource> dispatcher)
+	public static LiteralArgumentBuilder<CommandSource> get()
 	{
 		LiteralArgumentBuilder<CommandSource> command = Commands.literal("getspawns").executes(context -> getSpawns(context, EntityClassification.values()));
 
 		for (EntityClassification classification : EntityClassification.values())
 			command.then(Commands.literal(classification.getName()).executes(context -> getSpawns(context, classification)));
 
-		dispatcher.register(command);
+		return command;
 	}
 
 	private static int getSpawns(CommandContext<CommandSource> context, EntityClassification... classifications)
