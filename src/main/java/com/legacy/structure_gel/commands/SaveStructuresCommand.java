@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.legacy.structure_gel.StructureGelMod;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -26,7 +27,7 @@ public class SaveStructuresCommand
 {
 	public static void register(CommandDispatcher<CommandSource> dispatcher)
 	{
-		LiteralArgumentBuilder<CommandSource> command = Commands.literal("savestructures");
+		LiteralArgumentBuilder<CommandSource> command = Commands.literal("savestructures").requires(source -> source.hasPermissionLevel(2));
 
 		command.then(Commands.argument("from", BlockPosArgument.blockPos()).then(Commands.argument("to", BlockPosArgument.blockPos()).executes(context -> saveStructures(context, new MutableBoundingBox(BlockPosArgument.getLoadedBlockPos(context, "from"), BlockPosArgument.getLoadedBlockPos(context, "to"))))));
 
@@ -57,15 +58,29 @@ public class SaveStructuresCommand
 			{
 				ServerPlayerEntity player = (ServerPlayerEntity) context.getSource().getEntity();
 				player.sendMessage(new StringTextComponent("[Saved " + savedStructures.size() + " Structures]").mergeStyle(TextFormatting.GREEN), Util.DUMMY_UUID);
-				savedStructures.forEach(structure -> player.sendMessage(new StringTextComponent(" - " + structure), Util.DUMMY_UUID));
+				if (savedStructures.size() <= 50)
+					savedStructures.forEach(structure -> player.sendMessage(new StringTextComponent(" - " + structure), Util.DUMMY_UUID));
+				else
+				{
+					player.sendMessage(new StringTextComponent(" - Too many structures to print. Check the console."), Util.DUMMY_UUID);
+					StructureGelMod.LOGGER.info("Saved structures:");
+					savedStructures.forEach(StructureGelMod.LOGGER::info);
+				}
 				if (duplicates.size() > 0)
 				{
 					player.sendMessage(new StringTextComponent("Warning: Found " + duplicates.size() + " structures with a duplicate name. Click to teleport.").mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
 					player.sendMessage(new StringTextComponent("[Duplicate Structures]").mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
-					duplicates.forEach((pos, structure) -> player.sendMessage(new StringTextComponent(String.format(" - %s at (%d, %d, %d)", structure, pos.getX(), pos.getY(), pos.getZ())).modifyStyle(style -> style.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tp @s " + pos.getX() + " " + pos.getY() + " " + pos.getZ()))), Util.DUMMY_UUID));
+					if (duplicates.size() <= 50)
+						duplicates.forEach((pos, structure) -> player.sendMessage(new StringTextComponent(String.format("%s at (%d, %d, %d)", structure, pos.getX(), pos.getY(), pos.getZ())).modifyStyle(style -> style.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tp @s " + pos.getX() + " " + pos.getY() + " " + pos.getZ()))), Util.DUMMY_UUID));
+					else
+					{
+						player.sendMessage(new StringTextComponent(" - Too many duplicates to print. Check the console."), Util.DUMMY_UUID);
+						StructureGelMod.LOGGER.info("Duplicate structures:");
+						duplicates.forEach((pos, structure) -> StructureGelMod.LOGGER.info(String.format("%s /tp @s %d %d %d", structure, pos.getX(), pos.getY(), pos.getZ())));
+					}
 				}
-				return 1;
 			}
+			return savedStructures.size();
 		}
 		ServerPlayerEntity player = (ServerPlayerEntity) context.getSource().getEntity();
 		player.sendMessage(new StringTextComponent("No structures were saved."), Util.DUMMY_UUID);
