@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Predicate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Streams;
@@ -11,10 +13,12 @@ import com.legacy.structure_gel.registrars.IForgeRegistrar;
 import com.legacy.structure_gel.registrars.IRegistrar;
 import com.mojang.datafixers.util.Pair;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.WorldGenRegistries;
+import net.minecraft.village.PointOfInterestType;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.GenerationStage.Decoration;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
@@ -78,6 +82,43 @@ public class RegistryHelper
 		registryObject.setRegistryName(key);
 		registry.register(registryObject);
 		return registryObject;
+	}
+
+	/**
+	 * Registers the {@link PointOfInterestType} properly since the methods to do it
+	 * are private normally.
+	 * 
+	 * @param registry
+	 * @param key
+	 * @param states
+	 * @param maxFreeTickets
+	 * @param validRange
+	 * @return {@link PointOfInterestType}
+	 */
+	public static PointOfInterestType registerPOI(IForgeRegistry<PointOfInterestType> registry, ResourceLocation key, Set<BlockState> states, int maxFreeTickets, int validRange)
+	{
+		PointOfInterestType poi = register(registry, key, new PointOfInterestType(key.toString(), states, maxFreeTickets, validRange));
+		PointOfInterestType.registerBlockStates(poi);
+		return poi;
+	}
+
+	/**
+	 * Registers the {@link PointOfInterestType} properly since the methods to do it
+	 * are private normally.
+	 * 
+	 * @param registry
+	 * @param key
+	 * @param states
+	 * @param maxFreeTickets
+	 * @param predicate
+	 * @param validRange
+	 * @return {@link PointOfInterestType}
+	 */
+	public static PointOfInterestType registerPOI(IForgeRegistry<PointOfInterestType> registry, ResourceLocation key, Set<BlockState> states, int maxFreeTickets, Predicate<PointOfInterestType> predicate, int validRange)
+	{
+		PointOfInterestType poi = register(registry, key, new PointOfInterestType(key.toString(), states, maxFreeTickets, predicate, validRange));
+		PointOfInterestType.registerBlockStates(poi);
+		return poi;
 	}
 
 	/**

@@ -18,7 +18,7 @@ public class StructureGelConfig
 		Pair<Common, ForgeConfigSpec> specPairCommon = new ForgeConfigSpec.Builder().configure(Common::new);
 		COMMON_SPEC = specPairCommon.getRight();
 		COMMON = specPairCommon.getLeft();
-		
+
 		Pair<Client, ForgeConfigSpec> specPairClient = new ForgeConfigSpec.Builder().configure(Client::new);
 		CLIENT_SPEC = specPairClient.getRight();
 		CLIENT = specPairClient.getLeft();
@@ -27,25 +27,18 @@ public class StructureGelConfig
 	public static class Common
 	{
 		private final ForgeConfigSpec.BooleanValue extraLakeProofing;
-		private final ForgeConfigSpec.BooleanValue skipExperimentalBackupScreen;
 
 		public Common(ForgeConfigSpec.Builder builder)
 		{
 			this.extraLakeProofing = builder.comment("Adds more vanilla structures to the list of structures that lakes cannot generate inside of. Only villages when set to false. Requires reload.").define("features.extra_lake_proofing", true);
-			this.skipExperimentalBackupScreen = builder.comment("Skips the screen that tells you that a world uses experimental settings.").define("gui.skip_experimental_backup_screen", true);
 		}
 
 		public boolean getExtraLakeProofing()
 		{
 			return this.extraLakeProofing.get();
 		}
-		
-		public boolean skipExperimentalScreen()
-		{
-			return this.skipExperimentalBackupScreen.get();
-		}
 	}
-	
+
 	public static class Client
 	{
 		private final ForgeConfigSpec.BooleanValue skipExperimentalBackupScreen;
@@ -54,7 +47,7 @@ public class StructureGelConfig
 		{
 			this.skipExperimentalBackupScreen = builder.comment("Skips the screen that tells you that a world uses experimental settings.").define("gui.skip_experimental_backup_screen", true);
 		}
-		
+
 		public boolean skipExperimentalScreen()
 		{
 			return this.skipExperimentalBackupScreen.get();

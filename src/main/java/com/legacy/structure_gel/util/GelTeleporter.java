@@ -11,6 +11,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.NetherPortalBlock;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.TeleportationRepositioner;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -18,62 +19,139 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.village.PointOfInterest;
 import net.minecraft.village.PointOfInterestManager;
 import net.minecraft.village.PointOfInterestType;
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.Teleporter;
+import net.minecraft.world.World;
 import net.minecraft.world.border.WorldBorder;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.server.TicketType;
 
+/**
+ * A more mod compatible teleporter for the API.
+ * 
+ * @author David
+ *
+ */
 public class GelTeleporter extends Teleporter
 {
-	private final PointOfInterestType portalPOI;
+	/**
+	 * The default dimension this teleporter will take you to.
+	 */
+	private final Supplier<RegistryKey<World>> dimension1;
+	/**
+	 * The dimension this teleporter will take you to.
+	 */
+	private final Supplier<RegistryKey<World>> dimension2;
+	/**
+	 * The PointOfInterestType representing the portal.
+	 */
+	private final Supplier<PointOfInterestType> portalPOI;
+	/**
+	 * The portal block that gets placed. Must extend {@link GelPortalBlock}.
+	 */
 	private final Supplier<GelPortalBlock> portalBlock;
+	/**
+	 * The {@link BlockState} of the frame that will get placed.
+	 */
 	private final Supplier<BlockState> frameBlock;
+	/**
+	 * The logic behind how creating a new portal will work.
+	 * 
+	 * @see ICreatePortalFuncion
+	 * @see CreatePortalBehavior
+	 */
 	private final ICreatePortalFuncion placementBehavior;
 
-	public GelTeleporter(ServerWorld worldIn, PointOfInterestType portalPOI, Supplier<GelPortalBlock> portalBlock, Supplier<BlockState> frameBlock, ICreatePortalFuncion placementBehavior)
+	public GelTeleporter(ServerWorld world, Supplier<RegistryKey<World>> dimension1, Supplier<RegistryKey<World>> dimension2, Supplier<PointOfInterestType> portalPOI, Supplier<GelPortalBlock> portalBlock, Supplier<BlockState> frameBlock, ICreatePortalFuncion placementBehavior)
 	{
-		super(worldIn);
+		super(world);
+		this.dimension1 = dimension1;
+		this.dimension2 = dimension2;
 		this.portalPOI = portalPOI;
 		this.portalBlock = portalBlock;
 		this.frameBlock = frameBlock;
 		this.placementBehavior = placementBehavior;
 	}
 
-	public GelTeleporter(ServerWorld worldIn, PointOfInterestType portalPOI, Supplier<GelPortalBlock> portalBlock, Supplier<BlockState> frameBlock, CreatePortalBehavior placementBehavior)
+	public GelTeleporter(ServerWorld worldIn, Supplier<RegistryKey<World>> dimension1, Supplier<RegistryKey<World>> dimension2, Supplier<PointOfInterestType> portalPOI, Supplier<GelPortalBlock> portalBlock, Supplier<BlockState> frameBlock, CreatePortalBehavior placementBehavior)
 	{
-		this(worldIn, portalPOI, portalBlock, frameBlock, placementBehavior.get());
+		this(worldIn, dimension1, dimension2, portalPOI, portalBlock, frameBlock, placementBehavior.get());
 	}
-	
+
+	/**
+	 * Returns the opposite world from the one in this instance, or
+	 * {@link #dimension1} by default.
+	 * 
+	 * @return {@link RegistryKey}
+	 */
+	@Internal
+	public RegistryKey<World> getOpposite()
+	{
+		if (this.world != null && this.world.getDimensionKey().func_240901_a_().equals(this.dimension1.get().func_240901_a_()))
+			return this.dimension2.get();
+		else
+			return this.dimension1.get();
+	}
+
+	public Supplier<RegistryKey<World>> getDimension1()
+	{
+		return this.dimension1;
+	}
+
+	public Supplier<RegistryKey<World>> getDimension2()
+	{
+		return this.dimension2;
+	}
+
+	public Supplier<PointOfInterestType> getPortalPOI()
+	{
+		return this.portalPOI;
+	}
+
+	public Supplier<GelPortalBlock> getPortalBlock()
+	{
+		return this.portalBlock;
+	}
+
+	public Supplier<BlockState> getFrameBlock()
+	{
+		return this.frameBlock;
+	}
+
+	public ICreatePortalFuncion getPlacementBehavior()
+	{
+		return this.placementBehavior;
+	}
+
 	// findPortal
 	@Override
-	public Optional<TeleportationRepositioner.Result> func_242957_a(BlockPos startPos, boolean inNether)
+	public Optional<TeleportationRepositioner.Result> func_242957_a(BlockPos startPos, boolean toNether)
 	{
 		PointOfInterestManager poiManager = this.world.getPointOfInterestManager();
-		int i = inNether ? 16 : 128;
+		int i = (int) Math.max(DimensionType.func_242715_a(this.world.getServer().getWorld(this.getOpposite()).func_230315_m_(), this.world.func_230315_m_()) * 16, 16);
 		poiManager.ensureLoadedAndValid(this.world, startPos, i);
-		Optional<PointOfInterest> optional = poiManager.getInSquare((poiType) ->
+
+		Optional<PointOfInterest> optional = poiManager.getInSquare(poiType ->
 		{
-			return poiType == this.portalPOI;
-		}, startPos, i, PointOfInterestManager.Status.ANY).sorted(Comparator.<PointOfInterest>comparingDouble((poi) ->
+			return poiType == this.portalPOI.get();
+		}, startPos, i, PointOfInterestManager.Status.ANY).sorted(Comparator.<PointOfInterest>comparingDouble(poi ->
 		{
 			return poi.getPos().distanceSq(startPos);
-		}).thenComparingInt((poi) ->
+		}).thenComparingInt(poi ->
 		{
 			return poi.getPos().getY();
-		})).filter((poi) ->
+		})).filter(poi ->
 		{
 			return this.world.getBlockState(poi.getPos()).hasProperty(BlockStateProperties.HORIZONTAL_AXIS);
 		}).findFirst();
-		return optional.map((poi) ->
+
+		return optional.map(poi ->
 		{
 			BlockPos blockpos = poi.getPos();
 			this.world.getChunkProvider().registerTicket(TicketType.PORTAL, new ChunkPos(blockpos), 3, blockpos);
 			BlockState blockstate = this.world.getBlockState(blockpos);
-			return TeleportationRepositioner.func_243676_a(blockpos, blockstate.get(BlockStateProperties.HORIZONTAL_AXIS), 21, Direction.Axis.Y, 21, (pos) ->
-			{
-				return this.world.getBlockState(pos) == blockstate;
-			});
+			return TeleportationRepositioner.func_243676_a(blockpos, blockstate.get(BlockStateProperties.HORIZONTAL_AXIS), 21, Direction.Axis.Y, 21, (pos) -> this.world.getBlockState(pos) == blockstate);
 		});
 	}
 
@@ -84,13 +162,14 @@ public class GelTeleporter extends Teleporter
 		return this.placementBehavior.apply(this, startPos, enterAxis);
 	}
 
+	//TODO finish code
 	public static Optional<TeleportationRepositioner.Result> createAndFindPortalSurface(GelTeleporter teleporter, BlockPos startPos, Direction.Axis enterAxis)
 	{
 		return null;
 	}
 
 	/**
-	 * Default code for the Teleporter with slight modification
+	 * Default code for the Teleporter with slight modification.
 	 * 
 	 * @param teleporter
 	 * @param startPos

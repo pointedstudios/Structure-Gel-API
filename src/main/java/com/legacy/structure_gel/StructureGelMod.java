@@ -4,29 +4,20 @@ import java.lang.reflect.Method;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.Lists;
-import com.legacy.structure_gel.access_helpers.DimensionAccessHelper;
 import com.legacy.structure_gel.biome_dictionary.BiomeDictionary;
 import com.legacy.structure_gel.biome_dictionary.BiomeType;
 import com.legacy.structure_gel.blocks.AxisStructureGelBlock;
-import com.legacy.structure_gel.blocks.GelPortalBlock;
 import com.legacy.structure_gel.blocks.IStructureGel.Behavior;
 import com.legacy.structure_gel.blocks.StructureGelBlock;
 import com.legacy.structure_gel.commands.BiomeDictCommand;
 import com.legacy.structure_gel.commands.GetSpawnsCommand;
-import com.legacy.structure_gel.events.RegisterDimensionEvent;
 import com.legacy.structure_gel.items.StructureGelItem;
-import com.legacy.structure_gel.registrars.DimensionRegistrar;
-import com.legacy.structure_gel.util.DimensionTypeBuilder;
-import com.legacy.structure_gel.util.GelTeleporter;
 import com.legacy.structure_gel.util.Internal;
 import com.legacy.structure_gel.util.RegistryHelper;
 import com.legacy.structure_gel.worldgen.jigsaw.GelJigsawPiece;
@@ -37,9 +28,7 @@ import com.legacy.structure_gel.worldgen.processors.RandomTagSwapProcessor;
 import com.legacy.structure_gel.worldgen.processors.RemoveGelStructureProcessor;
 import com.mojang.serialization.Codec;
 
-import net.minecraft.block.AbstractBlock.Properties;
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.gui.screen.ConfirmBackupScreen;
 import net.minecraft.client.gui.widget.button.AbstractButton;
 import net.minecraft.client.renderer.RenderType;
@@ -48,21 +37,13 @@ import net.minecraft.item.Item;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.village.PointOfInterestType;
-import net.minecraft.world.DimensionType;
-import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.provider.EndBiomeProvider;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.DimensionSettings;
-import net.minecraft.world.gen.NoiseChunkGenerator;
 import net.minecraft.world.gen.feature.jigsaw.IJigsawDeserializer;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.template.IStructureProcessorType;
 import net.minecraft.world.gen.feature.template.StructureProcessor;
-import net.minecraft.world.gen.settings.DimensionStructuresSettings;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -115,24 +96,9 @@ public class StructureGelMod
 		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
 		forgeBus.addListener(this::registerCommands);
 		forgeBus.addListener(this::skipExperimentalBackupScreen);
-		forgeBus.addListener(this::registerDim);
+
+		SGDebug.init(modBus, forgeBus);
 	}
-
-	/// *
-	// Exists as a sample for how to register a dimension
-	public static RegistryKey<World> CUSTOM_WORLD = RegistryKey.func_240903_a_(Registry.WORLD_KEY, locate("custom"));
-
-	public void registerDim(RegisterDimensionEvent event)
-	{
-		Function<RegistryKey<DimensionSettings>, DimensionSettings> settings = (rk) -> DimensionAccessHelper.newFloatingIslandSettings(new DimensionStructuresSettings(true), net.minecraft.block.Blocks.SMOOTH_QUARTZ.getDefaultState(), net.minecraft.block.Blocks.WATER.getDefaultState(), rk.func_240901_a_(), true, true);
-
-		BiFunction<RegisterDimensionEvent, DimensionSettings, ChunkGenerator> generator = (e, s) -> new NoiseChunkGenerator(new EndBiomeProvider(e.getBiomeRegistry(), e.getSeed()), e.getSeed(), () -> s);
-
-		Supplier<DimensionType> dimensionType = () -> DimensionTypeBuilder.of().ambientLight(0.8F).hasDragonFight(true).hasSkyLight(false).build();
-
-		RegistryHelper.handleRegistrar(new DimensionRegistrar(event, CUSTOM_WORLD.func_240901_a_(), dimensionType, settings, generator));
-	}
-	// */
 
 	/**
 	 * Create a method with the same name, arguments, and return type as this in
@@ -250,9 +216,6 @@ public class StructureGelMod
 		public static Set<Block> BLOCKS = new LinkedHashSet<Block>();
 		public static Block RED_GEL, BLUE_GEL, GREEN_GEL, CYAN_GEL, ORANGE_GEL, YELLOW_GEL;
 
-		public static PointOfInterestType PORTAL_POI;
-		public static Block PORTAL;
-
 		@SubscribeEvent
 		public static void onRegistry(final RegistryEvent.Register<Block> event)
 		{
@@ -263,18 +226,6 @@ public class StructureGelMod
 			CYAN_GEL = registerBlock(registry, "cyan_gel", new StructureGelBlock(Behavior.PHOTOSENSITIVE, Behavior.DIAGONAL_SPREAD));
 			ORANGE_GEL = registerBlock(registry, "orange_gel", new StructureGelBlock(Behavior.DYNAMIC_SPREAD_DIST));
 			YELLOW_GEL = registerBlock(registry, "yellow_gel", new AxisStructureGelBlock(Behavior.AXIS_SPREAD));
-
-			/// *
-			PORTAL = RegistryHelper.register(registry, locate("portal"), new GelPortalBlock(Properties.from(Blocks.NETHER_PORTAL), (s) -> new GelTeleporter(s, GelBlocks.PORTAL_POI, () -> (GelPortalBlock) GelBlocks.PORTAL, () -> Blocks.SMOOTH_QUARTZ.getDefaultState(), GelTeleporter.CreatePortalBehavior.NETHER), () -> World.OVERWORLD, () -> CUSTOM_WORLD));
-			// */
-		}
-
-		@SubscribeEvent
-		public static void poi(final RegistryEvent.Register<PointOfInterestType> event)
-		{
-			/// *
-			PORTAL_POI = RegistryHelper.register(event.getRegistry(), locate("portal"), new PointOfInterestType(locate("portal").toString(), PointOfInterestType.getAllStates(PORTAL), 0, 1));
-			// */
 		}
 
 		private static Block registerBlock(IForgeRegistry<Block> registry, String key, Block object)
@@ -285,7 +236,7 @@ public class StructureGelMod
 	}
 
 	@Mod.EventBusSubscriber(modid = StructureGelMod.MODID, bus = Bus.MOD)
-	public static class Items
+	public static class GelItems
 	{
 		@SubscribeEvent
 		public static void onRegistry(final RegistryEvent.Register<Item> event)
