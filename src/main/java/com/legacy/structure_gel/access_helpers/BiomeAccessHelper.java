@@ -9,8 +9,10 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.util.GelCollectors;
 import com.legacy.structure_gel.worldgen.structure.GelStructure;
+import com.legacy.structure_gel.worldgen.structure.IConfigStructure;
 
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
@@ -30,6 +32,7 @@ import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.placement.IPlacementConfig;
 import net.minecraft.world.gen.settings.StructureSeparationSettings;
 import net.minecraft.world.gen.surfacebuilders.ConfiguredSurfaceBuilder;
+import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Contains methods to add various things to biomes, such as features,
@@ -80,17 +83,6 @@ public class BiomeAccessHelper
 	}
 
 	/**
-	 * Sets the input {@link GelStructure} to generate in the biome.
-	 * 
-	 * @param biome
-	 * @param gelStructure
-	 */
-	public static <C extends IFeatureConfig, S extends GelStructure<C>> void addStructure(Biome biome, StructureFeature<C, S> gelStructure)
-	{
-		addStructure(biome, gelStructure, gelStructure.field_236268_b_.getSeparationSettings(), gelStructure.field_236268_b_.getNoiseSettingsToGenerateIn());
-	}
-
-	/**
 	 * Sets the input {@link Structure} to generate in the biome.
 	 * 
 	 * @param biome
@@ -112,6 +104,38 @@ public class BiomeAccessHelper
 
 		// Add separation settings to noise settings
 		noiseSettings.forEach(noiseSetting -> noiseSetting.getStructures().field_236193_d_.put(structure.field_236268_b_, separationSettings));
+	}
+
+	/**
+	 * Sets the input {@link GelStructure} to generate in the biome.
+	 * 
+	 * @param biome
+	 * @param gelStructure
+	 */
+	public static <C extends IFeatureConfig, S extends GelStructure<C>> void addStructure(Biome biome, StructureFeature<C, S> gelStructure)
+	{
+		addStructure(biome, gelStructure, gelStructure.field_236268_b_.getSeparationSettings(), gelStructure.field_236268_b_.getNoiseSettingsToGenerateIn());
+	}
+
+	/**
+	 * Registers the input {@link StructureFeature} to the biomes listed in it's
+	 * config if the structure is an instance of {@link IConfigStructure}.
+	 * 
+	 * @param structure
+	 */
+	public static <C extends IFeatureConfig, S extends GelStructure<C>> void addStructureToBiomes(StructureFeature<C, S> structure)
+	{
+		if (structure.field_236268_b_ instanceof IConfigStructure)
+		{
+			ForgeRegistries.BIOMES.getValues().stream().filter(b -> ((IConfigStructure) structure.field_236268_b_).getConfig().isBiomeAllowed(b)).forEach(b ->
+			{
+				BiomeAccessHelper.addStructure(b, structure);
+			});
+		}
+		else
+		{
+			StructureGelMod.LOGGER.error("Attempted to add " + structure.field_236268_b_.getRegistryName() + " to it's configured biomes, but it was not an instance of IConfigStructure.");
+		}
 	}
 
 	/**
