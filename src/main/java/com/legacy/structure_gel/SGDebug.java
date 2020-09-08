@@ -1,5 +1,5 @@
 package com.legacy.structure_gel;
-/*
+
 import java.util.List;
 import java.util.Random;
 import java.util.function.BiFunction;
@@ -54,7 +54,7 @@ import net.minecraft.world.gen.settings.DimensionStructuresSettings;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.registries.ForgeRegistries;*/
+import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Contains a bunch of debug code for testing or examples.
@@ -77,7 +77,7 @@ public class SGDebug
 		modBus.addListener(SGDebug::commonInit);
 		*/
 	}
-/*
+
 	// Dimension registry
 	public static RegistryKey<World> CUSTOM_WORLD = RegistryKey.func_240903_a_(Registry.WORLD_KEY, StructureGelMod.locate("custom"));
 
@@ -103,7 +103,7 @@ public class SGDebug
 
 	public static void registerPOI(final RegistryEvent.Register<PointOfInterestType> event)
 	{
-		PORTAL_POI = RegistryHelper.registerPOI(event.getRegistry(), StructureGelMod.locate("portal"), PointOfInterestType.getAllStates(PORTAL), 0, 1);
+		PORTAL_POI = RegistryHelper.registerPOI(event.getRegistry(), new PointOfInterestType(StructureGelMod.locate("portal").toString(), PointOfInterestType.getAllStates(PORTAL), 0, 1));
 	}
 
 	// Event to create portal. By placing soul sand in a smooth quartz portal in
@@ -231,5 +231,5 @@ public class SGDebug
 				}
 			}
 		}
-	}*/
+	}
 }
