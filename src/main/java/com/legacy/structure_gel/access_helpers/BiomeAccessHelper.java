@@ -103,7 +103,11 @@ public class BiomeAccessHelper
 		biome.field_242421_g.get(structure.field_236268_b_.func_236396_f_().ordinal()).add(structure.field_236268_b_);
 
 		// Add separation settings to noise settings
-		noiseSettings.forEach(noiseSetting -> noiseSetting.getStructures().field_236193_d_.put(structure.field_236268_b_, separationSettings));
+		noiseSettings.forEach(noiseSetting ->
+		{
+			if (!noiseSetting.getStructures().field_236193_d_.containsKey(structure.field_236268_b_))
+				noiseSetting.getStructures().field_236193_d_.put(structure.field_236268_b_, separationSettings);
+		});
 	}
 
 	/**
