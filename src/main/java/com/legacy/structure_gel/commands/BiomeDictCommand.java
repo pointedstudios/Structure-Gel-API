@@ -1,9 +1,11 @@
 package com.legacy.structure_gel.commands;
 
 import java.util.Optional;
+import java.util.Set;
 
 import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.biome_dictionary.BiomeDictionary;
+import com.legacy.structure_gel.biome_dictionary.BiomeType;
 import com.legacy.structure_gel.util.RegistryHelper;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -59,7 +61,11 @@ public class BiomeDictCommand
 		{
 			ServerPlayerEntity player = (ServerPlayerEntity) context.getSource().getEntity();
 			player.sendMessage(new StringTextComponent("[" + key.toString() + "]").mergeStyle(TextFormatting.GREEN), Util.DUMMY_UUID);
-			BiomeDictionary.getAllTypes(RegistryKey.func_240903_a_(Registry.BIOME_KEY, key)).forEach(t -> player.sendMessage(new StringTextComponent(" - " + t.getRegistryName().toString()), Util.DUMMY_UUID));
+			Set<BiomeType> types = BiomeDictionary.getAllTypes(RegistryKey.func_240903_a_(Registry.BIOME_KEY, key));
+			if (types.isEmpty())
+				player.sendMessage(new StringTextComponent(key.toString() + " has no registered types."), Util.DUMMY_UUID);
+			else
+				types.forEach(t -> player.sendMessage(new StringTextComponent(" - " + t.getRegistryName().toString()), Util.DUMMY_UUID));
 		}
 		return 1;
 	}
@@ -70,7 +76,11 @@ public class BiomeDictCommand
 		{
 			ServerPlayerEntity player = (ServerPlayerEntity) context.getSource().getEntity();
 			player.sendMessage(new StringTextComponent("[" + key.toString() + "]").mergeStyle(TextFormatting.GREEN), Util.DUMMY_UUID);
-			BiomeDictionary.get(key).getAllBiomes().forEach(b -> player.sendMessage(new StringTextComponent(" - " + b.func_240901_a_().toString()), Util.DUMMY_UUID));
+			Set<RegistryKey<Biome>> biomes = BiomeDictionary.get(key).getAllBiomes();
+			if(biomes.isEmpty())
+				player.sendMessage(new StringTextComponent(key.toString() + " has no registered biomes."), Util.DUMMY_UUID);
+			else
+				biomes.forEach(b -> player.sendMessage(new StringTextComponent(" - " + b.func_240901_a_().toString()), Util.DUMMY_UUID));
 		}
 		return 1;
 	}
