@@ -1,6 +1,6 @@
 package com.legacy.structure_gel;
 
-import java.util.List;
+/*import java.util.List;
 import java.util.Random;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -55,7 +55,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.ForgeRegistries;
-
+*/
 /**
  * Contains a bunch of debug code for testing or examples. This may be commented
  * out.
@@ -66,172 +66,172 @@ import net.minecraftforge.registries.ForgeRegistries;
 @com.legacy.structure_gel.util.Internal
 public class SGDebug
 {
-	public static void init(net.minecraftforge.eventbus.api.IEventBus modBus, net.minecraftforge.eventbus.api.IEventBus forgeBus)
+	/*public static void init(net.minecraftforge.eventbus.api.IEventBus modBus, net.minecraftforge.eventbus.api.IEventBus forgeBus)
 	{
-		
+
 		forgeBus.addListener(SGDebug::registerDim);
 		forgeBus.addListener(SGDebug::spawnPortal);
-		
+
 		modBus.addGenericListener(Block.class, SGDebug::registerBlocks);
 		modBus.addGenericListener(PointOfInterestType.class, SGDebug::registerPOI);
 		modBus.addGenericListener(Structure.class, SGDebug::registerStructure);
 		modBus.addListener(SGDebug::commonInit);
-		
+
 	}
-	
-		// Dimension registry
-		public static RegistryKey<World> CUSTOM_WORLD = RegistryKey.func_240903_a_(Registry.WORLD_KEY, StructureGelMod.locate("custom"));
-	
-		public static void registerDim(RegisterDimensionEvent event)
+
+	// Dimension registry
+	public static RegistryKey<World> CUSTOM_WORLD = RegistryKey.func_240903_a_(Registry.WORLD_KEY, StructureGelMod.locate("custom"));
+
+	public static void registerDim(RegisterDimensionEvent event)
+	{
+		Function<RegistryKey<DimensionSettings>, DimensionSettings> settings = (rk) -> DimensionAccessHelper.newFloatingIslandSettings(new DimensionStructuresSettings(true), Blocks.STONE.getDefaultState(), Blocks.AIR.getDefaultState(), CUSTOM_WORLD.func_240901_a_(), false, false);
+
+		BiFunction<RegisterDimensionEvent, DimensionSettings, ChunkGenerator> generator = (evnt, sttngs) -> new NoiseChunkGenerator(new OverworldBiomeProvider(evnt.getSeed(), false, false, evnt.getBiomeRegistry()), evnt.getSeed(), () -> sttngs);
+
+		Supplier<DimensionType> dimensionType = () -> DimensionTypeBuilder.of().ambientLight(0.1F).build();
+
+		RegistryHelper.handleRegistrar(new DimensionRegistrar(event, CUSTOM_WORLD.func_240901_a_(), dimensionType, settings, generator));
+	}
+
+	// Portal registry
+	public static PointOfInterestType PORTAL_POI;
+	public static Block PORTAL;
+
+	public static void registerBlocks(final RegistryEvent.Register<Block> event)
+	{
+		PORTAL = RegistryHelper.register(event.getRegistry(), StructureGelMod.locate("portal"), new GelPortalBlock(Properties.from(Blocks.NETHER_PORTAL), (s) -> new GelTeleporter(s, () -> World.OVERWORLD, () -> CUSTOM_WORLD, () -> PORTAL_POI, () -> (GelPortalBlock) PORTAL, () -> Blocks.SMOOTH_QUARTZ.getDefaultState(), GelTeleporter.CreatePortalBehavior.NETHER)));
+	}
+
+	public static void registerPOI(final RegistryEvent.Register<PointOfInterestType> event)
+	{
+		PORTAL_POI = RegistryHelper.registerPOI(event.getRegistry(), new PointOfInterestType(StructureGelMod.locate("portal").toString(), PointOfInterestType.getAllStates(PORTAL), 0, 1));
+	}
+
+	// Event to create portal. By placing soul sand in a smooth quartz portal in
+	// this case.
+	public static void spawnPortal(final BlockEvent.EntityPlaceEvent event)
+	{
+		GelPortalBlock.fillPortal((World) event.getWorld(), event.getPos(), (GelPortalBlock) PORTAL, ImmutableList.of(Blocks.SOUL_SOIL));
+	}
+
+	// Register a debug structure for basic testing
+	public static StructureRegistrar<NoFeatureConfig, DebugStructure> DEBUG_STRUCTURE = StructureRegistrar.of(StructureGelMod.locate("debug"), new DebugStructure(), DebugStructure.Pieces.Piece::new, NoFeatureConfig.field_236559_b_, Decoration.SURFACE_STRUCTURES).handle();
+
+	public static void registerStructure(final RegistryEvent.Register<Structure<?>> event)
+	{
+		DEBUG_STRUCTURE.handleForge(event.getRegistry());
+	}
+
+	public static void commonInit(final FMLCommonSetupEvent event)
+	{
+		ForgeRegistries.BIOMES.forEach(b -> BiomeAccessHelper.addStructure(b, DEBUG_STRUCTURE.getStructureFeature()));
+	}
+
+	public static class DebugStructure extends GelStructure<NoFeatureConfig>
+	{
+		public DebugStructure()
 		{
-			Function<RegistryKey<DimensionSettings>, DimensionSettings> settings = (rk) -> DimensionAccessHelper.newFloatingIslandSettings(new DimensionStructuresSettings(true), Blocks.STONE.getDefaultState(), Blocks.AIR.getDefaultState(), CUSTOM_WORLD.func_240901_a_(), false, false);
-	
-			BiFunction<RegisterDimensionEvent, DimensionSettings, ChunkGenerator> generator = (evnt, sttngs) -> new NoiseChunkGenerator(new OverworldBiomeProvider(evnt.getSeed(), false, false, evnt.getBiomeRegistry()), evnt.getSeed(), () -> sttngs);
-	
-			Supplier<DimensionType> dimensionType = () -> DimensionTypeBuilder.of().ambientLight(0.1F).build();
-	
-			RegistryHelper.handleRegistrar(new DimensionRegistrar(event, CUSTOM_WORLD.func_240901_a_(), dimensionType, settings, generator));
+			super(NoFeatureConfig.field_236558_a_);
+			this.setSpawnList(EntityClassification.MONSTER, ImmutableList.of(new MobSpawnInfo.Spawners(EntityType.ZOMBIFIED_PIGLIN, 1, 1, 1)));
 		}
-	
-		// Portal registry
-		public static PointOfInterestType PORTAL_POI;
-		public static Block PORTAL;
-	
-		public static void registerBlocks(final RegistryEvent.Register<Block> event)
+
+		@Override
+		public int getSeed()
 		{
-			PORTAL = RegistryHelper.register(event.getRegistry(), StructureGelMod.locate("portal"), new GelPortalBlock(Properties.from(Blocks.NETHER_PORTAL), (s) -> new GelTeleporter(s, () -> World.OVERWORLD, () -> CUSTOM_WORLD, () -> PORTAL_POI, () -> (GelPortalBlock) PORTAL, () -> Blocks.SMOOTH_QUARTZ.getDefaultState(), GelTeleporter.CreatePortalBehavior.NETHER)));
+			return 0;
 		}
-	
-		public static void registerPOI(final RegistryEvent.Register<PointOfInterestType> event)
+
+		@Override
+		public double getProbability()
 		{
-			PORTAL_POI = RegistryHelper.registerPOI(event.getRegistry(), new PointOfInterestType(StructureGelMod.locate("portal").toString(), PointOfInterestType.getAllStates(PORTAL), 0, 1));
+			return 1;
 		}
-	
-		// Event to create portal. By placing soul sand in a smooth quartz portal in
-		// this case.
-		public static void spawnPortal(final BlockEvent.EntityPlaceEvent event)
+
+		@Override
+		public int getSpacing()
 		{
-			GelPortalBlock.fillPortal((World) event.getWorld(), event.getPos(), (GelPortalBlock) PORTAL, ImmutableList.of(Blocks.SOUL_SOIL));
+			return 24;
 		}
-	
-		// Register a debug structure for basic testing
-		public static StructureRegistrar<NoFeatureConfig, DebugStructure> DEBUG_STRUCTURE = StructureRegistrar.of(StructureGelMod.locate("debug"), new DebugStructure(), DebugStructure.Pieces.Piece::new, NoFeatureConfig.field_236559_b_, Decoration.SURFACE_STRUCTURES).handle();
-	
-		public static void registerStructure(final RegistryEvent.Register<Structure<?>> event)
+
+		@Override
+		public int getOffset()
 		{
-			DEBUG_STRUCTURE.handleForge(event.getRegistry());
+			return 0;
 		}
-	
-		public static void commonInit(final FMLCommonSetupEvent event)
+
+		@Override
+		public IStartFactory<NoFeatureConfig> getStartFactory()
 		{
-			ForgeRegistries.BIOMES.forEach(b -> BiomeAccessHelper.addStructure(b, DEBUG_STRUCTURE.getStructureFeature()));
+			return Start::new;
 		}
-	
-		public static class DebugStructure extends GelStructure<NoFeatureConfig>
+
+		public static class Start extends StructureStart<NoFeatureConfig>
 		{
-			public DebugStructure()
+
+			public Start(Structure<NoFeatureConfig> structure, int chunkX, int chunkZ, MutableBoundingBox bounds, int references, long seed)
 			{
-				super(NoFeatureConfig.field_236558_a_);
-				this.setSpawnList(EntityClassification.MONSTER, ImmutableList.of(new MobSpawnInfo.Spawners(EntityType.ZOMBIFIED_PIGLIN, 1, 1, 1)));
+				super(structure, chunkX, chunkZ, bounds, references, seed);
 			}
-	
+
 			@Override
-			public int getSeed()
+			public void func_230364_a_(DynamicRegistries dynamicRegistries, ChunkGenerator chunkGen, TemplateManager templateManager, int chunkX, int chunkZ, Biome biome, NoFeatureConfig config)
 			{
-				return 0;
+				Pieces.setup(templateManager, new BlockPos(chunkX * 16, 180, chunkX * 16), this.components);
+				this.recalculateStructureSize();
 			}
-	
-			@Override
-			public double getProbability()
+
+		}
+
+		public static class Pieces
+		{
+			private static final ResourceLocation PIECE = new ResourceLocation("end_city/base_floor");
+
+			public static void setup(TemplateManager templateManagerIn, BlockPos pos, List<StructurePiece> pieces)
 			{
-				return 1;
+				for (int x = 0; x < 5; x++)
+					for (int z = 0; z < 5; z++)
+						pieces.add(new Piece(templateManagerIn, pos.add(x * 10, 0, z * 10), PIECE));
 			}
-	
-			@Override
-			public int getSpacing()
+
+			public static class Piece extends TemplateStructurePiece
 			{
-				return 24;
-			}
-	
-			@Override
-			public int getOffset()
-			{
-				return 0;
-			}
-	
-			@Override
-			public IStartFactory<NoFeatureConfig> getStartFactory()
-			{
-				return Start::new;
-			}
-	
-			public static class Start extends StructureStart<NoFeatureConfig>
-			{
-	
-				public Start(Structure<NoFeatureConfig> structure, int chunkX, int chunkZ, MutableBoundingBox bounds, int references, long seed)
+				private final ResourceLocation templateName;
+
+				public Piece(TemplateManager templateManager, BlockPos pos, ResourceLocation name)
 				{
-					super(structure, chunkX, chunkZ, bounds, references, seed);
+					super(DEBUG_STRUCTURE.getPieceType(), 0);
+					this.templateName = name;
+					this.templatePosition = pos;
+					this.setup(templateManager);
 				}
-	
+
+				public Piece(TemplateManager templateManager, CompoundNBT nbt)
+				{
+					super(DEBUG_STRUCTURE.getPieceType(), nbt);
+					this.templateName = new ResourceLocation(nbt.getString("Template"));
+					this.setup(templateManager);
+				}
+
 				@Override
-				public void func_230364_a_(DynamicRegistries dynamicRegistries, ChunkGenerator chunkGen, TemplateManager templateManager, int chunkX, int chunkZ, Biome biome, NoFeatureConfig config)
+				protected void readAdditional(CompoundNBT tagCompound)
 				{
-					Pieces.setup(templateManager, new BlockPos(chunkX * 16, 180, chunkX * 16), this.components);
-					this.recalculateStructureSize();
+					super.readAdditional(tagCompound);
+					tagCompound.putString("Template", this.templateName.toString());
 				}
-	
-			}
-	
-			public static class Pieces
-			{
-				private static final ResourceLocation PIECE = new ResourceLocation("end_city/base_floor");
-	
-				public static void setup(TemplateManager templateManagerIn, BlockPos pos, List<StructurePiece> pieces)
+
+				private void setup(TemplateManager templateManagerIn)
 				{
-					for (int x = 0; x < 5; x++)
-						for (int z = 0; z < 5; z++)
-							pieces.add(new Piece(templateManagerIn, pos.add(x * 10, 0, z * 10), PIECE));
+					Template template = templateManagerIn.getTemplateDefaulted(this.templateName);
+					PlacementSettings placementsettings = new PlacementSettings().addProcessor(BlockIgnoreStructureProcessor.AIR_AND_STRUCTURE_BLOCK);
+					this.setup(template, this.templatePosition, placementsettings);
 				}
-	
-				public static class Piece extends TemplateStructurePiece
+
+				@Override
+				protected void handleDataMarker(String function, BlockPos pos, IServerWorld worldIn, Random rand, MutableBoundingBox sbb)
 				{
-					private final ResourceLocation templateName;
-	
-					public Piece(TemplateManager templateManager, BlockPos pos, ResourceLocation name)
-					{
-						super(DEBUG_STRUCTURE.getPieceType(), 0);
-						this.templateName = name;
-						this.templatePosition = pos;
-						this.setup(templateManager);
-					}
-	
-					public Piece(TemplateManager templateManager, CompoundNBT nbt)
-					{
-						super(DEBUG_STRUCTURE.getPieceType(), nbt);
-						this.templateName = new ResourceLocation(nbt.getString("Template"));
-						this.setup(templateManager);
-					}
-	
-					@Override
-					protected void readAdditional(CompoundNBT tagCompound)
-					{
-						super.readAdditional(tagCompound);
-						tagCompound.putString("Template", this.templateName.toString());
-					}
-	
-					private void setup(TemplateManager templateManagerIn)
-					{
-						Template template = templateManagerIn.getTemplateDefaulted(this.templateName);
-						PlacementSettings placementsettings = new PlacementSettings().addProcessor(BlockIgnoreStructureProcessor.AIR_AND_STRUCTURE_BLOCK);
-						this.setup(template, this.templatePosition, placementsettings);
-					}
-	
-					@Override
-					protected void handleDataMarker(String function, BlockPos pos, IServerWorld worldIn, Random rand, MutableBoundingBox sbb)
-					{
-	
-					}
+
 				}
 			}
 		}
+	}*/
 }

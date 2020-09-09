@@ -96,7 +96,8 @@ public class StructureGelMod
 		forgeBus.addListener(this::registerCommands);
 		forgeBus.addListener(this::skipExperimentalBackupScreen);
 
-		SGDebug.init(modBus, forgeBus);
+		// Debugging stuff
+		//com.legacy.structure_gel.SGDebug.init(modBus, forgeBus);
 	}
 
 	/**
