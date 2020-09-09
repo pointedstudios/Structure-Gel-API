@@ -15,29 +15,32 @@ import net.minecraft.block.material.Material;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
 
 /**
  * A version of {@link PortalSize} to work with {@link GelPortalBlock} and
- * {@link GelTeleporter}.
+ * {@link GelTeleporter}. Call {@link #isValidSize()} to check if you're in a
+ * portal frame or
+ * {@link #trySpawnPortal(IWorld, BlockPos, GelPortalBlock, List)} to attempt to
+ * spawn a portal at the position.
  * 
  * @author David
  *
  */
-@Internal
 public class GelPortalSize
 {
-	private final Block frame;
-	private final GelPortalBlock portal;
-	private final IWorld world;
-	private final Direction.Axis axis;
-	private final Direction rightDir;
-	private final Direction leftDir;
-	private int portalBlockCount;
+	public final Block frame;
+	public final GelPortalBlock portal;
+	public final IWorld world;
+	public final Direction.Axis axis;
+	public final Direction rightDir;
+	public final Direction leftDir;
+	public int portalBlockCount;
 	@Nullable
-	private BlockPos bottomLeft;
-	private int height;
-	private int width;
-	private List<Block> allowedBlocks = new ArrayList<>();
+	public BlockPos bottomLeft;
+	public int height;
+	public int width;
+	public List<Block> allowedBlocks = new ArrayList<>();
 
 	public GelPortalSize(IWorld world, BlockPos pos, Direction.Axis axis, Block frame, GelPortalBlock portal, List<Block> allowedBlocks)
 	{
@@ -46,7 +49,7 @@ public class GelPortalSize
 		this.frame = frame;
 		this.portal = portal;
 		this.allowedBlocks = allowedBlocks;
-		
+
 		if (axis == Direction.Axis.X)
 		{
 			this.leftDir = Direction.EAST;
@@ -77,12 +80,22 @@ public class GelPortalSize
 		}
 	}
 
+	/**
+	 * Attempts to spawn a portal. Returns true if it succeeded and false if it
+	 * failed.
+	 * 
+	 * @param worldIn
+	 * @param pos
+	 * @param portalBlock
+	 * @param allowedBlocks
+	 * @return {@link Boolean}
+	 */
 	public static boolean trySpawnPortal(IWorld worldIn, BlockPos pos, GelPortalBlock portalBlock, List<Block> allowedBlocks)
 	{
 		Block frameBlock = portalBlock.getFrameBlock().get().getBlock();
 		GelPortalSize sizeX = new GelPortalSize(worldIn, pos, Direction.Axis.X, frameBlock, portalBlock, allowedBlocks);
 
-		if (sizeX.isValid() && sizeX.portalBlockCount == 0)
+		if (sizeX.isValidSize() && sizeX.portalBlockCount == 0)
 		{
 			sizeX.placePortalBlocks();
 			return true;
@@ -91,7 +104,7 @@ public class GelPortalSize
 		{
 			GelPortalSize sizeZ = new GelPortalSize(worldIn, pos, Direction.Axis.Z, frameBlock, portalBlock, allowedBlocks);
 
-			if (sizeZ.isValid() && sizeZ.portalBlockCount == 0)
+			if (sizeZ.isValidSize() && sizeZ.portalBlockCount == 0)
 			{
 				sizeZ.placePortalBlocks();
 				return true;
@@ -101,6 +114,58 @@ public class GelPortalSize
 				return false;
 			}
 		}
+	}
+
+	/**
+	 * Checks to see if the position is within a portal frame.
+	 * 
+	 * @param worldIn
+	 * @param pos
+	 * @param portalBlock
+	 * @param allowedInsideBlocks
+	 * @return {@link Boolean}
+	 */
+	public static boolean isPortal(World worldIn, BlockPos pos, GelPortalBlock portalBlock, List<Block> allowedInsideBlocks)
+	{
+		GelPortalSize sizeX = new GelPortalSize(worldIn, pos, Direction.Axis.X, portalBlock.getFrameBlock().get().getBlock(), portalBlock, allowedInsideBlocks);
+		if (sizeX.isValidSize())
+			return true;
+		else
+		{
+			GelPortalSize sizeZ = new GelPortalSize(worldIn, pos, Direction.Axis.Z, portalBlock.getFrameBlock().get().getBlock(), portalBlock, allowedInsideBlocks);
+			return sizeZ.isValidSize();
+		}
+	}
+
+	/**
+	 * Checks to see if the portal is the right size.
+	 * 
+	 * @return {@link Boolean}
+	 */
+	public boolean isValidSize()
+	{
+		return this.bottomLeft != null && this.width >= 2 && this.width <= 21 && this.height >= 3 && this.height <= 21;
+	}
+
+	/**
+	 * Checks to see if the portal is the right size and isn't missing any portal
+	 * blocks.
+	 * 
+	 * @return {@link Boolean}
+	 */
+	public boolean isPortalComplete()
+	{
+		return this.isValidSize() && this.hasAllPortals();
+	}
+
+	/**
+	 * Checks if all portal blocks exist within the frame.
+	 * 
+	 * @return {@link Boolean}
+	 */
+	public boolean hasAllPortals()
+	{
+		return this.portalBlockCount >= this.width * this.height;
 	}
 
 	protected int getDistanceUntilEdge(BlockPos pos, Direction direction)
@@ -116,16 +181,6 @@ public class GelPortalSize
 		}
 		Block block = this.world.getBlockState(pos.offset(direction, i)).getBlock();
 		return block == this.frame ? i : 0;
-	}
-
-	public int getHeight()
-	{
-		return this.height;
-	}
-
-	public int getWidth()
-	{
-		return this.width;
 	}
 
 	protected int calculatePortalHeight()
@@ -190,11 +245,6 @@ public class GelPortalSize
 		return state.getMaterial() == Material.AIR || block == this.portal || allowedBlocks.contains(block);
 	}
 
-	public boolean isValid()
-	{
-		return this.bottomLeft != null && this.width >= 2 && this.width <= 21 && this.height >= 3 && this.height <= 21;
-	}
-
 	public void placePortalBlocks()
 	{
 		for (int i = 0; i < this.width; ++i)
@@ -205,15 +255,5 @@ public class GelPortalSize
 				this.world.setBlockState(blockpos.up(j), this.portal.getDefaultState().with(NetherPortalBlock.AXIS, this.axis), 18);
 			}
 		}
-	}
-
-	private boolean enoughPortals()
-	{
-		return this.portalBlockCount >= this.width * this.height;
-	}
-
-	public boolean validate()
-	{
-		return this.isValid() && this.enoughPortals();
 	}
 }

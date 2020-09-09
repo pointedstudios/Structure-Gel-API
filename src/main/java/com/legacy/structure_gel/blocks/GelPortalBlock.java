@@ -107,7 +107,7 @@ public class GelPortalBlock extends NetherPortalBlock
 		Direction.Axis facingAxis = facing.getAxis();
 		Direction.Axis portalAxis = stateIn.get(AXIS);
 		boolean flag = portalAxis != facingAxis && facingAxis.isHorizontal();
-		return !flag && !facingState.isIn(this) && !(new GelPortalSize(worldIn, currentPos, portalAxis, this.getFrameBlock().get().getBlock(), this, ImmutableList.of())).validate() ? Blocks.AIR.getDefaultState() : super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+		return !flag && !facingState.isIn(this) && !(new GelPortalSize(worldIn, currentPos, portalAxis, this.getFrameBlock().get().getBlock(), this, ImmutableList.of())).isPortalComplete() ? Blocks.AIR.getDefaultState() : super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
 	}
 
 	@Override
