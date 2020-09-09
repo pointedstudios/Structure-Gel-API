@@ -1,6 +1,6 @@
 package com.legacy.structure_gel;
 
-/*import java.util.List;
+import java.util.List;
 import java.util.Random;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -54,7 +54,7 @@ import net.minecraft.world.gen.settings.DimensionStructuresSettings;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.registries.ForgeRegistries;*/
+import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Contains a bunch of debug code for testing or examples. This may be commented
@@ -68,7 +68,7 @@ public class SGDebug
 {
 	public static void init(net.minecraftforge.eventbus.api.IEventBus modBus, net.minecraftforge.eventbus.api.IEventBus forgeBus)
 	{
-		/*
+		
 		forgeBus.addListener(SGDebug::registerDim);
 		forgeBus.addListener(SGDebug::spawnPortal);
 		
@@ -76,9 +76,9 @@ public class SGDebug
 		modBus.addGenericListener(PointOfInterestType.class, SGDebug::registerPOI);
 		modBus.addGenericListener(Structure.class, SGDebug::registerStructure);
 		modBus.addListener(SGDebug::commonInit);
-		*/
+		
 	}
-	/*
+	
 		// Dimension registry
 		public static RegistryKey<World> CUSTOM_WORLD = RegistryKey.func_240903_a_(Registry.WORLD_KEY, StructureGelMod.locate("custom"));
 	
@@ -205,10 +205,11 @@ public class SGDebug
 						this.setup(templateManager);
 					}
 	
-					public Piece(TemplateManager templateManger, CompoundNBT nbt)
+					public Piece(TemplateManager templateManager, CompoundNBT nbt)
 					{
 						super(DEBUG_STRUCTURE.getPieceType(), nbt);
 						this.templateName = new ResourceLocation(nbt.getString("Template"));
+						this.setup(templateManager);
 					}
 	
 					@Override
@@ -232,5 +233,5 @@ public class SGDebug
 					}
 				}
 			}
-		}*/
+		}
 }

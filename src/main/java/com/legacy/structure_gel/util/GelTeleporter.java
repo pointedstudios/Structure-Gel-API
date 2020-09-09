@@ -308,6 +308,12 @@ public class GelTeleporter extends Teleporter
 		return true;
 	}
 
+	@Override
+	public boolean isVanilla()
+	{
+		return true;
+	}
+	
 	/**
 	 * Determins how the portal generated should be placed.
 	 * 
