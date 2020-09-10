@@ -1,4 +1,4 @@
-1.16.2-v1.3.0
+1.16.2-v1.3.1
 
 This is a major update seeing as 1.16.2 massively changed worldgen. Along with porting the mod forward, the functionality of the API has been extended to assist with dimensions and the biome dictionary.
 All package declarations start with com.legacy.structure_gel.
