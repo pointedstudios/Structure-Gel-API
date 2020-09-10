@@ -65,7 +65,7 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.3-33.0.0'
+    minecraft 'net.minecraftforge:forge:1.16.3-34.0.0'
 }
 
 repositories {
