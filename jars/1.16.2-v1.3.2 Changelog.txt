@@ -1,0 +1,6 @@
+1.16.2-v1.3.2
+
+Just a minor patch fixing a missed issue with capabilities.
+
+Fixes: 
+- Fixed "structure_gel:gel_entity" capability not being registered.
