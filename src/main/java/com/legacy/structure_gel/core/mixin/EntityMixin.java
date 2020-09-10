@@ -17,9 +17,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.PortalInfo;
 import net.minecraft.block.PortalSize;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.TeleportationRepositioner;
@@ -33,33 +30,8 @@ import net.minecraft.world.border.WorldBorder;
 import net.minecraft.world.server.ServerWorld;
 
 @Mixin(Entity.class)
-public class EntityMixin extends Entity
+public class EntityMixin
 {
-	public EntityMixin(EntityType<?> entityTypeIn, World worldIn)
-	{
-		super(entityTypeIn, worldIn);
-	}
-	@Override
-	protected void registerData()
-	{
-	}
-
-	@Override
-	protected void readAdditional(CompoundNBT compound)
-	{
-	}
-
-	@Override
-	protected void writeAdditional(CompoundNBT compound)
-	{
-	}
-
-	@Override
-	public IPacket<?> createSpawnPacket()
-	{
-		return null;
-	}
-
 	@Shadow
 	public World world;
 	@Shadow
