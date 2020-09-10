@@ -1,6 +1,9 @@
-1.16.2-v1.3.2
+1.16.3-v1.3.2
 
-Just a minor patch fixing a missed issue with capabilities.
+Just a minor patch fixing a missed issue with capabilities, as well as updating to 1.16.3.
+
+Changes:
+- Updated to 1.16.3
 
 Fixes: 
 - Fixed "structure_gel:gel_entity" capability not being registered.
