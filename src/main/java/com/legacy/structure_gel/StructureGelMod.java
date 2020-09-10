@@ -19,6 +19,7 @@ import com.legacy.structure_gel.commands.StructureGelCommand;
 import com.legacy.structure_gel.items.StructureGelItem;
 import com.legacy.structure_gel.util.Internal;
 import com.legacy.structure_gel.util.RegistryHelper;
+import com.legacy.structure_gel.util.capability.GelCapability;
 import com.legacy.structure_gel.worldgen.jigsaw.GelJigsawPiece;
 import com.legacy.structure_gel.worldgen.jigsaw.GelStructurePiece;
 import com.legacy.structure_gel.worldgen.processors.RandomBlockSwapProcessor;
@@ -144,7 +145,7 @@ public class StructureGelMod
 	@Internal
 	public void commonInit(final FMLCommonSetupEvent event)
 	{
-
+		GelCapability.register();
 	}
 
 	@Internal
