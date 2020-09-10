@@ -5,4 +5,4 @@ https://www.curseforge.com/minecraft/mc-mods/structure-gel-api
 
 Jar Version   | Forge Version     | Mapping Version
 --------------+-------------------+------------------
-1.16.2-1.3.0  | 1.16.2-33.0.22    | 20200820-1.16.1
+1.16.2-1.3.0  | 1.16.2-33.0.58    | 20200820-1.16.1
