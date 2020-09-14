@@ -45,12 +45,10 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -88,6 +86,9 @@ public class StructureGelMod
 		modBus.addListener(this::commonInit);
 		modBus.addListener(this::createRegistries);
 		modBus.addGenericListener(BiomeType.class, this::registerBiomeDictionary);
+		modBus.addGenericListener(Block.class, GelBlocks::onRegistry);
+		modBus.addGenericListener(Item.class, GelItems::onRegistry);
+		modBus.addGenericListener(Structure.class, StructureRegistry::onRegistry);
 		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
 		forgeBus.addListener(this::registerCommands);
 		
@@ -186,13 +187,11 @@ public class StructureGelMod
 		});
 	}
 
-	@Mod.EventBusSubscriber(modid = StructureGelMod.MODID, bus = Bus.MOD)
 	public static class GelBlocks
 	{
 		public static Set<Block> BLOCKS = new LinkedHashSet<Block>();
 		public static Block RED_GEL, BLUE_GEL, GREEN_GEL, CYAN_GEL, ORANGE_GEL, YELLOW_GEL;
 
-		@SubscribeEvent
 		public static void onRegistry(final RegistryEvent.Register<Block> event)
 		{
 			IForgeRegistry<Block> registry = event.getRegistry();
@@ -211,20 +210,16 @@ public class StructureGelMod
 		}
 	}
 
-	@Mod.EventBusSubscriber(modid = StructureGelMod.MODID, bus = Bus.MOD)
 	public static class GelItems
 	{
-		@SubscribeEvent
 		public static void onRegistry(final RegistryEvent.Register<Item> event)
 		{
 			StructureGelMod.GelBlocks.BLOCKS.forEach(b -> RegistryHelper.register(event.getRegistry(), b.getRegistryName(), new StructureGelItem((StructureGelBlock) b)));
 		}
 	}
 
-	@Mod.EventBusSubscriber(modid = StructureGelMod.MODID, bus = Bus.MOD)
 	public static class StructureRegistry
 	{
-		@SubscribeEvent
 		public static void onRegistry(final RegistryEvent.Register<Structure<?>> event)
 		{
 			registerProcessors();
