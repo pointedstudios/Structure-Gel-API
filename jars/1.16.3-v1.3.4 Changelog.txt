@@ -1,0 +1,6 @@
+1.16.3-v1.3.4
+
+Another hotfix to fix a critical server issue.
+
+Changes:
+- Fixed a crash on server involving calling client-side classes on server.

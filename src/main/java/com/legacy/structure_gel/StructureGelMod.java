@@ -29,8 +29,6 @@ import com.legacy.structure_gel.worldgen.processors.RemoveGelStructureProcessor;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.item.Item;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
@@ -43,7 +41,6 @@ import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.template.IStructureProcessorType;
 import net.minecraft.world.gen.feature.template.StructureProcessor;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
@@ -55,7 +52,6 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLModContainer;
@@ -80,22 +76,22 @@ import net.minecraftforge.registries.RegistryBuilder;
 public class StructureGelMod
 {
 	public static final String MODID = "structure_gel";
-	public static final Logger LOGGER = LogManager.getLogger();
+	public static final Logger LOGGER = LogManager.getLogger(MODID);
 	private static final String[] BIOME_DICT_METHODS = new String[] { "getBiomesSG" };
 
-	@Internal
+	@SuppressWarnings("deprecation")
 	public StructureGelMod()
 	{
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, StructureGelConfig.COMMON_SPEC);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, StructureGelConfig.CLIENT_SPEC);
 		IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
-		DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> () -> modBus.addListener(this::clientInit));
 		modBus.addListener(this::commonInit);
 		modBus.addListener(this::createRegistries);
 		modBus.addGenericListener(BiomeType.class, this::registerBiomeDictionary);
 		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
 		forgeBus.addListener(this::registerCommands);
-		DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> () -> forgeBus.addListener(this::skipExperimentalBackupScreen));
+		
+		DistExecutor.callWhenOn(Dist.CLIENT, () -> () -> new StructureGelClient());
 
 		// Debugging stuff
 		// com.legacy.structure_gel.SGDebug.init(modBus, forgeBus);
@@ -137,12 +133,6 @@ public class StructureGelMod
 	}
 
 	@Internal
-	public void clientInit(final FMLClientSetupEvent event)
-	{
-		GelBlocks.BLOCKS.forEach(b -> RenderTypeLookup.setRenderLayer(b, RenderType.getTranslucent()));
-	}
-
-	@Internal
 	public void commonInit(final FMLCommonSetupEvent event)
 	{
 		GelCapability.register();
@@ -158,21 +148,6 @@ public class StructureGelMod
 	public void registerCommands(final RegisterCommandsEvent event)
 	{
 		StructureGelCommand.register(event.getDispatcher());
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Internal
-	public void skipExperimentalBackupScreen(final net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent.Pre event)
-	{
-		if (event.getGui() instanceof net.minecraft.client.gui.screen.ConfirmBackupScreen && StructureGelConfig.CLIENT.skipExperimentalScreen())
-		{
-			net.minecraft.client.gui.screen.ConfirmBackupScreen gui = (net.minecraft.client.gui.screen.ConfirmBackupScreen) event.getGui();
-			if (gui.buttons.size() > 1 && gui.buttons.get(1) instanceof net.minecraft.client.gui.widget.button.AbstractButton)
-			{
-				((net.minecraft.client.gui.widget.button.AbstractButton) gui.buttons.get(1)).onPress();
-				LOGGER.debug("Skipping backup request screen for world that uses experimental settings. You can disable this via config.");
-			}
-		}
 	}
 
 	@Internal
