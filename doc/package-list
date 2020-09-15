@@ -1,0 +1,17 @@
+com.legacy.structure_gel
+com.legacy.structure_gel.access_helpers
+com.legacy.structure_gel.biome_dictionary
+com.legacy.structure_gel.blocks
+com.legacy.structure_gel.commands
+com.legacy.structure_gel.core.asm
+com.legacy.structure_gel.core.mixin
+com.legacy.structure_gel.data
+com.legacy.structure_gel.events
+com.legacy.structure_gel.items
+com.legacy.structure_gel.registrars
+com.legacy.structure_gel.util
+com.legacy.structure_gel.util.capability
+com.legacy.structure_gel.worldgen
+com.legacy.structure_gel.worldgen.jigsaw
+com.legacy.structure_gel.worldgen.processors
+com.legacy.structure_gel.worldgen.structure

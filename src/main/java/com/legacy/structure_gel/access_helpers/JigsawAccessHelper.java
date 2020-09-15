@@ -32,7 +32,7 @@ import net.minecraft.world.gen.feature.structure.Structure;
 public class JigsawAccessHelper
 {
 	/**
-	 * The {@link Feature#ILLAGER_STRUCTURES} list allows for villages and pillager
+	 * The {@link Structure#field_236384_t_} list allows for villages and pillager
 	 * outposts to generate terrain underneath them so they don't float. The area
 	 * that gets generated is based on the structure that starts the generation. In
 	 * villages, this would be the town center.

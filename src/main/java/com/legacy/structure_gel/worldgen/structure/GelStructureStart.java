@@ -56,8 +56,7 @@ public abstract class GelStructureStart<C extends IFeatureConfig> extends Struct
 	/**
 	 * Places the structure at the y value set.
 	 * 
-	 * @param minY
-	 * @param maxY
+	 * @param y
 	 */
 	public void setHeight(int y)
 	{

@@ -92,6 +92,7 @@ public class StructureGelMod
 		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
 		forgeBus.addListener(this::registerCommands);
 		
+		// TODO update to unsafeCallWhenOn or figure out why safeCallWhenOn breaks
 		DistExecutor.callWhenOn(Dist.CLIENT, () -> () -> new StructureGelClient());
 
 		// Debugging stuff
@@ -111,9 +112,9 @@ public class StructureGelMod
 	 * a Set of biome {@link RegistryKey}s for what biomes should be in the
 	 * dictionary entry.
 	 * 
-	 * @return {@link List}<{@link Triple}<{@link ResourceLocation},
-	 *         {@link Set}<{@link ResourceLocation}>,
-	 *         {@link Set}<{@link RegistryKey}<{@link Biome}>>>>
+	 * @return {@link List}&lt;{@link Triple}&lt;{@link ResourceLocation},
+	 *         {@link Set}&lt;{@link ResourceLocation}&gt;,
+	 *         {@link Set}&lt;{@link RegistryKey}&lt;{@link Biome}&gt;&gt;&gt;&gt;
 	 */
 	public List<Triple<ResourceLocation, Set<ResourceLocation>, Set<RegistryKey<Biome>>>> getBiomesSG()
 	{
