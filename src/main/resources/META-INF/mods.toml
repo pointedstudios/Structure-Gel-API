@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[32,)"
+loaderVersion="[33,)"
 issueTrackerURL="https://gitlab.com/modding-legacy/structure-gel-api/-/issues"
 license="https://www.gnu.org/licenses/gpl-3.0.en.html"
 [[mods]]

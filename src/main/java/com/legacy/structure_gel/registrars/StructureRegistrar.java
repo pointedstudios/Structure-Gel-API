@@ -55,11 +55,10 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 	/**
 	 * Handy method so you don't have to type the generic parameters.
 	 * 
-	 * @param registry
 	 * @param name
 	 * @param structure
 	 * @param pieceType
-	 * @param config
+	 * @param configs
 	 * @param generationStage
 	 * @return {@link StructureRegistrar}
 	 */

@@ -23,7 +23,7 @@ import net.minecraftforge.registries.RegistryManager;
 /**
  * A current replacement for the forge biome dictionary. To register to the
  * biome dictionary, use the event for
- * {@link RegistryEvent.Register}<{@link BiomeType}>. Please use
+ * {@link RegistryEvent.Register}&lt;{@link BiomeType}&gt;. Please use
  * {@link BiomeDictionary#register(BiomeType)} as opposed to
  * {@link IForgeRegistry#register(IForgeRegistryEntry)} since I perform special
  * checks to merge entries together.<br>
@@ -225,7 +225,7 @@ public class BiomeDictionary
 	}
 
 	/**
-	 * Shorthand for {@link BiomeDictionary.REGISTRY#containsKey(ResourceLocation)}
+	 * Shorthand for BiomeDictionary.REGISTRY.containsKey(ResourceLocation).
 	 * 
 	 * @param name
 	 * @return {@link Boolean}
@@ -236,7 +236,7 @@ public class BiomeDictionary
 	}
 
 	/**
-	 * Shorthand for {@link BiomeDictionary.REGISTRY#getValue(ResourceLocation)}.
+	 * Shorthand for BiomeDictionary.REGISTRY.getValue(ResourceLocation).
 	 * Returns {@link #EMPTY} if no value is present.
 	 * 
 	 * @return {@link BiomeType}
@@ -247,7 +247,7 @@ public class BiomeDictionary
 	}
 
 	/**
-	 * Shorthand for {@link BiomeDictionary.REGISTRY#forEach(Consumer)}.
+	 * Shorthand for BiomeDictionary.REGISTRY.forEach(Consumer).
 	 * 
 	 * @param action
 	 */

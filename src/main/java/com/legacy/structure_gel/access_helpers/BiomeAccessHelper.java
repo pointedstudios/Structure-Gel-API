@@ -57,15 +57,12 @@ public class BiomeAccessHelper
 
 	/**
 	 * Adds the feature to the biome with the given settings. For flowers, use
-	 * {@link #addFlowerFeature(Biome, Decoration, Feature)}. Make sure that the
+	 * {@link #addFlowerFeature(Biome, Decoration, ConfiguredFeature)}. Make sure that the
 	 * {@link ConfiguredFeature} is registered first.
 	 * 
 	 * @param biome
 	 * @param stage
 	 * @param feature
-	 * @param config
-	 * @param placement
-	 * @param placementConfig
 	 */
 	public static <C extends IFeatureConfig, F extends Feature<C>> void addFeature(Biome biome, Decoration stage, ConfiguredFeature<C, F> feature)
 	{
@@ -204,9 +201,6 @@ public class BiomeAccessHelper
 	 * @param biome
 	 * @param stage
 	 * @param feature
-	 * @param config
-	 * @param placement
-	 * @param placementConfig
 	 */
 	public static <C extends IFeatureConfig, PC extends IPlacementConfig> void addFlowerFeature(Biome biome, Decoration stage, ConfiguredFeature<?, ?> feature)
 	{

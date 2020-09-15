@@ -29,10 +29,6 @@ import com.legacy.structure_gel.worldgen.processors.RemoveGelStructureProcessor;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.gui.screen.ConfirmBackupScreen;
-import net.minecraft.client.gui.widget.button.AbstractButton;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.item.Item;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
@@ -44,18 +40,16 @@ import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.template.IStructureProcessorType;
 import net.minecraft.world.gen.feature.template.StructureProcessor;
-import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLModContainer;
@@ -80,25 +74,29 @@ import net.minecraftforge.registries.RegistryBuilder;
 public class StructureGelMod
 {
 	public static final String MODID = "structure_gel";
-	public static final Logger LOGGER = LogManager.getLogger();
+	public static final Logger LOGGER = LogManager.getLogger(MODID);
 	private static final String[] BIOME_DICT_METHODS = new String[] { "getBiomesSG" };
 
-	@Internal
+	@SuppressWarnings("deprecation")
 	public StructureGelMod()
 	{
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, StructureGelConfig.COMMON_SPEC);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, StructureGelConfig.CLIENT_SPEC);
 		IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
-		modBus.addListener(this::clientInit);
 		modBus.addListener(this::commonInit);
 		modBus.addListener(this::createRegistries);
 		modBus.addGenericListener(BiomeType.class, this::registerBiomeDictionary);
+		modBus.addGenericListener(Block.class, GelBlocks::onRegistry);
+		modBus.addGenericListener(Item.class, GelItems::onRegistry);
+		modBus.addGenericListener(Structure.class, StructureRegistry::onRegistry);
 		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
 		forgeBus.addListener(this::registerCommands);
-		forgeBus.addListener(this::skipExperimentalBackupScreen);
+		
+		// TODO update to unsafeCallWhenOn or figure out why safeCallWhenOn breaks
+		DistExecutor.callWhenOn(Dist.CLIENT, () -> () -> new StructureGelClient());
 
 		// Debugging stuff
-		//com.legacy.structure_gel.SGDebug.init(modBus, forgeBus);
+		// com.legacy.structure_gel.SGDebug.init(modBus, forgeBus);
 	}
 
 	/**
@@ -114,9 +112,9 @@ public class StructureGelMod
 	 * a Set of biome {@link RegistryKey}s for what biomes should be in the
 	 * dictionary entry.
 	 * 
-	 * @return {@link List}<{@link Triple}<{@link ResourceLocation},
-	 *         {@link Set}<{@link ResourceLocation}>,
-	 *         {@link Set}<{@link RegistryKey}<{@link Biome}>>>>
+	 * @return {@link List}&lt;{@link Triple}&lt;{@link ResourceLocation},
+	 *         {@link Set}&lt;{@link ResourceLocation}&gt;,
+	 *         {@link Set}&lt;{@link RegistryKey}&lt;{@link Biome}&gt;&gt;&gt;&gt;
 	 */
 	public List<Triple<ResourceLocation, Set<ResourceLocation>, Set<RegistryKey<Biome>>>> getBiomesSG()
 	{
@@ -137,12 +135,6 @@ public class StructureGelMod
 	}
 
 	@Internal
-	public void clientInit(final FMLClientSetupEvent event)
-	{
-		GelBlocks.BLOCKS.forEach(b -> RenderTypeLookup.setRenderLayer(b, RenderType.getTranslucent()));
-	}
-
-	@Internal
 	public void commonInit(final FMLCommonSetupEvent event)
 	{
 		GelCapability.register();
@@ -158,20 +150,6 @@ public class StructureGelMod
 	public void registerCommands(final RegisterCommandsEvent event)
 	{
 		StructureGelCommand.register(event.getDispatcher());
-	}
-
-	@Internal
-	public void skipExperimentalBackupScreen(final GuiScreenEvent.DrawScreenEvent.Pre event)
-	{
-		if (event.getGui() instanceof ConfirmBackupScreen && StructureGelConfig.CLIENT.skipExperimentalScreen())
-		{
-			ConfirmBackupScreen gui = (ConfirmBackupScreen) event.getGui();
-			if (gui.buttons.size() > 1 && gui.buttons.get(1) instanceof AbstractButton)
-			{
-				((AbstractButton) gui.buttons.get(1)).onPress();
-				LOGGER.debug("Skipping backup request screen for world that uses experimental settings. You can disable this via config.");
-			}
-		}
 	}
 
 	@Internal
@@ -210,13 +188,11 @@ public class StructureGelMod
 		});
 	}
 
-	@Mod.EventBusSubscriber(modid = StructureGelMod.MODID, bus = Bus.MOD)
 	public static class GelBlocks
 	{
 		public static Set<Block> BLOCKS = new LinkedHashSet<Block>();
 		public static Block RED_GEL, BLUE_GEL, GREEN_GEL, CYAN_GEL, ORANGE_GEL, YELLOW_GEL;
 
-		@SubscribeEvent
 		public static void onRegistry(final RegistryEvent.Register<Block> event)
 		{
 			IForgeRegistry<Block> registry = event.getRegistry();
@@ -235,20 +211,16 @@ public class StructureGelMod
 		}
 	}
 
-	@Mod.EventBusSubscriber(modid = StructureGelMod.MODID, bus = Bus.MOD)
 	public static class GelItems
 	{
-		@SubscribeEvent
 		public static void onRegistry(final RegistryEvent.Register<Item> event)
 		{
 			StructureGelMod.GelBlocks.BLOCKS.forEach(b -> RegistryHelper.register(event.getRegistry(), b.getRegistryName(), new StructureGelItem((StructureGelBlock) b)));
 		}
 	}
 
-	@Mod.EventBusSubscriber(modid = StructureGelMod.MODID, bus = Bus.MOD)
 	public static class StructureRegistry
 	{
-		@SubscribeEvent
 		public static void onRegistry(final RegistryEvent.Register<Structure<?>> event)
 		{
 			registerProcessors();

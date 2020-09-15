@@ -5,10 +5,7 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 import com.legacy.structure_gel.StructureGelConfig;
-import com.legacy.structure_gel.core.asm.StructureGelHooks;
 
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.feature.structure.Structure;
 
 /**
@@ -36,7 +33,6 @@ public class StructureAccessHelper
 	/**
 	 * Adds the structure to the list of structures that lakes cannot generate in.
 	 * 
-	 * @see StructureGelHooks#lakeCheckForStructures(IWorld, ChunkPos)
 	 * @param structure
 	 */
 	public static void addLakeProofStructure(Structure<?> structure)
@@ -48,7 +44,6 @@ public class StructureAccessHelper
 	 * Removes the structure from the list of structures that lakes cannot generate
 	 * in.
 	 * 
-	 * @see StructureGelHooks#lakeCheckForStructures(IWorld, ChunkPos)
 	 * @param structure
 	 */
 	public static void removeLakeProofStructure(Structure<?> structure)

@@ -1,0 +1,6 @@
+1.16.2-v1.3.4
+
+Backport of 1.16.3-v1.3.4 to 1.16.2 to fix a startup crash. Please update to 1.16.3 when possible as this version will no longer be maintained.
+
+Fixes:
+- Fixes a server crash on startup

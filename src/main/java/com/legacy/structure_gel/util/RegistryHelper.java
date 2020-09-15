@@ -131,7 +131,6 @@ public class RegistryHelper
 	 * Registers the input {@link IStructurePieceType}
 	 * 
 	 * @param key
-	 * @param structure
 	 * @param pieceType
 	 * @return {@link IStructurePieceType}
 	 */
@@ -143,10 +142,6 @@ public class RegistryHelper
 	/**
 	 * Registers the input {@link Structure} and {@link IStructurePieceType}.
 	 * 
-	 * @see RegistryHelper#registerStructure(IForgeRegistry, ResourceLocation,
-	 *      Structure)
-	 * @see RegistryHelper#registerStructurePiece(ResourceLocation,
-	 *      IStructurePieceType)
 	 * @param registry
 	 * @param key
 	 * @param structure
@@ -154,7 +149,7 @@ public class RegistryHelper
 	 * @param pieceType
 	 * @return {@link Pair}
 	 * @deprecated Use
-	 *             {@link RegistryHelper#handleRegistrar(IForgeRegistry, ResourceLocation, Structure, Decoration, IStructurePieceType, IFeatureConfig)}
+	 *             {@link RegistryHelper#handleRegistrar(IForgeRegistrar, IForgeRegistry)}
 	 */
 	@Deprecated
 	public static <C extends IFeatureConfig, S extends Structure<C>, P extends IStructurePieceType> Pair<S, P> registerStructureAndPiece(IForgeRegistry<Structure<?>> registry, ResourceLocation key, S structure, Decoration generationStage, P pieceType)
@@ -227,7 +222,7 @@ public class RegistryHelper
 	 * Registers the {@link StructureProcessorList}.
 	 * 
 	 * @param key
-	 * @param processor
+	 * @param processorList
 	 * @return {@link StructureProcessorList}
 	 */
 	public static StructureProcessorList registerProcessor(ResourceLocation key, StructureProcessorList processorList)

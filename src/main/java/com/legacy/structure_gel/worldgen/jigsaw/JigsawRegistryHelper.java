@@ -6,7 +6,6 @@ import java.util.function.Function;
 import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.gen.feature.jigsaw.JigsawManager;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPattern.PlacementBehaviour;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPatternRegistry;
@@ -86,11 +85,10 @@ public class JigsawRegistryHelper
 	}
 
 	/**
-	 * Registers a jigsaw pool in {@link JigsawManager#providers}. For most simple
-	 * cases, you can use {@link #register(String, List)} or
-	 * {@link #register(ResourceLocation, List)}. ResourceLocations are generated
-	 * using {@link #locatePiece(String)} with the modid and prefix. For names not
-	 * generated like this, use
+	 * Registers a jigsaw pool. For most simple cases, you can use
+	 * {@link #register(String, List)} or {@link #register(ResourceLocation, List)}.
+	 * ResourceLocations are generated using {@link #locatePiece(String)} with the
+	 * modid and prefix. For names not generated like this, use
 	 * {@link #register(ResourceLocation, ResourceLocation, List, PlacementBehaviour)}
 	 * 
 	 * @param poolName : The name of the pool. Other jigsaw blocks will ask for
@@ -183,7 +181,7 @@ public class JigsawRegistryHelper
 	}
 
 	/**
-	 * Registers a jigsaw pool in {@link JigsawManager#providers}.
+	 * Registers a jigsaw pool.
 	 * 
 	 * @see #register(ResourceLocation, List, PlacementBehaviour)
 	 * @param poolName : the name of the pool. Other jigsaw blocks will ask for
