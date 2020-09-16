@@ -47,9 +47,9 @@ public class EntityMixin
 	@Inject(at = @At("HEAD"), method = "updatePortal()V", cancellable = true)
 	private void updatePortal(CallbackInfo callback)
 	{
-		if (getThis().getCapability(GelCapability.INSTANCE).isPresent())
+		if (((Entity) (Object) this).getCapability(GelCapability.INSTANCE).isPresent())
 		{
-			IGelEntity gelEntity = getThis().getCapability(GelCapability.INSTANCE).resolve().get();
+			IGelEntity gelEntity = ((Entity) (Object) this).getCapability(GelCapability.INSTANCE).resolve().get();
 			// not null when a player steps in a GelPortal
 			if (gelEntity.getPortal() != null)
 			{
@@ -59,7 +59,7 @@ public class EntityMixin
 					if (this.inPortal)
 					{
 						GelPortalBlock portal = gelEntity.getPortal();
-						int maxTime = portal.getMaxTimeInside(getThis());
+						int maxTime = portal.getMaxTimeInside(((Entity) (Object) this));
 						ServerWorld destinationWorld = ((ServerWorld) this.world).getServer().getWorld(portal.getTeleporter((ServerWorld) this.world).getOpposite());
 						
 						if (destinationWorld != null && !this.isPassenger() && this.portalCounter++ >= maxTime)
@@ -102,7 +102,7 @@ public class EntityMixin
 	@Inject(at = @At(value = "RETURN", ordinal = 0), method = "func_241829_a(Lnet/minecraft/world/server/ServerWorld;)Lnet/minecraft/block/PortalInfo;", cancellable = true)
 	protected void func_241829_a(ServerWorld destWorld, CallbackInfoReturnable<PortalInfo> callback)
 	{
-		if (getThis().getCapability(GelCapability.INSTANCE).isPresent() && getThis().getCapability(GelCapability.INSTANCE).resolve().get().getPortal() != null)
+		if (((Entity) (Object) this).getCapability(GelCapability.INSTANCE).isPresent() && ((Entity) (Object) this).getCapability(GelCapability.INSTANCE).resolve().get().getPortal() != null)
 		{
 			boolean toNether = destWorld.getDimensionKey() == World.THE_NETHER;
 			WorldBorder worldborder = destWorld.getWorldBorder();
@@ -111,7 +111,7 @@ public class EntityMixin
 			double maxX = Math.min(2.9999872E7D, worldborder.maxX() - 16.0D);
 			double maxZ = Math.min(2.9999872E7D, worldborder.maxZ() - 16.0D);
 			double scaling = DimensionType.func_242715_a(this.world.func_230315_m_(), destWorld.func_230315_m_());
-			BlockPos pos = new BlockPos(MathHelper.clamp(getThis().getPosX() * scaling, minX, maxX), getThis().getPosY(), MathHelper.clamp(getThis().getPosZ() * scaling, minZ, maxZ));
+			BlockPos pos = new BlockPos(MathHelper.clamp(((Entity) (Object) this).getPosX() * scaling, minX, maxX), ((Entity) (Object) this).getPosY(), MathHelper.clamp(((Entity) (Object) this).getPosZ() * scaling, minZ, maxZ));
 			// Find a portal and create one if needed.
 			PortalInfo portalInfo = this.func_241830_a(destWorld, pos, toNether).map((tpResult) ->
 			{
@@ -133,18 +133,13 @@ public class EntityMixin
 					motion = new Vector3d(0.5D, 0.0D, 0.0D);
 				}
 	
-				return PortalSize.func_242963_a(destWorld, tpResult, direction, motion, getThis().getSize(getThis().getPose()), getThis().getMotion(), getThis().rotationYaw, getThis().rotationPitch);
+				return PortalSize.func_242963_a(destWorld, tpResult, direction, motion, ((Entity) (Object) this).getSize(((Entity) (Object) this).getPose()), ((Entity) (Object) this).getMotion(), ((Entity) (Object) this).rotationYaw, ((Entity) (Object) this).rotationPitch);
 			}).orElse((PortalInfo) null);
 	
 			callback.setReturnValue(portalInfo);
 		}
 	}
-
-	public Entity getThis()
-	{
-		return (Entity) (Object) this;
-	}
-
+	
 	@Shadow
 	public int getMaxInPortalTime()
 	{
