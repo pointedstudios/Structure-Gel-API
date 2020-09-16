@@ -88,7 +88,7 @@ public class GelTeleporter extends Teleporter
 	@Internal
 	public RegistryKey<World> getOpposite()
 	{
-		if (this.world != null && this.world.getDimensionKey().func_240901_a_().equals(this.dimension1.get().func_240901_a_()))
+		if (this.world != null && this.world.getDimensionKey().getLocation().equals(this.dimension1.get().getLocation()))
 			return this.dimension2.get();
 		else
 			return this.dimension1.get();
@@ -126,10 +126,10 @@ public class GelTeleporter extends Teleporter
 
 	// findPortal
 	@Override
-	public Optional<TeleportationRepositioner.Result> func_242957_a(BlockPos startPos, boolean toNether)
+	public Optional<TeleportationRepositioner.Result> getExistingPortal(BlockPos startPos, boolean toNether)
 	{
 		PointOfInterestManager poiManager = this.world.getPointOfInterestManager();
-		int i = (int) Math.max(DimensionType.func_242715_a(this.world.getServer().getWorld(this.getOpposite()).func_230315_m_(), this.world.func_230315_m_()) * 16, 16);
+		int i = (int) Math.max(DimensionType.getCoordinateDifference(this.world.getServer().getWorld(this.getOpposite()).getDimensionType(), this.world.getDimensionType()) * 16, 16);
 		poiManager.ensureLoadedAndValid(this.world, startPos, i);
 
 		Optional<PointOfInterest> optional = poiManager.getInSquare(poiType ->
@@ -151,13 +151,13 @@ public class GelTeleporter extends Teleporter
 			BlockPos blockpos = poi.getPos();
 			this.world.getChunkProvider().registerTicket(TicketType.PORTAL, new ChunkPos(blockpos), 3, blockpos);
 			BlockState blockstate = this.world.getBlockState(blockpos);
-			return TeleportationRepositioner.func_243676_a(blockpos, blockstate.get(BlockStateProperties.HORIZONTAL_AXIS), 21, Direction.Axis.Y, 21, (pos) -> this.world.getBlockState(pos) == blockstate);
+			return TeleportationRepositioner.findLargestRectangle(blockpos, blockstate.get(BlockStateProperties.HORIZONTAL_AXIS), 21, Direction.Axis.Y, 21, (pos) -> this.world.getBlockState(pos) == blockstate);
 		});
 	}
 
 	// createAndFindPortal
 	@Override
-	public Optional<TeleportationRepositioner.Result> func_242956_a(BlockPos startPos, Direction.Axis enterAxis)
+	public Optional<TeleportationRepositioner.Result> makePortal(BlockPos startPos, Direction.Axis enterAxis)
 	{
 		return this.placementBehavior.apply(this, startPos, enterAxis);
 	}

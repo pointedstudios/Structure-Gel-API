@@ -56,10 +56,10 @@ public class DimensionRegistrar implements IRegistrar<DimensionRegistrar>
 	public DimensionRegistrar(RegisterDimensionEvent event, ResourceLocation key, Supplier<DimensionType> type, Function<RegistryKey<DimensionSettings>, DimensionSettings> settings, BiFunction<RegisterDimensionEvent, DimensionSettings, ChunkGenerator> chunkGenerator)
 	{
 		this.event = event;
-		this.dimensionKey = RegistryKey.func_240903_a_(Registry.DIMENSION_KEY, key);
-		this.typeKey = RegistryKey.func_240903_a_(Registry.DIMENSION_TYPE_KEY, key);
-		this.settingsKey = RegistryKey.func_240903_a_(Registry.field_243549_ar, key);
-		this.worldKey = RegistryKey.func_240903_a_(Registry.WORLD_KEY, key);
+		this.dimensionKey = RegistryKey.getOrCreateKey(Registry.DIMENSION_KEY, key);
+		this.typeKey = RegistryKey.getOrCreateKey(Registry.DIMENSION_TYPE_KEY, key);
+		this.settingsKey = RegistryKey.getOrCreateKey(Registry.NOISE_SETTINGS_KEY, key);
+		this.worldKey = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, key);
 		this.type = type;
 		this.settings = settings;
 		this.chunkGenerator = chunkGenerator;
@@ -108,8 +108,8 @@ public class DimensionRegistrar implements IRegistrar<DimensionRegistrar>
 	@Override
 	public DimensionRegistrar handle()
 	{
-		DimensionSettings settings = WorldGenRegistries.func_243664_a(WorldGenRegistries.field_243658_j, this.settingsKey.func_240901_a_(), this.settings.apply(this.settingsKey));
-		DimensionType type = DynamicRegistries.func_239770_b_().func_243612_b(Registry.DIMENSION_TYPE_KEY).register(this.typeKey, this.type.get(), Lifecycle.stable());
+		DimensionSettings settings = WorldGenRegistries.register(WorldGenRegistries.NOISE_SETTINGS, this.settingsKey.getLocation(), this.settings.apply(this.settingsKey));
+		DimensionType type = DynamicRegistries.func_239770_b_().getRegistry(Registry.DIMENSION_TYPE_KEY).register(this.typeKey, this.type.get(), Lifecycle.stable());
 
 		event.register(this.dimensionKey, new Dimension(() -> type, this.chunkGenerator.apply(event, settings)));
 		return this;

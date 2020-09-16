@@ -197,7 +197,7 @@ public class BiomeDictionary
 	 */
 	protected static RegistryKey<Biome> getBiomeKey(Biome biome)
 	{
-		return RegistryKey.func_240903_a_(ForgeRegistries.Keys.BIOMES, biome.getRegistryName());
+		return RegistryKey.getOrCreateKey(ForgeRegistries.Keys.BIOMES, biome.getRegistryName());
 	}
 
 	/**

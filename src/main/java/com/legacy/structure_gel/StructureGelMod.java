@@ -77,7 +77,6 @@ public class StructureGelMod
 	public static final Logger LOGGER = LogManager.getLogger(MODID);
 	private static final String[] BIOME_DICT_METHODS = new String[] { "getBiomesSG" };
 
-	@SuppressWarnings("deprecation")
 	public StructureGelMod()
 	{
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, StructureGelConfig.COMMON_SPEC);
@@ -93,7 +92,7 @@ public class StructureGelMod
 		forgeBus.addListener(this::registerCommands);
 		
 		// TODO update to unsafeCallWhenOn or figure out why safeCallWhenOn breaks
-		DistExecutor.callWhenOn(Dist.CLIENT, () -> () -> new StructureGelClient());
+		DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () -> new StructureGelClient());
 
 		// Debugging stuff
 		// com.legacy.structure_gel.SGDebug.init(modBus, forgeBus);

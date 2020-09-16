@@ -240,6 +240,6 @@ public class JigsawAccessHelper
 	 */
 	public static Optional<JigsawPattern> getJigsawPattern(ResourceLocation location)
 	{
-		return WorldGenRegistries.field_243656_h.func_241873_b(location);
+		return WorldGenRegistries.JIGSAW_POOL.getOptional(location);
 	}
 }

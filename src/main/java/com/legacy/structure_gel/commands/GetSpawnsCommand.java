@@ -73,7 +73,7 @@ public class GetSpawnsCommand
 			{
 				ServerPlayerEntity player = ((ServerPlayerEntity) context.getSource().getEntity());
 				player.sendMessage(new StringTextComponent("[" + classification.getName() + "]").mergeStyle(TextFormatting.GREEN), Util.DUMMY_UUID);
-				spawns.forEach(spawn -> player.sendMessage(new StringTextComponent(String.format(" - %s, weight:%d, min:%d, max:%d", spawn.field_242588_c.getRegistryName(), spawn.itemWeight, spawn.field_242589_d, spawn.field_242590_e)), Util.DUMMY_UUID));
+				spawns.forEach(spawn -> player.sendMessage(new StringTextComponent(String.format(" - %s, weight:%d, min:%d, max:%d", spawn.type.getRegistryName(), spawn.itemWeight, spawn.minCount, spawn.maxCount)), Util.DUMMY_UUID));
 			}
 		}
 	}

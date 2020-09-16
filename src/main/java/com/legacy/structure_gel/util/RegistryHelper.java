@@ -50,7 +50,7 @@ public class RegistryHelper
 	 */
 	public static <T> Optional<RegistryKey<T>> getKey(World world, RegistryKey<Registry<T>> registry, T value)
 	{
-		return world.func_241828_r().func_243612_b(registry).func_230519_c_(value);
+		return world.func_241828_r().getRegistry(registry).getOptionalKey(value);
 	}
 
 	/**
@@ -63,7 +63,7 @@ public class RegistryHelper
 	 */
 	public static <T> Optional<T> getValue(World world, RegistryKey<Registry<T>> registry, RegistryKey<T> key)
 	{
-		return Optional.ofNullable(world.func_241828_r().func_243612_b(registry).getValueForKey(key));
+		return Optional.ofNullable(world.func_241828_r().getRegistry(registry).getValueForKey(key));
 	}
 
 	/**
@@ -105,7 +105,7 @@ public class RegistryHelper
 	 */
 	public static <FC extends IFeatureConfig, F extends Feature<FC>> ConfiguredFeature<FC, F> registerConfiguredFeature(ResourceLocation key, ConfiguredFeature<FC, F> configuredFeature)
 	{
-		return Registry.register(WorldGenRegistries.field_243653_e, key, configuredFeature);
+		return Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, key, configuredFeature);
 	}
 
 	/**
@@ -168,7 +168,7 @@ public class RegistryHelper
 	 */
 	public static <C extends IFeatureConfig, S extends Structure<C>, SF extends StructureFeature<C, S>> SF registerStructureFeature(ResourceLocation key, SF structureFeature)
 	{
-		return WorldGenRegistries.func_243664_a(WorldGenRegistries.field_243654_f, key, structureFeature);
+		return WorldGenRegistries.register(WorldGenRegistries.CONFIGURED_STRUCTURE_FEATURE, key, structureFeature);
 	}
 
 	/**
@@ -215,7 +215,7 @@ public class RegistryHelper
 	 */
 	public static StructureProcessorList registerProcessor(ResourceLocation key, StructureProcessor processor)
 	{
-		return WorldGenRegistries.func_243664_a(WorldGenRegistries.field_243655_g, key, new StructureProcessorList(ImmutableList.of(processor)));
+		return WorldGenRegistries.register(WorldGenRegistries.STRUCTURE_PROCESSOR_LIST, key, new StructureProcessorList(ImmutableList.of(processor)));
 	}
 
 	/**
@@ -227,7 +227,7 @@ public class RegistryHelper
 	 */
 	public static StructureProcessorList registerProcessor(ResourceLocation key, StructureProcessorList processorList)
 	{
-		return WorldGenRegistries.func_243664_a(WorldGenRegistries.field_243655_g, key, processorList);
+		return WorldGenRegistries.register(WorldGenRegistries.STRUCTURE_PROCESSOR_LIST, key, processorList);
 	}
 
 	/**
@@ -240,7 +240,7 @@ public class RegistryHelper
 	 */
 	public static StructureProcessorList registerProcessor(ResourceLocation key, List<StructureProcessor> processors)
 	{
-		return WorldGenRegistries.func_243664_a(WorldGenRegistries.field_243655_g, key, new StructureProcessorList(processors));
+		return WorldGenRegistries.register(WorldGenRegistries.STRUCTURE_PROCESSOR_LIST, key, new StructureProcessorList(processors));
 	}
 
 	/**

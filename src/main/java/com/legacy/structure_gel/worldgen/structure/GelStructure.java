@@ -286,6 +286,6 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	 */
 	public List<DimensionSettings> getNoiseSettingsToGenerateIn()
 	{
-		return ImmutableList.of(DimensionSettings.field_242734_c, DimensionSettings.field_242735_d, DimensionSettings.field_242736_e, DimensionSettings.field_242737_f, DimensionSettings.field_242738_g, DimensionSettings.field_242739_h).stream().map(WorldGenRegistries.field_243658_j::getValueForKey).collect(ImmutableList.toImmutableList());
+		return ImmutableList.of(DimensionSettings.field_242734_c, DimensionSettings.field_242735_d, DimensionSettings.field_242736_e, DimensionSettings.field_242737_f, DimensionSettings.field_242738_g, DimensionSettings.field_242739_h).stream().map(WorldGenRegistries.NOISE_SETTINGS::getValueForKey).collect(ImmutableList.toImmutableList());
 	}
 }

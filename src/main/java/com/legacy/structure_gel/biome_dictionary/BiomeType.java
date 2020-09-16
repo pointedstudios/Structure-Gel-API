@@ -58,7 +58,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 		if (parents != null)
 			this.parents = new HashSet<>(parents);
 		if (biomes != null)
-			this.biomes = biomes.stream().map(r -> r.func_240901_a_()).collect(Collectors.toSet());
+			this.biomes = biomes.stream().map(r -> r.getLocation()).collect(Collectors.toSet());
 	}
 
 	/**
@@ -105,7 +105,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 	@SuppressWarnings("unchecked")
 	public BiomeType biomes(RegistryKey<Biome>... biomes)
 	{
-		this.addBiomes(Arrays.asList(biomes).stream().map(r -> r.func_240901_a_()).collect(Collectors.toSet()));
+		this.addBiomes(Arrays.asList(biomes).stream().map(r -> r.getLocation()).collect(Collectors.toSet()));
 		return this;
 	}
 
@@ -186,7 +186,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 	 */
 	public BiomeType addBiome(RegistryKey<Biome> biome)
 	{
-		this.getBiomes().add(biome.func_240901_a_());
+		this.getBiomes().add(biome.getLocation());
 		return this;
 	}
 
@@ -209,7 +209,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 	 */
 	public BiomeType setBiomes(Set<RegistryKey<Biome>> biomes)
 	{
-		this.biomes = biomes.stream().map(r -> r.func_240901_a_()).collect(Collectors.toSet());
+		this.biomes = biomes.stream().map(r -> r.getLocation()).collect(Collectors.toSet());
 		return this;
 	}
 
@@ -266,7 +266,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 	 */
 	public Set<RegistryKey<Biome>> getAllBiomes()
 	{
-		Set<RegistryKey<Biome>> biomes = this.getBiomes().stream().filter(ForgeRegistries.BIOMES::containsKey).map(r -> RegistryKey.func_240903_a_(ForgeRegistries.Keys.BIOMES, r)).collect(Collectors.toSet());
+		Set<RegistryKey<Biome>> biomes = this.getBiomes().stream().filter(ForgeRegistries.BIOMES::containsKey).map(r -> RegistryKey.getOrCreateKey(ForgeRegistries.Keys.BIOMES, r)).collect(Collectors.toSet());
 		for (ResourceLocation parent : this.getParents())
 		{
 			if (BiomeDictionary.REGISTRY.containsKey(parent))

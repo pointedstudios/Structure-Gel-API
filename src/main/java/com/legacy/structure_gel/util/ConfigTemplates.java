@@ -123,7 +123,7 @@ public class ConfigTemplates
 			String string = "";
 			for (int i = 0; i < noiseSettings.length; i++)
 			{
-				string = string + WorldGenRegistries.field_243658_j.getKey(noiseSettings[i]).toString();
+				string = string + WorldGenRegistries.NOISE_SETTINGS.getKey(noiseSettings[i]).toString();
 				if (i < noiseSettings.length - 1)
 					string = string + ", ";
 			}
@@ -305,7 +305,7 @@ public class ConfigTemplates
 		 */
 		public boolean isBiomeAllowed(RegistryKey<Biome> biome)
 		{
-			return this.isBiomeAllowed(ForgeRegistries.BIOMES.getValue(biome.func_240901_a_()));
+			return this.isBiomeAllowed(ForgeRegistries.BIOMES.getValue(biome.getLocation()));
 		}
 
 		/**
@@ -339,8 +339,8 @@ public class ConfigTemplates
 						{
 							BiomeDictionary.get(value).getAllBiomes().forEach(b ->
 							{
-								if (ForgeRegistries.BIOMES.containsKey(b.func_240901_a_()))
-									updateBiomeList(biomes, ForgeRegistries.BIOMES.getValue(b.func_240901_a_()), not);
+								if (ForgeRegistries.BIOMES.containsKey(b.getLocation()))
+									updateBiomeList(biomes, ForgeRegistries.BIOMES.getValue(b.getLocation()), not);
 							});
 						}
 					}
@@ -413,8 +413,8 @@ public class ConfigTemplates
 				Arrays.asList(key.replace(" ", "").split(",")).stream().forEach(s ->
 				{
 					ResourceLocation settings = new ResourceLocation(s);
-					if (WorldGenRegistries.field_243658_j.containsKey(settings))
-						noiseSettings.add(WorldGenRegistries.field_243658_j.getOrDefault(settings));
+					if (WorldGenRegistries.NOISE_SETTINGS.containsKey(settings))
+						noiseSettings.add(WorldGenRegistries.NOISE_SETTINGS.getOrDefault(settings));
 				});
 			}
 			return noiseSettings;

@@ -50,7 +50,7 @@ public class BiomeDictCommand
 		Optional<RegistryKey<Biome>> biome = RegistryHelper.getKey(world, Registry.BIOME_KEY, world.getBiome(new BlockPos(context.getSource().getPos())));
 		if (biome.isPresent())
 		{
-			return getTypes(context, biome.get().func_240901_a_());
+			return getTypes(context, biome.get().getLocation());
 		}
 		return 0;
 	}
@@ -61,7 +61,7 @@ public class BiomeDictCommand
 		{
 			ServerPlayerEntity player = (ServerPlayerEntity) context.getSource().getEntity();
 			player.sendMessage(new StringTextComponent("[" + key.toString() + "]").mergeStyle(TextFormatting.GREEN), Util.DUMMY_UUID);
-			Set<BiomeType> types = BiomeDictionary.getAllTypes(RegistryKey.func_240903_a_(Registry.BIOME_KEY, key));
+			Set<BiomeType> types = BiomeDictionary.getAllTypes(RegistryKey.getOrCreateKey(Registry.BIOME_KEY, key));
 			if (types.isEmpty())
 				player.sendMessage(new StringTextComponent(key.toString() + " has no registered types."), Util.DUMMY_UUID);
 			else
@@ -80,7 +80,7 @@ public class BiomeDictCommand
 			if(biomes.isEmpty())
 				player.sendMessage(new StringTextComponent(key.toString() + " has no registered biomes."), Util.DUMMY_UUID);
 			else
-				biomes.forEach(b -> player.sendMessage(new StringTextComponent(" - " + b.func_240901_a_().toString()), Util.DUMMY_UUID));
+				biomes.forEach(b -> player.sendMessage(new StringTextComponent(" - " + b.getLocation().toString()), Util.DUMMY_UUID));
 		}
 		return 1;
 	}

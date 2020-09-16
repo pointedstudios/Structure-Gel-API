@@ -15,7 +15,7 @@ license="https://www.gnu.org/licenses/gpl-3.0.en.html"
 [[dependencies.structure_gel]]
     modId="forge"
     mandatory=true
-    versionRange="[34.0.0,)"
+    versionRange="[34.0.7,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.structure_gel]]

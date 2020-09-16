@@ -110,7 +110,7 @@ public class EntityMixin
 			double minZ = Math.max(-2.9999872E7D, worldborder.minZ() + 16.0D);
 			double maxX = Math.min(2.9999872E7D, worldborder.maxX() - 16.0D);
 			double maxZ = Math.min(2.9999872E7D, worldborder.maxZ() - 16.0D);
-			double scaling = DimensionType.func_242715_a(this.world.func_230315_m_(), destWorld.func_230315_m_());
+			double scaling = DimensionType.getCoordinateDifference(this.world.getDimensionType(), destWorld.getDimensionType());
 			BlockPos pos = new BlockPos(MathHelper.clamp(((Entity) (Object) this).getPosX() * scaling, minX, maxX), ((Entity) (Object) this).getPosY(), MathHelper.clamp(((Entity) (Object) this).getPosZ() * scaling, minZ, maxZ));
 			// Find a portal and create one if needed.
 			PortalInfo portalInfo = this.func_241830_a(destWorld, pos, toNether).map((tpResult) ->
@@ -121,7 +121,7 @@ public class EntityMixin
 				if (blockstate.hasProperty(BlockStateProperties.HORIZONTAL_AXIS))
 				{
 					direction = blockstate.get(BlockStateProperties.HORIZONTAL_AXIS);
-					TeleportationRepositioner.Result motionTpResult = TeleportationRepositioner.func_243676_a(this.field_242271_ac, direction, 21, Direction.Axis.Y, 21, (bp) ->
+					TeleportationRepositioner.Result motionTpResult = TeleportationRepositioner.findLargestRectangle(this.field_242271_ac, direction, 21, Direction.Axis.Y, 21, (bp) ->
 					{
 						return this.world.getBlockState(bp) == blockstate;
 					});

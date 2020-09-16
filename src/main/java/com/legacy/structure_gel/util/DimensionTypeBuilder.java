@@ -32,7 +32,7 @@ public class DimensionTypeBuilder
 	private int logicalHeight = 256;
 	private IBiomeMagnifier magnifier = ColumnFuzzedBiomeMagnifier.INSTANCE;
 	private ResourceLocation infiniburn = BlockTags.INFINIBURN_OVERWORLD.getName();
-	private ResourceLocation effects = DimensionType.field_242710_a;
+	private ResourceLocation effects = DimensionType.OVERWORLD_ID;
 	private float ambientLight = 0.0F;
 
 	@Internal
