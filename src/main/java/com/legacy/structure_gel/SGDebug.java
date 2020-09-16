@@ -1,6 +1,6 @@
 package com.legacy.structure_gel;
 
-/*import java.util.List;
+import java.util.List;
 import java.util.Random;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -18,7 +18,7 @@ import com.legacy.structure_gel.util.GelTeleporter;
 import com.legacy.structure_gel.util.RegistryHelper;
 import com.legacy.structure_gel.worldgen.structure.GelStructure;
 
-import net.minecraft.block.AbstractBlock.Properties;
+/*import net.minecraft.block.AbstractBlock.Properties;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityClassification;
@@ -54,8 +54,8 @@ import net.minecraft.world.gen.settings.DimensionStructuresSettings;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.registries.ForgeRegistries;
-*/
+import net.minecraftforge.registries.ForgeRegistries;*/
+
 /**
  * Contains a bunch of debug code for testing or examples. This may be commented
  * out.
@@ -80,17 +80,17 @@ public class SGDebug
 	}
 
 	// Dimension registry
-	public static RegistryKey<World> CUSTOM_WORLD = RegistryKey.func_240903_a_(Registry.WORLD_KEY, StructureGelMod.locate("custom"));
+	public static RegistryKey<World> CUSTOM_WORLD = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, StructureGelMod.locate("custom"));
 
 	public static void registerDim(RegisterDimensionEvent event)
 	{
-		Function<RegistryKey<DimensionSettings>, DimensionSettings> settings = (rk) -> DimensionAccessHelper.newFloatingIslandSettings(new DimensionStructuresSettings(true), Blocks.STONE.getDefaultState(), Blocks.AIR.getDefaultState(), CUSTOM_WORLD.func_240901_a_(), false, false);
+		Function<RegistryKey<DimensionSettings>, DimensionSettings> settings = (rk) -> DimensionAccessHelper.newFloatingIslandSettings(new DimensionStructuresSettings(true), Blocks.STONE.getDefaultState(), Blocks.AIR.getDefaultState(), CUSTOM_WORLD.getLocation(), false, false);
 
 		BiFunction<RegisterDimensionEvent, DimensionSettings, ChunkGenerator> generator = (evnt, sttngs) -> new NoiseChunkGenerator(new OverworldBiomeProvider(evnt.getSeed(), false, false, evnt.getBiomeRegistry()), evnt.getSeed(), () -> sttngs);
 
 		Supplier<DimensionType> dimensionType = () -> DimensionTypeBuilder.of().ambientLight(0.1F).build();
 
-		RegistryHelper.handleRegistrar(new DimensionRegistrar(event, CUSTOM_WORLD.func_240901_a_(), dimensionType, settings, generator));
+		RegistryHelper.handleRegistrar(new DimensionRegistrar(event, CUSTOM_WORLD.getLocation(), dimensionType, settings, generator));
 	}
 
 	// Portal registry

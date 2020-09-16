@@ -413,8 +413,8 @@ public class ConfigTemplates
 				Arrays.asList(key.replace(" ", "").split(",")).stream().forEach(s ->
 				{
 					ResourceLocation settings = new ResourceLocation(s);
-					if (WorldGenRegistries.NOISE_SETTINGS.containsKey(settings))
-						noiseSettings.add(WorldGenRegistries.NOISE_SETTINGS.getOrDefault(settings));
+					if (WorldGenRegistries.NOISE_SETTINGS.getOptional(settings).isPresent())
+						noiseSettings.add(WorldGenRegistries.NOISE_SETTINGS.getOptional(settings).get());
 				});
 			}
 			return noiseSettings;
