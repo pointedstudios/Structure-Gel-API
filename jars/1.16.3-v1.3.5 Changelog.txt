@@ -10,3 +10,4 @@ Changes:
 
 Fixes:
 - Fixes issues on server with latest forge.
+- Commands properly log to server console.
