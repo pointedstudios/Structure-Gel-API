@@ -68,6 +68,7 @@ public class BiomeAccessHelper
 	 * @param stage
 	 * @param feature
 	 */
+	@Deprecated
 	public static <C extends IFeatureConfig, F extends Feature<C>> void addFeature(Biome biome, Decoration stage, ConfiguredFeature<C, F> feature)
 	{
 		// Make list mutable before I try to mess with it in case it isn't
@@ -91,6 +92,7 @@ public class BiomeAccessHelper
 	 * @param separationSettings
 	 * @param noiseSettings
 	 */
+	@Deprecated
 	public static <C extends IFeatureConfig, S extends Structure<C>> void addStructure(Biome biome, StructureFeature<C, S> structure, StructureSeparationSettings separationSettings, List<DimensionSettings> noiseSettings)
 	{
 		// Add structure to the biome's structure list
@@ -117,6 +119,7 @@ public class BiomeAccessHelper
 	 * @param biome
 	 * @param gelStructure
 	 */
+	@Deprecated
 	public static <C extends IFeatureConfig, S extends GelStructure<C>> void addStructure(Biome biome, StructureFeature<C, S> gelStructure)
 	{
 		addStructure(biome, gelStructure, gelStructure.field_236268_b_.getSeparationSettings(), gelStructure.field_236268_b_.getNoiseSettingsToGenerateIn());
@@ -128,6 +131,7 @@ public class BiomeAccessHelper
 	 * 
 	 * @param structure
 	 */
+	@Deprecated
 	public static <C extends IFeatureConfig, S extends GelStructure<C>> void addStructureToBiomes(StructureFeature<C, S> structure)
 	{
 		if (structure.field_236268_b_ instanceof IConfigStructure)
@@ -150,6 +154,7 @@ public class BiomeAccessHelper
 	 * @return {@link ConfiguredSurfaceBuilder}
 	 */
 	@Nullable
+	@Deprecated
 	public static ConfiguredSurfaceBuilder<?> getSurfaceBuilder(Biome biome)
 	{
 		return getGenSettings(biome).surfaceBuilder.get();
@@ -161,6 +166,7 @@ public class BiomeAccessHelper
 	 * @param biome
 	 * @param surfaceBuilder
 	 */
+	@Deprecated
 	public static void setSurfaceBuilder(Biome biome, ConfiguredSurfaceBuilder<?> surfaceBuilder)
 	{
 		getGenSettings(biome).surfaceBuilder = () -> surfaceBuilder;
@@ -173,6 +179,7 @@ public class BiomeAccessHelper
 	 * @param carvingType
 	 * @param configuredCarver
 	 */
+	@Deprecated
 	public static void addCarver(Biome biome, Carving carvingType, ConfiguredCarver<?> configuredCarver)
 	{
 		// Make the map and it's lists mutable
@@ -194,6 +201,7 @@ public class BiomeAccessHelper
 	 * @param carvingType
 	 * @return {@link List}
 	 */
+	@Deprecated
 	public static List<Supplier<ConfiguredCarver<?>>> getCarvers(Biome biome, Carving carvingType)
 	{
 		return getGenSettings(biome).getCarvers(carvingType);
@@ -206,6 +214,7 @@ public class BiomeAccessHelper
 	 * @param stage
 	 * @param feature
 	 */
+	@Deprecated
 	public static <C extends IFeatureConfig, PC extends IPlacementConfig> void addFlowerFeature(Biome biome, Decoration stage, ConfiguredFeature<?, ?> feature)
 	{
 		addFeature(biome, stage, feature);
@@ -225,6 +234,7 @@ public class BiomeAccessHelper
 	 * @param classification
 	 * @param spawner
 	 */
+	@Deprecated
 	public static void addSpawn(Biome biome, EntityClassification classification, MobSpawnInfo.Spawners spawner)
 	{
 		// Make the map and it's lists mutable
@@ -247,6 +257,7 @@ public class BiomeAccessHelper
 	 * @param entity
 	 * @param spawnCost
 	 */
+	@Deprecated
 	public static void addSpawnCost(Biome biome, EntityType<?> entity, MobSpawnInfo.SpawnCosts spawnCost)
 	{
 		// Make the map and it's lists mutable
@@ -263,6 +274,7 @@ public class BiomeAccessHelper
 	 * @param biome
 	 * @param ambience
 	 */
+	@Deprecated
 	public static void setAmbience(Biome biome, BiomeAmbience ambience)
 	{
 		biome.effects = ambience;
