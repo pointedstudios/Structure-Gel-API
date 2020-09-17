@@ -5,12 +5,12 @@
 	"refmap": "structure_gel.refmap.json",
 	"mixins": [
 		"LakesFeatureMixin",
-		"WorldRendererMixin",
 		"EntityMixin",
 		"MinecraftServerMixin",
 		"WorldEntitySpawnerMixin"
 	],
 	"client": [
+		"WorldRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
