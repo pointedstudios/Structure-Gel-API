@@ -16,10 +16,8 @@ import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.command.arguments.ResourceLocationArgument;
 import net.minecraft.command.arguments.SuggestionProviders;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.StringTextComponent;
@@ -65,18 +63,6 @@ public class BiomeDictCommand
 			types.forEach(t -> context.getSource().sendFeedback(new StringTextComponent(" - " + t.getRegistryName().toString()), true));
 		
 		return 1;
-/*		
-		if (context.getSource().getEntity() instanceof ServerPlayerEntity)
-		{
-			ServerPlayerEntity player = (ServerPlayerEntity) context.getSource().getEntity();
-			player.sendMessage(new StringTextComponent("[" + key.toString() + "]").mergeStyle(TextFormatting.GREEN), Util.DUMMY_UUID);
-			Set<BiomeType> types = BiomeDictionary.getAllTypes(RegistryKey.getOrCreateKey(Registry.BIOME_KEY, key));
-			if (types.isEmpty())
-				player.sendMessage(new StringTextComponent(key.toString() + " has no registered types."), Util.DUMMY_UUID);
-			else
-				types.forEach(t -> player.sendMessage(new StringTextComponent(" - " + t.getRegistryName().toString()), Util.DUMMY_UUID));
-		}
-		return 1;*/
 	}
 
 	private static int getBiomes(CommandContext<CommandSource> context, ResourceLocation key)
@@ -89,17 +75,5 @@ public class BiomeDictCommand
 			biomes.forEach(b -> context.getSource().sendFeedback(new StringTextComponent(" - " + b.getLocation().toString()), true));
 			
 		return 1;
-		
-		/*if (context.getSource().getEntity() instanceof ServerPlayerEntity)
-		{
-			ServerPlayerEntity player = (ServerPlayerEntity) context.getSource().getEntity();
-			player.sendMessage(new StringTextComponent("[" + key.toString() + "]").mergeStyle(TextFormatting.GREEN), Util.DUMMY_UUID);
-			Set<RegistryKey<Biome>> biomes = BiomeDictionary.get(key).getAllBiomes();
-			if(biomes.isEmpty())
-				player.sendMessage(new StringTextComponent(key.toString() + " has no registered biomes."), Util.DUMMY_UUID);
-			else
-				biomes.forEach(b -> player.sendMessage(new StringTextComponent(" - " + b.getLocation().toString()), Util.DUMMY_UUID));
-		}
-		return 1;*/
 	}
 }

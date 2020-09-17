@@ -12,9 +12,7 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.BlockPosArgument;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.StructureBlockTileEntity;
-import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.text.StringTextComponent;
@@ -53,36 +51,32 @@ public class SaveStructuresCommand
 		}
 		if (savedStructures.size() > 0)
 		{
-			if (context.getSource().getEntity() instanceof ServerPlayerEntity)
+			context.getSource().sendFeedback(new StringTextComponent("[Saved " + savedStructures.size() + " Structures]").mergeStyle(TextFormatting.GREEN), true);
+			if (savedStructures.size() <= 50)
+				savedStructures.forEach(structure -> context.getSource().sendFeedback(new StringTextComponent(" - " + structure), true));
+			else
 			{
-				ServerPlayerEntity player = (ServerPlayerEntity) context.getSource().getEntity();
-				player.sendMessage(new StringTextComponent("[Saved " + savedStructures.size() + " Structures]").mergeStyle(TextFormatting.GREEN), Util.DUMMY_UUID);
-				if (savedStructures.size() <= 50)
-					savedStructures.forEach(structure -> player.sendMessage(new StringTextComponent(" - " + structure), Util.DUMMY_UUID));
+				context.getSource().sendFeedback(new StringTextComponent(" - Too many structures to print. Check the console."), true);
+				StructureGelMod.LOGGER.info("Saved structures:");
+				savedStructures.forEach(StructureGelMod.LOGGER::info);
+			}
+			if (duplicates.size() > 0)
+			{
+				context.getSource().sendFeedback(new StringTextComponent("Warning: Found " + duplicates.size() + " structures with a duplicate name. Click to teleport.").mergeStyle(TextFormatting.RED), true);
+				context.getSource().sendFeedback(new StringTextComponent("[Duplicate Structures]").mergeStyle(TextFormatting.RED), true);
+				if (duplicates.size() <= 50)
+					duplicates.forEach((pos, structure) -> context.getSource().sendFeedback(new StringTextComponent(String.format("%s at (%d, %d, %d)", structure, pos.getX(), pos.getY(), pos.getZ())).modifyStyle(style -> style.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tp @s " + pos.getX() + " " + pos.getY() + " " + pos.getZ()))), true));
 				else
 				{
-					player.sendMessage(new StringTextComponent(" - Too many structures to print. Check the console."), Util.DUMMY_UUID);
-					StructureGelMod.LOGGER.info("Saved structures:");
-					savedStructures.forEach(StructureGelMod.LOGGER::info);
-				}
-				if (duplicates.size() > 0)
-				{
-					player.sendMessage(new StringTextComponent("Warning: Found " + duplicates.size() + " structures with a duplicate name. Click to teleport.").mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
-					player.sendMessage(new StringTextComponent("[Duplicate Structures]").mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
-					if (duplicates.size() <= 50)
-						duplicates.forEach((pos, structure) -> player.sendMessage(new StringTextComponent(String.format("%s at (%d, %d, %d)", structure, pos.getX(), pos.getY(), pos.getZ())).modifyStyle(style -> style.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tp @s " + pos.getX() + " " + pos.getY() + " " + pos.getZ()))), Util.DUMMY_UUID));
-					else
-					{
-						player.sendMessage(new StringTextComponent(" - Too many duplicates to print. Check the console."), Util.DUMMY_UUID);
-						StructureGelMod.LOGGER.info("Duplicate structures:");
-						duplicates.forEach((pos, structure) -> StructureGelMod.LOGGER.info(String.format("%s /tp @s %d %d %d", structure, pos.getX(), pos.getY(), pos.getZ())));
-					}
+					context.getSource().sendFeedback(new StringTextComponent(" - Too many duplicates to print. Check the console."), true);
+					StructureGelMod.LOGGER.info("Duplicate structures:");
+					duplicates.forEach((pos, structure) -> StructureGelMod.LOGGER.info(String.format("%s /tp @s %d %d %d", structure, pos.getX(), pos.getY(), pos.getZ())));
 				}
 			}
 			return savedStructures.size();
 		}
-		ServerPlayerEntity player = (ServerPlayerEntity) context.getSource().getEntity();
-		player.sendMessage(new StringTextComponent("No structures were saved."), Util.DUMMY_UUID);
+
+		context.getSource().sendFeedback(new StringTextComponent("No structures were saved."), true);
 		return 0;
 	}
 }

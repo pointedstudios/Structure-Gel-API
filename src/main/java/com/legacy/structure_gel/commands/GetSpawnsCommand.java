@@ -10,8 +10,6 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -42,14 +40,12 @@ public class GetSpawnsCommand
 			if (!list.isEmpty())
 				map.put(classification, list);
 		}
-		ServerPlayerEntity player = ((ServerPlayerEntity) context.getSource().getEntity());
 		if (!map.isEmpty())
 		{
-			player.sendMessage(new StringTextComponent("--Spawn Data--"), Util.DUMMY_UUID);
+			context.getSource().sendFeedback(new StringTextComponent("--Spawn Data--"), true);
 			map.forEach((classification, list) -> printSpawns(classification, list, context));
 		}
-		else if (context.getSource().getEntity() instanceof ServerPlayerEntity)
-			player.sendMessage(new StringTextComponent("No spawn data."), Util.DUMMY_UUID);
+		context.getSource().sendFeedback(new StringTextComponent("No spawn data."), true);
 
 		return 1;
 	}
@@ -67,14 +63,10 @@ public class GetSpawnsCommand
 
 	private static void printSpawns(EntityClassification classification, List<MobSpawnInfo.Spawners> spawns, CommandContext<CommandSource> context)
 	{
-		if (context.getSource().getEntity() instanceof ServerPlayerEntity)
+		if (!spawns.isEmpty())
 		{
-			if (!spawns.isEmpty())
-			{
-				ServerPlayerEntity player = ((ServerPlayerEntity) context.getSource().getEntity());
-				player.sendMessage(new StringTextComponent("[" + classification.getName() + "]").mergeStyle(TextFormatting.GREEN), Util.DUMMY_UUID);
-				spawns.forEach(spawn -> player.sendMessage(new StringTextComponent(String.format(" - %s, weight:%d, min:%d, max:%d", spawn.type.getRegistryName(), spawn.itemWeight, spawn.minCount, spawn.maxCount)), Util.DUMMY_UUID));
-			}
+			context.getSource().sendFeedback(new StringTextComponent("[" + classification.getName() + "]").mergeStyle(TextFormatting.GREEN), true);
+			spawns.forEach(spawn -> context.getSource().sendFeedback(new StringTextComponent(String.format(" - %s, weight:%d, min:%d, max:%d", spawn.type.getRegistryName(), spawn.itemWeight, spawn.minCount, spawn.maxCount)), true));
 		}
 	}
 }
