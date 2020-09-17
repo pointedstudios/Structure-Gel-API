@@ -32,11 +32,15 @@ import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.placement.IPlacementConfig;
 import net.minecraft.world.gen.settings.StructureSeparationSettings;
 import net.minecraft.world.gen.surfacebuilders.ConfiguredSurfaceBuilder;
+import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Contains methods to add various things to biomes, such as features,
- * structures, carvers, mob spawns, etc. Thanks 1.16.2.
+ * structures, carvers, mob spawns, etc. Thanks 1.16.2.<br>
+ * <br>
+ * It may be better to use {@link BiomeLoadingEvent} instead of this for your
+ * purposes.
  * 
  * @author David
  *
@@ -57,8 +61,8 @@ public class BiomeAccessHelper
 
 	/**
 	 * Adds the feature to the biome with the given settings. For flowers, use
-	 * {@link #addFlowerFeature(Biome, Decoration, ConfiguredFeature)}. Make sure that the
-	 * {@link ConfiguredFeature} is registered first.
+	 * {@link #addFlowerFeature(Biome, Decoration, ConfiguredFeature)}. Make sure
+	 * that the {@link ConfiguredFeature} is registered first.
 	 * 
 	 * @param biome
 	 * @param stage
