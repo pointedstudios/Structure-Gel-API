@@ -57,6 +57,15 @@ public class BiomeDictCommand
 
 	private static int getTypes(CommandContext<CommandSource> context, ResourceLocation key)
 	{
+		context.getSource().sendFeedback(new StringTextComponent("[" + key.toString() + "]").mergeStyle(TextFormatting.GREEN), true);
+		Set<BiomeType> types = BiomeDictionary.getAllTypes(RegistryKey.getOrCreateKey(Registry.BIOME_KEY, key));
+		if (types.isEmpty())
+			context.getSource().sendFeedback(new StringTextComponent(key.toString() + " has no registered types."), true);
+		else
+			types.forEach(t -> context.getSource().sendFeedback(new StringTextComponent(" - " + t.getRegistryName().toString()), true));
+		
+		return 1;
+/*		
 		if (context.getSource().getEntity() instanceof ServerPlayerEntity)
 		{
 			ServerPlayerEntity player = (ServerPlayerEntity) context.getSource().getEntity();
@@ -67,12 +76,21 @@ public class BiomeDictCommand
 			else
 				types.forEach(t -> player.sendMessage(new StringTextComponent(" - " + t.getRegistryName().toString()), Util.DUMMY_UUID));
 		}
-		return 1;
+		return 1;*/
 	}
 
 	private static int getBiomes(CommandContext<CommandSource> context, ResourceLocation key)
 	{
-		if (context.getSource().getEntity() instanceof ServerPlayerEntity)
+		context.getSource().sendFeedback(new StringTextComponent("[" + key.toString() + "]").mergeStyle(TextFormatting.GREEN), true);
+		Set<RegistryKey<Biome>> biomes = BiomeDictionary.get(key).getAllBiomes();
+		if(biomes.isEmpty())
+			context.getSource().sendFeedback(new StringTextComponent(key.toString() + " has no registered biomes."), true);
+		else
+			biomes.forEach(b -> context.getSource().sendFeedback(new StringTextComponent(" - " + b.getLocation().toString()), true));
+			
+		return 1;
+		
+		/*if (context.getSource().getEntity() instanceof ServerPlayerEntity)
 		{
 			ServerPlayerEntity player = (ServerPlayerEntity) context.getSource().getEntity();
 			player.sendMessage(new StringTextComponent("[" + key.toString() + "]").mergeStyle(TextFormatting.GREEN), Util.DUMMY_UUID);
@@ -82,6 +100,6 @@ public class BiomeDictCommand
 			else
 				biomes.forEach(b -> player.sendMessage(new StringTextComponent(" - " + b.getLocation().toString()), Util.DUMMY_UUID));
 		}
-		return 1;
+		return 1;*/
 	}
 }

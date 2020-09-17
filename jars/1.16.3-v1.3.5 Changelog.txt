@@ -1,10 +1,12 @@
 1.16.3-v1.3.5
 
-Fixes issues with the latest forge version (33.0.7). Requires use of forge 33.0.7 or higher.
+Fixes issues with the latest forge version. Requires use of forge 33.0.7 or higher.
 
 Changes:
-- Upadted minimum forge version to 1.16.3-33.0.7
-- Updated to the latest mapping version to 20200916-1.16.2
+- Upadted minimum forge version to 1.16.3-34.0.7.
+- Updated to the latest mapping version to 20200916-1.16.2.
+- Moved the WorldRendererMixin to be called on clients.
+- Removed StructureGelClient in favor of a simpler alternative.
 
 Fixes:
-- Fixes issues with the latest forge version.
+- Fixes issues on server with latest forge.
