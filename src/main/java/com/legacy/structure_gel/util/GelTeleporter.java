@@ -10,6 +10,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.NetherPortalBlock;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Direction;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.TeleportationRepositioner;
@@ -124,7 +125,33 @@ public class GelTeleporter extends Teleporter
 		return this.placementBehavior;
 	}
 
-	// findPortal
+	/**
+	 * Gets the destination world of this teleporter.
+	 * 
+	 * @return {@link ServerWorld}
+	 */
+	public ServerWorld getWorld()
+	{
+		return this.world;
+	}
+
+	/**
+	 * Returns if the block passed should be ignored when placing on the surface. By
+	 * default, ignores blocks tagged as leaves or logs, air, and blocks without
+	 * collision (except fluids).
+	 * 
+	 * @param state
+	 * @param pos
+	 * @return {@link Boolean}
+	 */
+	public boolean shouldIgnoreBlock(BlockState state, BlockPos pos)
+	{
+		return state.isIn(BlockTags.LEAVES) || state.isIn(BlockTags.LOGS) || state.isAir(world, pos) || (state.getCollisionShape(world, pos).isEmpty() && !state.getMaterial().isLiquid());
+	}
+
+	/**
+	 * Locates a portal in the {@link #getWorld()}.
+	 */
 	@Override
 	public Optional<TeleportationRepositioner.Result> getExistingPortal(BlockPos startPos, boolean toNether)
 	{
@@ -155,17 +182,67 @@ public class GelTeleporter extends Teleporter
 		});
 	}
 
-	// createAndFindPortal
+	/**
+	 * Places a new portal in the {@link #getWorld()} and locates it.
+	 */
 	@Override
 	public Optional<TeleportationRepositioner.Result> makePortal(BlockPos startPos, Direction.Axis enterAxis)
 	{
 		return this.placementBehavior.apply(this, startPos, enterAxis);
 	}
 
-	//TODO finish code
+	/**
+	 * Places this portal on highest block in the world, ignoring blocks specified
+	 * in the
+	 * 
+	 * @param teleporter
+	 * @param startPos
+	 * @param enterAxis
+	 * @return {@link Optional}
+	 */
 	public static Optional<TeleportationRepositioner.Result> createAndFindPortalSurface(GelTeleporter teleporter, BlockPos startPos, Direction.Axis enterAxis)
 	{
-		return null;
+		ServerWorld world = teleporter.world;
+		BlockPos pos = startPos;
+		int x = pos.getX();
+		int y = world.func_234938_ad_();
+		int z = pos.getZ();
+
+		BlockPos.Mutable mutablePos = new BlockPos.Mutable(x, y, z);
+		int i = y;
+		BlockState state = world.getBlockState(mutablePos);
+		while (i > 0 && teleporter.shouldIgnoreBlock(state, mutablePos))
+		{
+			state = world.getBlockState(mutablePos.move(Direction.DOWN));
+			i--;
+		}
+		if (i > 0)
+			y = i + 1;
+
+		BlockState frameState = teleporter.getFrameBlock().get();
+		for (int horizontalOffset = -1; horizontalOffset < 3; ++horizontalOffset)
+		{
+			for (int verticalOffset = -1; verticalOffset < 4; ++verticalOffset)
+			{
+				if (horizontalOffset == -1 || horizontalOffset == 2 || verticalOffset == -1 || verticalOffset == 3)
+				{
+					BlockPos pos2 = new BlockPos(x, y + verticalOffset, z + horizontalOffset);
+					world.setBlockState(pos2, frameState, 3);
+				}
+			}
+		}
+
+		BlockState portalState = teleporter.getPortalBlock().get().getDefaultState().with(NetherPortalBlock.AXIS, Direction.Axis.Z);
+		for (int horizontalOffset = 0; horizontalOffset < 2; ++horizontalOffset)
+		{
+			for (int verticalOffset = 0; verticalOffset < 3; ++verticalOffset)
+			{
+				BlockPos pos2 = new BlockPos(x, y + verticalOffset, z + horizontalOffset);
+				world.setBlockState(pos2, portalState, 18);
+			}
+		}
+
+		return teleporter.getExistingPortal(startPos, false);
 	}
 
 	/**
@@ -210,10 +287,10 @@ public class GelTeleporter extends Teleporter
 							if (j1 <= 0 || j1 >= 3)
 							{
 								blockpos$mutable1.setY(l);
-								if (teleporter.isSafePosition(blockpos$mutable1, blockpos$mutable, direction, 0))
+								if (teleporter.checkRegionForPlacement(blockpos$mutable1, blockpos$mutable, direction, 0))
 								{
 									double d2 = startPos.distanceSq(blockpos$mutable1);
-									if (teleporter.isSafePosition(blockpos$mutable1, blockpos$mutable, direction, -1) && teleporter.isSafePosition(blockpos$mutable1, blockpos$mutable, direction, 1) && (d0 == -1.0D || d0 > d2))
+									if (teleporter.checkRegionForPlacement(blockpos$mutable1, blockpos$mutable, direction, -1) && teleporter.checkRegionForPlacement(blockpos$mutable1, blockpos$mutable, direction, 1) && (d0 == -1.0D || d0 > d2))
 									{
 										d0 = d2;
 										blockpos = blockpos$mutable1.toImmutable();
@@ -287,8 +364,7 @@ public class GelTeleporter extends Teleporter
 		return Optional.of(new TeleportationRepositioner.Result(blockpos.toImmutable(), 2, 3));
 	}
 
-	// func_242955_a
-	private boolean isSafePosition(BlockPos pos, BlockPos.Mutable mutablePos, Direction facing, int offset)
+	private boolean checkRegionForPlacement(BlockPos pos, BlockPos.Mutable mutablePos, Direction facing, int offset)
 	{
 		Direction direction = facing.rotateY();
 
@@ -308,12 +384,15 @@ public class GelTeleporter extends Teleporter
 		return true;
 	}
 
+	/**
+	 * Silly thing to make it work.
+	 */
 	@Override
 	public boolean isVanilla()
 	{
 		return true;
 	}
-	
+
 	/**
 	 * Determins how the portal generated should be placed.
 	 * 
@@ -338,7 +417,7 @@ public class GelTeleporter extends Teleporter
 	}
 
 	@FunctionalInterface
-	private static interface ICreatePortalFuncion
+	public static interface ICreatePortalFuncion
 	{
 		public Optional<TeleportationRepositioner.Result> apply(GelTeleporter teleporter, BlockPos startPos, Direction.Axis enterAxis);
 	}
