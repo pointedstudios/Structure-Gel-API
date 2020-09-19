@@ -114,7 +114,8 @@ public class SGDebug
 	// this case.
 	public static void spawnPortal(final BlockEvent.EntityPlaceEvent event)
 	{
-		GelPortalBlock.fillPortal((World) event.getWorld(), event.getPos(), (GelPortalBlock) PORTAL, ImmutableList.of(Blocks.SOUL_SOIL));
+		if (event.getPlacedBlock().getBlock() == Blocks.SOUL_SOIL)
+			GelPortalBlock.fillPortal((World) event.getWorld(), event.getPos(), (GelPortalBlock) PORTAL, ImmutableList.of(Blocks.SOUL_SOIL));
 	}
 
 	// Register a debug structure for basic testing

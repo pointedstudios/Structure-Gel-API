@@ -162,7 +162,12 @@ public class GelTeleporter extends Teleporter
 		Optional<PointOfInterest> optional = poiManager.getInSquare(poiType ->
 		{
 			return poiType == this.portalPOI.get();
-		}, startPos, i, PointOfInterestManager.Status.ANY).sorted(Comparator.<PointOfInterest>comparingDouble(poi ->
+		}, startPos, i, PointOfInterestManager.Status.ANY).filter(poi ->
+		{
+			// Only gets portals that don't have a portal below them to optimize for larger
+			// portals.
+			return poiManager.getType(poi.getPos().down()).orElse(null) != poi.getType();
+		}).sorted(Comparator.<PointOfInterest>comparingDouble(poi ->
 		{
 			return poi.getPos().distanceSq(startPos);
 		}).thenComparingInt(poi ->
