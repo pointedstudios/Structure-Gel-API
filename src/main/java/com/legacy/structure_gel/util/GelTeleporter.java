@@ -193,7 +193,7 @@ public class GelTeleporter extends Teleporter
 
 	/**
 	 * Places this portal on highest block in the world, ignoring blocks specified
-	 * in the
+	 * in {@link #shouldIgnoreBlock(BlockState, BlockPos)}.
 	 * 
 	 * @param teleporter
 	 * @param startPos
@@ -241,6 +241,26 @@ public class GelTeleporter extends Teleporter
 				world.setBlockState(pos2, portalState, 18);
 			}
 		}
+
+		boolean placePlatform = true;
+		label0: for (int x1 = -1; x1 < 2; x1++)
+		{
+			for (int z1 = 0; z1 < 2; z1++)
+			{
+				BlockPos pos2 = new BlockPos(x + x1, y - 1, z + z1);
+				BlockState existingState = world.getBlockState(pos2);
+				if (!(teleporter.shouldIgnoreBlock(existingState, pos2) || existingState.getMaterial().isLiquid()) && existingState.getBlock() != frameState.getBlock())
+				{
+					placePlatform = false;
+					break label0;
+				}
+			}
+		}
+
+		if (placePlatform)
+			for (int x1 = -1; x1 < 2; x1++)
+				for (int z1 = 0; z1 < 2; z1++)
+					world.setBlockState(new BlockPos(x + x1, y - 1, z + z1), frameState);
 
 		return teleporter.getExistingPortal(startPos, false);
 	}
@@ -416,6 +436,12 @@ public class GelTeleporter extends Teleporter
 		}
 	}
 
+	/**
+	 * Used to create a portal and get it's location.
+	 * 
+	 * @author David
+	 *
+	 */
 	@FunctionalInterface
 	public static interface ICreatePortalFuncion
 	{
