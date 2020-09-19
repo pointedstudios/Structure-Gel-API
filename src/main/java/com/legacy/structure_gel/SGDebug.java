@@ -1,6 +1,6 @@
 package com.legacy.structure_gel;
 
-/*import java.util.List;
+import java.util.List;
 import java.util.Random;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -13,12 +13,13 @@ import com.legacy.structure_gel.blocks.GelPortalBlock;
 import com.legacy.structure_gel.events.RegisterDimensionEvent;
 import com.legacy.structure_gel.registrars.DimensionRegistrar;
 import com.legacy.structure_gel.registrars.StructureRegistrar;
+import com.legacy.structure_gel.util.ConfigTemplates;
 import com.legacy.structure_gel.util.DimensionTypeBuilder;
 import com.legacy.structure_gel.util.GelTeleporter;
 import com.legacy.structure_gel.util.RegistryHelper;
-import com.legacy.structure_gel.worldgen.structure.GelStructure;*/
+import com.legacy.structure_gel.worldgen.structure.GelConfigStructure;
 
-/*import net.minecraft.block.AbstractBlock.Properties;
+import net.minecraft.block.AbstractBlock.Properties;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityClassification;
@@ -52,9 +53,9 @@ import net.minecraft.world.gen.feature.template.Template;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import net.minecraft.world.gen.settings.DimensionStructuresSettings;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.registries.ForgeRegistries;*/
+import net.minecraftforge.eventbus.api.IEventBus;
 
 /**
  * Contains a bunch of debug code for testing or examples. This may be commented
@@ -63,24 +64,26 @@ import net.minecraftforge.registries.ForgeRegistries;*/
  * @author David
  *
  */
-@com.legacy.structure_gel.util.Internal
 public class SGDebug
 {
-	/*public static void init(net.minecraftforge.eventbus.api.IEventBus modBus, net.minecraftforge.eventbus.api.IEventBus forgeBus)
+	public static void init(IEventBus modBus, IEventBus forgeBus)
 	{
-
-		forgeBus.addListener(SGDebug::registerDim);
-		forgeBus.addListener(SGDebug::spawnPortal);
-
 		modBus.addGenericListener(Block.class, SGDebug::registerBlocks);
 		modBus.addGenericListener(PointOfInterestType.class, SGDebug::registerPOI);
 		modBus.addGenericListener(Structure.class, SGDebug::registerStructure);
-		modBus.addListener(SGDebug::commonInit);
 
+		forgeBus.addListener(SGDebug::registerDim);
+		forgeBus.addListener(SGDebug::spawnPortal);
+		forgeBus.addListener(SGDebug::biomeLoad);
+	}
+
+	public static ResourceLocation locate(String key)
+	{
+		return StructureGelMod.locate(key);
 	}
 
 	// Dimension registry
-	public static RegistryKey<World> CUSTOM_WORLD = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, StructureGelMod.locate("custom"));
+	public static RegistryKey<World> CUSTOM_WORLD = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, locate("custom"));
 
 	public static void registerDim(RegisterDimensionEvent event)
 	{
@@ -99,12 +102,12 @@ public class SGDebug
 
 	public static void registerBlocks(final RegistryEvent.Register<Block> event)
 	{
-		PORTAL = RegistryHelper.register(event.getRegistry(), StructureGelMod.locate("portal"), new GelPortalBlock(Properties.from(Blocks.NETHER_PORTAL), (s) -> new GelTeleporter(s, () -> World.OVERWORLD, () -> CUSTOM_WORLD, () -> PORTAL_POI, () -> (GelPortalBlock) PORTAL, () -> Blocks.SMOOTH_QUARTZ.getDefaultState(), GelTeleporter.CreatePortalBehavior.NETHER)));
+		PORTAL = RegistryHelper.register(event.getRegistry(), locate("portal"), new GelPortalBlock(Properties.from(Blocks.NETHER_PORTAL), (s) -> new GelTeleporter(s, () -> World.OVERWORLD, () -> CUSTOM_WORLD, () -> PORTAL_POI, () -> (GelPortalBlock) PORTAL, () -> Blocks.SMOOTH_QUARTZ.getDefaultState(), GelTeleporter.CreatePortalBehavior.NETHER)));
 	}
 
 	public static void registerPOI(final RegistryEvent.Register<PointOfInterestType> event)
 	{
-		PORTAL_POI = RegistryHelper.registerPOI(event.getRegistry(), new PointOfInterestType(StructureGelMod.locate("portal").toString(), PointOfInterestType.getAllStates(PORTAL), 0, 1));
+		PORTAL_POI = RegistryHelper.registerPOI(event.getRegistry(), new PointOfInterestType(locate("portal").toString(), PointOfInterestType.getAllStates(PORTAL), 0, 1));
 	}
 
 	// Event to create portal. By placing soul sand in a smooth quartz portal in
@@ -115,46 +118,28 @@ public class SGDebug
 	}
 
 	// Register a debug structure for basic testing
-	public static StructureRegistrar<NoFeatureConfig, DebugStructure> DEBUG_STRUCTURE = StructureRegistrar.of(StructureGelMod.locate("debug"), new DebugStructure(), DebugStructure.Pieces.Piece::new, NoFeatureConfig.field_236559_b_, Decoration.SURFACE_STRUCTURES).handle();
+	public static StructureRegistrar<NoFeatureConfig, DebugStructure> DEBUG_STRUCTURE = StructureRegistrar.of(locate("debug"), new DebugStructure(StructureGelConfig.COMMON.structureConfig), DebugStructure.Pieces.Piece::new, NoFeatureConfig.field_236559_b_, Decoration.SURFACE_STRUCTURES).handle();
 
 	public static void registerStructure(final RegistryEvent.Register<Structure<?>> event)
 	{
 		DEBUG_STRUCTURE.handleForge(event.getRegistry());
 	}
 
-	public static void commonInit(final FMLCommonSetupEvent event)
+	public static void biomeLoad(final BiomeLoadingEvent event)
 	{
-		ForgeRegistries.BIOMES.forEach(b -> BiomeAccessHelper.addStructure(b, DEBUG_STRUCTURE.getStructureFeature()));
+		BiomeAccessHelper.addStructureIfAllowed(event, DEBUG_STRUCTURE.getStructureFeature());
 	}
-
-	public static class DebugStructure extends GelStructure<NoFeatureConfig>
+	
+	public static class DebugStructure extends GelConfigStructure<NoFeatureConfig>
 	{
-		public DebugStructure()
+		public DebugStructure(ConfigTemplates.StructureConfig config)
 		{
-			super(NoFeatureConfig.field_236558_a_);
+			super(NoFeatureConfig.field_236558_a_, config);
 			this.setSpawnList(EntityClassification.MONSTER, ImmutableList.of(new MobSpawnInfo.Spawners(EntityType.ZOMBIFIED_PIGLIN, 1, 1, 1)));
 		}
 
 		@Override
 		public int getSeed()
-		{
-			return 0;
-		}
-
-		@Override
-		public double getProbability()
-		{
-			return 1;
-		}
-
-		@Override
-		public int getSpacing()
-		{
-			return 24;
-		}
-
-		@Override
-		public int getOffset()
 		{
 			return 0;
 		}
@@ -199,7 +184,7 @@ public class SGDebug
 
 				public Piece(TemplateManager templateManager, BlockPos pos, ResourceLocation name)
 				{
-					super(DEBUG_STRUCTURE.getPieceType(), 0);
+					super(SGDebug.DEBUG_STRUCTURE.getPieceType(), 0);
 					this.templateName = name;
 					this.templatePosition = pos;
 					this.setup(templateManager);
@@ -207,7 +192,7 @@ public class SGDebug
 
 				public Piece(TemplateManager templateManager, CompoundNBT nbt)
 				{
-					super(DEBUG_STRUCTURE.getPieceType(), nbt);
+					super(SGDebug.DEBUG_STRUCTURE.getPieceType(), nbt);
 					this.templateName = new ResourceLocation(nbt.getString("Template"));
 					this.setup(templateManager);
 				}
@@ -233,5 +218,5 @@ public class SGDebug
 				}
 			}
 		}
-	}*/
+	}
 }

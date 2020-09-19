@@ -45,7 +45,7 @@ public class ConfigTemplates
 		// Biome settings
 		private ForgeConfigSpec.BooleanValue isWhitelist;
 		private ForgeConfigSpec.ConfigValue<String> biomeString;
-		private List<Biome> biomes = new ArrayList<>();
+		private List<ResourceLocation> biomes = new ArrayList<>();
 		// Mob spawn settings
 		private Map<EntityClassification, ForgeConfigSpec.ConfigValue<String>> spawnsStrings = new HashMap<>();
 		private Map<EntityClassification, List<MobSpawnInfo.Spawners>> spawns = new HashMap<>();
@@ -189,7 +189,7 @@ public class ConfigTemplates
 		 * 
 		 * @return {@link List}
 		 */
-		public List<Biome> getBiomes()
+		public List<ResourceLocation> getBiomes()
 		{
 			return this.biomes;
 		}
@@ -290,10 +290,12 @@ public class ConfigTemplates
 		 * 
 		 * @param biome
 		 * @return {@link Boolean}
+		 * @deprecated use RegistryKey or ResourceLocation variants.
 		 */
+		@Deprecated
 		public boolean isBiomeAllowed(Biome biome)
 		{
-			return this.biomes.contains(biome) == this.isWhitelist();
+			return this.biomes.contains(biome.getRegistryName()) == this.isWhitelist();
 		}
 
 		/**
@@ -305,7 +307,19 @@ public class ConfigTemplates
 		 */
 		public boolean isBiomeAllowed(RegistryKey<Biome> biome)
 		{
-			return this.isBiomeAllowed(ForgeRegistries.BIOMES.getValue(biome.getLocation()));
+			return this.biomes.contains(biome.getLocation());
+		}
+
+		/**
+		 * Checks if the input biome is or isn't in the biomes list depending on if you
+		 * use whitelist or blacklist mode.
+		 * 
+		 * @param biome
+		 * @return {@link Boolean}
+		 */
+		public boolean isBiomeAllowed(ResourceLocation biome)
+		{
+			return this.biomes.contains(biome);
 		}
 
 		/**
@@ -316,9 +330,9 @@ public class ConfigTemplates
 		 * @param key
 		 * @return {@link List}
 		 */
-		public List<Biome> parseBiomes(String key)
+		public List<ResourceLocation> parseBiomes(String key)
 		{
-			List<Biome> biomes = new ArrayList<>();
+			List<ResourceLocation> biomes = new ArrayList<>();
 			if (!key.isEmpty())
 			{
 				Arrays.asList(key.replace(" ", "").split(",")).stream().forEach(s ->
@@ -329,21 +343,9 @@ public class ConfigTemplates
 					ResourceLocation value = new ResourceLocation(biomeString);
 
 					if (!isTag)
-					{
-						if (ForgeRegistries.BIOMES.containsKey(value))
-							updateBiomeList(biomes, ForgeRegistries.BIOMES.getValue(value), not);
-					}
-					else
-					{
-						if (BiomeDictionary.contains(value))
-						{
-							BiomeDictionary.get(value).getAllBiomes().forEach(b ->
-							{
-								if (ForgeRegistries.BIOMES.containsKey(b.getLocation()))
-									updateBiomeList(biomes, ForgeRegistries.BIOMES.getValue(b.getLocation()), not);
-							});
-						}
-					}
+						updateBiomeList(biomes, value, not);
+					else if (BiomeDictionary.contains(value))
+						BiomeDictionary.get(value).getAllBiomes().forEach(b -> updateBiomeList(biomes, b.getLocation(), not));
 				});
 			}
 			return biomes;
@@ -356,7 +358,7 @@ public class ConfigTemplates
 		 * @param not
 		 */
 		@Internal
-		protected static void updateBiomeList(List<Biome> biomes, Biome biome, boolean not)
+		protected static void updateBiomeList(List<ResourceLocation> biomes, ResourceLocation biome, boolean not)
 		{
 			if (not)
 			{

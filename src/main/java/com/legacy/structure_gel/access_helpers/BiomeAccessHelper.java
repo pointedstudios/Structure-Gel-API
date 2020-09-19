@@ -1,5 +1,6 @@
 package com.legacy.structure_gel.access_helpers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -9,7 +10,6 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.util.GelCollectors;
 import com.legacy.structure_gel.worldgen.structure.GelStructure;
 import com.legacy.structure_gel.worldgen.structure.IConfigStructure;
@@ -36,11 +36,9 @@ import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 /**
- * Contains methods to add various things to biomes, such as features,
- * structures, carvers, mob spawns, etc. Thanks 1.16.2.<br>
- * <br>
- * It may be better to use {@link BiomeLoadingEvent} instead of this for your
- * purposes.
+ * Contains methods to add various things to biomes. Some code is deprecated
+ * thanks to the addition of the {@link BiomeLoadingEvent}, so you should look
+ * into using that.
  * 
  * @author David
  *
@@ -67,6 +65,7 @@ public class BiomeAccessHelper
 	 * @param biome
 	 * @param stage
 	 * @param feature
+	 * @deprecated use {@link BiomeLoadingEvent}
 	 */
 	@Deprecated
 	public static <C extends IFeatureConfig, F extends Feature<C>> void addFeature(Biome biome, Decoration stage, ConfiguredFeature<C, F> feature)
@@ -85,12 +84,67 @@ public class BiomeAccessHelper
 	}
 
 	/**
+	 * Adds the input structure to the biome from the event passed.
+	 * 
+	 * @param event
+	 * @param structure
+	 * @param separationSettings
+	 * @param noiseSettings
+	 */
+	public static <C extends IFeatureConfig, S extends Structure<C>> void addStructure(BiomeLoadingEvent event, StructureFeature<C, S> structure, StructureSeparationSettings separationSettings, List<DimensionSettings> noiseSettings)
+	{
+		// Add structure to the biome
+		event.getGeneration().withStructure(structure);
+
+		// Add separation settings to noise settings so it's allowed to generate.
+		noiseSettings.forEach(noiseSetting ->
+		{
+			if (!noiseSetting.getStructures().field_236193_d_.containsKey(structure.field_236268_b_))
+				noiseSetting.getStructures().field_236193_d_.put(structure.field_236268_b_, separationSettings);
+		});
+	}
+
+	/**
+	 * Adds the input {@link GelStructure} to the biome from the event passed.
+	 * 
+	 * @param event
+	 * @param gelStructure
+	 */
+	public static <C extends IFeatureConfig, S extends GelStructure<C>> void addStructure(BiomeLoadingEvent event, StructureFeature<C, S> gelStructure)
+	{
+		addStructure(event, gelStructure, gelStructure.field_236268_b_.getSeparationSettings(), gelStructure.field_236268_b_.getNoiseSettingsToGenerateIn());
+	}
+
+	/**
+	 * Adds the input {@link GelStructure} the biome from the event passed if the
+	 * biome is in it's config.<br>
+	 * <br>
+	 * The structure must be an instance of {@link IConfigStructure}.
+	 * 
+	 * @param event
+	 * @param gelStructure
+	 * @throws IllegalArgumentException
+	 */
+	public static <C extends IFeatureConfig, S extends GelStructure<C>> void addStructureIfAllowed(BiomeLoadingEvent event, StructureFeature<C, S> gelStructure)
+	{
+		if (gelStructure.field_236268_b_ instanceof IConfigStructure)
+		{
+			if (((IConfigStructure) gelStructure.field_236268_b_).getConfig().isBiomeAllowed(event.getName()))
+				addStructure(event, gelStructure);
+		}
+		else
+			throw new IllegalArgumentException("Attempted to add " + gelStructure.field_236268_b_.getRegistryName() + " to it's configured biomes, but it was not an instance of IConfigStructure.");
+	}
+
+	/**
 	 * Sets the input {@link Structure} to generate in the biome.
 	 * 
 	 * @param biome
 	 * @param structure
 	 * @param separationSettings
 	 * @param noiseSettings
+	 * @deprecated use
+	 *             {@link #addStructure(BiomeLoadingEvent, StructureFeature, StructureSeparationSettings, List)}
 	 */
 	@Deprecated
 	public static <C extends IFeatureConfig, S extends Structure<C>> void addStructure(Biome biome, StructureFeature<C, S> structure, StructureSeparationSettings separationSettings, List<DimensionSettings> noiseSettings)
@@ -98,13 +152,23 @@ public class BiomeAccessHelper
 		// Add structure to the biome's structure list
 		getGenSettings(biome).structures = GelCollectors.addToList(getGenSettings(biome).structures, () -> structure);
 
-		// Add structure to starts map
-		// Make map mutable before I try to add to it in case it isn't
-		if (biome.biomeStructures instanceof ImmutableMap || biome.biomeStructures.get(structure.field_236268_b_.func_236396_f_().ordinal()) instanceof ImmutableList)
-			biome.biomeStructures = GelCollectors.makeMapMutable(biome.biomeStructures, Map.Entry::getKey, e -> GelCollectors.makeListMutable(e.getValue()));
+		int genStage = structure.field_236268_b_.func_236396_f_().ordinal();
+		// Ensure that the structure isn't already present
+		if (!(biome.biomeStructures.containsKey(genStage) && biome.biomeStructures.get(genStage).contains(structure.field_236268_b_)))
+		{
+			// Add structure to starts map
+			// Make map mutable before I try to add to it in case it isn't
+			if (biome.biomeStructures instanceof ImmutableMap || biome.biomeStructures.get(genStage) instanceof ImmutableList)
+				biome.biomeStructures = GelCollectors.makeMapMutable(biome.biomeStructures, Map.Entry::getKey, e -> GelCollectors.makeListMutable(e.getValue()));
 
-		biome.biomeStructures.get(structure.field_236268_b_.func_236396_f_().ordinal()).add(structure.field_236268_b_);
-
+			// Add the generation stage if not present
+			if (!biome.biomeStructures.containsKey(genStage))
+				biome.biomeStructures.put(genStage, new ArrayList<>());
+			
+			// Add to the generation stage
+			biome.biomeStructures.get(genStage).add(structure.field_236268_b_);
+		}
+		
 		// Add separation settings to noise settings
 		noiseSettings.forEach(noiseSetting ->
 		{
@@ -118,6 +182,7 @@ public class BiomeAccessHelper
 	 * 
 	 * @param biome
 	 * @param gelStructure
+	 * @deprecated use {@link #addStructure(BiomeLoadingEvent, StructureFeature)}
 	 */
 	@Deprecated
 	public static <C extends IFeatureConfig, S extends GelStructure<C>> void addStructure(Biome biome, StructureFeature<C, S> gelStructure)
@@ -130,21 +195,18 @@ public class BiomeAccessHelper
 	 * config if the structure is an instance of {@link IConfigStructure}.
 	 * 
 	 * @param structure
+	 * @deprecated use
+	 *             {@link #addStructureIfAllowed(BiomeLoadingEvent, StructureFeature)}
+	 * @throws IllegalArgumentException
 	 */
+	@SuppressWarnings("deprecation")
 	@Deprecated
 	public static <C extends IFeatureConfig, S extends GelStructure<C>> void addStructureToBiomes(StructureFeature<C, S> structure)
 	{
 		if (structure.field_236268_b_ instanceof IConfigStructure)
-		{
-			ForgeRegistries.BIOMES.getValues().stream().filter(b -> ((IConfigStructure) structure.field_236268_b_).getConfig().isBiomeAllowed(b)).forEach(b ->
-			{
-				BiomeAccessHelper.addStructure(b, structure);
-			});
-		}
+			ForgeRegistries.BIOMES.getValues().stream().filter(b -> ((IConfigStructure) structure.field_236268_b_).getConfig().isBiomeAllowed(b)).forEach(b -> BiomeAccessHelper.addStructure(b, structure));
 		else
-		{
-			StructureGelMod.LOGGER.error("Attempted to add " + structure.field_236268_b_.getRegistryName() + " to it's configured biomes, but it was not an instance of IConfigStructure.");
-		}
+			throw new IllegalArgumentException("Attempted to add " + structure.field_236268_b_.getRegistryName() + " to it's configured biomes, but it was not an instance of IConfigStructure.");
 	}
 
 	/**
@@ -152,6 +214,7 @@ public class BiomeAccessHelper
 	 * 
 	 * @param biome
 	 * @return {@link ConfiguredSurfaceBuilder}
+	 * @deprecated use {@link BiomeLoadingEvent}
 	 */
 	@Nullable
 	@Deprecated
@@ -165,6 +228,7 @@ public class BiomeAccessHelper
 	 * 
 	 * @param biome
 	 * @param surfaceBuilder
+	 * @deprecated use {@link BiomeLoadingEvent}
 	 */
 	@Deprecated
 	public static void setSurfaceBuilder(Biome biome, ConfiguredSurfaceBuilder<?> surfaceBuilder)
@@ -178,6 +242,7 @@ public class BiomeAccessHelper
 	 * @param biome
 	 * @param carvingType
 	 * @param configuredCarver
+	 * @deprecated use {@link BiomeLoadingEvent}
 	 */
 	@Deprecated
 	public static void addCarver(Biome biome, Carving carvingType, ConfiguredCarver<?> configuredCarver)
@@ -200,6 +265,7 @@ public class BiomeAccessHelper
 	 * @param biome
 	 * @param carvingType
 	 * @return {@link List}
+	 * @deprecated use {@link BiomeLoadingEvent}
 	 */
 	@Deprecated
 	public static List<Supplier<ConfiguredCarver<?>>> getCarvers(Biome biome, Carving carvingType)
@@ -213,6 +279,7 @@ public class BiomeAccessHelper
 	 * @param biome
 	 * @param stage
 	 * @param feature
+	 * @deprecated use {@link BiomeLoadingEvent}
 	 */
 	@Deprecated
 	public static <C extends IFeatureConfig, PC extends IPlacementConfig> void addFlowerFeature(Biome biome, Decoration stage, ConfiguredFeature<?, ?> feature)
@@ -233,6 +300,7 @@ public class BiomeAccessHelper
 	 * @param biome
 	 * @param classification
 	 * @param spawner
+	 * @deprecated use {@link BiomeLoadingEvent}
 	 */
 	@Deprecated
 	public static void addSpawn(Biome biome, EntityClassification classification, MobSpawnInfo.Spawners spawner)
@@ -256,6 +324,7 @@ public class BiomeAccessHelper
 	 * @param biome
 	 * @param entity
 	 * @param spawnCost
+	 * @deprecated use {@link BiomeLoadingEvent}
 	 */
 	@Deprecated
 	public static void addSpawnCost(Biome biome, EntityType<?> entity, MobSpawnInfo.SpawnCosts spawnCost)
@@ -273,6 +342,7 @@ public class BiomeAccessHelper
 	 * 
 	 * @param biome
 	 * @param ambience
+	 * @deprecated use {@link BiomeLoadingEvent}
 	 */
 	@Deprecated
 	public static void setAmbience(Biome biome, BiomeAmbience ambience)
