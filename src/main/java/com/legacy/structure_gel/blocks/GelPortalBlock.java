@@ -76,31 +76,37 @@ public class GelPortalBlock extends NetherPortalBlock
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, timeInPortal);
 		mc.getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-		TextureAtlasSprite textureatlassprite = this.getPortalTexture();
-		float f = textureatlassprite.getMinU();
-		float f1 = textureatlassprite.getMinV();
-		float f2 = textureatlassprite.getMaxU();
-		float f3 = textureatlassprite.getMaxV();
+		TextureAtlasSprite sprite = this.getPortalTexture();
+		float f = sprite.getMinU();
+		float f1 = sprite.getMinV();
+		float f2 = sprite.getMaxU();
+		float f3 = sprite.getMaxV();
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferbuilder = tessellator.getBuffer();
-		bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-		bufferbuilder.pos(0.0D, (double) scaledHeight, -90.0D).tex(f, f3).endVertex();
-		bufferbuilder.pos((double) scaledWidth, (double) scaledHeight, -90.0D).tex(f2, f3).endVertex();
-		bufferbuilder.pos((double) scaledWidth, 0.0D, -90.0D).tex(f2, f1).endVertex();
-		bufferbuilder.pos(0.0D, 0.0D, -90.0D).tex(f, f1).endVertex();
+		BufferBuilder buffBuilder = tessellator.getBuffer();
+		buffBuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+		buffBuilder.pos(0.0D, (double) scaledHeight, -90.0D).tex(f, f3).endVertex();
+		buffBuilder.pos((double) scaledWidth, (double) scaledHeight, -90.0D).tex(f2, f3).endVertex();
+		buffBuilder.pos((double) scaledWidth, 0.0D, -90.0D).tex(f2, f1).endVertex();
+		buffBuilder.pos(0.0D, 0.0D, -90.0D).tex(f, f1).endVertex();
 		tessellator.draw();
 		RenderSystem.depthMask(true);
 		RenderSystem.enableDepthTest();
 		RenderSystem.enableAlphaTest();
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
-	
+
+	/**
+	 * Gets the texture for the portal overlay to render with. Returns the texture
+	 * of this block by default.
+	 * 
+	 * @return {@link TextureAtlasSprite}
+	 */
 	@SuppressWarnings("deprecation")
 	@OnlyIn(Dist.CLIENT)
 	public TextureAtlasSprite getPortalTexture()
 	{
 		Minecraft mc = Minecraft.getInstance();
-		return mc.getBlockRendererDispatcher().getBlockModelShapes().getTexture(Blocks.NETHER_PORTAL.getDefaultState());
+		return mc.getBlockRendererDispatcher().getBlockModelShapes().getTexture(this.getDefaultState());
 	}
 
 	/**
