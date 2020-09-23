@@ -8,6 +8,7 @@ Changes:
 	- Only locates portal blocks with no portal below them since they're the only ones that will be considered for teleporting.
 - Most methods in BiomeAccessHelper have been deprecated since BiomeLoadingEvent achieves their purpose in a better way.
 - ConfigTemplates.StructureConfig now stores filtered biomes as ResourceLocations.
+- Console logging for skipping the warning when loading an existing world was moved to info.
 
 Additions:
 - Portals can now be placed on the surface using GelTeleporter.

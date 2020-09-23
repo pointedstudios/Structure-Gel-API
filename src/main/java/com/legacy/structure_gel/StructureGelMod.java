@@ -159,7 +159,7 @@ public class StructureGelMod
 
 	@OnlyIn(Dist.CLIENT)
 	@Internal
-	public void skipExperimentalBackupScreen(final GuiScreenEvent.DrawScreenEvent.Pre event)
+	public void skipExperimentalBackupScreen(final GuiScreenEvent.DrawScreenEvent.Post event)
 	{
 		if (event.getGui() instanceof ConfirmBackupScreen && StructureGelConfig.CLIENT.skipExperimentalScreen())
 		{
@@ -167,7 +167,7 @@ public class StructureGelMod
 			if (gui.buttons.size() > 1 && gui.buttons.get(1) instanceof AbstractButton)
 			{
 				((AbstractButton) gui.buttons.get(1)).onPress();
-				StructureGelMod.LOGGER.debug("Skipping backup request screen for world that uses experimental settings. You can disable this via config.");
+				StructureGelMod.LOGGER.info("Skipping backup request screen for world that uses experimental settings. You can disable this via config.");
 			}
 		}
 	}
