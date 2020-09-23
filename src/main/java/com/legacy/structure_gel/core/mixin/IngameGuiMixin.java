@@ -31,7 +31,7 @@ public class IngameGuiMixin
 	@Inject(at = @At("HEAD"), method = "renderPortal(F)V", cancellable = true)
 	private void renderPortal(float timeInPortal, CallbackInfo callback)
 	{
-		if (mc.player.getCapability(GelCapability.INSTANCE).isPresent())
+		if (mc.player.getCapability(GelCapability.INSTANCE).isPresent() && mc.player.getCapability(GelCapability.INSTANCE).resolve().get().getPortal() != null)
 		{
 			mc.player.getCapability(GelCapability.INSTANCE).ifPresent(gelEntity -> Optional.ofNullable(gelEntity.getPortal()).ifPresent(portal -> portal.renderPortal(timeInPortal, this.scaledHeight, this.scaledWidth)));
 			callback.cancel();
