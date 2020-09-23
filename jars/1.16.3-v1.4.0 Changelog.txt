@@ -3,7 +3,7 @@
 General additions and changes to work better with BiomeLoadingEvent.
 
 Changes:
-- Upadted minimum forge version to 1.16.3-34.0.9.
+- Upadted minimum forge version to 1.16.3-34.0.13.
 - Optimized code for finding existing portals
 	- Only locates portal blocks with no portal below them since they're the only ones that will be considered for teleporting.
 - Most methods in BiomeAccessHelper have been deprecated since BiomeLoadingEvent achieves their purpose in a better way.
