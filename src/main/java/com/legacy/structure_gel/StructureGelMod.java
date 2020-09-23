@@ -30,6 +30,8 @@ import com.mojang.serialization.Codec;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.screen.ConfirmBackupScreen;
+import net.minecraft.client.gui.screen.ConfirmScreen;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.AbstractButton;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
@@ -37,6 +39,8 @@ import net.minecraft.item.Item;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.jigsaw.IJigsawDeserializer;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
@@ -81,7 +85,7 @@ import net.minecraftforge.registries.RegistryBuilder;
 public class StructureGelMod
 {
 	public static final String MODID = "structure_gel";
-	public static final Logger LOGGER = LogManager.getLogger(MODID);
+	public static final Logger LOGGER = LogManager.getLogger();
 	private static final String[] BIOME_DICT_METHODS = new String[] { "getBiomesSG" };
 
 	public StructureGelMod()
@@ -104,9 +108,9 @@ public class StructureGelMod
 			modBus.addListener(this::clientInit);
 			forgeBus.addListener(this::skipExperimentalBackupScreen);
 		});
-		
+
 		// Debugging stuff
-		 com.legacy.structure_gel.SGDebug.init(modBus, forgeBus);
+		com.legacy.structure_gel.SGDebug.init(modBus, forgeBus);
 	}
 
 	/**
@@ -161,15 +165,41 @@ public class StructureGelMod
 	@Internal
 	public void skipExperimentalBackupScreen(final GuiScreenEvent.DrawScreenEvent.Post event)
 	{
-		if (event.getGui() instanceof ConfirmBackupScreen && StructureGelConfig.CLIENT.skipExperimentalScreen())
+		if (StructureGelConfig.CLIENT.skipExperimentalScreen())
 		{
-			ConfirmBackupScreen gui = (ConfirmBackupScreen) event.getGui();
-			if (gui.buttons.size() > 1 && gui.buttons.get(1) instanceof AbstractButton)
+			if (event.getGui() instanceof ConfirmBackupScreen)
 			{
-				((AbstractButton) gui.buttons.get(1)).onPress();
-				StructureGelMod.LOGGER.info("Skipping backup request screen for world that uses experimental settings. You can disable this via config.");
+				ConfirmBackupScreen gui = (ConfirmBackupScreen) event.getGui();
+				if (doesTitleMatch(gui.getTitle(), "selectWorld.backupQuestion.experimental") && hasButton(gui.buttons, 1))
+				{
+					StructureGelMod.LOGGER.info("Skipped backup request screen for world that uses experimental settings. You can disable this via config.");
+					((AbstractButton) gui.buttons.get(1)).onPress();
+				}
+			}
+			else if (event.getGui() instanceof ConfirmScreen)
+			{
+				ConfirmScreen gui = (ConfirmScreen) event.getGui();
+				if (doesTitleMatch(gui.getTitle(), "selectWorld.backupQuestion.experimental") && hasButton(gui.buttons, 0))
+				{
+					StructureGelMod.LOGGER.info("Skipped world load warning screen for world that uses experimental settings. You can disable this via config.");
+					((AbstractButton) gui.buttons.get(0)).onPress();
+				}
 			}
 		}
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	@Internal
+	private boolean hasButton(List<Widget> buttons, int index)
+	{
+		return buttons.size() > index && buttons.get(index) instanceof AbstractButton;
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	@Internal
+	private boolean doesTitleMatch(ITextComponent title, String compare)
+	{
+		return title instanceof TranslationTextComponent && ((TranslationTextComponent) title).getKey().equals(compare);
 	}
 
 	@Internal

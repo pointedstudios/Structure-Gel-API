@@ -9,6 +9,7 @@ Changes:
 - Most methods in BiomeAccessHelper have been deprecated since BiomeLoadingEvent achieves their purpose in a better way.
 - ConfigTemplates.StructureConfig now stores filtered biomes as ResourceLocations.
 - Console logging for skipping the warning when loading an existing world was moved to info.
+- You can now skip the warning for experimental settings when creating a new world via config.
 
 Additions:
 - Portals can now be placed on the surface using GelTeleporter.
@@ -19,3 +20,4 @@ Additions:
 
 Fixes:
 - GelTeleporter.ICreatePortalFuncion was private.
+- Console logging when skipping an experimental world load screen was happening after the world loaded.
