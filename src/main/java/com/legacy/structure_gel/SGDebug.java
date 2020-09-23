@@ -24,6 +24,9 @@ import com.legacy.structure_gel.worldgen.structure.GelConfigStructure;
 import net.minecraft.block.AbstractBlock.Properties;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.nbt.CompoundNBT;
@@ -55,6 +58,7 @@ import net.minecraft.world.gen.feature.template.PlacementSettings;
 import net.minecraft.world.gen.feature.template.Template;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import net.minecraft.world.gen.settings.DimensionStructuresSettings;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.RegistryEvent;
@@ -70,6 +74,7 @@ import net.minecraftforge.fml.DistExecutor;
  * @author David
  *
  */
+@SuppressWarnings("deprecation")
 public class SGDebug
 {
 	public static void init(IEventBus modBus, IEventBus forgeBus)
@@ -109,13 +114,35 @@ public class SGDebug
 
 	// ------------------------ Portal registry ------------------------
 	public static PointOfInterestType PORTAL_POI;
-	public static Block PORTAL;
+	public static TestPortalBlock PORTAL;
 
 	public static void registerBlocks(final RegistryEvent.Register<Block> event)
 	{
-		PORTAL = RegistryHelper.register(event.getRegistry(), locate("portal"), new GelPortalBlock(Properties.from(Blocks.NETHER_PORTAL), (s) -> new GelTeleporter(s, () -> World.OVERWORLD, () -> CUSTOM_WORLD, () -> PORTAL_POI, () -> (GelPortalBlock) PORTAL, () -> Blocks.GLOWSTONE.getDefaultState(), GelTeleporter.CreatePortalBehavior.NETHER)));
+		PORTAL = RegistryHelper.registerExact(event.getRegistry(), locate("portal"), new TestPortalBlock(Properties.from(Blocks.NETHER_PORTAL), (s) -> new GelTeleporter(s, () -> World.OVERWORLD, () -> CUSTOM_WORLD, () -> PORTAL_POI, () -> (GelPortalBlock) PORTAL, () -> Blocks.GLOWSTONE.getDefaultState(), GelTeleporter.CreatePortalBehavior.NETHER)));
 	}
 
+	private static final class TestPortalBlock extends GelPortalBlock
+	{
+		public TestPortalBlock(Properties properties, Function<ServerWorld, GelTeleporter> teleporter)
+		{
+			super(properties, teleporter);
+		}
+		
+		@OnlyIn(Dist.CLIENT)
+		@Override
+		public TextureAtlasSprite getPortalTexture()
+		{
+			Minecraft mc = Minecraft.getInstance();
+			return mc.getBlockRendererDispatcher().getBlockModelShapes().getTexture(Blocks.BLUE_STAINED_GLASS.getDefaultState());
+		}
+		
+		@Override
+		public int getMaxTimeInside(Entity entityIn)
+		{
+			return 100000000;
+		}
+	}
+	
 	public static void registerPOI(final RegistryEvent.Register<PointOfInterestType> event)
 	{
 		PORTAL_POI = RegistryHelper.registerPOI(event.getRegistry(), new PointOfInterestType(locate("portal").toString(), PointOfInterestType.getAllStates(PORTAL), 0, 1));
@@ -126,7 +153,7 @@ public class SGDebug
 	public static void spawnPortal(final BlockEvent.EntityPlaceEvent event)
 	{
 		if (event.getPlacedBlock().getBlock() == Blocks.ICE)
-			GelPortalBlock.fillPortal((World) event.getWorld(), event.getPos(), (GelPortalBlock) PORTAL, ImmutableList.of(Blocks.ICE));
+			GelPortalBlock.fillPortal((World) event.getWorld(), event.getPos(), PORTAL, ImmutableList.of(Blocks.ICE));
 	}
 
 	// ------------------------ Structure registry ------------------------

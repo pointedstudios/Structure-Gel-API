@@ -9,18 +9,27 @@ import com.google.common.collect.ImmutableList;
 import com.legacy.structure_gel.util.GelPortalSize;
 import com.legacy.structure_gel.util.GelTeleporter;
 import com.legacy.structure_gel.util.capability.GelCapability;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.NetherPortalBlock;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * A portal block designed for easy mod compatibility.
@@ -39,6 +48,59 @@ public class GelPortalBlock extends NetherPortalBlock
 	{
 		super(properties);
 		this.teleporter = teleporter;
+	}
+
+	/**
+	 * Code to execute when rendering portal texture on the player's screen. Mimics
+	 * vanilla rendering by default.
+	 * 
+	 * @param timeInPortal
+	 * @param scaledHeight
+	 * @param scaledWidth
+	 */
+	@SuppressWarnings("deprecation")
+	@OnlyIn(Dist.CLIENT)
+	public void renderPortal(float timeInPortal, int scaledHeight, int scaledWidth)
+	{
+		Minecraft mc = Minecraft.getInstance();
+		if (timeInPortal < 1.0F)
+		{
+			timeInPortal = timeInPortal * timeInPortal;
+			timeInPortal = timeInPortal * timeInPortal;
+			timeInPortal = timeInPortal * 0.8F + 0.2F;
+		}
+
+		RenderSystem.disableAlphaTest();
+		RenderSystem.disableDepthTest();
+		RenderSystem.depthMask(false);
+		RenderSystem.defaultBlendFunc();
+		RenderSystem.color4f(1.0F, 1.0F, 1.0F, timeInPortal);
+		mc.getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+		TextureAtlasSprite textureatlassprite = this.getPortalTexture();
+		float f = textureatlassprite.getMinU();
+		float f1 = textureatlassprite.getMinV();
+		float f2 = textureatlassprite.getMaxU();
+		float f3 = textureatlassprite.getMaxV();
+		Tessellator tessellator = Tessellator.getInstance();
+		BufferBuilder bufferbuilder = tessellator.getBuffer();
+		bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+		bufferbuilder.pos(0.0D, (double) scaledHeight, -90.0D).tex(f, f3).endVertex();
+		bufferbuilder.pos((double) scaledWidth, (double) scaledHeight, -90.0D).tex(f2, f3).endVertex();
+		bufferbuilder.pos((double) scaledWidth, 0.0D, -90.0D).tex(f2, f1).endVertex();
+		bufferbuilder.pos(0.0D, 0.0D, -90.0D).tex(f, f1).endVertex();
+		tessellator.draw();
+		RenderSystem.depthMask(true);
+		RenderSystem.enableDepthTest();
+		RenderSystem.enableAlphaTest();
+		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+	}
+	
+	@SuppressWarnings("deprecation")
+	@OnlyIn(Dist.CLIENT)
+	public TextureAtlasSprite getPortalTexture()
+	{
+		Minecraft mc = Minecraft.getInstance();
+		return mc.getBlockRendererDispatcher().getBlockModelShapes().getTexture(Blocks.NETHER_PORTAL.getDefaultState());
 	}
 
 	/**

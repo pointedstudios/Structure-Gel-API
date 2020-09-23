@@ -10,7 +10,8 @@
 		"WorldEntitySpawnerMixin"
 	],
 	"client": [
-		"WorldRendererMixin"
+		"WorldRendererMixin",
+		"IngameGuiMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
