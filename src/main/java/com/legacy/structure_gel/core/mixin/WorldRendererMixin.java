@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraftforge.common.MinecraftForge;
 
+@SuppressWarnings("deprecation")
 @Mixin(WorldRenderer.class)
 public class WorldRendererMixin
 {

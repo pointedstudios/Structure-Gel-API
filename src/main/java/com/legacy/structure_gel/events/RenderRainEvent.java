@@ -3,6 +3,7 @@ package com.legacy.structure_gel.events;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.IWeatherRenderHandler;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
@@ -13,8 +14,10 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
  * {@link Bus#FORGE}
  * 
  * @author David
+ * @deprecated will be removed in 1.17. Use {@link IWeatherRenderHandler}
  *
  */
+@Deprecated
 @Cancelable
 @OnlyIn(value = Dist.CLIENT)
 public class RenderRainEvent extends WorldRenderEvent

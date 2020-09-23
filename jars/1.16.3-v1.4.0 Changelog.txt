@@ -10,6 +10,10 @@ Changes:
 - ConfigTemplates.StructureConfig now stores filtered biomes as ResourceLocations.
 - Console logging for skipping the warning when loading an existing world was moved to info.
 - You can now skip the warning for experimental settings when creating a new world via config.
+- Deprecated the following events as they can now be done natively in forge. These will be removed in 1.17.
+	- RenderCloudsEvent
+	- RenderSkyEvent
+	- RenderRainEvent
 
 Additions:
 - Portals can now be placed on the surface using GelTeleporter.

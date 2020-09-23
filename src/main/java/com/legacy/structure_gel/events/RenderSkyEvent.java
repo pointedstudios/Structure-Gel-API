@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.ISkyRenderHandler;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
@@ -14,8 +15,10 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
  * {@link Bus#FORGE}
  * 
  * @author David
+ * @deprecated will be removed in 1.17. Use {@link ISkyRenderHandler}
  *
  */
+@Deprecated
 @Cancelable
 @OnlyIn(value = Dist.CLIENT)
 public class RenderSkyEvent extends WorldRenderEvent
