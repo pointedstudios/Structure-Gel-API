@@ -277,16 +277,36 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 	}
 
 	/**
-	 * Does this {@link BiomeType} or it's parents contain the biome passed.
+	 * Does this instance or it's parents contain the biome passed.
 	 * 
 	 * @param biome
 	 * @return {@link Boolean}
 	 */
 	public boolean contains(Biome biome)
 	{
-		if (BiomeDictionary.getBiomeKey(biome) != null)
-			return this.getAllBiomes().contains(BiomeDictionary.getBiomeKey(biome));
-		return false;
+		return this.contains(BiomeDictionary.getBiomeKey(biome));
+	}
+
+	/**
+	 * Does this instance or it's parents contain the biome passed.
+	 * 
+	 * @param key
+	 * @return {@link Boolean}
+	 */
+	public boolean contains(ResourceLocation key)
+	{
+		return this.getAllBiomes().stream().map(registryKey -> registryKey.getLocation()).anyMatch(name -> name.equals(key));
+	}
+
+	/**
+	 * Does this instance or it's parents contain the biome passed.
+	 * 
+	 * @param key
+	 * @return {@link Boolean}
+	 */
+	public boolean contains(RegistryKey<Biome> key)
+	{
+		return this.getAllBiomes().contains(key);
 	}
 
 	/**

@@ -17,6 +17,10 @@ Additions:
 	- addStructure(BiomeLoadingEvent, StructureFeature, StructureSeparationSettings, List<DimensionSettings>)
 	- addStructure(BiomeLoadingEvent, StructureFeature)
 	- addStructureIfAllowed(BiomeLoadingEvent, StructureFeature)
+- Biome Dictionary
+	- Added new methods to check if an entry contains the provided biome.
+		- BiomeType.contains(ResourceLocation)
+		- BiomeType.contains(RegistryKey<Biome>)
 
 Fixes:
 - GelTeleporter.ICreatePortalFuncion was private.

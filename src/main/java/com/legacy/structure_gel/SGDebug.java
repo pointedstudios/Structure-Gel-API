@@ -9,8 +9,10 @@ import java.util.function.Supplier;
 import com.google.common.collect.ImmutableList;
 import com.legacy.structure_gel.access_helpers.BiomeAccessHelper;
 import com.legacy.structure_gel.access_helpers.DimensionAccessHelper;
+import com.legacy.structure_gel.biome_dictionary.BiomeDictionary;
 import com.legacy.structure_gel.blocks.GelPortalBlock;
 import com.legacy.structure_gel.events.RegisterDimensionEvent;
+import com.legacy.structure_gel.events.RenderRainEvent;
 import com.legacy.structure_gel.registrars.DimensionRegistrar;
 import com.legacy.structure_gel.registrars.StructureRegistrar;
 import com.legacy.structure_gel.util.ConfigTemplates;
@@ -42,6 +44,7 @@ import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.DimensionSettings;
 import net.minecraft.world.gen.GenerationStage.Decoration;
 import net.minecraft.world.gen.NoiseChunkGenerator;
+import net.minecraft.world.gen.feature.Features;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructurePiece;
@@ -52,10 +55,13 @@ import net.minecraft.world.gen.feature.template.PlacementSettings;
 import net.minecraft.world.gen.feature.template.Template;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import net.minecraft.world.gen.settings.DimensionStructuresSettings;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DistExecutor;
 
 /**
  * Contains a bunch of debug code for testing or examples. This may be commented
@@ -75,6 +81,11 @@ public class SGDebug
 		forgeBus.addListener(SGDebug::registerDim);
 		forgeBus.addListener(SGDebug::spawnPortal);
 		forgeBus.addListener(SGDebug::biomeLoad);
+
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
+		{
+			forgeBus.addListener(SGDebug::renderRain);
+		});
 	}
 
 	public static ResourceLocation locate(String key)
@@ -82,7 +93,7 @@ public class SGDebug
 		return StructureGelMod.locate(key);
 	}
 
-	// Dimension registry
+	// ------------------------ Dimension registry ------------------------
 	public static RegistryKey<World> CUSTOM_WORLD = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, locate("custom"));
 
 	public static void registerDim(RegisterDimensionEvent event)
@@ -96,13 +107,13 @@ public class SGDebug
 		RegistryHelper.handleRegistrar(new DimensionRegistrar(event, CUSTOM_WORLD.getLocation(), dimensionType, settings, generator));
 	}
 
-	// Portal registry
+	// ------------------------ Portal registry ------------------------
 	public static PointOfInterestType PORTAL_POI;
 	public static Block PORTAL;
 
 	public static void registerBlocks(final RegistryEvent.Register<Block> event)
 	{
-		PORTAL = RegistryHelper.register(event.getRegistry(), locate("portal"), new GelPortalBlock(Properties.from(Blocks.NETHER_PORTAL), (s) -> new GelTeleporter(s, () -> World.OVERWORLD, () -> CUSTOM_WORLD, () -> PORTAL_POI, () -> (GelPortalBlock) PORTAL, () -> Blocks.SMOOTH_QUARTZ.getDefaultState(), GelTeleporter.CreatePortalBehavior.NETHER)));
+		PORTAL = RegistryHelper.register(event.getRegistry(), locate("portal"), new GelPortalBlock(Properties.from(Blocks.NETHER_PORTAL), (s) -> new GelTeleporter(s, () -> World.OVERWORLD, () -> CUSTOM_WORLD, () -> PORTAL_POI, () -> (GelPortalBlock) PORTAL, () -> Blocks.GLOWSTONE.getDefaultState(), GelTeleporter.CreatePortalBehavior.NETHER)));
 	}
 
 	public static void registerPOI(final RegistryEvent.Register<PointOfInterestType> event)
@@ -114,10 +125,11 @@ public class SGDebug
 	// this case.
 	public static void spawnPortal(final BlockEvent.EntityPlaceEvent event)
 	{
-		if (event.getPlacedBlock().getBlock() == Blocks.SOUL_SOIL)
-			GelPortalBlock.fillPortal((World) event.getWorld(), event.getPos(), (GelPortalBlock) PORTAL, ImmutableList.of(Blocks.SOUL_SOIL));
+		if (event.getPlacedBlock().getBlock() == Blocks.ICE)
+			GelPortalBlock.fillPortal((World) event.getWorld(), event.getPos(), (GelPortalBlock) PORTAL, ImmutableList.of(Blocks.ICE));
 	}
 
+	// ------------------------ Structure registry ------------------------
 	// Register a debug structure for basic testing
 	public static StructureRegistrar<NoFeatureConfig, DebugStructure> DEBUG_STRUCTURE = StructureRegistrar.of(locate("debug"), new DebugStructure(StructureGelConfig.COMMON.structureConfig), DebugStructure.Pieces.Piece::new, NoFeatureConfig.field_236559_b_, Decoration.SURFACE_STRUCTURES).handle();
 
@@ -128,9 +140,14 @@ public class SGDebug
 
 	public static void biomeLoad(final BiomeLoadingEvent event)
 	{
+		// Add GelStructure to biome
 		BiomeAccessHelper.addStructureIfAllowed(event, DEBUG_STRUCTURE.getStructureFeature());
+
+		// Add bamboo to anything tagged as structure_gel:plains
+		if (BiomeDictionary.PLAINS.contains(event.getName()))
+			event.getGeneration().withFeature(Decoration.VEGETAL_DECORATION, Features.BAMBOO_LIGHT);
 	}
-	
+
 	public static class DebugStructure extends GelConfigStructure<NoFeatureConfig>
 	{
 		public DebugStructure(ConfigTemplates.StructureConfig config)
@@ -219,5 +236,12 @@ public class SGDebug
 				}
 			}
 		}
+	}
+
+	// ------------------------ Client Renders ------------------------
+	@OnlyIn(Dist.CLIENT)
+	public static void renderRain(final RenderRainEvent event)
+	{
+		event.setCanceled(true);
 	}
 }
