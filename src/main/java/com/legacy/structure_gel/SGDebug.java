@@ -26,7 +26,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.nbt.CompoundNBT;
@@ -127,22 +126,16 @@ public class SGDebug
 		{
 			super(properties, teleporter);
 		}
-		
+
 		@OnlyIn(Dist.CLIENT)
 		@Override
 		public TextureAtlasSprite getPortalTexture()
 		{
 			Minecraft mc = Minecraft.getInstance();
-			return mc.getBlockRendererDispatcher().getBlockModelShapes().getTexture(Blocks.BLUE_STAINED_GLASS.getDefaultState());
-		}
-		
-		@Override
-		public int getMaxTimeInside(Entity entityIn)
-		{
-			return 100000000;
+			return mc.getBlockRendererDispatcher().getBlockModelShapes().getTexture(Blocks.ICE.getDefaultState());
 		}
 	}
-	
+
 	public static void registerPOI(final RegistryEvent.Register<PointOfInterestType> event)
 	{
 		PORTAL_POI = RegistryHelper.registerPOI(event.getRegistry(), new PointOfInterestType(locate("portal").toString(), PointOfInterestType.getAllStates(PORTAL), 0, 1));

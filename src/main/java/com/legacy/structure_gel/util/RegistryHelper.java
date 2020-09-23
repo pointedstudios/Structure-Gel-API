@@ -67,7 +67,8 @@ public class RegistryHelper
 	}
 
 	/**
-	 * Simply means of registering to a forge registry.
+	 * Simple means of registering to a forge registry. TODO Replace in 1.17 with
+	 * {@link #registerExact(IForgeRegistry, ResourceLocation, IForgeRegistryEntry)}.
 	 * 
 	 * @param registry
 	 * @param key
@@ -75,6 +76,20 @@ public class RegistryHelper
 	 * @return The registryObject
 	 */
 	public static <T extends IForgeRegistryEntry<T>> T register(IForgeRegistry<T> registry, ResourceLocation key, T registryObject)
+	{
+		return registerExact(registry, key, registryObject);
+	}
+
+	/**
+	 * Simple means of registering to a forge registry. Returns the exact type of
+	 * the object passed in.
+	 * 
+	 * @param registry
+	 * @param key
+	 * @param registryObject
+	 * @return The registryObject
+	 */
+	public static <T extends IForgeRegistryEntry<T>, C extends T> C registerExact(IForgeRegistry<T> registry, ResourceLocation key, C registryObject)
 	{
 		registryObject.setRegistryName(key);
 		registry.register(registryObject);

@@ -21,10 +21,18 @@ Additions:
 	- addStructure(BiomeLoadingEvent, StructureFeature, StructureSeparationSettings, List<DimensionSettings>)
 	- addStructure(BiomeLoadingEvent, StructureFeature)
 	- addStructureIfAllowed(BiomeLoadingEvent, StructureFeature)
-- Biome Dictionary
+- BiomeDictionary
 	- Added new methods to check if an entry contains the provided biome.
 		- BiomeType.contains(ResourceLocation)
 		- BiomeType.contains(RegistryKey<Biome>)
+- GelPortalBlock
+	- Added rendering methods for showing the portal overlay.
+		- renderPortal(timeInPortal, scaledWidth, scaledHeight): Renders the portal overlay. Nether portal render by default.
+		- getPortalTexture(): Gets the texture to render. This may be all you need to override for simple cases.
+- RegistryHelper
+	- Added registerExact as a variation of register.
+		- Returns the exact type of the object passed in instead of the registry type.
+		- This will replace register in 1.17 since it's more precise.
 
 Fixes:
 - GelTeleporter.ICreatePortalFuncion was private.
