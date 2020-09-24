@@ -28,7 +28,7 @@ Additions:
 - GelPortalBlock
 	- Added rendering methods for showing the portal overlay.
 		- renderPortal(timeInPortal, scaledWidth, scaledHeight): Renders the portal overlay. Nether portal render by default.
-		- getPortalTexture(): Gets the texture to render. This may be all you need to override for simple cases.
+		- getPortalTexture(): Gets the texture to render. This may be all you need to override for simple cases. Returns the texture for itself by default.
 - RegistryHelper
 	- Added registerExact as a variation of register.
 		- Returns the exact type of the object passed in instead of the registry type.
