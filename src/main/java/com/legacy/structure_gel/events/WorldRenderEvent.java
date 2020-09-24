@@ -27,8 +27,17 @@ public abstract class WorldRenderEvent extends Event
 
 	public WorldRenderEvent()
 	{
-		this.world = Minecraft.getInstance().world;
-		this.worldRenderer = Minecraft.getInstance().worldRenderer;
+		// Fix for datagen
+		if (Minecraft.getInstance() != null)
+		{
+			this.world = Minecraft.getInstance().world;
+			this.worldRenderer = Minecraft.getInstance().worldRenderer;
+		}
+		else
+		{
+			this.world = null;
+			this.worldRenderer = null;
+		}
 	}
 
 	public ClientWorld getWorld()
