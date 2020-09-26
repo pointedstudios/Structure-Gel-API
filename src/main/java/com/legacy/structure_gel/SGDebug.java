@@ -1,5 +1,5 @@
 package com.legacy.structure_gel;
-/*
+
 import java.util.List;
 import java.util.Random;
 import java.util.function.BiFunction;
@@ -65,7 +65,7 @@ import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
-*/
+
 /**
  * Contains a bunch of debug code for testing or examples. This may be commented
  * out.
@@ -75,7 +75,7 @@ import net.minecraftforge.fml.DistExecutor;
  */
 public class SGDebug
 {
-	/*public static void init(IEventBus modBus, IEventBus forgeBus)
+	public static void init(IEventBus modBus, IEventBus forgeBus)
 	{
 		modBus.addGenericListener(Block.class, SGDebug::registerBlocks);
 		modBus.addGenericListener(PointOfInterestType.class, SGDebug::registerPOI);
@@ -256,5 +256,5 @@ public class SGDebug
 	public static void renderRain(final RenderRainEvent event)
 	{
 		event.setCanceled(true);
-	}*/
+	}
 }

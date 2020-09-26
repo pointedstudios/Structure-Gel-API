@@ -67,14 +67,15 @@ public class RegistryHelper
 	}
 
 	/**
-	 * Simple means of registering to a forge registry. TODO Replace in 1.17 with
-	 * {@link #registerExact(IForgeRegistry, ResourceLocation, IForgeRegistryEntry)}.
+	 * Simple means of registering to a forge registry.
 	 * 
 	 * @param registry
 	 * @param key
 	 * @param registryObject
 	 * @return The registryObject
+	 * @deprecated Use {@link #registerExact(IForgeRegistry, ResourceLocation, IForgeRegistryEntry)}. TODO Remove in 1.17.
 	 */
+	@Deprecated
 	public static <T extends IForgeRegistryEntry<T>> T register(IForgeRegistry<T> registry, ResourceLocation key, T registryObject)
 	{
 		return registerExact(registry, key, registryObject);

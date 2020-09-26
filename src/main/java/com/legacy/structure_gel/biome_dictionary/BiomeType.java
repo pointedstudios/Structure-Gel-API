@@ -110,6 +110,30 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 	}
 
 	/**
+	 * Adds the biomes to this instance
+	 * 
+	 * @param biomes
+	 * @return {@link BiomeType}
+	 */
+	public BiomeType biomes(Biome... biomes)
+	{
+		this.addBiomes(Arrays.asList(biomes).stream().map(r -> r.getRegistryName()).collect(Collectors.toSet()));
+		return this;
+	}
+
+	/**
+	 * Adds the biomes to this instance
+	 * 
+	 * @param biomes
+	 * @return {@link BiomeType}
+	 */
+	public BiomeType biomes(ResourceLocation... biomes)
+	{
+		this.addBiomes(Arrays.asList(biomes).stream().collect(Collectors.toSet()));
+		return this;
+	}
+
+	/**
 	 * Adds the biomes to this instance for the modid provided.
 	 * 
 	 * @param modid
@@ -122,6 +146,90 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 		for (String biome : biomes)
 			set.add(new ResourceLocation(modid, biome));
 		this.addBiomes(set);
+		return this;
+	}
+
+	/**
+	 * Adds the listed biomes to this instance.
+	 * 
+	 * @param biomes
+	 * @return {@link BiomeType}
+	 */
+	public BiomeType addBiomes(Set<ResourceLocation> biomes)
+	{
+		this.getBiomes().addAll(biomes);
+		return this;
+	}
+
+	/**
+	 * Add the biome to this instance.
+	 * 
+	 * @param biome
+	 * @return {@link BiomeType}
+	 */
+	public BiomeType addBiome(Biome biome)
+	{
+		return addBiome(biome.getRegistryName());
+	}
+
+	/**
+	 * Add the biome to this instance.
+	 * 
+	 * @param biome
+	 * @return {@link BiomeType}
+	 */
+	public BiomeType addBiome(RegistryKey<Biome> biome)
+	{
+		return addBiome(biome.getLocation());
+	}
+
+	/**
+	 * Add the biome to this instance.
+	 * 
+	 * @param biome
+	 * @return {@link BiomeType}
+	 */
+	public BiomeType addBiome(ResourceLocation biome)
+	{
+		this.getBiomes().add(biome);
+		return this;
+	}
+
+	/**
+	 * Gets the biomes from this instance.
+	 * 
+	 * @return {@link Set}
+	 */
+	public Set<ResourceLocation> getBiomes()
+	{
+		return this.biomes;
+	}
+
+	/**
+	 * Sets the biomes of this entry, overriding old ones. You probably shouldn't
+	 * use this unless you're creating a new instance.
+	 * 
+	 * @param biomes
+	 * @return {@link BiomeType}
+	 * @deprecated Use {@link #setBiomesSafe(Set)}. TODO Remove in 1.17.
+	 */
+	@Deprecated
+	public BiomeType setBiomes(Set<RegistryKey<Biome>> biomes)
+	{
+		this.biomes = biomes.stream().map(r -> r.getLocation()).collect(Collectors.toSet());
+		return this;
+	}
+
+	/**
+	 * Sets the biomes of this entry, overriding old ones. You probably shouldn't
+	 * use this unless you're creating a new instance.
+	 * 
+	 * @param biomes
+	 * @return {@link BiomeType}
+	 */
+	public BiomeType setBiomesSafe(Set<ResourceLocation> biomes)
+	{
+		this.biomes = biomes.stream().collect(Collectors.toSet());
 		return this;
 	}
 
@@ -146,70 +254,6 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 	public BiomeType parents(BiomeType... parents)
 	{
 		this.parents = Arrays.asList(parents).stream().map(b -> b.getRegistryName()).collect(Collectors.toSet());
-		return this;
-	}
-
-	/**
-	 * Gets the registered name of the {@link BiomeType}.
-	 * 
-	 * @return {@link ResourceLocation}
-	 */
-	public ResourceLocation getRegistryName()
-	{
-		return this.registryName;
-	}
-
-	@Override
-	public BiomeType setRegistryName(ResourceLocation name)
-	{
-		this.registryName = name;
-		return this;
-	}
-
-	/**
-	 * Adds the listed biomes to this instance.
-	 * 
-	 * @param biomes
-	 * @return {@link BiomeType}
-	 */
-	public BiomeType addBiomes(Set<ResourceLocation> biomes)
-	{
-		this.getBiomes().addAll(biomes);
-		return this;
-	}
-
-	/**
-	 * Add the biome to this instance.
-	 * 
-	 * @param biome
-	 * @return {@link BiomeType}
-	 */
-	public BiomeType addBiome(RegistryKey<Biome> biome)
-	{
-		this.getBiomes().add(biome.getLocation());
-		return this;
-	}
-
-	/**
-	 * Gets the biomes from this instance.
-	 * 
-	 * @return {@link Set}
-	 */
-	public Set<ResourceLocation> getBiomes()
-	{
-		return this.biomes;
-	}
-
-	/**
-	 * Sets the biomes of this entry, overriding old ones. You probably shouldn't
-	 * use this unless you're creating a new instance.
-	 * 
-	 * @param biomes
-	 * @return {@link BiomeType}
-	 */
-	public BiomeType setBiomes(Set<RegistryKey<Biome>> biomes)
-	{
-		this.biomes = biomes.stream().map(r -> r.getLocation()).collect(Collectors.toSet());
 		return this;
 	}
 
@@ -343,6 +387,23 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 		}
 
 		return String.format("name = %s, parents = [%s], biomes = [%s]", this.getRegistryName().toString(), parents, biomes);
+	}
+
+	/**
+	 * Gets the registered name of the {@link BiomeType}.
+	 * 
+	 * @return {@link ResourceLocation}
+	 */
+	public ResourceLocation getRegistryName()
+	{
+		return this.registryName;
+	}
+
+	@Override
+	public BiomeType setRegistryName(ResourceLocation name)
+	{
+		this.registryName = name;
+		return this;
 	}
 
 	@Override

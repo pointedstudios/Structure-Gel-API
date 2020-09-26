@@ -119,7 +119,7 @@ public class BiomeAccessHelper
 	 * Adds the input {@link GelStructure} the biome from the event passed if the
 	 * biome is in it's config.<br>
 	 * <br>
-	 * The structure must be an instance of {@link IConfigStructure}.
+	 * The structure must implement {@link IConfigStructure}.
 	 * 
 	 * @param event
 	 * @param gelStructure
@@ -164,11 +164,11 @@ public class BiomeAccessHelper
 			// Add the generation stage if not present
 			if (!biome.biomeStructures.containsKey(genStage))
 				biome.biomeStructures.put(genStage, new ArrayList<>());
-			
+
 			// Add to the generation stage
 			biome.biomeStructures.get(genStage).add(structure.field_236268_b_);
 		}
-		
+
 		// Add separation settings to noise settings
 		noiseSettings.forEach(noiseSetting ->
 		{

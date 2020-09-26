@@ -115,7 +115,7 @@ public class BiomeDictionary
 	public static final BiomeType END = register(BiomeType.create("end").parents(OUTER_END).biomes(Biomes.THE_END));
 
 	// Overworld
-	public static final BiomeType OVERWORLD = register(BiomeType.create("overworld").setBiomes(getOverworldBiomes()));
+	public static final BiomeType OVERWORLD = register(BiomeType.create("overworld").setBiomesSafe(getOverworldBiomesSafe()));
 
 	// Special
 	public static final BiomeType VOID = register(BiomeType.create("void").biomes(Biomes.THE_VOID));
@@ -175,7 +175,9 @@ public class BiomeDictionary
 	 * Returns all registed vanilla biomes that aren't tagged as nether or end.
 	 * 
 	 * @return {@link Set}
+	 * @deprecated use {@link #getOverworldBiomesSafe()}. TODO Remove in 1.17.
 	 */
+	@Deprecated
 	public static Set<RegistryKey<Biome>> getOverworldBiomes()
 	{
 		Set<RegistryKey<Biome>> biomes = new HashSet<>();
@@ -190,12 +192,32 @@ public class BiomeDictionary
 	}
 
 	/**
+	 * Returns all registed vanilla biomes that aren't tagged as nether or end.
+	 * 
+	 * @return {@link Set}
+	 */
+	public static Set<ResourceLocation> getOverworldBiomesSafe()
+	{
+		Set<ResourceLocation> biomes = new HashSet<>();
+
+		ForgeRegistries.BIOMES.getValues().stream().filter(b -> (b.getRegistryName().getNamespace().equals("minecraft") || b.getRegistryName().getNamespace().equals(BOP)) && !BiomeDictionary.NETHER.contains(b) && !BiomeDictionary.END.contains(b)).forEach(b ->
+		{
+			if (b.getRegistryName() != null)
+				biomes.add(b.getRegistryName());
+			else if (getBiomeKey(b) != null)
+				biomes.add(getBiomeKey(b).getLocation());
+		});
+
+		return biomes;
+	}
+
+	/**
 	 * Returns the {@link RegistryKey} for the passed {@link Biome}.
 	 * 
 	 * @param biome
 	 * @return {@link RegistryKey}
 	 */
-	protected static RegistryKey<Biome> getBiomeKey(Biome biome)
+	public static RegistryKey<Biome> getBiomeKey(Biome biome)
 	{
 		return RegistryKey.getOrCreateKey(ForgeRegistries.Keys.BIOMES, biome.getRegistryName());
 	}
@@ -236,8 +258,8 @@ public class BiomeDictionary
 	}
 
 	/**
-	 * Shorthand for BiomeDictionary.REGISTRY.getValue(ResourceLocation).
-	 * Returns {@link #EMPTY} if no value is present.
+	 * Shorthand for BiomeDictionary.REGISTRY.getValue(ResourceLocation). Returns
+	 * {@link #EMPTY} if no value is present.
 	 * 
 	 * @return {@link BiomeType}
 	 */
