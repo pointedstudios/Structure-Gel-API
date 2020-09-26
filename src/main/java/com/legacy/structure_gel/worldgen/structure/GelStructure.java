@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
+import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.access_helpers.StructureAccessHelper;
 import com.legacy.structure_gel.util.Internal;
 import com.legacy.structure_gel.worldgen.jigsaw.GelJigsawStructure;
@@ -46,14 +47,14 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 {
 	public final Map<EntityClassification, List<MobSpawnInfo.Spawners>> spawns = new HashMap<>();
 	private Integer seed = null;
-	
+
 	public GelStructure(Codec<C> codec)
 	{
 		super(codec);
 		MinecraftForge.EVENT_BUS.addListener(this::potentialSpawnsEvent);
 		this.setLakeProof(true);
 	}
-	
+
 	/**
 	 * Determines if lakes shuold generate inside of this structure or not. This is
 	 * automatically set to true when you create the structure.
@@ -167,7 +168,15 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	public int getSeed()
 	{
 		if (this.seed == null)
-			this.seed = this.getRegistryName().toString().hashCode();
+		{
+			if (this.getRegistryName() == null)
+			{
+				this.seed = 0;
+				StructureGelMod.LOGGER.error(String.format("The structure %s does not have a registry name. Seed defaulted to 0. This should be avoided.", this.getClass().getName()));
+			}
+			else
+				this.seed = this.getRegistryName().toString().hashCode();
+		}
 		return this.seed;
 	}
 
