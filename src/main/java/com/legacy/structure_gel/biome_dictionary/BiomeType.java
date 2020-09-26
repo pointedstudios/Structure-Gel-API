@@ -167,20 +167,20 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 	 * @param biome
 	 * @return {@link BiomeType}
 	 */
-	public BiomeType addBiome(Biome biome)
+	public BiomeType addBiome(RegistryKey<Biome> biome)
 	{
-		return addBiome(biome.getRegistryName());
+		return addBiome(biome.getLocation());
 	}
-
+	
 	/**
 	 * Add the biome to this instance.
 	 * 
 	 * @param biome
 	 * @return {@link BiomeType}
 	 */
-	public BiomeType addBiome(RegistryKey<Biome> biome)
+	public BiomeType addBiome(Biome biome)
 	{
-		return addBiome(biome.getLocation());
+		return addBiome(biome.getRegistryName());
 	}
 
 	/**
@@ -323,12 +323,23 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 	/**
 	 * Does this instance or it's parents contain the biome passed.
 	 * 
+	 * @param key
+	 * @return {@link Boolean}
+	 */
+	public boolean contains(RegistryKey<Biome> key)
+	{
+		return this.contains(key.getLocation());
+	}
+	
+	/**
+	 * Does this instance or it's parents contain the biome passed.
+	 * 
 	 * @param biome
 	 * @return {@link Boolean}
 	 */
 	public boolean contains(Biome biome)
 	{
-		return this.contains(BiomeDictionary.getBiomeKey(biome));
+		return this.contains(biome.getRegistryName());
 	}
 
 	/**
@@ -340,17 +351,6 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 	public boolean contains(ResourceLocation key)
 	{
 		return this.getAllBiomes().stream().map(registryKey -> registryKey.getLocation()).anyMatch(name -> name.equals(key));
-	}
-
-	/**
-	 * Does this instance or it's parents contain the biome passed.
-	 * 
-	 * @param key
-	 * @return {@link Boolean}
-	 */
-	public boolean contains(RegistryKey<Biome> key)
-	{
-		return this.getAllBiomes().contains(key);
 	}
 
 	/**
