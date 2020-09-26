@@ -211,7 +211,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 	 * 
 	 * @param biomes
 	 * @return {@link BiomeType}
-	 * @deprecated Use {@link #setBiomesSafe(Set)}. TODO Remove in 1.17.
+	 * @deprecated Use {@link #setBiomesSafe(Set)}. TODO Remove in 1.17. 
 	 */
 	@Deprecated
 	public BiomeType setBiomes(Set<RegistryKey<Biome>> biomes)
