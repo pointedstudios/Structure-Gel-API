@@ -1,6 +1,6 @@
 package com.legacy.structure_gel;
-
-/*import java.util.List;
+/*
+import java.util.List;
 import java.util.Random;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -64,8 +64,8 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;*/
-
+import net.minecraftforge.fml.DistExecutor;
+*/
 /**
  * Contains a bunch of debug code for testing or examples. This may be commented
  * out.
@@ -173,12 +173,6 @@ public class SGDebug
 		{
 			super(NoFeatureConfig.field_236558_a_, config);
 			this.setSpawnList(EntityClassification.MONSTER, ImmutableList.of(new MobSpawnInfo.Spawners(EntityType.ZOMBIFIED_PIGLIN, 1, 1, 1)));
-		}
-
-		@Override
-		public int getSeed()
-		{
-			return 0;
 		}
 
 		@Override

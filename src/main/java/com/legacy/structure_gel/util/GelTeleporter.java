@@ -195,7 +195,7 @@ public class GelTeleporter extends Teleporter
 	{
 		return this.placementBehavior.apply(this, startPos, enterAxis);
 	}
-
+	
 	/**
 	 * Places this portal on highest block in the world, ignoring blocks specified
 	 * in {@link #shouldIgnoreBlock(BlockState, BlockPos)}.
@@ -208,11 +208,11 @@ public class GelTeleporter extends Teleporter
 	public static Optional<TeleportationRepositioner.Result> createAndFindPortalSurface(GelTeleporter teleporter, BlockPos startPos, Direction.Axis enterAxis)
 	{
 		ServerWorld world = teleporter.world;
-		BlockPos pos = startPos;
-		int x = pos.getX();
+		int x = startPos.getX();
 		int y = world.func_234938_ad_();
-		int z = pos.getZ();
+		int z = startPos.getZ();
 
+		// Calculate position
 		BlockPos.Mutable mutablePos = new BlockPos.Mutable(x, y, z);
 		int i = y;
 		BlockState state = world.getBlockState(mutablePos);
@@ -224,6 +224,7 @@ public class GelTeleporter extends Teleporter
 		if (i > 0)
 			y = i + 1;
 
+		// Place frame
 		BlockState frameState = teleporter.getFrameBlock().get();
 		for (int horizontalOffset = -1; horizontalOffset < 3; ++horizontalOffset)
 		{
@@ -237,6 +238,7 @@ public class GelTeleporter extends Teleporter
 			}
 		}
 
+		// Place portal blocks
 		BlockState portalState = teleporter.getPortalBlock().get().getDefaultState().with(NetherPortalBlock.AXIS, Direction.Axis.Z);
 		for (int horizontalOffset = 0; horizontalOffset < 2; ++horizontalOffset)
 		{
@@ -247,6 +249,7 @@ public class GelTeleporter extends Teleporter
 			}
 		}
 
+		// Add platform below portal
 		boolean placePlatform = true;
 		label0: for (int x1 = -1; x1 < 2; x1++)
 		{
@@ -267,6 +270,7 @@ public class GelTeleporter extends Teleporter
 				for (int z1 = 0; z1 < 2; z1++)
 					world.setBlockState(new BlockPos(x + x1, y - 1, z + z1), frameState);
 
+		// find and return portal
 		return teleporter.getExistingPortal(startPos, false);
 	}
 
