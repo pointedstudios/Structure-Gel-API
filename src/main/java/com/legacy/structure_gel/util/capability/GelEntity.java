@@ -8,6 +8,8 @@ public class GelEntity implements IGelEntity
 {
 	@Nullable
 	private GelPortalBlock portal;
+	@Nullable
+	private GelPortalBlock prevPortal;
 
 	@Nullable
 	@Override
@@ -22,4 +24,16 @@ public class GelEntity implements IGelEntity
 		this.portal = portal;
 	}
 
+	@Nullable
+	@Override
+	public GelPortalBlock getPrevPortal()
+	{
+		return this.prevPortal;
+	}
+
+	@Override
+	public void setPrevPortal(GelPortalBlock prevPortal)
+	{
+		this.prevPortal = prevPortal;
+	}
 }

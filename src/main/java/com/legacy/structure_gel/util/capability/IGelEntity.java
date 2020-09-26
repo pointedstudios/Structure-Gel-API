@@ -10,5 +10,10 @@ public interface IGelEntity
 	GelPortalBlock getPortal();
 
 	void setPortal(GelPortalBlock portal);
+	
+	@Nullable
+	GelPortalBlock getPrevPortal();
+
+	void setPrevPortal(GelPortalBlock portal);
 
 }
