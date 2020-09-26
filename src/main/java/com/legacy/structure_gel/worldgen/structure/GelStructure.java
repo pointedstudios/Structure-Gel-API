@@ -85,6 +85,31 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	}
 
 	/**
+	 * Gets a list of {@link DimensionSettings} to tell your structure where to
+	 * generate. Can be set using configs. You should only need to modify this if a
+	 * dimension that this structure generates in does not use a vanilla noise
+	 * setting.
+	 * 
+	 * @return {@link List}
+	 */
+	public List<DimensionSettings> getNoiseSettingsToGenerateIn()
+	{
+		return ImmutableList.of(DimensionSettings.field_242734_c, DimensionSettings.field_242735_d, DimensionSettings.field_242736_e, DimensionSettings.field_242737_f, DimensionSettings.field_242738_g, DimensionSettings.field_242739_h).stream().map(WorldGenRegistries.NOISE_SETTINGS::getValueForKey).collect(ImmutableList.toImmutableList());
+	}
+
+	/**
+	 * What stage of generation your structure should be generated during. Surface
+	 * structures by default.
+	 * 
+	 * @return {@link Decoration}
+	 */
+	@Override
+	public GenerationStage.Decoration func_236396_f_()
+	{
+		return GenerationStage.Decoration.SURFACE_STRUCTURES;
+	}
+
+	/**
 	 * Checks to see if this structure can generate in the given chunk using a grid
 	 * with custom spacing and offsets.
 	 * 
@@ -134,15 +159,18 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	 * as best as possible, especially when the same chances are used. This seed
 	 * should be constant.
 	 * 
-	 * @return int
+	 * @return {@link Integer}
 	 */
-	public abstract int getSeed();
+	public int getSeed()
+	{
+		return this.getRegistryName().toString().hashCode();
+	}
 
 	/**
 	 * This is the probability of the structure generating in a given chunk,
 	 * expressed as a percent.
 	 * 
-	 * @return double
+	 * @return {@link Double}
 	 */
 	public abstract double getProbability();
 
@@ -153,7 +181,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	 * <br>
 	 * This number should not be negative or 0. 0 will crash. Don't do it.
 	 * 
-	 * @return int
+	 * @return {@link Integer}
 	 */
 	public abstract int getSpacing();
 
@@ -166,7 +194,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	 * <br>
 	 * This number should not be negative.
 	 * 
-	 * @return int
+	 * @return {@link Integer}
 	 */
 	public abstract int getOffset();
 
@@ -243,26 +271,14 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	@Internal
 	public void potentialSpawnsEvent(WorldEvent.PotentialSpawns event)
 	{
-		if (event.getWorld() instanceof ServerWorld && ((ServerWorld) event.getWorld()).func_241112_a_().func_235010_a_(event.getPos(), false, this).isValid())
+		if (this.getSpawns(event.getType()) != null)
 		{
-			if (this.getSpawns(event.getType()) != null)
+			if (event.getWorld() instanceof ServerWorld && ((ServerWorld) event.getWorld()).func_241112_a_().func_235010_a_(event.getPos(), false, this).isValid())
 			{
 				event.getList().clear();
 				event.getList().addAll(this.getSpawns(event.getType()));
 			}
 		}
-	}
-
-	/**
-	 * What stage of generation your structure should be generated during.
-	 * 
-	 * @return {@link Decoration}
-	 */
-	@Internal
-	@Override
-	public GenerationStage.Decoration func_236396_f_()
-	{
-		return GenerationStage.Decoration.SURFACE_STRUCTURES;
 	}
 
 	/**
@@ -274,18 +290,5 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	public StructureSeparationSettings getSeparationSettings()
 	{
 		return new StructureSeparationSettings(this.getSpacing(), this.getOffset(), this.getSeed());
-	}
-
-	/**
-	 * Gets a list of {@link DimensionSettings} to tell your structure where to
-	 * generate. Can be set using configs. You should only need to modify this if a
-	 * dimension that this structure generates in does not use a vanilla noise
-	 * setting.
-	 * 
-	 * @return {@link List}
-	 */
-	public List<DimensionSettings> getNoiseSettingsToGenerateIn()
-	{
-		return ImmutableList.of(DimensionSettings.field_242734_c, DimensionSettings.field_242735_d, DimensionSettings.field_242736_e, DimensionSettings.field_242737_f, DimensionSettings.field_242738_g, DimensionSettings.field_242739_h).stream().map(WorldGenRegistries.NOISE_SETTINGS::getValueForKey).collect(ImmutableList.toImmutableList());
 	}
 }
