@@ -40,9 +40,6 @@ public class EntityMixin
 	@Shadow
 	protected BlockPos field_242271_ac;
 
-	/*
-	 * Entity#updatePortal insert a modified version of vanilla code at the head of the method, only to execute if the player has stepped in a GelPortal.
-	 */
 	@Inject(at = @At("HEAD"), method = "updatePortal()V", cancellable = true)
 	private void updatePortal(CallbackInfo callback)
 	{
@@ -91,7 +88,7 @@ public class EntityMixin
 				gelEntity.setPrevPortal(gelEntity.getPortal());
 				gelEntity.setPortal(null);
 			}
-			
+
 			else if (this.inPortal == true)
 			{
 				gelEntity.setPrevPortal(null);
@@ -99,9 +96,6 @@ public class EntityMixin
 		});
 	}
 
-	/*
-	 * Entity#func_241829_a
-	 */
 	@Inject(at = @At(value = "RETURN", ordinal = 0), method = "func_241829_a(Lnet/minecraft/world/server/ServerWorld;)Lnet/minecraft/block/PortalInfo;", cancellable = true)
 	protected void func_241829_a(ServerWorld destWorld, CallbackInfoReturnable<PortalInfo> callback)
 	{

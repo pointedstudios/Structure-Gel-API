@@ -16,9 +16,7 @@ import net.minecraft.world.spawner.WorldEntitySpawner;
 @Mixin(WorldEntitySpawner.class)
 public class WorldEntitySpawnerMixin
 {
-	/*
-	 * WorldEntitySpawner#func_234976_a_
-	 */
+	// Fixes a forge bug with mob spawns using events.
 	@Inject(at = @At("TAIL"), method = "func_234976_a_(Lnet/minecraft/world/server/ServerWorld;Lnet/minecraft/world/gen/feature/structure/StructureManager;Lnet/minecraft/world/gen/ChunkGenerator;Lnet/minecraft/entity/EntityClassification;Lnet/minecraft/world/biome/MobSpawnInfo$Spawners;Lnet/minecraft/util/math/BlockPos;)Z", cancellable = true)
 	private static void isInDefaultSpawns(ServerWorld world, StructureManager structureManager, ChunkGenerator chunkGen, EntityClassification classification, MobSpawnInfo.Spawners spawner, BlockPos pos, CallbackInfoReturnable<Boolean> callback)
 	{

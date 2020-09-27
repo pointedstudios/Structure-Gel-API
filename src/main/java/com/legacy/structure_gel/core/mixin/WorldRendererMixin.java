@@ -20,9 +20,7 @@ import net.minecraftforge.common.MinecraftForge;
 @Mixin(WorldRenderer.class)
 public class WorldRendererMixin
 {
-	/*
-	 * WorldRenderer#renderSky
-	 */
+	// Renders the skybox
 	@Inject(at = @At("HEAD"), method = "renderSky(Lcom/mojang/blaze3d/matrix/MatrixStack;F)V", cancellable = true)
 	private void renderSky(MatrixStack matrixStackIn, float partialTicks, CallbackInfo callback)
 	{
@@ -30,9 +28,7 @@ public class WorldRendererMixin
 			callback.cancel();
 	}
 
-	/*
-	 * WorldRenderer#renderRainSnow
-	 */
+	// Renders weather
 	@Inject(at = @At("HEAD"), method = "renderRainSnow(Lnet/minecraft/client/renderer/LightTexture;FDDD)V", cancellable = true)
 	private void renderRainAndSnow(LightTexture lightmapIn, float partialTicks, double xIn, double yIn, double zIn, CallbackInfo callback)
 	{
@@ -40,9 +36,7 @@ public class WorldRendererMixin
 			callback.cancel();
 	}
 
-	/*
-	 * WorldRenderer#addRainParticles
-	 */
+	// Adds rain particles to the ground
 	@Inject(at = @At("HEAD"), method = "addRainParticles(Lnet/minecraft/client/renderer/ActiveRenderInfo;)V", cancellable = true)
 	private void addRainParticles(ActiveRenderInfo activeRenderInfoIn, CallbackInfo callback)
 	{
@@ -50,9 +44,7 @@ public class WorldRendererMixin
 			callback.cancel();
 	}
 
-	/*
-	 * WorldRenderer#renderClouds
-	 */
+	// Renders clouds
 	@Inject(at = @At("HEAD"), method = "renderClouds(Lcom/mojang/blaze3d/matrix/MatrixStack;FDDD)V", cancellable = true)
 	private void renderClouds(MatrixStack matrixStackIn, float partialTicks, double viewEntityX, double viewEntityY, double viewEntityZ, CallbackInfo callback)
 	{

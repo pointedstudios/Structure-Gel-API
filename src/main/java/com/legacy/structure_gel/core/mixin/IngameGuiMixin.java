@@ -24,12 +24,13 @@ public class IngameGuiMixin
 	@Shadow
 	protected int scaledWidth;
 
+	// Renders the portal overlay
 	@Inject(at = @At("HEAD"), method = "renderPortal(F)V", cancellable = true)
 	private void renderPortal(float timeInPortal, CallbackInfo callback)
 	{
 		GelCapability.ifPresent(this.mc.player, (gelEntity) ->
 		{
-			GelPortalBlock portal = gelEntity.getPortal() != null ? gelEntity.getPortal() : (gelEntity.getPrevPortal() != null ? gelEntity.getPrevPortal() : null);
+			GelPortalBlock portal = gelEntity.getPrevPortal();
 			if (portal != null)
 			{
 				portal.renderPortal(timeInPortal, this.scaledHeight, this.scaledWidth);

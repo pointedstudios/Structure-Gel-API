@@ -22,9 +22,6 @@ public class MinecraftServerMixin
 	@Shadow
 	protected IServerConfiguration field_240768_i_;
 
-	/*
-	 * MinecraftServer#func_240800_l__
-	 */
 	@Inject(at = @At("HEAD"), method = "func_240800_l__()V")
 	private void initServer(CallbackInfo callback)
 	{
