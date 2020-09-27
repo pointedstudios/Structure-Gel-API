@@ -51,6 +51,7 @@ import net.minecraft.world.gen.feature.template.StructureProcessor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
@@ -95,18 +96,19 @@ public class StructureGelMod
 		IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
 		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
 
-		modBus.addListener(this::commonInit);
-		modBus.addListener(this::createRegistries);
-		modBus.addGenericListener(BiomeType.class, this::registerBiomeDictionary);
+		modBus.addListener(StructureGelMod::commonInit);
+		modBus.addListener(StructureGelMod::createRegistries);
+		modBus.addGenericListener(BiomeType.class, StructureGelMod::registerBiomeDictionary);
 		modBus.addGenericListener(Block.class, GelBlocks::onRegistry);
 		modBus.addGenericListener(Item.class, GelItems::onRegistry);
 		modBus.addGenericListener(Structure.class, StructureRegistry::onRegistry);
-		forgeBus.addListener(this::registerCommands);
+		forgeBus.addListener(StructureGelMod::registerCommands);
 
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
 		{
-			modBus.addListener(this::clientInit);
-			forgeBus.addListener(this::skipExperimentalBackupScreen);
+			modBus.addListener(StructureGelMod::clientInit);
+			forgeBus.addListener(StructureGelMod::skipExperimentalBackupScreen);
+			forgeBus.addListener(StructureGelMod::soundEvent);
 		});
 
 		// Debugging stuff
@@ -148,22 +150,16 @@ public class StructureGelMod
 		return new ResourceLocation(MODID, key);
 	}
 
-	@Internal
-	public void commonInit(final FMLCommonSetupEvent event)
-	{
-		GelCapability.register();
-	}
-
 	@OnlyIn(Dist.CLIENT)
 	@Internal
-	public void clientInit(final FMLClientSetupEvent event)
+	public static void clientInit(final FMLClientSetupEvent event)
 	{
 		GelBlocks.BLOCKS.forEach(b -> RenderTypeLookup.setRenderLayer(b, RenderType.getTranslucent()));
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Internal
-	public void skipExperimentalBackupScreen(final GuiScreenEvent.DrawScreenEvent.Post event)
+	public static void skipExperimentalBackupScreen(final GuiScreenEvent.DrawScreenEvent.Post event)
 	{
 		if (StructureGelConfig.CLIENT.skipExperimentalScreen())
 		{
@@ -190,33 +186,46 @@ public class StructureGelMod
 
 	@OnlyIn(Dist.CLIENT)
 	@Internal
-	private boolean hasButton(List<Widget> buttons, int index)
+	private static boolean hasButton(List<Widget> buttons, int index)
 	{
 		return buttons.size() > index && buttons.get(index) instanceof AbstractButton;
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Internal
-	private boolean doesTitleMatch(ITextComponent title, String compare)
+	private static boolean doesTitleMatch(ITextComponent title, String compare)
 	{
 		return title instanceof TranslationTextComponent && ((TranslationTextComponent) title).getKey().equals(compare);
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Internal
-	public void createRegistries(final RegistryEvent.NewRegistry event)
+	public static void soundEvent(final PlaySoundEvent event)
+	{
+		event.getSound().getSoundLocation();
+	}
+	
+	@Internal
+	public static void commonInit(final FMLCommonSetupEvent event)
+	{
+		GelCapability.register();
+	}
+	
+	@Internal
+	public static void createRegistries(final RegistryEvent.NewRegistry event)
 	{
 		new RegistryBuilder<BiomeType>().setName(locate("biome_dictionary")).setType(BiomeType.class).setDefaultKey(locate("empty")).create();
 	}
 
 	@Internal
-	public void registerCommands(final RegisterCommandsEvent event)
+	public static void registerCommands(final RegisterCommandsEvent event)
 	{
 		StructureGelCommand.register(event.getDispatcher());
 	}
 
 	@Internal
 	@SuppressWarnings("unchecked")
-	public void registerBiomeDictionary(final RegistryEvent.Register<BiomeType> event)
+	public static void registerBiomeDictionary(final RegistryEvent.Register<BiomeType> event)
 	{
 		BiomeDictionary.init();
 		// Get biome dictionary entries from other mods' classes

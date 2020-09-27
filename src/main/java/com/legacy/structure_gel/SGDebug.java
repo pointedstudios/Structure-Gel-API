@@ -134,7 +134,7 @@ public class SGDebug
 		public TextureAtlasSprite getPortalTexture()
 		{
 			Minecraft mc = Minecraft.getInstance();
-			return mc.getBlockRendererDispatcher().getBlockModelShapes().getTexture(Blocks.ICE.getDefaultState());
+			return mc.getBlockRendererDispatcher().getBlockModelShapes().getTexture(Blocks.LAVA.getDefaultState());
 		}
 	}
 
