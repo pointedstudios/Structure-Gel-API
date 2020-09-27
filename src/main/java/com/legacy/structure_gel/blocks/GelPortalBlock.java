@@ -181,10 +181,13 @@ public class GelPortalBlock extends NetherPortalBlock
 	@Override
 	public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn)
 	{
-		if (!entityIn.isPassenger() && !entityIn.isBeingRidden() && entityIn.isNonBoss() && entityIn.getCapability(GelCapability.INSTANCE).isPresent())
+		GelCapability.ifPresent(entityIn, (gelEntity) ->
 		{
-			entityIn.setPortal(pos);
-			entityIn.getCapability(GelCapability.INSTANCE).ifPresent(c -> c.setPortal(this));
-		}
+			if (!entityIn.isPassenger() && !entityIn.isBeingRidden() && entityIn.isNonBoss())
+			{
+				entityIn.setPortal(pos);
+				gelEntity.setPortal(this);
+			}
+		});
 	}
 }

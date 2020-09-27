@@ -46,7 +46,7 @@ import net.minecraftforge.event.world.WorldEvent;
 public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C>
 {
 	public final Map<EntityClassification, List<MobSpawnInfo.Spawners>> spawns = new HashMap<>();
-	private Integer seed = null;
+	public Integer seed = null;
 
 	public GelStructure(Codec<C> codec)
 	{

@@ -67,8 +67,11 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 
 /**
- * Contains a bunch of debug code for testing or examples. This may be commented
- * out.
+ * Contains a bunch of debug code for testing or examples. This should all be
+ * commented out, but feel free to reference from it.<br>
+ * <br>
+ * Comment code from these places. {@link StructureGelMod}
+ * {@link StructureGelConfig}
  * 
  * @author David
  *
@@ -192,7 +195,7 @@ public class SGDebug
 			@Override
 			public void func_230364_a_(DynamicRegistries dynamicRegistries, ChunkGenerator chunkGen, TemplateManager templateManager, int chunkX, int chunkZ, Biome biome, NoFeatureConfig config)
 			{
-				Pieces.setup(templateManager, new BlockPos(chunkX * 16, 180, chunkX * 16), this.components);
+				Pieces.setup(templateManager, new BlockPos(chunkX * 16, 80, chunkX * 16), this.components);
 				this.recalculateStructureSize();
 			}
 
@@ -255,6 +258,7 @@ public class SGDebug
 	@OnlyIn(Dist.CLIENT)
 	public static void renderRain(final RenderRainEvent event)
 	{
-		event.setCanceled(true);
+		if (event.getWorld().getDimensionKey() == CUSTOM_WORLD)
+			event.setCanceled(true);
 	}
 }

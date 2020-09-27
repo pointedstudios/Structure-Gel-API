@@ -110,7 +110,7 @@ public class StructureGelMod
 		});
 
 		// Debugging stuff
-		// com.legacy.structure_gel.SGDebug.init(modBus, forgeBus);
+		 com.legacy.structure_gel.SGDebug.init(modBus, forgeBus);
 	}
 
 	/**
@@ -269,7 +269,7 @@ public class StructureGelMod
 		private static Block registerBlock(IForgeRegistry<Block> registry, String key, Block object)
 		{
 			BLOCKS.add(object);
-			return RegistryHelper.register(registry, StructureGelMod.locate(key), object);
+			return RegistryHelper.registerExact(registry, StructureGelMod.locate(key), object);
 		}
 	}
 
@@ -277,7 +277,7 @@ public class StructureGelMod
 	{
 		public static void onRegistry(final RegistryEvent.Register<Item> event)
 		{
-			StructureGelMod.GelBlocks.BLOCKS.forEach(b -> RegistryHelper.register(event.getRegistry(), b.getRegistryName(), new StructureGelItem((StructureGelBlock) b)));
+			StructureGelMod.GelBlocks.BLOCKS.forEach(b -> RegistryHelper.registerExact(event.getRegistry(), b.getRegistryName(), new StructureGelItem((StructureGelBlock) b)));
 		}
 	}
 

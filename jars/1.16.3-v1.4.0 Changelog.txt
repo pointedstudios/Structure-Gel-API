@@ -15,8 +15,8 @@ Changes:
 	- RenderSkyEvent
 	- RenderRainEvent
 - GelStructure
-	- Slight optimization to how structures get what mobs should spawn inside of them.
-	- getSeed() no longer needs to be implemented. By default, it gets a seed from the hash code of your structure's registry name.
+	- Optimized how structures get what mobs should spawn inside of them.
+	- getSeed() no longer needs to be implemented. By default, it gets a seed from the hash code of your structure's registry name. You can also manually set GelStructure.seed in the constructor.
 
 Additions:
 - Portals can now be placed on the surface using GelTeleporter.
@@ -25,9 +25,13 @@ Additions:
 	- addStructure(BiomeLoadingEvent, StructureFeature)
 	- addStructureIfAllowed(BiomeLoadingEvent, StructureFeature)
 - BiomeDictionary
-	- Added new methods to check if an entry contains the provided biome.
-		- BiomeType.contains(ResourceLocation)
-		- BiomeType.contains(RegistryKey<Biome>)
+	- Added getOverworldBiomesSafe()
+		- This will replace getOverworldBiomes() in 1.17.
+- BiomeType
+	- Added methods to check if an entry contains the provided biome.
+		- contains(ResourceLocation)
+		- contains(RegistryKey<Biome>)
+	- Added biomes() method overloads that accept ResourceLocation or Biome array arguments.
 - GelPortalBlock
 	- Added rendering methods for showing the portal overlay.
 		- renderPortal(timeInPortal, scaledWidth, scaledHeight): Renders the portal overlay. Nether portal render by default.
@@ -36,6 +40,9 @@ Additions:
 	- Added registerExact as a variation of register.
 		- Returns the exact type of the object passed in instead of the registry type.
 		- This will replace register in 1.17 since it's more precise.
+- GelCapability
+	- Added ifPresent to run code if the entity has the capability.
+	- Added getIfPresent to run code and return a value if the entity has the capability.
 
 Fixes:
 - GelTeleporter.ICreatePortalFuncion was private.

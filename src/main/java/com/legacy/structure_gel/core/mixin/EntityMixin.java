@@ -11,7 +11,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.legacy.structure_gel.blocks.GelPortalBlock;
 import com.legacy.structure_gel.util.capability.GelCapability;
-import com.legacy.structure_gel.util.capability.IGelEntity;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.PortalInfo;
@@ -47,13 +46,11 @@ public class EntityMixin
 	@Inject(at = @At("HEAD"), method = "updatePortal()V", cancellable = true)
 	private void updatePortal(CallbackInfo callback)
 	{
-		if (((Entity) (Object) this).getCapability(GelCapability.INSTANCE).isPresent())
+		GelCapability.ifPresent((Entity) (Object) this, (gelEntity) ->
 		{
-			IGelEntity gelEntity = ((Entity) (Object) this).getCapability(GelCapability.INSTANCE).resolve().get();
 			// not null when a player steps in a GelPortal
 			if (gelEntity.getPortal() != null)
 			{
-			
 				if (this.world instanceof ServerWorld)
 				{
 					if (this.inPortal)
@@ -61,7 +58,7 @@ public class EntityMixin
 						GelPortalBlock portal = gelEntity.getPortal();
 						int maxTime = portal.getMaxTimeInside(((Entity) (Object) this));
 						ServerWorld destinationWorld = ((ServerWorld) this.world).getServer().getWorld(portal.getTeleporter((ServerWorld) this.world).getOpposite());
-						
+
 						if (destinationWorld != null && !this.isPassenger() && this.portalCounter++ >= maxTime)
 						{
 							this.world.getProfiler().startSection("portal");
@@ -91,9 +88,15 @@ public class EntityMixin
 					callback.cancel();
 				}
 
+				gelEntity.setPrevPortal(gelEntity.getPortal());
 				gelEntity.setPortal(null);
 			}
-		}
+			
+			else if (this.inPortal == true)
+			{
+				gelEntity.setPrevPortal(null);
+			}
+		});
 	}
 
 	/*
@@ -102,7 +105,7 @@ public class EntityMixin
 	@Inject(at = @At(value = "RETURN", ordinal = 0), method = "func_241829_a(Lnet/minecraft/world/server/ServerWorld;)Lnet/minecraft/block/PortalInfo;", cancellable = true)
 	protected void func_241829_a(ServerWorld destWorld, CallbackInfoReturnable<PortalInfo> callback)
 	{
-		if (((Entity) (Object) this).getCapability(GelCapability.INSTANCE).isPresent() && ((Entity) (Object) this).getCapability(GelCapability.INSTANCE).resolve().get().getPortal() != null)
+		if (GelCapability.getIfPresent(((Entity) (Object) this), (gelEntity) -> gelEntity.getPortal() != null))
 		{
 			boolean toNether = destWorld.getDimensionKey() == World.THE_NETHER;
 			WorldBorder worldborder = destWorld.getWorldBorder();
@@ -132,14 +135,14 @@ public class EntityMixin
 					direction = Direction.Axis.X;
 					motion = new Vector3d(0.5D, 0.0D, 0.0D);
 				}
-	
+
 				return PortalSize.func_242963_a(destWorld, tpResult, direction, motion, ((Entity) (Object) this).getSize(((Entity) (Object) this).getPose()), ((Entity) (Object) this).getMotion(), ((Entity) (Object) this).rotationYaw, ((Entity) (Object) this).rotationPitch);
 			}).orElse((PortalInfo) null);
-	
+
 			callback.setReturnValue(portalInfo);
 		}
 	}
-	
+
 	@Shadow
 	public int getMaxInPortalTime()
 	{
