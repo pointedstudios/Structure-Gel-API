@@ -28,12 +28,41 @@ public class GelCapability
 		CapabilityManager.INSTANCE.register(IGelEntity.class, new Storage(), GelEntity::new);
 	}
 
+	/**
+	 * Gets the capability instance from the entity passed. Returns null if the
+	 * entity is null or if the entity does not have the capability attached.
+	 * 
+	 * @param entity
+	 * @return {@link IGelEntity}
+	 */
+	@Nullable
+	public static <E extends Entity> IGelEntity get(E entity)
+	{
+		if (entity != null && entity.getCapability(INSTANCE).isPresent())
+			return entity.getCapability(INSTANCE).resolve().orElseGet(() -> null);
+		return null;
+	}
+
+	/**
+	 * Runs the consumer if the entity has the capability
+	 * 
+	 * @param entity
+	 * @param action
+	 */
 	public static <E extends Entity> void ifPresent(E entity, Consumer<IGelEntity> action)
 	{
 		if (entity != null && entity.getCapability(INSTANCE).isPresent())
 			action.accept(entity.getCapability(INSTANCE).resolve().get());
 	}
 
+	/**
+	 * Runs the first consumer if the entity has the capability. The second consumer
+	 * is ran if the capability isn't present.
+	 * 
+	 * @param entity
+	 * @param action
+	 * @param elseAction
+	 */
 	public static <E extends Entity> void ifPresent(E entity, Consumer<IGelEntity> action, Consumer<E> elseAction)
 	{
 		if (entity != null)
@@ -45,6 +74,13 @@ public class GelCapability
 		}
 	}
 
+	/**
+	 * Runs the function if the entity has the capability. Returns the result.
+	 * 
+	 * @param entity
+	 * @param action
+	 * @return Result of action
+	 */
 	@Nullable
 	public static <E extends Entity, R> R getIfPresent(E entity, Function<IGelEntity, R> action)
 	{
@@ -53,6 +89,15 @@ public class GelCapability
 		return null;
 	}
 
+	/**
+	 * Runs the first function if the entity has the capability. The second function
+	 * is ran if the capability isn't present. Returns the result.
+	 * 
+	 * @param entity
+	 * @param action
+	 * @param elseAction
+	 * @return Result of action or elseAction
+	 */
 	@Nullable
 	public static <E extends Entity, R> R getIfPresent(E entity, Function<IGelEntity, R> action, Function<E, R> elseAction)
 	{
