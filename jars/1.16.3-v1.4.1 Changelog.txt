@@ -1,0 +1,7 @@
+1.16.3-v1.4.1
+
+Minor change to fix getKey and getValue with RegistryHelper.
+
+Additions:
+- RegistryHelper
+	- Added a getKey and getValue method that accept IWorld. This should be used in place of the ones using World.
