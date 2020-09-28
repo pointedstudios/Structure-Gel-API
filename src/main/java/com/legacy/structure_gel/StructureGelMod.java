@@ -13,10 +13,13 @@ import com.google.common.collect.Lists;
 import com.legacy.structure_gel.biome_dictionary.BiomeDictionary;
 import com.legacy.structure_gel.biome_dictionary.BiomeType;
 import com.legacy.structure_gel.blocks.AxisStructureGelBlock;
+import com.legacy.structure_gel.blocks.GelPortalBlock;
 import com.legacy.structure_gel.blocks.IStructureGel.Behavior;
 import com.legacy.structure_gel.blocks.StructureGelBlock;
 import com.legacy.structure_gel.commands.StructureGelCommand;
 import com.legacy.structure_gel.items.StructureGelItem;
+import com.legacy.structure_gel.packets.PacketHandler;
+import com.legacy.structure_gel.packets.UpdateGelPlayerPacket;
 import com.legacy.structure_gel.util.Internal;
 import com.legacy.structure_gel.util.RegistryHelper;
 import com.legacy.structure_gel.util.capability.GelCapability;
@@ -29,15 +32,18 @@ import com.legacy.structure_gel.worldgen.processors.RemoveGelStructureProcessor;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.ConfirmBackupScreen;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.AbstractButton;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -55,6 +61,7 @@ import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
@@ -103,16 +110,17 @@ public class StructureGelMod
 		modBus.addGenericListener(Item.class, GelItems::onRegistry);
 		modBus.addGenericListener(Structure.class, StructureRegistry::onRegistry);
 		forgeBus.addListener(StructureGelMod::registerCommands);
+		forgeBus.addListener(StructureGelMod::onEntityJoinWorld);
 
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
 		{
 			modBus.addListener(StructureGelMod::clientInit);
 			forgeBus.addListener(StructureGelMod::skipExperimentalBackupScreen);
-			forgeBus.addListener(StructureGelMod::soundEvent);
+			forgeBus.addListener(StructureGelMod::onPlaySound);
 		});
 
 		// Debugging stuff
-		 com.legacy.structure_gel.SGDebug.init(modBus, forgeBus);
+		// com.legacy.structure_gel.SGDebug.init(modBus, forgeBus);
 	}
 
 	/**
@@ -200,17 +208,43 @@ public class StructureGelMod
 
 	@OnlyIn(Dist.CLIENT)
 	@Internal
-	public static void soundEvent(final PlaySoundEvent event)
+	public static void onPlaySound(final PlaySoundEvent event)
 	{
-		event.getSound().getSoundLocation();
+		Minecraft mc = Minecraft.getInstance();
+		GelCapability.ifPresent(mc.player, gelEntity ->
+		{
+			ResourceLocation name = event.getSound().getSoundLocation();
+			GelPortalBlock portal = gelEntity.getPortalAudio();
+			if (portal != null)
+			{
+				if (name.equals(SoundEvents.BLOCK_PORTAL_TRAVEL.getName()))
+					event.setResultSound(portal.getTravelSound());
+				else if (name.equals(SoundEvents.BLOCK_PORTAL_TRIGGER.getName()))
+					event.setResultSound(portal.getTriggerSound());
+			}
+		});
 	}
-	
+
+	@Internal
+	public static void onEntityJoinWorld(final EntityJoinWorldEvent event)
+	{
+		if (event.getEntity() instanceof ServerPlayerEntity)
+		{
+			ServerPlayerEntity player = (ServerPlayerEntity) event.getEntity();
+			GelCapability.ifPresent(player, gelPlayer ->
+			{
+				PacketHandler.sendToClient(new UpdateGelPlayerPacket(gelPlayer), player);
+			});
+		}
+	}
+
 	@Internal
 	public static void commonInit(final FMLCommonSetupEvent event)
 	{
 		GelCapability.register();
+		PacketHandler.register();
 	}
-	
+
 	@Internal
 	public static void createRegistries(final RegistryEvent.NewRegistry event)
 	{
@@ -262,7 +296,7 @@ public class StructureGelMod
 	public static class GelBlocks
 	{
 		public static Set<Block> BLOCKS = new LinkedHashSet<Block>();
-		public static Block RED_GEL, BLUE_GEL, GREEN_GEL, CYAN_GEL, ORANGE_GEL, YELLOW_GEL;
+		public static StructureGelBlock RED_GEL, BLUE_GEL, GREEN_GEL, CYAN_GEL, ORANGE_GEL, YELLOW_GEL;
 
 		public static void onRegistry(final RegistryEvent.Register<Block> event)
 		{
@@ -275,7 +309,7 @@ public class StructureGelMod
 			YELLOW_GEL = registerBlock(registry, "yellow_gel", new AxisStructureGelBlock(Behavior.AXIS_SPREAD));
 		}
 
-		private static Block registerBlock(IForgeRegistry<Block> registry, String key, Block object)
+		private static <T extends Block> T registerBlock(IForgeRegistry<Block> registry, String key, T object)
 		{
 			BLOCKS.add(object);
 			return RegistryHelper.registerExact(registry, StructureGelMod.locate(key), object);

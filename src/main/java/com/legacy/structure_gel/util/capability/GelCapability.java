@@ -28,58 +28,81 @@ public class GelCapability
 		CapabilityManager.INSTANCE.register(IGelEntity.class, new Storage(), GelEntity::new);
 	}
 
-	public static void ifPresent(Entity entity, Consumer<IGelEntity> action)
+	public static <E extends Entity> void ifPresent(E entity, Consumer<IGelEntity> action)
 	{
-		if (entity.getCapability(INSTANCE).isPresent())
+		if (entity != null && entity.getCapability(INSTANCE).isPresent())
 			action.accept(entity.getCapability(INSTANCE).resolve().get());
 	}
 
-	public static void ifPresent(Entity entity, Consumer<IGelEntity> action, Consumer<IGelEntity> elseAction)
+	public static <E extends Entity> void ifPresent(E entity, Consumer<IGelEntity> action, Consumer<E> elseAction)
 	{
-		if (entity.getCapability(INSTANCE).isPresent())
-			action.accept(entity.getCapability(INSTANCE).resolve().get());
-		else
-			elseAction.accept(entity.getCapability(INSTANCE).resolve().get());
+		if (entity != null)
+		{
+			if (entity.getCapability(INSTANCE).isPresent())
+				action.accept(entity.getCapability(INSTANCE).resolve().get());
+			else
+				elseAction.accept(entity);
+		}
 	}
-	
+
 	@Nullable
-	public static <T> T getIfPresent(Entity entity, Function<IGelEntity, T> action)
+	public static <E extends Entity, R> R getIfPresent(E entity, Function<IGelEntity, R> action)
 	{
-		if (entity.getCapability(INSTANCE).isPresent())
+		if (entity != null && entity.getCapability(INSTANCE).isPresent())
 			return action.apply(entity.getCapability(INSTANCE).resolve().get());
 		return null;
 	}
-	
-	public static <T> T getIfPresent(Entity entity, Function<IGelEntity, T> action, Function<IGelEntity, T> elseAction)
+
+	@Nullable
+	public static <E extends Entity, R> R getIfPresent(E entity, Function<IGelEntity, R> action, Function<E, R> elseAction)
 	{
-		if (entity.getCapability(INSTANCE).isPresent())
-			return action.apply(entity.getCapability(INSTANCE).resolve().get());
-		else
-			return elseAction.apply(entity.getCapability(INSTANCE).resolve().get());
+		if (entity != null)
+		{
+			if (entity.getCapability(INSTANCE).isPresent())
+				return action.apply(entity.getCapability(INSTANCE).resolve().get());
+			else
+				return elseAction.apply(entity);
+		}
+		return null;
 	}
 
 	public static class Storage implements Capability.IStorage<IGelEntity>
 	{
-		private static final ResourceLocation EMPTY = StructureGelMod.locate("empty");
+		public static final ResourceLocation EMPTY = StructureGelMod.locate("empty");
+		public static final String portal = "portal", portalVisual = "portal_visual", portalAudio = "portal_audio";
 
 		@Nullable
 		@Override
 		public INBT writeNBT(Capability<IGelEntity> capability, IGelEntity instance, Direction side)
 		{
-			CompoundNBT tag = new CompoundNBT();
-			tag.putString("portal", instance.getPortal() != null ? instance.getPortal().getRegistryName().toString() : EMPTY.toString());
-			tag.putString("prev_portal", instance.getPrevPortal() != null ? instance.getPrevPortal().getRegistryName().toString() : EMPTY.toString());
-			return tag;
+			CompoundNBT nbt = new CompoundNBT();
+			putPortal(nbt, portal, instance.getPortal());
+			putPortal(nbt, portalVisual, instance.getPortalVisual());
+			putPortal(nbt, portalAudio, instance.getPortalAudio());
+			return nbt;
+		}
+
+		private void putPortal(CompoundNBT nbt, String key, GelPortalBlock portal)
+		{
+			nbt.putString(key, portal != null ? portal.getRegistryName().toString() : EMPTY.toString());
 		}
 
 		@Override
-		public void readNBT(Capability<IGelEntity> capability, IGelEntity instance, Direction side, INBT nbt)
+		public void readNBT(Capability<IGelEntity> capability, IGelEntity instance, Direction side, INBT inbt)
 		{
-			ResourceLocation key = new ResourceLocation(((CompoundNBT) nbt).getString("portal"));
-			instance.setPortal((!key.equals(EMPTY) && ForgeRegistries.BLOCKS.containsKey(key) && ForgeRegistries.BLOCKS.getValue(key) instanceof GelPortalBlock) ? (GelPortalBlock) ForgeRegistries.BLOCKS.getValue(key) : null);
-		
-			key = new ResourceLocation(((CompoundNBT) nbt).getString("prev_portal"));
-			instance.setPrevPortal((!key.equals(EMPTY) && ForgeRegistries.BLOCKS.containsKey(key) && ForgeRegistries.BLOCKS.getValue(key) instanceof GelPortalBlock) ? (GelPortalBlock) ForgeRegistries.BLOCKS.getValue(key) : null);
+			if (inbt instanceof CompoundNBT)
+			{
+				CompoundNBT nbt = (CompoundNBT) inbt;
+				instance.setPortal(getPortal(nbt, portal));
+				instance.setPortalVisual(getPortal(nbt, portalVisual));
+				instance.setPortalAudio(getPortal(nbt, portalAudio));
+			}
+		}
+
+		private GelPortalBlock getPortal(CompoundNBT nbt, String key)
+		{
+			ResourceLocation portal = new ResourceLocation(nbt.getString(key));
+			return (!portal.equals(EMPTY) && ForgeRegistries.BLOCKS.containsKey(portal) && ForgeRegistries.BLOCKS.getValue(portal) instanceof GelPortalBlock) ? (GelPortalBlock) ForgeRegistries.BLOCKS.getValue(portal) : null;
 		}
 	}
 }

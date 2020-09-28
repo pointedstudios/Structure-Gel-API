@@ -8,8 +8,8 @@ import net.minecraftforge.common.util.LazyOptional;
 
 public class GelEntityProvider implements ICapabilitySerializable<CompoundNBT>
 {
-	private final GelEntity player = new GelEntity();
-	private final LazyOptional<IGelEntity> playerOptional = LazyOptional.of(() -> player);
+	private final GelEntity entity = new GelEntity();
+	private final LazyOptional<IGelEntity> playerOptional = LazyOptional.of(() -> entity);
 
 	public void invalidate()
 	{
@@ -28,13 +28,13 @@ public class GelEntityProvider implements ICapabilitySerializable<CompoundNBT>
 		if (GelCapability.INSTANCE == null)
 			return new CompoundNBT();
 		else
-			return (CompoundNBT) GelCapability.INSTANCE.writeNBT(player, null);
+			return (CompoundNBT) GelCapability.INSTANCE.writeNBT(entity, null);
 	}
 
 	@Override
 	public void deserializeNBT(CompoundNBT nbt)
 	{
 		if (GelCapability.INSTANCE != null)
-			GelCapability.INSTANCE.readNBT(player, null, nbt);
+			GelCapability.INSTANCE.readNBT(entity, null, nbt);
 	}
 }

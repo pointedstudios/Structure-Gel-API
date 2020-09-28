@@ -34,11 +34,25 @@ public interface IGelEntity
 	 * @return {@link GelPortalBlock}
 	 */
 	@Nullable
-	GelPortalBlock getPrevPortal();
+	GelPortalBlock getPortalVisual();
 
 	/**
-	 * @see #getPrevPortal()
+	 * @see #getPortalVisual()
 	 * @param portal
 	 */
-	void setPrevPortal(GelPortalBlock portal);
+	void setPortalVisual(GelPortalBlock portal);
+
+	/**
+	 * The portal that the entity last stepped into. Used for playing sounds.
+	 * 
+	 * @return {@link GelPortalBlock}
+	 */
+	@Nullable
+	GelPortalBlock getPortalAudio();
+
+	/**
+	 * @see #getPortalAudio()
+	 * @param portalAudio
+	 */
+	void setPortalAudio(GelPortalBlock portalAudio);
 }

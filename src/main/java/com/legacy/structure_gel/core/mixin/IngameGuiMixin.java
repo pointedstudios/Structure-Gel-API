@@ -30,7 +30,7 @@ public class IngameGuiMixin
 	{
 		GelCapability.ifPresent(this.mc.player, (gelEntity) ->
 		{
-			GelPortalBlock portal = gelEntity.getPrevPortal();
+			GelPortalBlock portal = gelEntity.getPortalVisual();
 			if (portal != null)
 			{
 				portal.renderPortal(timeInPortal, this.scaledHeight, this.scaledWidth);

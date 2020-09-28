@@ -17,6 +17,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.NetherPortalBlock;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -24,6 +26,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -110,6 +113,30 @@ public class GelPortalBlock extends NetherPortalBlock
 	}
 
 	/**
+	 * Gets the sound that plays when the player steps in the portal. Nether by
+	 * default.
+	 * 
+	 * @return {@link ISound}
+	 */
+	@OnlyIn(Dist.CLIENT)
+	public ISound getTriggerSound()
+	{
+		return SimpleSound.ambientWithoutAttenuation(SoundEvents.BLOCK_PORTAL_TRIGGER, new Random().nextFloat() * 0.4F + 0.8F, 0.25F);
+	}
+
+	/**
+	 * Gets the sound that plays when the player goes through the portal. Nether by
+	 * default.
+	 * 
+	 * @return {@link ISound}
+	 */
+	@OnlyIn(Dist.CLIENT)
+	public ISound getTravelSound()
+	{
+		return SimpleSound.ambientWithoutAttenuation(SoundEvents.BLOCK_PORTAL_TRAVEL, new Random().nextFloat() * 0.4F + 0.8F, 0.25F);
+	}
+
+	/**
 	 * Call this to fill the portal when whatever condition you need to fill it
 	 * occurs.
 	 * 
@@ -187,6 +214,8 @@ public class GelPortalBlock extends NetherPortalBlock
 			{
 				entityIn.setPortal(pos);
 				gelEntity.setPortal(this);
+				gelEntity.setPortalVisual(this);
+				gelEntity.setPortalAudio(this);
 			}
 		});
 	}

@@ -25,12 +25,15 @@ import net.minecraft.block.AbstractBlock.Properties;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.registry.DynamicRegistries;
@@ -135,6 +138,20 @@ public class SGDebug
 		{
 			Minecraft mc = Minecraft.getInstance();
 			return mc.getBlockRendererDispatcher().getBlockModelShapes().getTexture(Blocks.LAVA.getDefaultState());
+		}
+
+		@OnlyIn(Dist.CLIENT)
+		@Override
+		public ISound getTriggerSound()
+		{
+			return SimpleSound.ambientWithoutAttenuation(SoundEvents.BLOCK_ENDER_CHEST_OPEN, new Random().nextFloat() * 0.4F + 0.8F, 0.25F);
+		}
+
+		@OnlyIn(Dist.CLIENT)
+		@Override
+		public ISound getTravelSound()
+		{
+			return SimpleSound.ambientWithoutAttenuation(SoundEvents.BLOCK_ENDER_CHEST_CLOSE, new Random().nextFloat() * 0.4F + 0.8F, 0.25F);
 		}
 	}
 

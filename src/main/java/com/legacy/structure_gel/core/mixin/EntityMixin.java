@@ -45,9 +45,10 @@ public class EntityMixin
 	{
 		GelCapability.ifPresent((Entity) (Object) this, (gelEntity) ->
 		{
-			// not null when a player steps in a GelPortal
+			// in gel portal
 			if (gelEntity.getPortal() != null)
 			{
+				// Server side
 				if (this.world instanceof ServerWorld)
 				{
 					if (this.inPortal)
@@ -85,14 +86,15 @@ public class EntityMixin
 					callback.cancel();
 				}
 
-				gelEntity.setPrevPortal(gelEntity.getPortal());
 				gelEntity.setPortal(null);
 			}
+			// not in gel portal but in some portal
+			else if (this.inPortal)
+				gelEntity.setPortalVisual(null);
 
-			else if (this.inPortal == true)
-			{
-				gelEntity.setPrevPortal(null);
-			}
+			// If not in a portal, set audio to null
+			if (!this.inPortal)
+				gelEntity.setPortalAudio(null);
 		});
 	}
 

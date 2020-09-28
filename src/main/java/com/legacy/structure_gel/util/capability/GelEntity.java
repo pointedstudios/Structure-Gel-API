@@ -9,7 +9,9 @@ public class GelEntity implements IGelEntity
 	@Nullable
 	private GelPortalBlock portal;
 	@Nullable
-	private GelPortalBlock prevPortal;
+	private GelPortalBlock portalVisual;
+	@Nullable
+	private GelPortalBlock portalAudio;
 
 	@Nullable
 	@Override
@@ -26,14 +28,27 @@ public class GelEntity implements IGelEntity
 
 	@Nullable
 	@Override
-	public GelPortalBlock getPrevPortal()
+	public GelPortalBlock getPortalVisual()
 	{
-		return this.prevPortal;
+		return this.portalVisual;
 	}
 
 	@Override
-	public void setPrevPortal(GelPortalBlock prevPortal)
+	public void setPortalVisual(GelPortalBlock prevPortal)
 	{
-		this.prevPortal = prevPortal;
+		this.portalVisual = prevPortal;
+	}
+	
+	@Nullable
+	@Override
+	public GelPortalBlock getPortalAudio()
+	{
+		return this.portalAudio;
+	}
+
+	@Override
+	public void setPortalAudio(GelPortalBlock portalAudio)
+	{
+		this.portalAudio = portalAudio;
 	}
 }
