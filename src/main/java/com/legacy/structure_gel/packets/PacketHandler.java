@@ -23,7 +23,7 @@ public class PacketHandler
 
 	public static void register()
 	{
-		// Server -> Client
+		// Server to Client
 		register(UpdateGelPlayerPacket.class, UpdateGelPlayerPacket::encoder, UpdateGelPlayerPacket::decoder, UpdateGelPlayerPacket::handler);
 	}
 
@@ -34,7 +34,7 @@ public class PacketHandler
 	}
 
 	/**
-	 * Server -> Client
+	 * Server to Client
 	 * 
 	 * @param packet
 	 * @param serverPlayer
@@ -46,7 +46,7 @@ public class PacketHandler
 	}
 
 	/**
-	 * Server -> Clients in same world
+	 * Server to all Clients in same world
 	 * 
 	 * @param packet
 	 * @param world
@@ -57,7 +57,7 @@ public class PacketHandler
 	}
 
 	/**
-	 * Client -> Server
+	 * Client to Server
 	 * 
 	 * @param packet
 	 */

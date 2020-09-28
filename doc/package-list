@@ -8,6 +8,7 @@ com.legacy.structure_gel.core.mixin
 com.legacy.structure_gel.data
 com.legacy.structure_gel.events
 com.legacy.structure_gel.items
+com.legacy.structure_gel.packets
 com.legacy.structure_gel.registrars
 com.legacy.structure_gel.util
 com.legacy.structure_gel.util.capability
