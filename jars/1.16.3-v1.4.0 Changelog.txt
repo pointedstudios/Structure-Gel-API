@@ -1,6 +1,6 @@
 1.16.3-v1.4.0
 
-General additions and changes to work better with BiomeLoadingEvent.
+General optimizations, portal enhancements, and updates to work better with the latest forge.
 
 Changes:
 - Upadted minimum forge version to 1.16.3-34.1.0.
@@ -19,7 +19,6 @@ Changes:
 	- getSeed() no longer needs to be implemented. By default, it gets a seed from the hash code of your structure's registry name. You can also manually set GelStructure.seed in the constructor.
 
 Additions:
-- Portals can now be placed on the surface using GelTeleporter.
 - Added new methods to BiomeAccessHelper that work with BiomeLoadingEvent.
 	- addStructure(BiomeLoadingEvent, StructureFeature, StructureSeparationSettings, List<DimensionSettings>)
 	- addStructure(BiomeLoadingEvent, StructureFeature)
@@ -32,17 +31,21 @@ Additions:
 		- contains(ResourceLocation)
 		- contains(RegistryKey<Biome>)
 	- Added biomes() method overloads that accept ResourceLocation or Biome array arguments.
+- GelTeleporter
+	- Portals can now be placed on the surface using GelTeleporter.CreatePortalBehavior.ON_SURFACE.
 - GelPortalBlock
 	- Added rendering methods for showing the portal overlay.
-		- renderPortal(timeInPortal, scaledWidth, scaledHeight): Renders the portal overlay. Nether portal render by default.
+		- renderPortal(timeInPortal, scaledWidth, scaledHeight): Renders the portal overlay. By default, renders the texture of the portal itself on screen.
 		- getPortalTexture(): Gets the texture to render. This may be all you need to override for simple cases. Returns the texture for itself by default.
+	- Added sound methods for entering and traveling through a portal.
 		- getTriggerSound(): Gets the sound to play when a player enters a portal.
 		- getTravelSound(): Gets the sound to play when a player goes through a portal.
 - RegistryHelper
 	- Added registerExact as a variation of register.
-		- Returns the exact type of the object passed in instead of the registry type.
+		- Returns the exact type of the object passed in instead of the less specific registry type.
 		- This will replace register in 1.17 since it's more precise.
 - GelCapability
+	- Added get(Entity) to get the capability from an entity.
 	- Added ifPresent methods to run code if the entity has the capability.
 	- Added getIfPresent methods to run code and return a value if the entity has the capability.
 
