@@ -1,6 +1,6 @@
 package com.legacy.structure_gel;
 
-import java.util.List;
+/*import java.util.List;
 import java.util.Random;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -67,7 +67,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.DistExecutor;*/
 
 /**
  * Contains a bunch of debug code for testing or examples. This should all be
@@ -81,7 +81,7 @@ import net.minecraftforge.fml.DistExecutor;
  */
 public class SGDebug
 {
-	public static void init(IEventBus modBus, IEventBus forgeBus)
+	/*public static void init(IEventBus modBus, IEventBus forgeBus)
 	{
 		modBus.addGenericListener(Block.class, SGDebug::registerBlocks);
 		modBus.addGenericListener(PointOfInterestType.class, SGDebug::registerPOI);
@@ -277,5 +277,5 @@ public class SGDebug
 	{
 		if (event.getWorld().getDimensionKey() == CUSTOM_WORLD)
 			event.setCanceled(true);
-	}
+	}*/
 }

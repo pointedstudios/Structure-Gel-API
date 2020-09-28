@@ -43,8 +43,8 @@ Additions:
 		- Returns the exact type of the object passed in instead of the registry type.
 		- This will replace register in 1.17 since it's more precise.
 - GelCapability
-	- Added ifPresent to run code if the entity has the capability.
-	- Added getIfPresent to run code and return a value if the entity has the capability.
+	- Added ifPresent methods to run code if the entity has the capability.
+	- Added getIfPresent methods to run code and return a value if the entity has the capability.
 
 Fixes:
 - GelTeleporter.ICreatePortalFuncion was private.

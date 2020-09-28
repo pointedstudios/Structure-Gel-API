@@ -23,6 +23,7 @@ import com.legacy.structure_gel.packets.UpdateGelPlayerPacket;
 import com.legacy.structure_gel.util.Internal;
 import com.legacy.structure_gel.util.RegistryHelper;
 import com.legacy.structure_gel.util.capability.GelCapability;
+import com.legacy.structure_gel.util.capability.GelEntityProvider;
 import com.legacy.structure_gel.worldgen.jigsaw.GelJigsawPiece;
 import com.legacy.structure_gel.worldgen.jigsaw.GelStructurePiece;
 import com.legacy.structure_gel.worldgen.processors.RandomBlockSwapProcessor;
@@ -39,6 +40,7 @@ import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.AbstractButton;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.util.RegistryKey;
@@ -59,6 +61,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -111,6 +114,7 @@ public class StructureGelMod
 		modBus.addGenericListener(Structure.class, StructureRegistry::onRegistry);
 		forgeBus.addListener(StructureGelMod::registerCommands);
 		forgeBus.addListener(StructureGelMod::onEntityJoinWorld);
+		forgeBus.addGenericListener(Entity.class, StructureGelMod::attachCapabilities);
 
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
 		{
@@ -224,7 +228,14 @@ public class StructureGelMod
 			}
 		});
 	}
-
+	
+	@Internal
+	public static void commonInit(final FMLCommonSetupEvent event)
+	{
+		GelCapability.register();
+		PacketHandler.register();
+	}
+	
 	@Internal
 	public static void onEntityJoinWorld(final EntityJoinWorldEvent event)
 	{
@@ -239,10 +250,11 @@ public class StructureGelMod
 	}
 
 	@Internal
-	public static void commonInit(final FMLCommonSetupEvent event)
+	public static void attachCapabilities(final AttachCapabilitiesEvent<Entity> event)
 	{
-		GelCapability.register();
-		PacketHandler.register();
+		GelEntityProvider provider = new GelEntityProvider();
+		event.addCapability(locate("gel_entity"), provider);
+		event.addListener(provider::invalidate);
 	}
 
 	@Internal
