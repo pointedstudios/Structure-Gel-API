@@ -16,6 +16,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.village.PointOfInterestType;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.GenerationStage.Decoration;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
@@ -41,7 +42,9 @@ public class RegistryHelper
 {
 	/**
 	 * Returns an optional containing the registry key associated with the value
-	 * passed.
+	 * passed.<br>
+	 * <br>
+	 * TODO remove in 1.17 in favor of IWorld version.
 	 * 
 	 * @param world
 	 * @param registry
@@ -54,7 +57,23 @@ public class RegistryHelper
 	}
 
 	/**
-	 * Returns an optional containing the value of the registry key passed.
+	 * Returns an optional containing the registry key associated with the value
+	 * passed.
+	 * 
+	 * @param world
+	 * @param registry
+	 * @param value
+	 * @return {@link Optional}
+	 */
+	public static <T> Optional<RegistryKey<T>> getKey(IWorld world, RegistryKey<Registry<T>> registry, T value)
+	{
+		return world.func_241828_r().getRegistry(registry).getOptionalKey(value);
+	}
+
+	/**
+	 * Returns an optional containing the value of the registry key passed.<br>
+	 * <br>
+	 * TODO remove in 1.17 in favor of IWorld version.
 	 * 
 	 * @param world
 	 * @param registry
@@ -67,13 +86,28 @@ public class RegistryHelper
 	}
 
 	/**
+	 * Returns an optional containing the value of the registry key passed.
+	 * 
+	 * @param world
+	 * @param registry
+	 * @param key
+	 * @return {@link Optional}
+	 */
+	public static <T> Optional<T> getValue(IWorld world, RegistryKey<Registry<T>> registry, RegistryKey<T> key)
+	{
+		return Optional.ofNullable(world.func_241828_r().getRegistry(registry).getValueForKey(key));
+	}
+
+	/**
 	 * Simple means of registering to a forge registry.
 	 * 
 	 * @param registry
 	 * @param key
 	 * @param registryObject
 	 * @return The registryObject
-	 * @deprecated Use {@link #registerExact(IForgeRegistry, ResourceLocation, IForgeRegistryEntry)}. TODO Remove in 1.17.
+	 * @deprecated Use
+	 *             {@link #registerExact(IForgeRegistry, ResourceLocation, IForgeRegistryEntry)}.
+	 *             TODO Remove in 1.17.
 	 */
 	@Deprecated
 	public static <T extends IForgeRegistryEntry<T>> T register(IForgeRegistry<T> registry, ResourceLocation key, T registryObject)
