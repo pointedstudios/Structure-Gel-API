@@ -32,6 +32,8 @@ import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.settings.StructureSeparationSettings;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.world.StructureSpawnManager;
+import net.minecraftforge.event.world.StructureSpawnListGatherEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
 /**
@@ -47,6 +49,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 {
 	public final Map<EntityClassification, List<MobSpawnInfo.Spawners>> spawns = new HashMap<>();
 	public Integer seed = null;
+	public boolean insideSpawnsOnly = true;
 
 	public GelStructure(Codec<C> codec)
 	{
@@ -265,15 +268,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	@Nullable
 	public List<MobSpawnInfo.Spawners> getSpawns(EntityClassification classification)
 	{
-		switch (classification)
-		{
-		case MONSTER:
-			return getSpawnList();
-		case CREATURE:
-			return getCreatureSpawnList();
-		default:
-			return this.spawns.get(classification);
-		}
+		return this.spawns.get(classification);
 	}
 
 	/**
@@ -283,18 +278,14 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	 * @param event
 	 */
 	@Internal
-	public void potentialSpawnsEvent(WorldEvent.PotentialSpawns event)
+	public void potentialSpawnsEvent(StructureSpawnListGatherEvent event)
 	{
-		if (this.getSpawns(event.getType()) != null)
-		{
-			if (event.getWorld() instanceof ServerWorld && ((ServerWorld) event.getWorld()).func_241112_a_().func_235010_a_(event.getPos(), false, this).isValid())
-			{
-				event.getList().clear();
-				event.getList().addAll(this.getSpawns(event.getType()));
-			}
-		}
+		event.setInsideOnly(this.insideSpawnsOnly);
+		for (EntityClassification classification : EntityClassification.values())
+			if (this.getSpawns(classification) != null)
+				event.addEntitySpawns(classification, this.getSpawns(classification));
 	}
-
+	
 	/**
 	 * Gets a {@link StructureSeparationSettings} based on the API values.
 	 * 
