@@ -144,6 +144,7 @@ public class GelTeleporter extends Teleporter
 	 * @param pos
 	 * @return {@link Boolean}
 	 */
+	@SuppressWarnings("deprecation")
 	public boolean shouldIgnoreBlock(BlockState state, BlockPos pos)
 	{
 		return state.isIn(BlockTags.LEAVES) || state.isIn(BlockTags.LOGS) || state.isAir(world, pos) || (state.getCollisionShape(world, pos).isEmpty() && !state.getMaterial().isLiquid());
