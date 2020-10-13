@@ -30,11 +30,8 @@ import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.settings.StructureSeparationSettings;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.world.StructureSpawnManager;
 import net.minecraftforge.event.world.StructureSpawnListGatherEvent;
-import net.minecraftforge.event.world.WorldEvent;
 
 /**
  * An extension of {@link Structure} that allows for more precise tweaking and
@@ -47,9 +44,21 @@ import net.minecraftforge.event.world.WorldEvent;
  */
 public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C>
 {
+	/**
+	 * A map of mobs that spawn within the structure's bounds. Use
+	 * {@link #setSpawnList(EntityClassification, List)} to add to it.
+	 */
 	public final Map<EntityClassification, List<MobSpawnInfo.Spawners>> spawns = new HashMap<>();
-	public Integer seed = null;
+	/**
+	 * When {@code true}, mobs can only spawn inside of the structure's pieces. When
+	 * {@code false}, mobs can spawn within area around the structure.
+	 */
 	public boolean insideSpawnsOnly = true;
+	/**
+	 * The seed used for generation. This is automatically assigned when
+	 * {@link #getSeed()} is called, but you can assign it in your constructor.
+	 */
+	public Integer seed = null;
 
 	public GelStructure(Codec<C> codec)
 	{
@@ -285,7 +294,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 			if (this.getSpawns(classification) != null)
 				event.addEntitySpawns(classification, this.getSpawns(classification));
 	}
-	
+
 	/**
 	 * Gets a {@link StructureSeparationSettings} based on the API values.
 	 * 
