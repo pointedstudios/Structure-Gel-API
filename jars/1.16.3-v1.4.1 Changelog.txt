@@ -8,6 +8,14 @@ Changes:
 	- Removed WorldEntitySpawnerMixin as it is no longer needed.
 - GelStructure 
 	- Uses forge's new system for structure mob spawns.
+- BiomeDictionary
+	- Split structure_gel:mountains into structure_gel:mountains and structure_gel:snowy_mountains
+	- Added Nethercraft support for when that's ready
+	- Added more nether tags
+		- nether_fungal: For biomes with a bunch of mushrooms, like crimson and warped forests
+		- nether_sandy: For biomes with "sand", like the soulsand valley
+		- nether_extreme: For biomes that have harsh landscapes, like the basalt delta
+		- nether_fleshy: For biomes with a lot of flesh, like the visceral heap in Biomes O' Plenty
 
 Additions:
 - RegistryHelper

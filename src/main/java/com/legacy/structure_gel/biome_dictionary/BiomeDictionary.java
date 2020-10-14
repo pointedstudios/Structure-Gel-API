@@ -43,7 +43,7 @@ import net.minecraftforge.registries.RegistryManager;
 public class BiomeDictionary
 {
 	@Internal
-	private static final String BOP = "biomesoplenty";
+	private static final String BOP = "biomesoplenty", NETHERCRAFT = "nethercraft";
 
 	public static final IForgeRegistry<BiomeType> REGISTRY = RegistryManager.ACTIVE.getRegistry(BiomeType.class);
 
@@ -107,8 +107,12 @@ public class BiomeDictionary
 
 	// Nether
 	public static final BiomeType OVERGROWN_NETHER = register(BiomeType.create("overgrown_nether").biomes(BOP, "undergrowth"));
-	public static final BiomeType NETHER_FOREST = register(BiomeType.create("nether_forest").biomes(Biomes.CRIMSON_FOREST, Biomes.WARPED_FOREST));
-	public static final BiomeType NETHER = register(BiomeType.create("nether").parents(NETHER_FOREST, OVERGROWN_NETHER).biomes(Biomes.NETHER_WASTES, Biomes.SOUL_SAND_VALLEY, Biomes.BASALT_DELTAS).biomes(BOP, "crystalline_chasm", "visceral_heap", "withered_abyss"));
+	public static final BiomeType NETHER_FOREST = register(BiomeType.create("nether_forest").biomes(Biomes.CRIMSON_FOREST, Biomes.WARPED_FOREST).biomes(NETHERCRAFT, "glowing_grove"));
+	public static final BiomeType NETHER_FUNGAL = register(BiomeType.create("nether_fungal").biomes(Biomes.CRIMSON_FOREST, Biomes.WARPED_FOREST).biomes(NETHERCRAFT, "glowshroom_garden"));
+	public static final BiomeType NETHER_SANDY = register(BiomeType.create("nether_sandy").biomes(Biomes.SOUL_SAND_VALLEY).biomes(NETHERCRAFT, "volcanic_rushes"));
+	public static final BiomeType NETHER_EXTREME = register(BiomeType.create("nether_extreme").biomes(Biomes.BASALT_DELTAS));
+	public static final BiomeType NETHER_FLESHY = register(BiomeType.create("nether_fleshy").biomes(BOP, "visceral_heap"));
+	public static final BiomeType NETHER = register(BiomeType.create("nether").parents(NETHER_FOREST, OVERGROWN_NETHER, NETHER_FUNGAL, NETHER_SANDY, NETHER_EXTREME, NETHER_FLESHY).biomes(Biomes.NETHER_WASTES).biomes(BOP, "crystalline_chasm", "withered_abyss"));
 
 	// End
 	public static final BiomeType OUTER_END_ISLAND = register(BiomeType.create("outer_end_island").biomes(Biomes.END_HIGHLANDS, Biomes.END_MIDLANDS).biomes("endergetic", "poise_forest", "chorus_plains", "end_midlands", "end_highlands"));
