@@ -51,7 +51,8 @@ public class ConfigTemplates
 		private Map<EntityClassification, List<MobSpawnInfo.Spawners>> spawns = new HashMap<>();
 		// Worldgen noise settings... settings. That's a mouthful
 		private ForgeConfigSpec.ConfigValue<String> noiseSettingsString;
-		private List<DimensionSettings> noiseSettings = new ArrayList<>();
+		@Nullable
+		private List<DimensionSettings> noiseSettings = null;
 
 		/**
 		 * 
@@ -246,17 +247,19 @@ public class ConfigTemplates
 		 * 
 		 * @return {@link String}
 		 */
+		@Nullable
 		public String getNoiseSettingsString()
 		{
-			return this.noiseSettingsString != null ? this.noiseSettingsString.get() : "minecraft:overworld, minecraft:amplified, minecraft:nether, minecraft:end, minecraft:caves, minecraft:floating_islands";
+			return this.noiseSettingsString != null ? this.noiseSettingsString.get() : null;
 		}
 
 		/**
 		 * Returns the dimension noise settings that this structure is allowed to
-		 * generate with. Only contains all vanilla settings by default.
+		 * generate with. Null if no value is set.
 		 * 
 		 * @return {@link List}
 		 */
+		@Nullable
 		public List<DimensionSettings> getNoiseSettings()
 		{
 			return this.noiseSettings;
@@ -407,11 +410,15 @@ public class ConfigTemplates
 		 * @param key
 		 * @return {@link List}
 		 */
+		@Nullable
 		public List<DimensionSettings> parseNoiseSettings(String key)
 		{
+			if (key == null)
+				return null;
+			
 			List<DimensionSettings> noiseSettings = new ArrayList<>();
 			if (!key.isEmpty())
-			{
+			{		
 				Arrays.asList(key.replace(" ", "").split(",")).stream().forEach(s ->
 				{
 					ResourceLocation settings = new ResourceLocation(s);

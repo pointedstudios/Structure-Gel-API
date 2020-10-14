@@ -54,6 +54,6 @@ public abstract class GelConfigStructure<C extends IFeatureConfig> extends GelSt
 	@Override
 	public List<DimensionSettings> getNoiseSettingsToGenerateIn()
 	{
-		return this.getConfig().getNoiseSettings();
+		return this.getConfig().getNoiseSettings() == null ? super.getNoiseSettingsToGenerateIn() : this.getConfig().getNoiseSettings();
 	}
 }

@@ -100,15 +100,13 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 
 	/**
 	 * Gets a list of {@link DimensionSettings} to tell your structure where to
-	 * generate. Can be set using configs. You should only need to modify this if a
-	 * dimension that this structure generates in does not use a vanilla noise
-	 * setting.
+	 * generate. Can be set using configs. Defaults to every setting.
 	 * 
 	 * @return {@link List}
 	 */
 	public List<DimensionSettings> getNoiseSettingsToGenerateIn()
 	{
-		return ImmutableList.of(DimensionSettings.field_242734_c, DimensionSettings.field_242735_d, DimensionSettings.field_242736_e, DimensionSettings.field_242737_f, DimensionSettings.field_242738_g, DimensionSettings.field_242739_h).stream().map(WorldGenRegistries.NOISE_SETTINGS::getValueForKey).collect(ImmutableList.toImmutableList());
+		return WorldGenRegistries.NOISE_SETTINGS.getEntries().stream().map(Map.Entry::getValue).collect(ImmutableList.toImmutableList());
 	}
 
 	/**

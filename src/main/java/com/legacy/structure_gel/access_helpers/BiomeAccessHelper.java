@@ -100,7 +100,7 @@ public class BiomeAccessHelper
 		noiseSettings.forEach(noiseSetting ->
 		{
 			if (!noiseSetting.getStructures().field_236193_d_.containsKey(structure.field_236268_b_))
-				noiseSetting.getStructures().field_236193_d_.put(structure.field_236268_b_, separationSettings);
+				noiseSetting.getStructures().field_236193_d_ = GelCollectors.addToMap(noiseSetting.getStructures().field_236193_d_, structure.field_236268_b_, separationSettings);
 		});
 	}
 
@@ -173,7 +173,7 @@ public class BiomeAccessHelper
 		noiseSettings.forEach(noiseSetting ->
 		{
 			if (!noiseSetting.getStructures().field_236193_d_.containsKey(structure.field_236268_b_))
-				noiseSetting.getStructures().field_236193_d_.put(structure.field_236268_b_, separationSettings);
+				noiseSetting.getStructures().field_236193_d_ = GelCollectors.addToMap(noiseSetting.getStructures().field_236193_d_, structure.field_236268_b_, separationSettings);
 		});
 	}
 

@@ -53,6 +53,6 @@ public abstract class GelConfigJigsawStructure extends GelJigsawStructure implem
 	@Override
 	public List<DimensionSettings> getNoiseSettingsToGenerateIn()
 	{
-		return this.getConfig().getNoiseSettings();
+		return this.getConfig().getNoiseSettings() == null ? super.getNoiseSettingsToGenerateIn() : this.getConfig().getNoiseSettings();
 	}
 }
