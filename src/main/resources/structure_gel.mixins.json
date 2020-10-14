@@ -6,8 +6,7 @@
 	"mixins": [
 		"LakesFeatureMixin",
 		"EntityMixin",
-		"MinecraftServerMixin",
-		"WorldEntitySpawnerMixin"
+		"MinecraftServerMixin"
 	],
 	"client": [
 		"WorldRendererMixin",

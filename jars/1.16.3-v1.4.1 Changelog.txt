@@ -1,6 +1,13 @@
 1.16.3-v1.4.1
 
-Minor change to fix getKey and getValue with RegistryHelper.
+Updated to Forge 34.1.19
+Minor change to fix getKey and getValue with RegistryHelper as well as updating to use new forge features.
+
+Changes:
+- Mixins
+	- Removed WorldEntitySpawnerMixin as it is no longer needed.
+- GelStructure 
+	- Uses forge's new system for structure mob spawns.
 
 Additions:
 - RegistryHelper

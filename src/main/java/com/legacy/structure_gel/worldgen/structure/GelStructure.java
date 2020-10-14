@@ -289,10 +289,13 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	@Internal
 	public void potentialSpawnsEvent(StructureSpawnListGatherEvent event)
 	{
-		event.setInsideOnly(this.insideSpawnsOnly);
-		for (EntityClassification classification : EntityClassification.values())
-			if (this.getSpawns(classification) != null)
-				event.addEntitySpawns(classification, this.getSpawns(classification));
+		if (event.getStructure() == this)
+		{
+			event.setInsideOnly(this.insideSpawnsOnly);
+			for (EntityClassification classification : EntityClassification.values())
+				if (this.getSpawns(classification) != null)
+					event.addEntitySpawns(classification, this.getSpawns(classification));
+		}
 	}
 
 	/**
