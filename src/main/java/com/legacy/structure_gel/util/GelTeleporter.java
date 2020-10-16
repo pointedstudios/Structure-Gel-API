@@ -2,21 +2,30 @@ package com.legacy.structure_gel.util;
 
 import java.util.Comparator;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Supplier;
+
+import javax.annotation.Nullable;
 
 import com.legacy.structure_gel.blocks.GelPortalBlock;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.NetherPortalBlock;
+import net.minecraft.block.PortalInfo;
+import net.minecraft.block.PortalSize;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Direction;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.TeleportationRepositioner;
+import net.minecraft.util.TeleportationRepositioner.Result;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.village.PointOfInterest;
 import net.minecraft.village.PointOfInterestManager;
 import net.minecraft.village.PointOfInterestType;
@@ -27,6 +36,7 @@ import net.minecraft.world.border.WorldBorder;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.server.TicketType;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 /**
  * A more mod compatible teleporter for the API.
@@ -157,27 +167,10 @@ public class GelTeleporter extends Teleporter
 	public Optional<TeleportationRepositioner.Result> getExistingPortal(BlockPos startPos, boolean toNether)
 	{
 		PointOfInterestManager poiManager = this.world.getPointOfInterestManager();
-		int i = (int) Math.max(DimensionType.getCoordinateDifference(this.world.getServer().getWorld(this.getOpposite()).getDimensionType(), this.world.getDimensionType()) * 16, 16);
-		poiManager.ensureLoadedAndValid(this.world, startPos, i);
+		int dist = (int) Math.max(DimensionType.getCoordinateDifference(this.world.getServer().getWorld(this.getOpposite()).getDimensionType(), this.world.getDimensionType()) * 16, 16);
+		poiManager.ensureLoadedAndValid(this.world, startPos, dist);
 
-		Optional<PointOfInterest> optional = poiManager.getInSquare(poiType ->
-		{
-			return poiType == this.portalPOI.get();
-		}, startPos, i, PointOfInterestManager.Status.ANY).filter(poi ->
-		{
-			// Only gets portals that don't have a portal below them to optimize for larger
-			// portals.
-			return poiManager.getType(poi.getPos().down()).orElse(null) != poi.getType();
-		}).sorted(Comparator.<PointOfInterest>comparingDouble(poi ->
-		{
-			return poi.getPos().distanceSq(startPos);
-		}).thenComparingInt(poi ->
-		{
-			return poi.getPos().getY();
-		})).filter(poi ->
-		{
-			return this.world.getBlockState(poi.getPos()).hasProperty(BlockStateProperties.HORIZONTAL_AXIS);
-		}).findFirst();
+		Optional<PointOfInterest> optional = poiManager.getInSquare(poiType -> poiType == this.portalPOI.get(), startPos, dist, PointOfInterestManager.Status.ANY).filter(poi -> poiManager.getType(poi.getPos().down()).orElse(null) != poi.getType()).filter(poi -> this.world.getBlockState(poi.getPos()).hasProperty(BlockStateProperties.HORIZONTAL_AXIS)).min(Comparator.<PointOfInterest>comparingDouble(poi -> poi.getPos().distanceSq(startPos)).thenComparingInt(poi -> poi.getPos().getY()));
 
 		return optional.map(poi ->
 		{
@@ -196,7 +189,49 @@ public class GelTeleporter extends Teleporter
 	{
 		return this.placementBehavior.apply(this, startPos, enterAxis);
 	}
-	
+
+	@Override
+	@Nullable
+	public PortalInfo getPortalInfo(Entity entity, ServerWorld destWorld, Function<ServerWorld, PortalInfo> defaultPortalInfo)
+	{
+		// Scale position
+		WorldBorder worldborder = destWorld.getWorldBorder();
+		double minX = Math.max(-2.9999872E7D, worldborder.minX() + 16.0D);
+		double minZ = Math.max(-2.9999872E7D, worldborder.minZ() + 16.0D);
+		double maxX = Math.min(2.9999872E7D, worldborder.maxX() - 16.0D);
+		double maxZ = Math.min(2.9999872E7D, worldborder.maxZ() - 16.0D);
+		double scaling = DimensionType.getCoordinateDifference(entity.world.getDimensionType(), destWorld.getDimensionType());
+		BlockPos scaledPos = new BlockPos(MathHelper.clamp(entity.getPosX() * scaling, minX, maxX), entity.getPosY(), MathHelper.clamp(entity.getPosZ() * scaling, minZ, maxZ));
+
+		// Get info about current portal
+		BlockPos portalPos = ObfuscationReflectionHelper.getPrivateValue(Entity.class, entity, "field_242271_ac");
+		BlockState blockstate = entity.world.getBlockState(portalPos);
+		Direction.Axis portalAxis;
+		Vector3d offset;
+		if (blockstate.hasProperty(BlockStateProperties.HORIZONTAL_AXIS))
+		{
+			portalAxis = blockstate.get(BlockStateProperties.HORIZONTAL_AXIS);
+			TeleportationRepositioner.Result motionTpResult = TeleportationRepositioner.findLargestRectangle(portalPos, portalAxis, 21, Direction.Axis.Y, 21, bp -> entity.world.getBlockState(bp) == blockstate);
+			offset = PortalSize.func_242973_a(motionTpResult, portalAxis, entity.getPositionVec(), entity.getSize(entity.getPose()));
+		}
+		else
+		{
+			portalAxis = Direction.Axis.X;
+			offset = new Vector3d(0.5D, 0.0D, 0.0D);
+		}
+
+		// Find or create a new portal
+		Optional<Result> result = this.getExistingPortal(scaledPos, false);
+		if (entity instanceof ServerPlayerEntity && !result.isPresent())
+			result = makePortal(scaledPos, portalAxis);
+		if (!result.isPresent())
+			return null;
+		
+		// Get info from new portal
+		PortalInfo portalInfo = PortalSize.func_242963_a(destWorld, result.get(), portalAxis, offset, entity.getSize(entity.getPose()), entity.getMotion(), entity.rotationYaw, entity.rotationPitch);
+		return new PortalInfo(new Vector3d(result.get().startPos.getX() + 0.5, result.get().startPos.getY() + 0.05, result.get().startPos.getZ() + 0.5), portalInfo.motion, portalInfo.rotationYaw, portalInfo.rotationPitch);
+	}
+
 	/**
 	 * Places this portal on highest block in the world, ignoring blocks specified
 	 * in {@link #shouldIgnoreBlock(BlockState, BlockPos)}.
@@ -411,15 +446,6 @@ public class GelTeleporter extends Teleporter
 			}
 		}
 
-		return true;
-	}
-
-	/**
-	 * Silly thing to make it work.
-	 */
-	@Override
-	public boolean isVanilla()
-	{
 		return true;
 	}
 
