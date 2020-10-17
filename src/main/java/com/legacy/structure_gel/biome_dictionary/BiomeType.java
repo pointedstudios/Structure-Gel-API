@@ -2,7 +2,6 @@ package com.legacy.structure_gel.biome_dictionary;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -171,7 +170,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 	{
 		return addBiome(biome.getLocation());
 	}
-	
+
 	/**
 	 * Add the biome to this instance.
 	 * 
@@ -211,7 +210,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 	 * 
 	 * @param biomes
 	 * @return {@link BiomeType}
-	 * @deprecated Use {@link #setBiomesSafe(Set)}. TODO Remove in 1.17. 
+	 * @deprecated Use {@link #setBiomesSafe(Set)}. TODO Remove in 1.17.
 	 */
 	@Deprecated
 	public BiomeType setBiomes(Set<RegistryKey<Biome>> biomes)
@@ -330,7 +329,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 	{
 		return this.contains(key.getLocation());
 	}
-	
+
 	/**
 	 * Does this instance or it's parents contain the biome passed.
 	 * 
@@ -350,7 +349,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 	 */
 	public boolean contains(ResourceLocation key)
 	{
-		return this.getAllBiomes().stream().map(registryKey -> registryKey.getLocation()).anyMatch(name -> name.equals(key));
+		return this.getAllBiomes().stream().anyMatch(registryKey -> registryKey.getLocation().equals(key));
 	}
 
 	/**
@@ -368,24 +367,8 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 	@Override
 	public String toString()
 	{
-		String parents = "";
-		Iterator<ResourceLocation> iterator = this.getParents().iterator();
-		while (iterator.hasNext())
-		{
-			parents = parents + iterator.next().toString();
-			if (iterator.hasNext())
-				parents = parents + ", ";
-		}
-
-		String biomes = "";
-		Iterator<ResourceLocation> iterator2 = this.getBiomes().iterator();
-		while (iterator2.hasNext())
-		{
-			biomes = biomes + iterator2.next().toString();
-			if (iterator2.hasNext())
-				biomes = biomes + ", ";
-		}
-
+		String parents = String.join(", ", this.getParents().stream().map(ResourceLocation::toString).collect(Collectors.toSet()));
+		String biomes = String.join(", ", this.getBiomes().stream().map(ResourceLocation::toString).collect(Collectors.toSet()));
 		return String.format("name = %s, parents = [%s], biomes = [%s]", this.getRegistryName().toString(), parents, biomes);
 	}
 

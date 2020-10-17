@@ -15,6 +15,7 @@ import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
+import net.minecraftforge.common.BiomeDictionary.Type;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -147,6 +148,42 @@ public class BiomeDictionary
 	public static final BiomeType GOOD_DREAM = register(BiomeType.create("good_dream"));
 	public static final BiomeType NIGHTMARE = register(BiomeType.create("nightmare"));
 
+	// Forge
+	public static final ForgeType FORGE_HOT = register(ForgeType.create(Type.HOT));
+	public static final ForgeType FORGE_COLD = register(ForgeType.create(Type.COLD));
+	public static final ForgeType FORGE_SPARSE = register(ForgeType.create(Type.SPARSE));
+	public static final ForgeType FORGE_DENSE = register(ForgeType.create(Type.DENSE));
+	public static final ForgeType FORGE_WET = register(ForgeType.create(Type.WET));
+	public static final ForgeType FORGE_DRY = register(ForgeType.create(Type.DRY));
+	public static final ForgeType FORGE_SAVANNA = register(ForgeType.create(Type.SAVANNA));
+	public static final ForgeType FORGE_CONIFEROUS = register(ForgeType.create(Type.CONIFEROUS));
+	public static final ForgeType FORGE_JUNGLE = register(ForgeType.create(Type.JUNGLE));
+	public static final ForgeType FORGE_SPOOKY = register(ForgeType.create(Type.SPOOKY));
+	public static final ForgeType FORGE_DEAD = register(ForgeType.create(Type.DEAD));
+	public static final ForgeType FORGE_LUSH = register(ForgeType.create(Type.LUSH));
+	public static final ForgeType FORGE_MUSHROOM = register(ForgeType.create(Type.MUSHROOM));
+	public static final ForgeType FORGE_MAGICAL = register(ForgeType.create(Type.MAGICAL));
+	public static final ForgeType FORGE_RARE = register(ForgeType.create(Type.RARE));
+	public static final ForgeType FORGE_PLATEAU = register(ForgeType.create(Type.PLATEAU));
+	public static final ForgeType FORGE_MODIFIED = register(ForgeType.create(Type.MODIFIED));
+	public static final ForgeType FORGE_OCEAN = register(ForgeType.create(Type.OCEAN));
+	public static final ForgeType FORGE_RIVER = register(ForgeType.create(Type.RIVER));
+	public static final ForgeType FORGE_WATER = register(ForgeType.create(Type.WATER));
+	public static final ForgeType FORGE_MESA = register(ForgeType.create(Type.MESA));
+	public static final ForgeType FORGE_FOREST = register(ForgeType.create(Type.FOREST));
+	public static final ForgeType FORGE_PLAINS = register(ForgeType.create(Type.PLAINS));
+	public static final ForgeType FORGE_MOUNTAIN = register(ForgeType.create(Type.MOUNTAIN));
+	public static final ForgeType FORGE_HILLS = register(ForgeType.create(Type.HILLS));
+	public static final ForgeType FORGE_SWAMP = register(ForgeType.create(Type.SWAMP));
+	public static final ForgeType FORGE_SANDY = register(ForgeType.create(Type.SANDY));
+	public static final ForgeType FORGE_SNOWY = register(ForgeType.create(Type.SNOWY));
+	public static final ForgeType FORGE_WASTELAND = register(ForgeType.create(Type.WASTELAND));
+	public static final ForgeType FORGE_BEACH = register(ForgeType.create(Type.BEACH));
+	public static final ForgeType FORGE_VOID = register(ForgeType.create(Type.VOID));
+	public static final ForgeType FORGE_OVERWORLD = register(ForgeType.create(Type.OVERWORLD));
+	public static final ForgeType FORGE_NETHER = register(ForgeType.create(Type.NETHER));
+	public static final ForgeType FORGE_END = register(ForgeType.create(Type.END));
+
 	public static void init()
 	{
 		// Can't register EMPTY directly since I'm preventing it, so I do it like this.
@@ -156,7 +193,7 @@ public class BiomeDictionary
 	/**
 	 * Replacement for {@link IForgeRegistry#register(IForgeRegistryEntry)}. Please
 	 * use this instead as it has special functionality to allow extending existing
-	 * registries.
+	 * registries. TODO make BiomeType generic in 1.17
 	 * 
 	 * @param biomeType
 	 * @return {@link BiomeType}
@@ -182,6 +219,20 @@ public class BiomeDictionary
 
 			return biomeType;
 		}
+	}
+
+	/**
+	 * Used for registering forge biome dictionary entries to this dictionary for
+	 * compatibility.
+	 * 
+	 * @param forgeType
+	 * @return {@link ForgeType}
+	 */
+	@Internal
+	private static ForgeType register(ForgeType forgeType)
+	{
+		REGISTRY.register(forgeType);
+		return forgeType;
 	}
 
 	/**

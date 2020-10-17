@@ -234,6 +234,8 @@ public class StructureGelMod
 	{
 		GelCapability.register();
 		PacketHandler.register();
+		
+		LOGGER.info(BiomeDictionary.FORGE_COLD.toString());
 	}
 	
 	@Internal
