@@ -51,7 +51,7 @@ public class BiomeDictionary
 	public static final IForgeRegistry<BiomeType> REGISTRY = RegistryManager.ACTIVE.getRegistry(BiomeType.class);
 
 	@Internal
-	private static final Map<RegistryKey<Biome>, Set<BiomeType>> BIOME_TO_BIOMETYPE_CACHE = new HashMap<>();
+	private static final Map<ResourceLocation, Set<BiomeType>> BIOME_TO_BIOMETYPE_CACHE = new HashMap<>();
 
 	@Internal
 	protected static final ResourceLocation EMPTY_NAME = StructureGelMod.locate("empty");
@@ -305,6 +305,28 @@ public class BiomeDictionary
 	 */
 	public static Set<BiomeType> getAllTypes(RegistryKey<Biome> biome)
 	{
+		return getAllTypes(biome.getLocation());
+	}
+
+	/**
+	 * Returns all {@link BiomeType}s containing this biome.
+	 * 
+	 * @param biome
+	 * @return {@link Set}
+	 */
+	public static Set<BiomeType> getAllTypes(Biome biome)
+	{
+		return getAllTypes(biome.getRegistryName());
+	}
+
+	/**
+	 * Returns all {@link BiomeType}s containing this biome.
+	 * 
+	 * @param biome
+	 * @return {@link Set}
+	 */
+	public static Set<BiomeType> getAllTypes(ResourceLocation biome)
+	{
 		if (BIOME_TO_BIOMETYPE_CACHE.containsKey(biome))
 			return BIOME_TO_BIOMETYPE_CACHE.get(biome);
 		else
@@ -312,7 +334,7 @@ public class BiomeDictionary
 			Set<BiomeType> types = new HashSet<>();
 			REGISTRY.forEach(type ->
 			{
-				if (type.getAllBiomes().contains(biome))
+				if (type.getAllBiomes().stream().map(RegistryKey::getLocation).anyMatch(biome::equals))
 					types.add(type);
 			});
 

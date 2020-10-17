@@ -124,7 +124,7 @@ public class StructureGelMod
 		});
 
 		// Debugging stuff
-		com.legacy.structure_gel.SGDebug.init(modBus, forgeBus);
+		// com.legacy.structure_gel.SGDebug.init(modBus, forgeBus);
 	}
 
 	/**
