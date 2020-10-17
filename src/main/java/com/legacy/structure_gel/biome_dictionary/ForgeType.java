@@ -120,7 +120,7 @@ public class ForgeType extends BiomeType
 	@Override
 	public String toString()
 	{
-		String biomes = String.join(", ", this.getBiomes().stream().map(ResourceLocation::toString).collect(Collectors.toSet()));
+		String biomes = String.join(", ", this.getBiomes().stream().map(ResourceLocation::toString).sorted().collect(Collectors.toSet()));
 		return String.format("name = %s, biomes = [%s]", this.getRegistryName().toString(), biomes);
 	}
 }

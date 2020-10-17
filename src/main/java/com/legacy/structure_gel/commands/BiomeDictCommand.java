@@ -1,11 +1,11 @@
 package com.legacy.structure_gel.commands;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.biome_dictionary.BiomeDictionary;
-import com.legacy.structure_gel.biome_dictionary.BiomeType;
 import com.legacy.structure_gel.util.RegistryHelper;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -47,33 +47,32 @@ public class BiomeDictCommand
 		World world = context.getSource().getWorld();
 		Optional<RegistryKey<Biome>> biome = RegistryHelper.getKey(world, Registry.BIOME_KEY, world.getBiome(new BlockPos(context.getSource().getPos())));
 		if (biome.isPresent())
-		{
 			return getTypes(context, biome.get().getLocation());
-		}
+
 		return 0;
 	}
 
 	private static int getTypes(CommandContext<CommandSource> context, ResourceLocation key)
 	{
 		context.getSource().sendFeedback(new StringTextComponent("[" + key.toString() + "]").mergeStyle(TextFormatting.GREEN), true);
-		Set<BiomeType> types = BiomeDictionary.getAllTypes(RegistryKey.getOrCreateKey(Registry.BIOME_KEY, key));
+		List<String> types = BiomeDictionary.getAllTypes(RegistryKey.getOrCreateKey(Registry.BIOME_KEY, key)).stream().map(b -> b.getRegistryName().toString()).sorted().collect(Collectors.toList());
 		if (types.isEmpty())
 			context.getSource().sendFeedback(new StringTextComponent(key.toString() + " has no registered types."), true);
 		else
-			types.forEach(t -> context.getSource().sendFeedback(new StringTextComponent(" - " + t.getRegistryName().toString()), true));
-		
+			types.forEach(t -> context.getSource().sendFeedback(new StringTextComponent(" - " + t), true));
+
 		return 1;
 	}
 
 	private static int getBiomes(CommandContext<CommandSource> context, ResourceLocation key)
 	{
 		context.getSource().sendFeedback(new StringTextComponent("[" + key.toString() + "]").mergeStyle(TextFormatting.GREEN), true);
-		Set<RegistryKey<Biome>> biomes = BiomeDictionary.get(key).getAllBiomes();
-		if(biomes.isEmpty())
+		List<String> biomes = BiomeDictionary.get(key).getAllBiomes().stream().map(rk -> rk.getLocation().toString()).sorted().collect(Collectors.toList());
+		if (biomes.isEmpty())
 			context.getSource().sendFeedback(new StringTextComponent(key.toString() + " has no registered biomes."), true);
 		else
-			biomes.forEach(b -> context.getSource().sendFeedback(new StringTextComponent(" - " + b.getLocation().toString()), true));
-			
+			biomes.forEach(b -> context.getSource().sendFeedback(new StringTextComponent(" - " + b), true));
+
 		return 1;
 	}
 }

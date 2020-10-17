@@ -367,8 +367,8 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 	@Override
 	public String toString()
 	{
-		String parents = String.join(", ", this.getParents().stream().map(ResourceLocation::toString).collect(Collectors.toSet()));
-		String biomes = String.join(", ", this.getBiomes().stream().map(ResourceLocation::toString).collect(Collectors.toSet()));
+		String parents = String.join(", ", this.getParents().stream().map(ResourceLocation::toString).sorted().collect(Collectors.toSet()));
+		String biomes = String.join(", ", this.getBiomes().stream().map(ResourceLocation::toString).sorted().collect(Collectors.toSet()));
 		return String.format("name = %s, parents = [%s], biomes = [%s]", this.getRegistryName().toString(), parents, biomes);
 	}
 

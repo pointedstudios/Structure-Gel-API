@@ -124,7 +124,7 @@ public class StructureGelMod
 		});
 
 		// Debugging stuff
-		 com.legacy.structure_gel.SGDebug.init(modBus, forgeBus);
+		com.legacy.structure_gel.SGDebug.init(modBus, forgeBus);
 	}
 
 	/**
@@ -228,16 +228,14 @@ public class StructureGelMod
 			}
 		});
 	}
-	
+
 	@Internal
 	public static void commonInit(final FMLCommonSetupEvent event)
 	{
 		GelCapability.register();
 		PacketHandler.register();
-		
-		LOGGER.info(BiomeDictionary.FORGE_COLD.toString());
 	}
-	
+
 	@Internal
 	public static void onEntityJoinWorld(final EntityJoinWorldEvent event)
 	{
