@@ -1,5 +1,9 @@
 package com.legacy.structure_gel;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.legacy.structure_gel.util.Internal;
@@ -27,24 +31,33 @@ public class StructureGelConfig
 	public static class Common
 	{
 		private final ForgeConfigSpec.BooleanValue extraLakeProofing;
+		private final ForgeConfigSpec.ConfigValue<String> ignoredMods;
 		private final ForgeConfigSpec.BooleanValue guessBiomeDict;
+
 		//public final com.legacy.structure_gel.util.ConfigTemplates.StructureConfig structureConfig;
-		
+
 		public Common(ForgeConfigSpec.Builder builder)
 		{
 			this.extraLakeProofing = builder.comment("Adds more vanilla structures to the list of structures that lakes cannot generate inside of. Only villages when set to false. Requires reload.").define("features.extra_lake_proofing", true);
-			this.guessBiomeDict = builder.comment("Determines if the biome dictionary make assumptions for unregistered biomes. Setting this to false can fix issues where a structure generates in the wrong dimension.").define("biomes.guess_biome_dictionary", true);
+			this.ignoredMods = builder.comment("A list of mod IDs that will be ignored when the biome dictionary attempts to register unregistered biomes. Mod IDs must be comma separated (\"biomesoplenty, byg, blue_skies\").").define("biome_dictionary.ignored_mods", "");
+			this.guessBiomeDict = builder.comment("Determines if the biome dictionary make assumptions for unregistered biomes. Setting this to false can fix issues where a structure generates in the wrong dimension.").define("biome_dictionary.make_best_guess", true);
+
 			//this.structureConfig = new com.legacy.structure_gel.util.ConfigTemplates.StructureConfig(builder, "test_structure", 1.0, 20, 0).biomes(true, "#structure_gel:end");
 		}
-		
+
 		public boolean getExtraLakeProofing()
 		{
 			return this.extraLakeProofing.get();
 		}
-		
+
 		public boolean shouldGuessBiomeDict()
 		{
 			return this.guessBiomeDict.get();
+		}
+
+		public List<String> getIgnoredMods()
+		{
+			return Arrays.stream(ignoredMods.get().split(",")).map(String::trim).collect(Collectors.toList());
 		}
 	}
 

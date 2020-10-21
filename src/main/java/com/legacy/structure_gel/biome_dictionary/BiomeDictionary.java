@@ -2,12 +2,14 @@ package com.legacy.structure_gel.biome_dictionary;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.google.common.collect.ImmutableList;
+import com.legacy.structure_gel.StructureGelConfig;
 import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.util.ConfigTemplates;
 import com.legacy.structure_gel.util.Internal;
@@ -315,7 +317,9 @@ public class BiomeDictionary
 		categoryToType.put(Biome.Category.MUSHROOM, (b) -> MUSHROOM);
 		categoryToType.put(Biome.Category.NETHER, (b) -> NETHER);
 
-		ForgeRegistries.BIOMES.getValues().stream().filter(biome -> getAllTypes(biome).isEmpty()).forEach(biome ->
+		List<String> ignoredMods = StructureGelConfig.COMMON.getIgnoredMods();
+		
+		ForgeRegistries.BIOMES.getValues().stream().filter(biome -> !ignoredMods.contains(biome.getRegistryName().getNamespace()) && getAllTypes(biome).isEmpty()).forEach(biome ->
 		{
 			// Vanilla category
 			if (categoryToType.containsKey(biome.getCategory()))
