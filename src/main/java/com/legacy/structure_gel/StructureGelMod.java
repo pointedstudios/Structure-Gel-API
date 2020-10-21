@@ -73,6 +73,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLModContainer;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -97,7 +98,6 @@ public class StructureGelMod
 {
 	public static final String MODID = "structure_gel";
 	public static final Logger LOGGER = LogManager.getLogger();
-	private static final String[] BIOME_DICT_METHODS = new String[] { "getBiomesSG" };
 
 	public StructureGelMod()
 	{
@@ -107,6 +107,7 @@ public class StructureGelMod
 		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
 
 		modBus.addListener(StructureGelMod::commonInit);
+		modBus.addListener(StructureGelMod::loadComplete);
 		modBus.addListener(StructureGelMod::createRegistries);
 		modBus.addGenericListener(BiomeType.class, StructureGelMod::registerBiomeDictionary);
 		modBus.addGenericListener(Block.class, GelBlocks::onRegistry);
@@ -161,6 +162,8 @@ public class StructureGelMod
 	{
 		return new ResourceLocation(MODID, key);
 	}
+
+	// -------------------------- CLIENT
 
 	@OnlyIn(Dist.CLIENT)
 	@Internal
@@ -229,11 +232,20 @@ public class StructureGelMod
 		});
 	}
 
+	// -------------------------- COMMON
+
 	@Internal
 	public static void commonInit(final FMLCommonSetupEvent event)
 	{
 		GelCapability.register();
 		PacketHandler.register();
+	}
+
+	@Internal
+	public static void loadComplete(final FMLLoadCompleteEvent event)
+	{
+		if (StructureGelConfig.COMMON.shouldGuessBiomeDict())
+			BiomeDictionary.makeGuess();
 	}
 
 	@Internal
@@ -288,8 +300,8 @@ public class StructureGelMod
 					{
 						List<Triple<ResourceLocation, Set<ResourceLocation>, Set<RegistryKey<Biome>>>> result = Lists.newArrayList();
 
-						// 1.16.2-v1.3.0
-						if (method.getName().equals(BIOME_DICT_METHODS[0]))
+						// As of 1.16.2-v1.3.0
+						if (method.getName().equals("getBiomesSG"))
 							result = (List<Triple<ResourceLocation, Set<ResourceLocation>, Set<RegistryKey<Biome>>>>) method.invoke(fmlContainer.getMod());
 
 						// Register
@@ -304,6 +316,8 @@ public class StructureGelMod
 			}
 		});
 	}
+
+	// -------------------------- REGISTRY
 
 	public static class GelBlocks
 	{

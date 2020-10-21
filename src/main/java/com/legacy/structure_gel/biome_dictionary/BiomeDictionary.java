@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import com.google.common.collect.ImmutableList;
 import com.legacy.structure_gel.StructureGelMod;
@@ -14,6 +15,7 @@ import com.legacy.structure_gel.util.Internal;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biome.RainType;
 import net.minecraft.world.biome.Biomes;
 import net.minecraftforge.common.BiomeDictionary.Type;
 import net.minecraftforge.event.RegistryEvent;
@@ -284,6 +286,71 @@ public class BiomeDictionary
 		});
 
 		return biomes;
+	}
+
+	/**
+	 * Makes assumptions as to which biome type a biome should be registered to if
+	 * it is not already registered to a type.<br>
+	 * <br>
+	 * This can be disabled via configs.
+	 */
+	@Internal
+	public static void makeGuess()
+	{
+		Map<Biome.Category, Function<Biome, BiomeType>> categoryToType = new HashMap<>();
+		categoryToType.put(Biome.Category.TAIGA, (b) -> b.getPrecipitation() == RainType.SNOW ? SNOWY_SPRUCE_FOREST : SPRUCE_FOREST);
+		categoryToType.put(Biome.Category.EXTREME_HILLS, (b) -> b.getPrecipitation() == RainType.SNOW ? SNOWY_MOUNTAIN : MOUNTAIN);
+		categoryToType.put(Biome.Category.JUNGLE, (b) -> JUNGLE);
+		categoryToType.put(Biome.Category.MESA, (b) -> BADLANDS);
+		categoryToType.put(Biome.Category.PLAINS, (b) -> b.getPrecipitation() == RainType.SNOW ? SNOWY_PLAINS : PLAINS);
+		categoryToType.put(Biome.Category.SAVANNA, (b) -> SAVANNA);
+		categoryToType.put(Biome.Category.ICY, (b) -> SNOWY);
+		categoryToType.put(Biome.Category.THEEND, (b) -> END);
+		categoryToType.put(Biome.Category.BEACH, (b) -> BEACH);
+		categoryToType.put(Biome.Category.FOREST, (b) -> WOODED);
+		categoryToType.put(Biome.Category.OCEAN, (b) -> b.getPrecipitation() == RainType.SNOW ? FROZEN_OCEAN : OCEAN);
+		categoryToType.put(Biome.Category.DESERT, (b) -> DESERT);
+		categoryToType.put(Biome.Category.RIVER, (b) -> RIVER);
+		categoryToType.put(Biome.Category.SWAMP, (b) -> SWAMP);
+		categoryToType.put(Biome.Category.MUSHROOM, (b) -> MUSHROOM);
+		categoryToType.put(Biome.Category.NETHER, (b) -> NETHER);
+
+		ForgeRegistries.BIOMES.getValues().stream().filter(biome -> getAllTypes(biome).isEmpty()).forEach(biome ->
+		{
+			// Vanilla category
+			if (categoryToType.containsKey(biome.getCategory()))
+				categoryToType.get(biome.getCategory()).apply(biome).addBiome(biome);
+
+			// Temp (based on vanilla biome temperatures)
+			float t = biome.getTemperature();
+			if (t <= 0.05F)
+				SNOWY.addBiome(biome);
+			else if (t <= 0.25F)
+				COLD.addBiome(biome);
+			else if (t <= 1.0F)
+				NEUTRAL_TEMP.addBiome(biome);
+			else if (t <= 1.5F)
+				WARM.addBiome(biome);
+			else
+				HOT.addBiome(biome);
+
+			// Humidity
+			if (biome.isHighHumidity())
+				HUMID.addBiome(biome);
+
+			// Rain type
+			switch (biome.getPrecipitation())
+			{
+			case NONE:
+				DRY.addBiome(biome);
+				break;
+			case SNOW:
+				SNOWY.addBiome(biome);
+				break;
+			default:
+				break;
+			}
+		});
 	}
 
 	/**
