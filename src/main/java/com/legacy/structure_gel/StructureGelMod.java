@@ -245,7 +245,10 @@ public class StructureGelMod
 	public static void loadComplete(final FMLLoadCompleteEvent event)
 	{
 		if (StructureGelConfig.COMMON.shouldGuessBiomeDict())
+		{
+			LOGGER.info("Attempting to register unregistered biomes to the biome dictionary. This can be disabled via config.");
 			BiomeDictionary.makeGuess();
+		}
 	}
 
 	@Internal

@@ -161,6 +161,17 @@ public class GelTeleporter extends Teleporter
 	}
 
 	/**
+	 * Returns the default height to generate a portal if a position cannot be found
+	 * when placing on surface. Defaults to 70.
+	 * 
+	 * @return {@link Integer}
+	 */
+	public int getDefaultHeight()
+	{
+		return 70;
+	}
+
+	/**
 	 * Locates a portal in the {@link #getWorld()}.
 	 */
 	@Override
@@ -226,7 +237,7 @@ public class GelTeleporter extends Teleporter
 			result = makePortal(scaledPos, portalAxis);
 		if (!result.isPresent())
 			return null;
-		
+
 		// Get info from new portal
 		PortalInfo portalInfo = PortalSize.func_242963_a(destWorld, result.get(), portalAxis, offset, entity.getSize(entity.getPose()), entity.getMotion(), entity.rotationYaw, entity.rotationPitch);
 		return new PortalInfo(new Vector3d(result.get().startPos.getX() + 0.5, result.get().startPos.getY() + 0.05, result.get().startPos.getZ() + 0.5), portalInfo.motion, portalInfo.rotationYaw, portalInfo.rotationPitch);
@@ -257,7 +268,10 @@ public class GelTeleporter extends Teleporter
 			state = world.getBlockState(mutablePos.move(Direction.DOWN));
 			i--;
 		}
-		if (i > 0)
+
+		if (i <= 0)
+			y = teleporter.getDefaultHeight();
+		else
 			y = i + 1;
 
 		// Place frame

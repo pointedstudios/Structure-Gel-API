@@ -122,7 +122,7 @@ public class SGDebug
 
 	public static void registerBlocks(final RegistryEvent.Register<Block> event)
 	{
-		PORTAL = RegistryHelper.registerExact(event.getRegistry(), locate("portal"), new TestPortalBlock(Properties.from(Blocks.NETHER_PORTAL), (s) -> new GelTeleporter(s, () -> World.OVERWORLD, () -> CUSTOM_WORLD, () -> PORTAL_POI, () -> (GelPortalBlock) PORTAL, () -> Blocks.GLOWSTONE.getDefaultState(), GelTeleporter.CreatePortalBehavior.NETHER)));
+		PORTAL = RegistryHelper.registerExact(event.getRegistry(), locate("portal"), new TestPortalBlock(Properties.from(Blocks.NETHER_PORTAL), (s) -> new GelTeleporter(s, () -> World.OVERWORLD, () -> CUSTOM_WORLD, () -> PORTAL_POI, () -> (GelPortalBlock) PORTAL, () -> Blocks.GLOWSTONE.getDefaultState(), GelTeleporter.CreatePortalBehavior.ON_SURFACE)));
 	}
 
 	private static final class TestPortalBlock extends GelPortalBlock
