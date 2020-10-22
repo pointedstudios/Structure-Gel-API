@@ -10,10 +10,12 @@ import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
+import net.minecraftforge.common.BiomeDictionary.Type;
 import net.minecraftforge.registries.ForgeRegistries;
 
 /**
- * A forge biome dictionary compatible version of {@link BiomeType}.
+ * A forge biome dictionary compatible version of {@link BiomeType}. This is
+ * effectively immutable, so you cannot add biomes/parents to it.
  * 
  * @author David
  *
@@ -24,7 +26,7 @@ public class ForgeType extends BiomeType
 	/**
 	 * The forge biome dictionary type held by this instance
 	 */
-	public final BiomeDictionary.Type type;
+	private final BiomeDictionary.Type type;
 
 	/**
 	 * @see #create(net.minecraftforge.common.BiomeDictionary.Type)
@@ -45,6 +47,16 @@ public class ForgeType extends BiomeType
 	public static ForgeType create(BiomeDictionary.Type type)
 	{
 		return new ForgeType(type);
+	}
+
+	/**
+	 * Returns the forge biome dictionary {@link Type} referenced by this instance.
+	 * 
+	 * @return {@link Type}
+	 */
+	public BiomeDictionary.Type getType()
+	{
+		return this.type;
 	}
 
 	/**
@@ -122,5 +134,118 @@ public class ForgeType extends BiomeType
 	{
 		String biomes = String.join(", ", this.getBiomes().stream().map(ResourceLocation::toString).sorted().collect(Collectors.toSet()));
 		return String.format("name = %s, biomes = [%s]", this.getRegistryName().toString(), biomes);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Deprecated
+	@Override
+	public ForgeType biomes(RegistryKey<Biome>... biomes)
+	{
+		return this;
+	}
+
+	@Deprecated
+	@Override
+	public ForgeType biomes(Biome... biomes)
+	{
+		return this;
+	}
+
+	@Deprecated
+	@Override
+	public ForgeType biomes(ResourceLocation... biomes)
+	{
+		return this;
+	}
+
+	@Deprecated
+	@Override
+	public ForgeType biomes(String modid, String... biomes)
+	{
+		return this;
+	}
+
+	@Deprecated
+	@Override
+	public ForgeType addBiomes(Set<ResourceLocation> biomes)
+	{
+		return this;
+	}
+
+	@Deprecated
+	@Override
+	public ForgeType addBiome(RegistryKey<Biome> biome)
+	{
+		return this;
+	}
+
+	@Deprecated
+	@Override
+	public ForgeType addBiome(Biome biome)
+	{
+		return this;
+	}
+
+	@Deprecated
+	@Override
+	public ForgeType addBiome(ResourceLocation biome)
+	{
+		return this;
+	}
+
+	@Deprecated
+	@Override
+	public ForgeType setBiomes(Set<RegistryKey<Biome>> biomes)
+	{
+		return this;
+	}
+
+	@Deprecated
+	@Override
+	public ForgeType setBiomesSafe(Set<ResourceLocation> biomes)
+	{
+		return this;
+	}
+
+	@Deprecated
+	@Override
+	public ForgeType parents(ResourceLocation... parents)
+	{
+		return this;
+	}
+
+	@Deprecated
+	@Override
+	public ForgeType parents(BiomeType... parents)
+	{
+		return this;
+	}
+
+	@Deprecated
+	@Override
+	public ForgeType addParents(Set<ResourceLocation> parents)
+	{
+		return this;
+	}
+
+	@Deprecated
+	@Override
+	public ForgeType addParent(ResourceLocation parent)
+	{
+		return this;
+	}
+
+	@Deprecated
+	@Override
+	public Set<ResourceLocation> getParents()
+	{
+		return Sets.newHashSet();
+	}
+
+	@Deprecated
+	@Override
+	public ForgeType setParents(Set<ResourceLocation> parents)
+	{
+		return this;
 	}
 }
