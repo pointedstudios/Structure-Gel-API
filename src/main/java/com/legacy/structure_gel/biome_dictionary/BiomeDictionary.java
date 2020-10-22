@@ -410,7 +410,7 @@ public class BiomeDictionary
 			}
 
 			BIOME_TO_BIOMETYPE_CACHE.clear();
-			StructureGelMod.LOGGER.debug(String.format("Registered %s to %s:[%s]", biome.getRegistryName().toString(), StructureGelMod.MODID, String.join(", ", getAllTypes(biome).stream().filter(bt -> !(bt instanceof ForgeType)).map(bt -> bt.getRegistryName().getPath()).sorted().collect(Collectors.toSet()))));
+			StructureGelMod.LOGGER.info(String.format("Registered %s to %s:[%s]", biome.getRegistryName().toString(), StructureGelMod.MODID, String.join(", ", getAllTypes(biome).stream().filter(bt -> !(bt instanceof ForgeType)).map(bt -> bt.getRegistryName().getPath()).sorted().collect(Collectors.toSet()))));
 		});
 
 		BIOME_TO_BIOMETYPE_CACHE.clear();

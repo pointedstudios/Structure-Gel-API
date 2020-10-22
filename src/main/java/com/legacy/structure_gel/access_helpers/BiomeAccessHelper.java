@@ -199,7 +199,6 @@ public class BiomeAccessHelper
 	 *             {@link #addStructureIfAllowed(BiomeLoadingEvent, StructureFeature)}
 	 * @throws IllegalArgumentException
 	 */
-	@SuppressWarnings("deprecation")
 	@Deprecated
 	public static <C extends IFeatureConfig, S extends GelStructure<C>> void addStructureToBiomes(StructureFeature<C, S> structure)
 	{

@@ -73,7 +73,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLModContainer;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -107,7 +106,6 @@ public class StructureGelMod
 		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
 
 		modBus.addListener(StructureGelMod::commonInit);
-		modBus.addListener(StructureGelMod::loadComplete);
 		modBus.addListener(StructureGelMod::createRegistries);
 		modBus.addGenericListener(BiomeType.class, StructureGelMod::registerBiomeDictionary);
 		modBus.addGenericListener(Block.class, GelBlocks::onRegistry);
@@ -239,14 +237,10 @@ public class StructureGelMod
 	{
 		GelCapability.register();
 		PacketHandler.register();
-	}
 
-	@Internal
-	public static void loadComplete(final FMLLoadCompleteEvent event)
-	{
 		if (StructureGelConfig.COMMON.shouldGuessBiomeDict())
 		{
-			LOGGER.debug("Attempting to register unregistered biomes to the biome dictionary. This can be disabled via config.");
+			LOGGER.info("Attempting to register unregistered biomes to the biome dictionary. This can be disabled via config.");
 			BiomeDictionary.makeGuess();
 		}
 	}
