@@ -52,7 +52,8 @@ public class BiomeDictionary
 {
 	@Internal
 	private static final String bop = "biomesoplenty", nethercraft = "nethercraft", endergetic = "endergetic",
-			rediscovered = "rediscovered", moo = "moolands", pagamos = "pagamos", glacidus = "glacidus", byg = "byg";
+			rediscovered = "rediscovered", moo = "moolands", pagamos = "pagamos", glacidus = "glacidus", byg = "byg",
+			aether = "aether";
 
 	public static final IForgeRegistry<BiomeType> REGISTRY = RegistryManager.ACTIVE.getRegistry(BiomeType.class);
 
@@ -146,6 +147,7 @@ public class BiomeDictionary
 	// Dimension
 	public static final BiomeType NETHER = register(BiomeType.create("nether").parents(WARPED, CRIMSON, NETHER_FOREST, OVERGROWN_NETHER, NETHER_FUNGAL, NETHER_SANDY, NETHER_EXTREME, NETHER_FLESHY).biomes(Biomes.NETHER_WASTES).biomes(bop, "crystalline_chasm", "withered_abyss").biomes(byg, "embur_bog", "sythian_torrids"));
 	public static final BiomeType END = register(BiomeType.create("end").parents(OUTER_END).biomes(Biomes.THE_END));
+	public static final BiomeType AETHER = register(BiomeType.create("aether").biomes(aether, "aether_skylands"));
 	public static final BiomeType OVERWORLD = register(BiomeType.create("overworld").setBiomesSafe(getOverworldBiomesSafe()));
 	public static final BiomeType SKYLANDS = register(BiomeType.create("skylands").biomes(rediscovered, "skylands"));
 	public static final BiomeType MOOLANDS = register(BiomeType.create("moolands").biomes(moo, "awkward_heights"));
