@@ -246,7 +246,7 @@ public class StructureGelMod
 	{
 		if (StructureGelConfig.COMMON.shouldGuessBiomeDict())
 		{
-			LOGGER.info("Attempting to register unregistered biomes to the biome dictionary. This can be disabled via config.");
+			LOGGER.debug("Attempting to register unregistered biomes to the biome dictionary. This can be disabled via config.");
 			BiomeDictionary.makeGuess();
 		}
 	}

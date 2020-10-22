@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableList;
 import com.legacy.structure_gel.StructureGelConfig;
@@ -16,6 +17,7 @@ import com.legacy.structure_gel.util.Internal;
 
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.RainType;
 import net.minecraft.world.biome.Biomes;
@@ -317,9 +319,43 @@ public class BiomeDictionary
 		categoryToType.put(Biome.Category.MUSHROOM, (b) -> MUSHROOM);
 		categoryToType.put(Biome.Category.NETHER, (b) -> NETHER);
 
+		Map<Type, Function<Biome, BiomeType>> forgeToType = new HashMap<>();
+		forgeToType.put(Type.OVERWORLD, (b) -> OVERWORLD);
+		forgeToType.put(Type.NETHER, (b) -> NETHER);
+		forgeToType.put(Type.END, (b) -> END);
+		forgeToType.put(Type.BEACH, (b) -> BEACH);
+		forgeToType.put(Type.CONIFEROUS, (b) -> CONIFEROUS_FOREST);
+		forgeToType.put(Type.DEAD, (b) -> DEAD);
+		forgeToType.put(Type.DRY, (b) -> DRY);
+		forgeToType.put(Type.FOREST, (b) -> WOODED);
+		forgeToType.put(Type.HOT, (b) -> HOT);
+		forgeToType.put(Type.JUNGLE, (b) -> JUNGLE);
+		forgeToType.put(Type.MAGICAL, (b) -> MAGICAL);
+		forgeToType.put(Type.MESA, (b) -> BADLANDS);
+		forgeToType.put(Type.MOUNTAIN, (b) -> b.getPrecipitation() == RainType.SNOW ? SNOWY_MOUNTAIN : MOUNTAIN);
+		forgeToType.put(Type.MUSHROOM, (b) -> MUSHROOM);
+		forgeToType.put(Type.OCEAN, (b) -> b.getPrecipitation() == RainType.SNOW ? FROZEN_OCEAN : OCEAN);
+		forgeToType.put(Type.PLAINS, (b) -> b.getPrecipitation() == RainType.SNOW ? SNOWY_PLAINS : PLAINS);
+		forgeToType.put(Type.RARE, (b) -> RARE);
+		forgeToType.put(Type.RIVER, (b) -> RIVER);
+		forgeToType.put(Type.SANDY, (b) -> SANDY);
+		forgeToType.put(Type.SAVANNA, (b) -> SAVANNA);
+		forgeToType.put(Type.SNOWY, (b) -> SNOWY);
+		forgeToType.put(Type.SPOOKY, (b) -> SPOOKY);
+		forgeToType.put(Type.SWAMP, (b) -> SWAMP);
+		forgeToType.put(Type.VOID, (b) -> VOID);
+		forgeToType.put(Type.WASTELAND, (b) -> DEAD);
+
+		Map<String, BiomeType> nameToType = new HashMap<>();
+		nameToType.put("frozen", FROZEN);
+		nameToType.put("snowy", SNOWY);
+		nameToType.put("redwood", REDWOOD_FOREST);
+		nameToType.put("bamboo", BAMBOO);
+		nameToType.put("flower", FLOWERY);
+
 		List<String> ignoredMods = StructureGelConfig.COMMON.getIgnoredMods();
-		
-		ForgeRegistries.BIOMES.getValues().stream().filter(biome -> !ignoredMods.contains(biome.getRegistryName().getNamespace()) && getAllTypes(biome).isEmpty()).forEach(biome ->
+
+		ForgeRegistries.BIOMES.getValues().stream().filter(biome -> !ignoredMods.contains(biome.getRegistryName().getNamespace()) && !getAllTypes(biome).stream().filter(type -> !(type instanceof ForgeType)).findAny().isPresent()).forEach(biome ->
 		{
 			// Vanilla category
 			if (categoryToType.containsKey(biome.getCategory()))
@@ -354,7 +390,30 @@ public class BiomeDictionary
 			default:
 				break;
 			}
+
+			if (biome.getRegistryName() != null)
+			{
+				// Forge type
+				net.minecraftforge.common.BiomeDictionary.getTypes(RegistryKey.getOrCreateKey(Registry.BIOME_KEY, biome.getRegistryName())).forEach(type ->
+				{
+					if (forgeToType.containsKey(type))
+						forgeToType.get(type).apply(biome).addBiome(biome);
+				});
+
+				// Name based
+				String name = biome.getRegistryName().getPath();
+				nameToType.forEach((string, type) ->
+				{
+					if (name.contains(string))
+						type.addBiome(biome);
+				});
+			}
+
+			BIOME_TO_BIOMETYPE_CACHE.clear();
+			StructureGelMod.LOGGER.debug(String.format("Registered %s to %s:[%s]", biome.getRegistryName().toString(), StructureGelMod.MODID, String.join(", ", getAllTypes(biome).stream().filter(bt -> !(bt instanceof ForgeType)).map(bt -> bt.getRegistryName().getPath()).sorted().collect(Collectors.toSet()))));
 		});
+
+		BIOME_TO_BIOMETYPE_CACHE.clear();
 	}
 
 	/**
