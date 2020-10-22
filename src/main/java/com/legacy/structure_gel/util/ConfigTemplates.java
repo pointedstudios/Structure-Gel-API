@@ -293,12 +293,10 @@ public class ConfigTemplates
 		 * 
 		 * @param biome
 		 * @return {@link Boolean}
-		 * @deprecated use RegistryKey or ResourceLocation variants.
 		 */
-		@Deprecated
 		public boolean isBiomeAllowed(Biome biome)
 		{
-			return this.biomes.contains(biome.getRegistryName()) == this.isWhitelist();
+			return this.isBiomeAllowed(biome.getRegistryName());
 		}
 
 		/**
@@ -310,7 +308,7 @@ public class ConfigTemplates
 		 */
 		public boolean isBiomeAllowed(RegistryKey<Biome> biome)
 		{
-			return this.biomes.contains(biome.getLocation());
+			return this.isBiomeAllowed(biome.getLocation());
 		}
 
 		/**
@@ -322,7 +320,7 @@ public class ConfigTemplates
 		 */
 		public boolean isBiomeAllowed(ResourceLocation biome)
 		{
-			return this.biomes.contains(biome);
+			return this.biomes.contains(biome) == this.isWhitelist();
 		}
 
 		/**
