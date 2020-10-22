@@ -18,6 +18,10 @@ Changes:
 		- Good Night's Sleep (this mod handles biomes on it's own, so this acts as a pointer for the good dream and nightmare dimensions)
 		- Glacidus (not on 1.16.3 yet)
 		- Oh The Biome's You'll Go
+	- When Minecraft finishes loading, any biomes not registered to the biome dictionary will be automatically registered by making assumptions based on the biome's properties, like temperature.
+		- You can prevent biomes from specific mods from being assumed via config.
+		- If you don't want the biome dictionary to make any assumptions, you can also disable that via config.
 
 Fixes:
 - The "/structure_gel biomedict" now sorts results in alphabetical order.
+- Using the ON_SURFACE no longer locks up the world
