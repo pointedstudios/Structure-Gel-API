@@ -15,6 +15,8 @@ import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.util.ConfigTemplates;
 import com.legacy.structure_gel.util.Internal;
 
+import net.minecraft.block.GravelBlock;
+import net.minecraft.block.material.Material;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
@@ -110,7 +112,7 @@ public class BiomeDictionary
 	public static final BiomeType SKY = register(BiomeType.create("sky").biomes(rediscovered, "skylands"));
 
 	// Temperature
-	public static final BiomeType FROZEN = register(BiomeType.create("frozen").biomes(Biomes.FROZEN_RIVER, Biomes.ICE_SPIKES).biomes(byg, "frozen_lake", "shattered_glacier"));
+	public static final BiomeType FROZEN = register(BiomeType.create("frozen").biomes(Biomes.FROZEN_RIVER, Biomes.ICE_SPIKES).parents(FROZEN_OCEAN).biomes(byg, "frozen_lake", "shattered_glacier"));
 	public static final BiomeType SNOWY = register(BiomeType.create("snowy").parents(SNOWY_SPRUCE_FOREST, SNOWY_PLAINS).biomes(Biomes.FROZEN_RIVER, Biomes.SNOWY_BEACH).biomes(bop, "snowy_forest", "snowy_coniferous_forest", "snowy_fir_clearing", "muskeg", "alps", "alps_foothills", "snowy_black_beach", "snowy_blue_taiga", "snowy_blue_taiga_hills", "snowy_giant_blue_taiga", "snowy_coniferous_clearing", "snowy_coniferous_forest", "snowy_coniferous_forest_hills", "snowy_deciduous_clearing", "snowy_deciduous_forest", "snowy_deciduous_forest_hills", "snowy_evergreen_clearing", "snowy_evergreen_hills", "snowy_evergreen_taiga", "snowy_rocky_black_beach"));
 	public static final BiomeType COLD = register(BiomeType.create("cold").parents(SPRUCE_FOREST, LARGE_SPRUCE_FOREST, CONIFEROUS_FOREST).biomes(Biomes.MOUNTAINS, Biomes.GRAVELLY_MOUNTAINS, Biomes.WOODED_MOUNTAINS, Biomes.MODIFIED_GRAVELLY_MOUNTAINS, Biomes.STONE_SHORE).biomes(bop, "tundra", "cold_desert").biomes(byg, "cold_swamplands", "lush_tundra", "rocky_beach"));
 	public static final BiomeType NEUTRAL_TEMP = register(BiomeType.create("neutral_temp").parents(PLAINS, OAK_FOREST, BIRCH_FOREST, DARK_FOREST).biomes(Biomes.FLOWER_FOREST));
@@ -126,7 +128,7 @@ public class BiomeDictionary
 	public static final BiomeType VOID = register(BiomeType.create("void").biomes(Biomes.THE_VOID));
 	public static final BiomeType MAGICAL = register(BiomeType.create("magical").biomes(bop, "mystic_grove", "rainbow_hills").biomes(byg, "enchanted_forest", "enchanted_forest_hills", "enchanted_grove", "flowering_enchanted_grove"));
 	public static final BiomeType SPOOKY = register(BiomeType.create("spooky").parents(DARK_FOREST).biomes(bop, "ominous_woods", "pumpkin_patch", "silkglade", "visceral_heap", "withered_abyss", "dryland").biomes(byg, "pumpkin_forest", "weeping_witch_forest", "weeping_witch_clearing"));
-	public static final BiomeType RARE = register(BiomeType.create("rare").biomes(Biomes.JUNGLE_EDGE, Biomes.MUSHROOM_FIELD_SHORE, Biomes.MUSHROOM_FIELDS).biomes(bop, "mystic_grove", "origin_valley", "rainbow_hills").biomes(byg, "rainbow_beach", "tropical_island"));
+	public static final BiomeType RARE = register(BiomeType.create("rare").biomes(Biomes.JUNGLE_EDGE, Biomes.MUSHROOM_FIELD_SHORE, Biomes.MUSHROOM_FIELDS, Biomes.ICE_SPIKES).biomes(bop, "mystic_grove", "origin_valley", "rainbow_hills").biomes(byg, "rainbow_beach", "tropical_island"));
 	public static final BiomeType SPACE = register(BiomeType.create("space").biomes(glacidus, "glacidus"));
 	public static final BiomeType PUMPKIN = register(BiomeType.create("pumpkin").biomes(bop, "pumpkin_patch").biomes(byg, "pumpkin_forest", "autumnal_valley", "cika_wooded", "cika_mountains"));
 
@@ -352,8 +354,11 @@ public class BiomeDictionary
 		nameToType.put("frozen", FROZEN);
 		nameToType.put("snowy", SNOWY);
 		nameToType.put("redwood", REDWOOD_FOREST);
+		nameToType.put("coniferous", CONIFEROUS_FOREST);
 		nameToType.put("bamboo", BAMBOO);
 		nameToType.put("flower", FLOWERY);
+		nameToType.put("ocean", OCEAN);
+		nameToType.put("river", RIVER);
 
 		List<String> ignoredMods = StructureGelConfig.COMMON.getIgnoredMods();
 
@@ -384,7 +389,8 @@ public class BiomeDictionary
 			switch (biome.getPrecipitation())
 			{
 			case NONE:
-				DRY.addBiome(biome);
+				if (biome.getDepth() > 0)
+					DRY.addBiome(biome);
 				break;
 			case SNOW:
 				SNOWY.addBiome(biome);
@@ -410,6 +416,14 @@ public class BiomeDictionary
 						type.addBiome(biome);
 				});
 			}
+
+			// Surface builder
+			if (biome.getGenerationSettings().getSurfaceBuilderConfig().getTop().getMaterial() == Material.SAND)
+				SANDY.addBiome(biome);
+			if (biome.getGenerationSettings().getSurfaceBuilderConfig().getTop().getMaterial() == Material.EARTH)
+				DIRTY.addBiome(biome);
+			if (biome.getGenerationSettings().getSurfaceBuilderConfig().getTop().getBlock() instanceof GravelBlock)
+				GRAVELLY.addBiome(biome);
 
 			BIOME_TO_BIOMETYPE_CACHE.clear();
 			StructureGelMod.LOGGER.info(String.format("Registered %s to %s:[%s]", biome.getRegistryName().toString(), StructureGelMod.MODID, String.join(", ", getAllTypes(biome).stream().filter(bt -> !(bt instanceof ForgeType)).map(bt -> bt.getRegistryName().getPath()).sorted().collect(Collectors.toSet()))));
