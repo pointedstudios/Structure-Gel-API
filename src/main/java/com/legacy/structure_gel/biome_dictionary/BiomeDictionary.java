@@ -96,8 +96,8 @@ public class BiomeDictionary
 	public static final BiomeType SWAMP = register(BiomeType.create("swamp").biomes(Biomes.SWAMP, Biomes.SWAMP_HILLS).biomes(bop, "mire", "floodplain", "bayou", "wetland", "lush_swamp", "bog", "marsh").biomes(byg, "bayou", "bog", "cold_swamplands", "cypress_swamplands", "glowshroom_bayou", "marshlands", "vibrant_swamplands"));
 	public static final BiomeType MANGROVE = register(BiomeType.create("mangrove").biomes(bop, "mangrove").biomes(byg, "coral_mangroves", "cypress_swamplands", "mangrove_marshes"));
 	public static final BiomeType BADLANDS = register(BiomeType.create("badlands").biomes(Biomes.BADLANDS, Biomes.BADLANDS_PLATEAU, Biomes.ERODED_BADLANDS, Biomes.MODIFIED_BADLANDS_PLATEAU, Biomes.MODIFIED_WOODED_BADLANDS_PLATEAU, Biomes.WOODED_BADLANDS_PLATEAU).biomes(bop, "outback").biomes(byg, "lush_red_desert", "red_desert", "red_desert_dunes", "red_rock_highlands", "red_rock_lowlands", "red_rock_mountains", "sierra_range", "sierra_valley", "wooded_red_rock_mountains"));
-	public static final BiomeType FUNGAL = register(BiomeType.create("fungal").biomes(byg, "fungal_patch"));
 	public static final BiomeType MUSHROOM = register(BiomeType.create("mushroom").biomes(Biomes.MUSHROOM_FIELD_SHORE, Biomes.MUSHROOM_FIELDS).biomes(bop, "fungal_jungle").biomes(byg, "glowing_ancient_forest", "glowshroom_bayou"));
+	public static final BiomeType FUNGAL = register(BiomeType.create("fungal").parents(MUSHROOM).biomes(byg, "fungal_patch"));
 	public static final BiomeType RIVER = register(BiomeType.create("river").biomes(Biomes.RIVER, Biomes.FROZEN_RIVER));
 	public static final BiomeType LAKE = register(BiomeType.create("lake").biomes(bop, "oasis").biomes(byg, "fresh_water_lake", "oasis", "frozen_lake", "great_lakes", "polluted_lake"));
 	public static final BiomeType BEACH = register(BiomeType.create("beach").biomes(Biomes.BEACH).biomes(bop, "tropic_beach").biomes(byg, "rainbow_beach", "snowy_black_beach", "white_beach"));
@@ -357,8 +357,21 @@ public class BiomeDictionary
 		nameToType.put("coniferous", CONIFEROUS_FOREST);
 		nameToType.put("bamboo", BAMBOO);
 		nameToType.put("flower", FLOWERY);
+		nameToType.put("tulip", FLOWERY);
+		nameToType.put("orchid", FLOWERY);
+		nameToType.put("dandelion", FLOWERY);
+		nameToType.put("allium", FLOWERY);
+		nameToType.put("poppy", FLOWERY);
+		nameToType.put("daisy", FLOWERY);
+		nameToType.put("lilac", FLOWERY);
+		nameToType.put("peony", FLOWERY);
 		nameToType.put("ocean", OCEAN);
 		nameToType.put("river", RIVER);
+		nameToType.put("beach", BEACH);
+		nameToType.put("shroom", MUSHROOM);
+		nameToType.put("fungal", FUNGAL);
+		nameToType.put("seasonal", AUTUMN_FOREST);
+		nameToType.put("autumn", AUTUMN_FOREST);
 
 		List<String> ignoredMods = StructureGelConfig.COMMON.getIgnoredMods();
 
