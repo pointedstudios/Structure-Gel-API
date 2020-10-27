@@ -16,6 +16,7 @@ To install this library in your workspace:
 1) Get a deobfuscated jar of this mod from the "jars" folder in the repository.
 	- Make sure you're in the correct version number branch.
 	- MCP mapping and minimum forge versions are listed in the "jars/README" file.
+	- The latest version in this folder may not yet be released to [the curse page](https://www.curseforge.com/minecraft/mc-mods/structure-gel-api), so make sure to check what players can actually download before using the latest.
 2) In the build.gradle for your mod, add the jar as a dependency.
 ```
 dependencies {
