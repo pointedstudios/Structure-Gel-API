@@ -25,3 +25,4 @@ Fixes:
 - The "/structure_gel biomedict" now sorts results in alphabetical order.
 - Using the ON_SURFACE no longer locks up the world.
 - Fixed configs not properly checking for whitelist mode with biomes.
+- Fixed a vanilla bug where mob spawners were causing fps lag in some cases. This can be disabled in the config.

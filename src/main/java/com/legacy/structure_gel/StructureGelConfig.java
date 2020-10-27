@@ -64,15 +64,22 @@ public class StructureGelConfig
 	public static class Client
 	{
 		private final ForgeConfigSpec.BooleanValue skipExperimentalBackupScreen;
-
+		private final ForgeConfigSpec.BooleanValue fixSpawners;
+		
 		public Client(ForgeConfigSpec.Builder builder)
 		{
 			this.skipExperimentalBackupScreen = builder.comment("Skips the screen that tells you that a world uses experimental settings.").define("gui.skip_experimental_backup_screen", true);
+			this.fixSpawners = builder.comment("Fixes spawners causing fps lag from a ClassCastException with some entities.").define("entity.fix_spawners", true);
 		}
 
 		public boolean skipExperimentalScreen()
 		{
 			return this.skipExperimentalBackupScreen.get();
+		}
+		
+		public boolean fixSpawners()
+		{
+			return this.fixSpawners.get();
 		}
 	}
 }

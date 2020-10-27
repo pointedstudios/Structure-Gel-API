@@ -10,7 +10,13 @@
 	],
 	"client": [
 		"WorldRendererMixin",
-		"IngameGuiMixin"
+		"IngameGuiMixin",
+		"SpawnerFix$Enderman",
+		"SpawnerFix$ZPiglin",
+		"SpawnerFix$Bee",
+		"SpawnerFix$IronGolem",
+		"SpawnerFix$PolarBear",
+		"SpawnerFix$Wolf"
 	],
 	"injectors": {
 		"defaultRequire": 1
