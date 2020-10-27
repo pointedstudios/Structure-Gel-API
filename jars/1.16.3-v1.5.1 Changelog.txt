@@ -1,0 +1,6 @@
+1.16.3-v1.5.1
+
+Hotfix update to fix a biome dictionary related crash
+
+Fixes:
+- The biome dictionary had some conflicts with other mods
