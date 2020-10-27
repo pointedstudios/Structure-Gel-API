@@ -3,6 +3,10 @@
 Requires Forge 1.16.3-34.1.23 or newer.
 A semi-major update that adjusts the internal behavior of GelTeleporter and gives more biome dictionary support.
 
+Additions:
+- Added VoxelShapeUtil 
+	- Contains a rotate method for easy VoxelShape rotation
+
 Changes:
 - Changed how GelTeleporter works internally to no longer require coremodding.
 - BiomeDictionary
