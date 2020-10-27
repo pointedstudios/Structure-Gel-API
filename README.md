@@ -1,11 +1,11 @@
-Structure Gel API
+#Structure Gel API
 
-This library mod seeks to make handling world gen easier on developers. It's main focuses include:
+This library mod seeks to make handling world gen easier on developers. It's main features include:
 - Gel blocks that can be used to automatically fill a structure and replace with air using structure processors
 - Jigsaw registry shortcuts/builders
 - Data structure block handling within jigsaw structures
 - Configurable structure classes
-	- Placement separation values, mob spawns, data marker handling, etc.
+	- Placement separation values, mob spawns, data marker handling, etc
 - Dimension registry events
 - Extensible vanilla-like portal behavior
 - An extended biome dictionary with support for many popular biome mods
@@ -20,7 +20,7 @@ To install this library in your workspace:
 ```
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.3-34.1.19'
-	compile files('libs/structure-gel-api-1.16.3-1.4.1-deobf.jar')
+    compile files('libs/structure-gel-api-1.16.3-1.4.1-deobf.jar')
 }
 ```
 3) In the build.gradle for your mod, add the Structure Gel mixin file to your run configurations. This only shows the client, but all are required.
@@ -51,4 +51,9 @@ minecraft {
     side="BOTH"
 ```
 5) Setup your workspace with the appropriate gradlew commands for your IDE.
+	- For Eclipse
+		- ``gradlew eclispe``
+		- ``gradlew genEclipseRuns``
+	- For IntelliJ
+		- ``gradlew genIntellijRuns``
 6) From here, assuming you see Structure Gel in your project's external dependencies, you should be able to use the API. If you do not see it, try refreshing your project as some IDEs won't do that automatically.
