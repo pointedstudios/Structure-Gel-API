@@ -23,7 +23,7 @@ public class SpawnerFix
 	@Mixin(EndermanEntity.class)
 	public static class Enderman
 	{
-		@Inject(at = @At(value = "FIELD", target = "world:Lnet/minecraft/world/World;", opcode = Opcodes.GETFIELD), method = "readAdditional(Lnet/minecraft/nbt/CompoundNBT;)V", cancellable = true)
+		@Inject(at = @At(value = "FIELD", target = "net/minecraft/entity/monster/EndermanEntity.world:Lnet/minecraft/world/World;", opcode = Opcodes.GETFIELD), method = "readAdditional(Lnet/minecraft/nbt/CompoundNBT;)V", cancellable = true)
 		private void readAdditional(CompoundNBT compound, CallbackInfo callback)
 		{
 			if (((Entity) (Object) this).world.isRemote && StructureGelConfig.CLIENT.fixSpawners())
@@ -34,7 +34,7 @@ public class SpawnerFix
 	@Mixin(ZombifiedPiglinEntity.class)
 	public static class ZPiglin
 	{
-		@Inject(at = @At(value = "FIELD", target = "world:Lnet/minecraft/world/World;", opcode = Opcodes.GETFIELD), method = "readAdditional(Lnet/minecraft/nbt/CompoundNBT;)V", cancellable = true)
+		@Inject(at = @At(value = "FIELD", target = "net/minecraft/entity/monster/ZombifiedPiglinEntity.world:Lnet/minecraft/world/World;", opcode = Opcodes.GETFIELD), method = "readAdditional(Lnet/minecraft/nbt/CompoundNBT;)V", cancellable = true)
 		private void readAdditional(CompoundNBT compound, CallbackInfo callback)
 		{
 			if (((Entity) (Object) this).world.isRemote && StructureGelConfig.CLIENT.fixSpawners())
@@ -45,7 +45,7 @@ public class SpawnerFix
 	@Mixin(BeeEntity.class)
 	public static class Bee
 	{
-		@Inject(at = @At(value = "FIELD", target = "world:Lnet/minecraft/world/World;", opcode = Opcodes.GETFIELD), method = "readAdditional(Lnet/minecraft/nbt/CompoundNBT;)V", cancellable = true)
+		@Inject(at = @At(value = "FIELD", target = "net/minecraft/entity/passive/BeeEntity.world:Lnet/minecraft/world/World;", opcode = Opcodes.GETFIELD), method = "readAdditional(Lnet/minecraft/nbt/CompoundNBT;)V", cancellable = true)
 		private void readAdditional(CompoundNBT compound, CallbackInfo callback)
 		{
 			if (((Entity) (Object) this).world.isRemote && StructureGelConfig.CLIENT.fixSpawners())
@@ -56,7 +56,7 @@ public class SpawnerFix
 	@Mixin(IronGolemEntity.class)
 	public static class IronGolem
 	{
-		@Inject(at = @At(value = "FIELD", target = "world:Lnet/minecraft/world/World;", opcode = Opcodes.GETFIELD), method = "readAdditional(Lnet/minecraft/nbt/CompoundNBT;)V", cancellable = true)
+		@Inject(at = @At(value = "FIELD", target = "net/minecraft/entity/passive/IronGolemEntity.world:Lnet/minecraft/world/World;", opcode = Opcodes.GETFIELD), method = "readAdditional(Lnet/minecraft/nbt/CompoundNBT;)V", cancellable = true)
 		private void readAdditional(CompoundNBT compound, CallbackInfo callback)
 		{
 			if (((Entity) (Object) this).world.isRemote && StructureGelConfig.CLIENT.fixSpawners())
@@ -67,7 +67,7 @@ public class SpawnerFix
 	@Mixin(PolarBearEntity.class)
 	public static class PolarBear
 	{
-		@Inject(at = @At(value = "FIELD", target = "world:Lnet/minecraft/world/World;", opcode = Opcodes.GETFIELD), method = "readAdditional(Lnet/minecraft/nbt/CompoundNBT;)V", cancellable = true)
+		@Inject(at = @At(value = "FIELD", target = "net/minecraft/entity/passive/PolarBearEntity.world:Lnet/minecraft/world/World;", opcode = Opcodes.GETFIELD), method = "readAdditional(Lnet/minecraft/nbt/CompoundNBT;)V", cancellable = true)
 		private void readAdditional(CompoundNBT compound, CallbackInfo callback)
 		{
 			if (((Entity) (Object) this).world.isRemote && StructureGelConfig.CLIENT.fixSpawners())
@@ -78,7 +78,7 @@ public class SpawnerFix
 	@Mixin(WolfEntity.class)
 	public static class Wolf
 	{
-		@Inject(at = @At(value = "FIELD", target = "world:Lnet/minecraft/world/World;", opcode = Opcodes.GETFIELD), method = "readAdditional(Lnet/minecraft/nbt/CompoundNBT;)V", cancellable = true)
+		@Inject(at = @At(value = "FIELD", target = "net/minecraft/entity/passive/WolfEntity.world:Lnet/minecraft/world/World;", opcode = Opcodes.GETFIELD), method = "readAdditional(Lnet/minecraft/nbt/CompoundNBT;)V", cancellable = true)
 		private void readAdditional(CompoundNBT compound, CallbackInfo callback)
 		{
 			if (((Entity) (Object) this).world.isRemote && StructureGelConfig.CLIENT.fixSpawners())
