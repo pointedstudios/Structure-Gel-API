@@ -1,4 +1,4 @@
-#Structure Gel API
+# Structure Gel API
 
 This library mod seeks to make handling world gen easier on developers. It's main features include:
 - Gel blocks that can be used to automatically fill a structure and replace with air using structure processors
