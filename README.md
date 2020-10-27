@@ -20,8 +20,8 @@ To install this library in your workspace:
 2) In the build.gradle for your mod, add the jar as a dependency.
 ```
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.3-34.1.19'
-    compile files('libs/structure-gel-api-1.16.3-1.4.1-deobf.jar')
+    minecraft 'net.minecraftforge:forge:1.16.3-34.1.23'
+    compile files('libs/structure-gel-api-1.16.3-1.5.0-deobf.jar')
 }
 ```
 3) In the build.gradle for your mod, add the Structure Gel mixin file to your run configurations. This only shows the client, but all are required.
@@ -47,7 +47,7 @@ minecraft {
 [[dependencies.examplemod]]
     modId="structure_gel"
     mandatory=true
-    versionRange="[1.4.2,]"
+    versionRange="[1.5.0,]"
     ordering="NONE"
     side="BOTH"
 ```
