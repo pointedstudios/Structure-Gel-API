@@ -73,6 +73,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLModContainer;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -87,7 +88,10 @@ import net.minecraftforge.registries.RegistryBuilder;
  * <br>
  * In order to get the Mixins working in your workspace, add<br>
  * arg '-mixin.config=structure_gel.mixins.json'<br>
- * to your run configurations.
+ * to your run configurations.<br>
+ * <br>
+ * If you encounter issues or find any bugs, please report them to the issue
+ * tracker. https://gitlab.com/modding-legacy/structure-gel-api/-/issues
  * 
  * @author David
  *
@@ -106,6 +110,7 @@ public class StructureGelMod
 		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
 
 		modBus.addListener(StructureGelMod::commonInit);
+		modBus.addListener(StructureGelMod::loadComplete);
 		modBus.addListener(StructureGelMod::createRegistries);
 		modBus.addGenericListener(BiomeType.class, StructureGelMod::registerBiomeDictionary);
 		modBus.addGenericListener(Block.class, GelBlocks::onRegistry);
@@ -237,11 +242,24 @@ public class StructureGelMod
 	{
 		GelCapability.register();
 		PacketHandler.register();
+	}
 
-		if (StructureGelConfig.COMMON.shouldGuessBiomeDict())
+	@Internal
+	public static void loadComplete(final FMLLoadCompleteEvent event)
+	{
+		try
 		{
-			LOGGER.info("Attempting to register unregistered biomes to the biome dictionary. This can be disabled via config.");
-			BiomeDictionary.makeGuess();
+			if (StructureGelConfig.COMMON.shouldGuessBiomeDict())
+			{
+				LOGGER.info("Attempting to register unregistered biomes to the biome dictionary. This can be disabled via config.");
+				BiomeDictionary.makeGuess();
+			}
+		}
+		catch (Exception e)
+		{
+			LOGGER.error("Encountered an issue while making assumptions for the biome dictionary. Please narrow down which mods cause a conflict here and report it to our issue tracker:");
+			LOGGER.error("https://gitlab.com/modding-legacy/structure-gel-api/-/issues");
+			e.printStackTrace();
 		}
 	}
 
