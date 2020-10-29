@@ -9,7 +9,6 @@ import com.legacy.structure_gel.util.capability.GelCapability.Storage;
 import com.legacy.structure_gel.util.capability.GelEntity;
 import com.legacy.structure_gel.util.capability.IGelEntity;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -65,7 +64,7 @@ public class UpdateGelPlayerPacket
 	@OnlyIn(Dist.CLIENT)
 	private static void handlePacket(UpdateGelPlayerPacket packet)
 	{
-		Minecraft mc = Minecraft.getInstance();
+		net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getInstance();
 		GelCapability.ifPresent(mc.player, (ge) ->
 		{
 			ge.setPortal(packet.gelEntity.getPortal());

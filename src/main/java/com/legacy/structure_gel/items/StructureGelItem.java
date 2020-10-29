@@ -7,8 +7,6 @@ import com.legacy.structure_gel.blocks.IStructureGel.Behavior;
 import com.legacy.structure_gel.blocks.IStructureGel.IBehavior;
 import com.legacy.structure_gel.blocks.StructureGelBlock;
 
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
@@ -58,9 +56,9 @@ public class StructureGelItem extends BlockItem
 	 */
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
+	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, net.minecraft.client.util.ITooltipFlag flagIn)
 	{
-		if (!Screen.hasShiftDown())
+		if (!net.minecraft.client.gui.screen.Screen.hasShiftDown())
 			tooltip.add(new TranslationTextComponent("info." + StructureGelMod.MODID + ".hold_shift").mergeStyle(TextFormatting.GRAY));
 		else
 		{

@@ -13,17 +13,11 @@ import com.google.common.collect.Lists;
 import com.legacy.structure_gel.biome_dictionary.BiomeDictionary;
 import com.legacy.structure_gel.biome_dictionary.BiomeType;
 import com.legacy.structure_gel.blocks.AxisStructureGelBlock;
-import com.legacy.structure_gel.blocks.GelPortalBlock;
 import com.legacy.structure_gel.blocks.IStructureGel.Behavior;
 import com.legacy.structure_gel.blocks.StructureGelBlock;
-import com.legacy.structure_gel.commands.StructureGelCommand;
 import com.legacy.structure_gel.items.StructureGelItem;
-import com.legacy.structure_gel.packets.PacketHandler;
-import com.legacy.structure_gel.packets.UpdateGelPlayerPacket;
 import com.legacy.structure_gel.util.Internal;
 import com.legacy.structure_gel.util.RegistryHelper;
-import com.legacy.structure_gel.util.capability.GelCapability;
-import com.legacy.structure_gel.util.capability.GelEntityProvider;
 import com.legacy.structure_gel.worldgen.jigsaw.GelJigsawPiece;
 import com.legacy.structure_gel.worldgen.jigsaw.GelStructurePiece;
 import com.legacy.structure_gel.worldgen.processors.RandomBlockSwapProcessor;
@@ -33,22 +27,10 @@ import com.legacy.structure_gel.worldgen.processors.RemoveGelStructureProcessor;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.ConfirmBackupScreen;
-import net.minecraft.client.gui.screen.ConfirmScreen;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.gui.widget.button.AbstractButton;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.jigsaw.IJigsawDeserializer;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
@@ -57,27 +39,17 @@ import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.template.IStructureProcessorType;
 import net.minecraft.world.gen.feature.template.StructureProcessor;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLModContainer;
 import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.RegistryBuilder;
 
 /**
  * This is an API with the purpose of giving access and shortcuts to various
@@ -105,26 +77,21 @@ public class StructureGelMod
 	public StructureGelMod()
 	{
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, StructureGelConfig.COMMON_SPEC);
-		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, StructureGelConfig.CLIENT_SPEC);
+
 		IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
 		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
 
-		modBus.addListener(StructureGelMod::commonInit);
-		modBus.addListener(StructureGelMod::loadComplete);
-		modBus.addListener(StructureGelMod::createRegistries);
+		SGEvents.init(modBus, forgeBus);
 		modBus.addGenericListener(BiomeType.class, StructureGelMod::registerBiomeDictionary);
 		modBus.addGenericListener(Block.class, GelBlocks::onRegistry);
 		modBus.addGenericListener(Item.class, GelItems::onRegistry);
 		modBus.addGenericListener(Structure.class, StructureRegistry::onRegistry);
-		forgeBus.addListener(StructureGelMod::registerCommands);
-		forgeBus.addListener(StructureGelMod::onEntityJoinWorld);
-		forgeBus.addGenericListener(Entity.class, StructureGelMod::attachCapabilities);
 
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
 		{
-			modBus.addListener(StructureGelMod::clientInit);
-			forgeBus.addListener(StructureGelMod::skipExperimentalBackupScreen);
-			forgeBus.addListener(StructureGelMod::onPlaySound);
+			ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, StructureGelConfig.CLIENT_SPEC);
+
+			com.legacy.structure_gel.SGClientEvents.init(modBus, forgeBus);
 		});
 
 		// Debugging stuff
@@ -166,136 +133,9 @@ public class StructureGelMod
 		return new ResourceLocation(MODID, key);
 	}
 
-	// -------------------------- CLIENT
+	// -------------------------- REGISTRY
 
-	@OnlyIn(Dist.CLIENT)
-	@Internal
-	public static void clientInit(final FMLClientSetupEvent event)
-	{
-		GelBlocks.BLOCKS.forEach(b -> RenderTypeLookup.setRenderLayer(b, RenderType.getTranslucent()));
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Internal
-	public static void skipExperimentalBackupScreen(final GuiScreenEvent.DrawScreenEvent.Post event)
-	{
-		if (StructureGelConfig.CLIENT.skipExperimentalScreen())
-		{
-			if (event.getGui() instanceof ConfirmBackupScreen)
-			{
-				ConfirmBackupScreen gui = (ConfirmBackupScreen) event.getGui();
-				if (doesTitleMatch(gui.getTitle(), "selectWorld.backupQuestion.experimental") && hasButton(gui.buttons, 1))
-				{
-					StructureGelMod.LOGGER.info("Skipped backup request screen for world that uses experimental settings. You can disable this via config.");
-					((AbstractButton) gui.buttons.get(1)).onPress();
-				}
-			}
-			else if (event.getGui() instanceof ConfirmScreen)
-			{
-				ConfirmScreen gui = (ConfirmScreen) event.getGui();
-				if (doesTitleMatch(gui.getTitle(), "selectWorld.backupQuestion.experimental") && hasButton(gui.buttons, 0))
-				{
-					StructureGelMod.LOGGER.info("Skipped world load warning screen for world that uses experimental settings. You can disable this via config.");
-					((AbstractButton) gui.buttons.get(0)).onPress();
-				}
-			}
-		}
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Internal
-	private static boolean hasButton(List<Widget> buttons, int index)
-	{
-		return buttons.size() > index && buttons.get(index) instanceof AbstractButton;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Internal
-	private static boolean doesTitleMatch(ITextComponent title, String compare)
-	{
-		return title instanceof TranslationTextComponent && ((TranslationTextComponent) title).getKey().equals(compare);
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Internal
-	public static void onPlaySound(final PlaySoundEvent event)
-	{
-		Minecraft mc = Minecraft.getInstance();
-		GelCapability.ifPresent(mc.player, gelEntity ->
-		{
-			ResourceLocation name = event.getSound().getSoundLocation();
-			GelPortalBlock portal = gelEntity.getPortalAudio();
-			if (portal != null)
-			{
-				if (name.equals(SoundEvents.BLOCK_PORTAL_TRAVEL.getName()))
-					event.setResultSound(portal.getTravelSound());
-				else if (name.equals(SoundEvents.BLOCK_PORTAL_TRIGGER.getName()))
-					event.setResultSound(portal.getTriggerSound());
-			}
-		});
-	}
-
-	// -------------------------- COMMON
-
-	@Internal
-	public static void commonInit(final FMLCommonSetupEvent event)
-	{
-		GelCapability.register();
-		PacketHandler.register();
-	}
-
-	@Internal
-	public static void loadComplete(final FMLLoadCompleteEvent event)
-	{
-		try
-		{
-			if (StructureGelConfig.COMMON.shouldGuessBiomeDict())
-			{
-				LOGGER.info("Attempting to register unregistered biomes to the biome dictionary. This can be disabled via config.");
-				BiomeDictionary.makeGuess();
-			}
-		}
-		catch (Exception e)
-		{
-			LOGGER.error("Encountered an issue while making assumptions for the biome dictionary. Please narrow down which mods cause a conflict here and report it to our issue tracker:");
-			LOGGER.error("https://gitlab.com/modding-legacy/structure-gel-api/-/issues");
-			e.printStackTrace();
-		}
-	}
-
-	@Internal
-	public static void onEntityJoinWorld(final EntityJoinWorldEvent event)
-	{
-		if (event.getEntity() instanceof ServerPlayerEntity)
-		{
-			ServerPlayerEntity player = (ServerPlayerEntity) event.getEntity();
-			GelCapability.ifPresent(player, gelPlayer ->
-			{
-				PacketHandler.sendToClient(new UpdateGelPlayerPacket(gelPlayer), player);
-			});
-		}
-	}
-
-	@Internal
-	public static void attachCapabilities(final AttachCapabilitiesEvent<Entity> event)
-	{
-		GelEntityProvider provider = new GelEntityProvider();
-		event.addCapability(locate("gel_entity"), provider);
-		event.addListener(provider::invalidate);
-	}
-
-	@Internal
-	public static void createRegistries(final RegistryEvent.NewRegistry event)
-	{
-		new RegistryBuilder<BiomeType>().setName(locate("biome_dictionary")).setType(BiomeType.class).setDefaultKey(locate("empty")).create();
-	}
-
-	@Internal
-	public static void registerCommands(final RegisterCommandsEvent event)
-	{
-		StructureGelCommand.register(event.getDispatcher());
-	}
-
+	// TODO move to own class in 1.17
 	@Internal
 	@SuppressWarnings("unchecked")
 	public static void registerBiomeDictionary(final RegistryEvent.Register<BiomeType> event)
@@ -332,8 +172,7 @@ public class StructureGelMod
 		});
 	}
 
-	// -------------------------- REGISTRY
-
+	// TODO move to own class in 1.17
 	public static class GelBlocks
 	{
 		public static Set<Block> BLOCKS = new LinkedHashSet<Block>();
@@ -357,6 +196,7 @@ public class StructureGelMod
 		}
 	}
 
+	// TODO move to own class in 1.17
 	public static class GelItems
 	{
 		public static void onRegistry(final RegistryEvent.Register<Item> event)
@@ -365,6 +205,7 @@ public class StructureGelMod
 		}
 	}
 
+	// TODO move to own class in 1.17
 	public static class StructureRegistry
 	{
 		public static void onRegistry(final RegistryEvent.Register<Structure<?>> event)
@@ -393,6 +234,7 @@ public class StructureGelMod
 		}
 	}
 
+	// TODO move to own class in 1.17
 	public static class Processors
 	{
 		public static IStructureProcessorType<RemoveGelStructureProcessor> REMOVE_FILLER;
@@ -406,6 +248,7 @@ public class StructureGelMod
 		}
 	}
 
+	// TODO move to own class in 1.17
 	public static class JigsawDeserializers
 	{
 		public static IJigsawDeserializer<GelJigsawPiece> GEL_SINGLE_POOL_ELEMENT;
@@ -416,6 +259,7 @@ public class StructureGelMod
 		}
 	}
 
+	// TODO move to own class in 1.17
 	public static class StructurePieceTypes
 	{
 		public static IStructurePieceType GEL_JIGSAW;

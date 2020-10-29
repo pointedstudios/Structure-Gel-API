@@ -2,7 +2,6 @@ package com.legacy.structure_gel.util;
 
 import java.util.OptionalLong;
 
-import net.minecraft.client.world.DimensionRenderInfo;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.DimensionType;
@@ -224,7 +223,7 @@ public class DimensionTypeBuilder
 
 	/**
 	 * Sets what effects the dimension has such as fog. "effects" is a registry id
-	 * in {@link DimensionRenderInfo}.
+	 * in {@link net.minecraft.client.world.DimensionRenderInfo}.
 	 * 
 	 * @param effects
 	 * @return {@link DimensionTypeBuilder}

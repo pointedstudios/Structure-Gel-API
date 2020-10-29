@@ -9,21 +9,12 @@ import com.google.common.collect.ImmutableList;
 import com.legacy.structure_gel.util.GelPortalSize;
 import com.legacy.structure_gel.util.GelTeleporter;
 import com.legacy.structure_gel.util.capability.GelCapability;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.NetherPortalBlock;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.ISound;
-import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundEvents;
@@ -65,7 +56,7 @@ public class GelPortalBlock extends NetherPortalBlock
 	@OnlyIn(Dist.CLIENT)
 	public void renderPortal(float timeInPortal, int scaledHeight, int scaledWidth)
 	{
-		Minecraft mc = Minecraft.getInstance();
+		net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getInstance();
 		if (timeInPortal < 1.0F)
 		{
 			timeInPortal = timeInPortal * timeInPortal;
@@ -73,42 +64,42 @@ public class GelPortalBlock extends NetherPortalBlock
 			timeInPortal = timeInPortal * 0.8F + 0.2F;
 		}
 
-		RenderSystem.disableAlphaTest();
-		RenderSystem.disableDepthTest();
-		RenderSystem.depthMask(false);
-		RenderSystem.defaultBlendFunc();
-		RenderSystem.color4f(1.0F, 1.0F, 1.0F, timeInPortal);
-		mc.getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-		TextureAtlasSprite sprite = this.getPortalTexture();
+		com.mojang.blaze3d.systems.RenderSystem.disableAlphaTest();
+		com.mojang.blaze3d.systems.RenderSystem.disableDepthTest();
+		com.mojang.blaze3d.systems.RenderSystem.depthMask(false);
+		com.mojang.blaze3d.systems.RenderSystem.defaultBlendFunc();
+		com.mojang.blaze3d.systems.RenderSystem.color4f(1.0F, 1.0F, 1.0F, timeInPortal);
+		mc.getTextureManager().bindTexture(net.minecraft.client.renderer.texture.AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+		net.minecraft.client.renderer.texture.TextureAtlasSprite sprite = this.getPortalTexture();
 		float f = sprite.getMinU();
 		float f1 = sprite.getMinV();
 		float f2 = sprite.getMaxU();
 		float f3 = sprite.getMaxV();
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buffBuilder = tessellator.getBuffer();
-		buffBuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+		net.minecraft.client.renderer.Tessellator tessellator = net.minecraft.client.renderer.Tessellator.getInstance();
+		net.minecraft.client.renderer.BufferBuilder buffBuilder = tessellator.getBuffer();
+		buffBuilder.begin(7, net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_TEX);
 		buffBuilder.pos(0.0D, (double) scaledHeight, -90.0D).tex(f, f3).endVertex();
 		buffBuilder.pos((double) scaledWidth, (double) scaledHeight, -90.0D).tex(f2, f3).endVertex();
 		buffBuilder.pos((double) scaledWidth, 0.0D, -90.0D).tex(f2, f1).endVertex();
 		buffBuilder.pos(0.0D, 0.0D, -90.0D).tex(f, f1).endVertex();
 		tessellator.draw();
-		RenderSystem.depthMask(true);
-		RenderSystem.enableDepthTest();
-		RenderSystem.enableAlphaTest();
-		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+		com.mojang.blaze3d.systems.RenderSystem.depthMask(true);
+		com.mojang.blaze3d.systems.RenderSystem.enableDepthTest();
+		com.mojang.blaze3d.systems.RenderSystem.enableAlphaTest();
+		com.mojang.blaze3d.systems.RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 
 	/**
 	 * Gets the texture for the portal overlay to render with. Returns the texture
 	 * of this block by default.
 	 * 
-	 * @return {@link TextureAtlasSprite}
+	 * @return {@link net.minecraft.client.renderer.texture.TextureAtlasSprite}
 	 */
 	@SuppressWarnings("deprecation")
 	@OnlyIn(Dist.CLIENT)
-	public TextureAtlasSprite getPortalTexture()
+	public net.minecraft.client.renderer.texture.TextureAtlasSprite getPortalTexture()
 	{
-		Minecraft mc = Minecraft.getInstance();
+		net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getInstance();
 		return mc.getBlockRendererDispatcher().getBlockModelShapes().getTexture(this.getDefaultState());
 	}
 
@@ -116,24 +107,24 @@ public class GelPortalBlock extends NetherPortalBlock
 	 * Gets the sound that plays when the player steps in the portal. Nether by
 	 * default.
 	 * 
-	 * @return {@link ISound}
+	 * @return {@link net.minecraft.client.audio.ISound}
 	 */
 	@OnlyIn(Dist.CLIENT)
-	public ISound getTriggerSound()
+	public net.minecraft.client.audio.ISound getTriggerSound()
 	{
-		return SimpleSound.ambientWithoutAttenuation(SoundEvents.BLOCK_PORTAL_TRIGGER, new Random().nextFloat() * 0.4F + 0.8F, 0.25F);
+		return net.minecraft.client.audio.SimpleSound.ambientWithoutAttenuation(SoundEvents.BLOCK_PORTAL_TRIGGER, new Random().nextFloat() * 0.4F + 0.8F, 0.25F);
 	}
 
 	/**
 	 * Gets the sound that plays when the player goes through the portal. Nether by
 	 * default.
 	 * 
-	 * @return {@link ISound}
+	 * @return {@link net.minecraft.client.audio.ISound}
 	 */
 	@OnlyIn(Dist.CLIENT)
-	public ISound getTravelSound()
+	public net.minecraft.client.audio.ISound getTravelSound()
 	{
-		return SimpleSound.ambientWithoutAttenuation(SoundEvents.BLOCK_PORTAL_TRAVEL, new Random().nextFloat() * 0.4F + 0.8F, 0.25F);
+		return net.minecraft.client.audio.SimpleSound.ambientWithoutAttenuation(SoundEvents.BLOCK_PORTAL_TRAVEL, new Random().nextFloat() * 0.4F + 0.8F, 0.25F);
 	}
 
 	/**
