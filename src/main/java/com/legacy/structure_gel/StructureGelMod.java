@@ -142,34 +142,53 @@ public class StructureGelMod
 	{
 		BiomeDictionary.init();
 		// Get biome dictionary entries from other mods' classes
-		LOGGER.debug("Checking for other mods' biome dictionary methods.");
-		ModList.get().forEachModContainer((s, mc) ->
+		LOGGER.info("Checking for other mods' biome dictionary methods.");
+		try
 		{
-			if (mc instanceof FMLModContainer)
+			ModList.get().forEachModContainer((s, mc) ->
 			{
-				FMLModContainer fmlContainer = (FMLModContainer) mc;
-
-				try
+				if (mc instanceof FMLModContainer)
 				{
-					for (Method method : fmlContainer.getMod().getClass().getMethods())
+					FMLModContainer fmlContainer = (FMLModContainer) mc;
+					Method[] methods = new Method[0];
+					try
+					{
+						methods = fmlContainer.getMod().getClass().getMethods();
+					}
+					catch (Exception e)
+					{
+						// If it fails, just silently move on without it. Likely caused by trying to access client classes on server.
+					}
+					for (Method method : methods)
 					{
 						List<Triple<ResourceLocation, Set<ResourceLocation>, Set<RegistryKey<Biome>>>> result = Lists.newArrayList();
 
 						// As of 1.16.2-v1.3.0
 						if (method.getName().equals("getBiomesSG"))
-							result = (List<Triple<ResourceLocation, Set<ResourceLocation>, Set<RegistryKey<Biome>>>>) method.invoke(fmlContainer.getMod());
+						{
+							try
+							{
+								result = (List<Triple<ResourceLocation, Set<ResourceLocation>, Set<RegistryKey<Biome>>>>) method.invoke(fmlContainer.getMod());
+							}
+							catch (Exception e)
+							{
+								LOGGER.info(String.format("Failed to invoke %s's getBiomesSG method. Proceeding to the next.", mc.getModId()));
+								e.printStackTrace();
+							}
+						}
 
 						// Register
 						if (result != null && !result.isEmpty())
 							result.forEach(t -> BiomeDictionary.register(new BiomeType(t.getLeft(), t.getMiddle(), t.getRight())));
 					}
 				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-			}
-		});
+			});
+		}
+		catch (Exception e)
+		{
+			LOGGER.info("Encountered an issue trying to load other mods' biome dictionary methods. Skipping this step.");
+			e.printStackTrace();
+		}
 	}
 
 	// TODO move to own class in 1.17
