@@ -21,7 +21,7 @@ import net.minecraft.world.gen.feature.structure.Structure;
 @Mixin(LakesFeature.class)
 public class LakesFeatureMixin
 {
-	@Inject(at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/math/BlockPos;down(I)Lnet/minecraft/util/math/BlockPos;"), method = "func_241855_a(Lnet/minecraft/world/ISeedReader;Lnet/minecraft/world/gen/ChunkGenerator;Ljava/util/Random;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/gen/feature/BlockStateFeatureConfig;)Z", cancellable = true)
+	@Inject(at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/math/BlockPos;down(I)Lnet/minecraft/util/math/BlockPos;"), method = "generate(Lnet/minecraft/world/ISeedReader;Lnet/minecraft/world/gen/ChunkGenerator;Ljava/util/Random;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/gen/feature/BlockStateFeatureConfig;)Z", cancellable = true)
 	private void checkForStructures(ISeedReader seedReader, ChunkGenerator chunkGen, Random random, BlockPos pos, BlockStateFeatureConfig config, CallbackInfoReturnable<Boolean> callback)
 	{
 		if (StructureGelConfig.COMMON.getExtraLakeProofing())
