@@ -116,7 +116,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	 * @return {@link Decoration}
 	 */
 	@Override
-	public GenerationStage.Decoration func_236396_f_()
+	public GenerationStage.Decoration getDecorationStage()
 	{
 		return GenerationStage.Decoration.SURFACE_STRUCTURES;
 	}
@@ -129,10 +129,9 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	 * @see #getOffset()
 	 * @return {@link ChunkPos}
 	 */
-	// getChunkPosForPos
 	@Internal
 	@Override
-	public ChunkPos func_236392_a_(StructureSeparationSettings settings, long seed, SharedSeedRandom sharedSeedRand, int x, int z)
+	public ChunkPos getChunkPosForStructure(StructureSeparationSettings settings, long seed, SharedSeedRandom sharedSeedRand, int x, int z)
 	{
 		int spacing = this.getSpacing();
 		int gridX = ((x / spacing) * spacing);

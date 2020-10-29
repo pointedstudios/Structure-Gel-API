@@ -43,7 +43,7 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 		this.name = name;
 		this.structure = structure;
 		this.pieceType = pieceType;
-		this.structureFeatures = configs.entrySet().stream().collect(Collectors.toMap(Entry::getKey, (v) -> (StructureFeature<C, S>) structure.func_236391_a_(v.getValue())));
+		this.structureFeatures = configs.entrySet().stream().collect(Collectors.toMap(Entry::getKey, (v) -> (StructureFeature<C, S>) structure.withConfiguration(v.getValue())));
 		this.generationStage = generationStage;
 	}
 

@@ -172,8 +172,8 @@ public class RegistryHelper
 	{
 		structure.setRegistryName(key);
 		registry.register(structure);
-		Structure.field_236365_a_.put(key.toString(), structure);
-		Structure.field_236385_u_.put(structure, generationStage);
+		Structure.NAME_STRUCTURE_BIMAP.put(key.toString(), structure);
+		Structure.STRUCTURE_DECORATION_STAGE_MAP.put(structure, generationStage);
 		return structure;
 	}
 

@@ -23,10 +23,10 @@ public class StructureAccessHelper
 	public static List<Structure<?>> LAKE_STRUCTURES = new ArrayList<>();
 	static
 	{
-		StructureAccessHelper.LAKE_STRUCTURES.add(Structure.field_236381_q_);
+		StructureAccessHelper.LAKE_STRUCTURES.add(Structure.VILLAGE);
 		if (StructureGelConfig.COMMON.getExtraLakeProofing())
 		{
-			StructureAccessHelper.LAKE_STRUCTURES.addAll(ImmutableList.of(Structure.field_236368_d_, Structure.field_236369_e_, Structure.field_236370_f_, Structure.field_236371_g_, Structure.field_236375_k_));
+			StructureAccessHelper.LAKE_STRUCTURES.addAll(ImmutableList.of(Structure.WOODLAND_MANSION, Structure.JUNGLE_PYRAMID, Structure.DESERT_PYRAMID, Structure.IGLOO, Structure.STRONGHOLD));
 		}
 	}
 

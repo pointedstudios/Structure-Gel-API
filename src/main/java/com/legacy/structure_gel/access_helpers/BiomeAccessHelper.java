@@ -152,7 +152,7 @@ public class BiomeAccessHelper
 		// Add structure to the biome's structure list
 		getGenSettings(biome).structures = GelCollectors.addToList(getGenSettings(biome).structures, () -> structure);
 
-		int genStage = structure.field_236268_b_.func_236396_f_().ordinal();
+		int genStage = structure.field_236268_b_.getDecorationStage().ordinal();
 		// Ensure that the structure isn't already present
 		if (!(biome.biomeStructures.containsKey(genStage) && biome.biomeStructures.get(genStage).contains(structure.field_236268_b_)))
 		{
