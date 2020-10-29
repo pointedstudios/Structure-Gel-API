@@ -172,7 +172,7 @@ public class StructureGelMod
 							}
 							catch (Exception e)
 							{
-								LOGGER.info(String.format("Failed to invoke %s's getBiomesSG method. Proceeding to the next.", mc.getModId()));
+								LOGGER.info(String.format("Failed to invoke getBiomesSG from %s. Proceeding to the next mod.", s));
 								e.printStackTrace();
 							}
 						}
