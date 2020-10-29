@@ -1,0 +1,6 @@
+1.16.3-v1.5.2
+
+Hotfix update to fix a crash on server.
+
+Fixes:
+- Fixes the mod causing a crash on server by trying to access client-only classes.
