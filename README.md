@@ -1,5 +1,6 @@
 # Structure Gel API
 
+## About
 This library mod seeks to make handling world gen easier on developers. It's main features include:
 - Gel blocks that can be used to automatically fill a structure and replace with air using structure processors
 - Jigsaw registry shortcuts/builders
@@ -12,7 +13,13 @@ This library mod seeks to make handling world gen easier on developers. It's mai
 - Registrars for holding registry data for dimensions and everything structure related
 - Registry utilities for structures, structure processors, points of interest, and configured features
 
-To install this library in your workspace:
+## Compatibility
+Mods are able to add compatibility to some aspects Structure Gel without needing to incorporate it into their workspace. Currently, support exists for the following:
+- Biome dictionary registry
+
+Check ``com.legacy.structure_gel.StructureGelCompat`` in the source code to learn more on how to use this as it's documented there.
+
+## Installing in Your Workspace
 1) Get a deobfuscated jar of this mod from the "jars" folder in the repository.
 	- Make sure you're in the correct version number branch.
 	- MCP mapping and minimum forge versions are listed in the "jars/README" file.
