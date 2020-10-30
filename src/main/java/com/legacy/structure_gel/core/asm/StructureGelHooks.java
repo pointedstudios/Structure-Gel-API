@@ -20,7 +20,7 @@ public class StructureGelHooks
 {
 	/**
 	 * Hooks into
-	 * {@link LakesFeature#func_241855_a(ISeedReader, net.minecraft.world.gen.ChunkGenerator, java.util.Random, BlockPos, net.minecraft.world.gen.feature.BlockStateFeatureConfig)}
+	 * {@link LakesFeature#generate(ISeedReader, net.minecraft.world.gen.ChunkGenerator, java.util.Random, BlockPos, net.minecraft.world.gen.feature.BlockStateFeatureConfig)}
 	 * to allow for more structures than just villages to prevent lakes from
 	 * generating.
 	 * 
