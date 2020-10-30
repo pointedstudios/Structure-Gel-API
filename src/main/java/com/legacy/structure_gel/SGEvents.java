@@ -29,7 +29,7 @@ import net.minecraftforge.registries.RegistryBuilder;
 @Internal
 public class SGEvents
 {
-	public static void init(IEventBus modBus, IEventBus forgeBus)
+	protected static void init(IEventBus modBus, IEventBus forgeBus)
 	{
 		modBus.addListener(SGEvents::commonInit);
 		modBus.addListener(SGEvents::loadComplete);
@@ -39,13 +39,13 @@ public class SGEvents
 		forgeBus.addGenericListener(Entity.class, SGEvents::attachCapabilities);
 	}
 
-	public static void commonInit(final FMLCommonSetupEvent event)
+	protected static void commonInit(final FMLCommonSetupEvent event)
 	{
 		GelCapability.register();
 		PacketHandler.register();
 	}
 
-	public static void loadComplete(final FMLLoadCompleteEvent event)
+	protected static void loadComplete(final FMLLoadCompleteEvent event)
 	{
 		try
 		{
@@ -63,7 +63,7 @@ public class SGEvents
 		}
 	}
 
-	public static void onEntityJoinWorld(final EntityJoinWorldEvent event)
+	protected static void onEntityJoinWorld(final EntityJoinWorldEvent event)
 	{
 		if (event.getEntity() instanceof ServerPlayerEntity)
 		{
@@ -75,19 +75,19 @@ public class SGEvents
 		}
 	}
 
-	public static void attachCapabilities(final AttachCapabilitiesEvent<Entity> event)
+	protected static void attachCapabilities(final AttachCapabilitiesEvent<Entity> event)
 	{
 		GelEntityProvider provider = new GelEntityProvider();
 		event.addCapability(StructureGelMod.locate("gel_entity"), provider);
 		event.addListener(provider::invalidate);
 	}
 
-	public static void createRegistries(final RegistryEvent.NewRegistry event)
+	protected static void createRegistries(final RegistryEvent.NewRegistry event)
 	{
 		new RegistryBuilder<BiomeType>().setName(StructureGelMod.locate("biome_dictionary")).setType(BiomeType.class).setDefaultKey(StructureGelMod.locate("empty")).create();
 	}
 
-	public static void registerCommands(final RegisterCommandsEvent event)
+	protected static void registerCommands(final RegisterCommandsEvent event)
 	{
 		StructureGelCommand.register(event.getDispatcher());
 	}

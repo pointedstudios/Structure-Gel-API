@@ -1,6 +1,5 @@
 package com.legacy.structure_gel;
 
-import java.lang.reflect.Method;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -9,7 +8,6 @@ import org.apache.commons.lang3.tuple.Triple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.common.collect.Lists;
 import com.legacy.structure_gel.biome_dictionary.BiomeDictionary;
 import com.legacy.structure_gel.biome_dictionary.BiomeType;
 import com.legacy.structure_gel.blocks.AxisStructureGelBlock;
@@ -43,12 +41,10 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.javafmlmod.FMLModContainer;
 import net.minecraftforge.registries.IForgeRegistry;
 
 /**
@@ -94,6 +90,8 @@ public class StructureGelMod
 			com.legacy.structure_gel.SGClientEvents.init(modBus, forgeBus);
 		});
 
+		StructureGelCompat.init(modBus);
+
 		// Debugging stuff
 		// com.legacy.structure_gel.SGDebug.init(modBus, forgeBus);
 	}
@@ -111,10 +109,12 @@ public class StructureGelMod
 	 * a Set of biome {@link RegistryKey}s for what biomes should be in the
 	 * dictionary entry.
 	 * 
+	 * @deprecated TODO remove in 1.17 in favor of new class-based system.
 	 * @return {@link List}&lt;{@link Triple}&lt;{@link ResourceLocation},
 	 *         {@link Set}&lt;{@link ResourceLocation}&gt;,
 	 *         {@link Set}&lt;{@link RegistryKey}&lt;{@link Biome}&gt;&gt;&gt;&gt;
 	 */
+	@Deprecated
 	public List<Triple<ResourceLocation, Set<ResourceLocation>, Set<RegistryKey<Biome>>>> getBiomesSG()
 	{
 		/*
@@ -137,58 +137,9 @@ public class StructureGelMod
 
 	// TODO move to own class in 1.17
 	@Internal
-	@SuppressWarnings("unchecked")
 	public static void registerBiomeDictionary(final RegistryEvent.Register<BiomeType> event)
 	{
 		BiomeDictionary.init();
-		// Get biome dictionary entries from other mods' classes
-		LOGGER.info("Checking for other mods' biome dictionary methods.");
-		try
-		{
-			ModList.get().forEachModContainer((s, mc) ->
-			{
-				if (mc instanceof FMLModContainer)
-				{
-					FMLModContainer fmlContainer = (FMLModContainer) mc;
-					Method[] methods = new Method[0];
-					try
-					{
-						methods = fmlContainer.getMod().getClass().getMethods();
-					}
-					catch (Exception e)
-					{
-						// If it fails, just silently move on without it. Likely caused by trying to access client classes on server.
-					}
-					for (Method method : methods)
-					{
-						List<Triple<ResourceLocation, Set<ResourceLocation>, Set<RegistryKey<Biome>>>> result = Lists.newArrayList();
-
-						// As of 1.16.2-v1.3.0
-						if (method.getName().equals("getBiomesSG"))
-						{
-							try
-							{
-								result = (List<Triple<ResourceLocation, Set<ResourceLocation>, Set<RegistryKey<Biome>>>>) method.invoke(fmlContainer.getMod());
-							}
-							catch (Exception e)
-							{
-								LOGGER.info(String.format("Failed to invoke getBiomesSG from %s. Proceeding to the next mod.", s));
-								e.printStackTrace();
-							}
-						}
-
-						// Register
-						if (result != null && !result.isEmpty())
-							result.forEach(t -> BiomeDictionary.register(new BiomeType(t.getLeft(), t.getMiddle(), t.getRight())));
-					}
-				}
-			});
-		}
-		catch (Exception e)
-		{
-			LOGGER.info("Encountered an issue trying to load other mods' biome dictionary methods. Skipping this step.");
-			e.printStackTrace();
-		}
 	}
 
 	// TODO move to own class in 1.17

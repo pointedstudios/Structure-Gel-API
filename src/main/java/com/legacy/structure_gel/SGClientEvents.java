@@ -35,19 +35,19 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 @Internal
 public class SGClientEvents
 {
-	public static void init(IEventBus modBus, IEventBus forgeBus)
+	protected static void init(IEventBus modBus, IEventBus forgeBus)
 	{
 		modBus.addListener(SGClientEvents::clientInit);
 		forgeBus.addListener(SGClientEvents::skipExperimentalBackupScreen);
 		forgeBus.addListener(SGClientEvents::onPlaySound);
 	}
 
-	public static void clientInit(final FMLClientSetupEvent event)
+	protected static void clientInit(final FMLClientSetupEvent event)
 	{
 		GelBlocks.BLOCKS.forEach(b -> RenderTypeLookup.setRenderLayer(b, RenderType.getTranslucent()));
 	}
 
-	public static void skipExperimentalBackupScreen(final GuiScreenEvent.DrawScreenEvent.Post event)
+	protected static void skipExperimentalBackupScreen(final GuiScreenEvent.DrawScreenEvent.Post event)
 	{
 		if (StructureGelConfig.CLIENT.skipExperimentalScreen())
 		{
@@ -82,7 +82,7 @@ public class SGClientEvents
 		return title instanceof TranslationTextComponent && ((TranslationTextComponent) title).getKey().equals(compare);
 	}
 
-	public static void onPlaySound(final PlaySoundEvent event)
+	protected static void onPlaySound(final PlaySoundEvent event)
 	{
 		Minecraft mc = Minecraft.getInstance();
 		GelCapability.ifPresent(mc.player, gelEntity ->

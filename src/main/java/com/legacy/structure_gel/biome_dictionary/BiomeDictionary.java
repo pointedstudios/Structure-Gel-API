@@ -197,7 +197,8 @@ public class BiomeDictionary
 	public static void init()
 	{
 		// Can't register EMPTY directly since I'm preventing it, so I do it like this.
-		REGISTRY.register(EMPTY);
+		if (!REGISTRY.containsKey(EMPTY_NAME))
+			REGISTRY.register(EMPTY);
 	}
 
 	/**

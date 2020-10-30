@@ -46,6 +46,8 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 	/**
 	 * Ensures none of the values will be set to null just in case.
 	 * 
+	 * // TODO Change from RegistryKey to ResourceLocation in 1.17
+	 * 
 	 * @param name
 	 * @param parents
 	 * @param biomes
