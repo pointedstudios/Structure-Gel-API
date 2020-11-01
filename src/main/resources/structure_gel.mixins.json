@@ -16,7 +16,8 @@
 		"SpawnerFix$Bee",
 		"SpawnerFix$IronGolem",
 		"SpawnerFix$PolarBear",
-		"SpawnerFix$Wolf"
+		"SpawnerFix$Wolf",
+		"StructureTileEntityRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

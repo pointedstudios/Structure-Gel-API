@@ -65,21 +65,28 @@ public class StructureGelConfig
 	{
 		private final ForgeConfigSpec.BooleanValue skipExperimentalBackupScreen;
 		private final ForgeConfigSpec.BooleanValue fixSpawners;
-		
+		private final ForgeConfigSpec.BooleanValue showStructureBlockInfo;
+
 		public Client(ForgeConfigSpec.Builder builder)
 		{
 			this.skipExperimentalBackupScreen = builder.comment("Skips the screen that tells you that a world uses experimental settings.").define("gui.skip_experimental_backup_screen", true);
 			this.fixSpawners = builder.comment("Fixes spawners causing fps lag from a ClassCastException with some entities.").define("entity.fix_spawners", true);
+			this.showStructureBlockInfo = builder.comment("Displays info on top of Structure Blocks, similarly to pre-1.13 versions.").define("gui.show_structure_block_info", true);
 		}
 
 		public boolean skipExperimentalScreen()
 		{
 			return this.skipExperimentalBackupScreen.get();
 		}
-		
+
 		public boolean fixSpawners()
 		{
 			return this.fixSpawners.get();
+		}
+
+		public boolean showStructureBlockInfo()
+		{
+			return this.showStructureBlockInfo.get();
 		}
 	}
 }
