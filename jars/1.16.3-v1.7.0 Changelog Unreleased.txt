@@ -4,9 +4,13 @@ General feature update
 
 Additions:
 - Structure blocks now render the text inside when you look at them
-
-Changes:
-- 
-
-Fixes:
-- 
+	- Can be disabled via client config
+- Added SpawnerAccessHelper
+	- Allows for easy modification of mob spawner data
+	- Mob spawner related methods in TileEntityAccessHelper have been deprecated
+- Added TileEntityAccessHelper.modifyNBT
+	- Allows for easy modification of a tile entity's nbt
+- Added GelTemplateStructurePiece
+	- An extended version of TemplateStructurePiece
+	- Adds compatibility with gel blocks
+	- Contains hooks to modify specific parts of the piece
