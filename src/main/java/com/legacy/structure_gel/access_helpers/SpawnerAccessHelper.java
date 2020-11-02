@@ -17,32 +17,32 @@ public class SpawnerAccessHelper
 {
 	public static void setMinSpawnDelay(MobSpawnerTileEntity tile, short minSpawnelay)
 	{
-		modifySpawnerNBT(tile, nbt -> nbt.putShort("MinSpawnDelay", minSpawnelay));
+		modifyNBT(tile, nbt -> nbt.putShort("MinSpawnDelay", minSpawnelay));
 	}
 
 	public static void setMaxSpawnDelay(MobSpawnerTileEntity tile, short maxSpawnDelay)
 	{
-		modifySpawnerNBT(tile, nbt -> nbt.putShort("MaxSpawnDelay", maxSpawnDelay));
+		modifyNBT(tile, nbt -> nbt.putShort("MaxSpawnDelay", maxSpawnDelay));
 	}
 
 	public static void setSpawnCount(MobSpawnerTileEntity tile, short spawnCount)
 	{
-		modifySpawnerNBT(tile, nbt -> nbt.putShort("SpawnCount", spawnCount));
+		modifyNBT(tile, nbt -> nbt.putShort("SpawnCount", spawnCount));
 	}
 
 	public static void setMaxNearbyEntities(MobSpawnerTileEntity tile, short maxNearbyEntities)
 	{
-		modifySpawnerNBT(tile, nbt -> nbt.putShort("MaxNearbyEntities", maxNearbyEntities));
+		modifyNBT(tile, nbt -> nbt.putShort("MaxNearbyEntities", maxNearbyEntities));
 	}
 
 	public static void setRequiredPlayerRange(MobSpawnerTileEntity tile, short requiredPlayerRange)
 	{
-		modifySpawnerNBT(tile, nbt -> nbt.putShort("RequiredPlayerRange", requiredPlayerRange));
+		modifyNBT(tile, nbt -> nbt.putShort("RequiredPlayerRange", requiredPlayerRange));
 	}
 
 	public static void setSpawnRange(MobSpawnerTileEntity tile, short spawnRange)
 	{
-		modifySpawnerNBT(tile, nbt -> nbt.putShort("SpawnRange", spawnRange));
+		modifyNBT(tile, nbt -> nbt.putShort("SpawnRange", spawnRange));
 	}
 
 	/**
@@ -68,7 +68,7 @@ public class SpawnerAccessHelper
 	 */
 	public static void setSpawnPotentials(MobSpawnerTileEntity tile, List<WeightedSpawnerEntity> spawnerEntities)
 	{
-		modifySpawnerNBT(tile, nbt ->
+		modifyNBT(tile, nbt ->
 		{
 			if (!spawnerEntities.isEmpty())
 			{
@@ -98,7 +98,7 @@ public class SpawnerAccessHelper
 		return new WeightedSpawnerEntity(weight, entityNBT);
 	}
 
-	public static void modifySpawnerNBT(MobSpawnerTileEntity tile, Consumer<CompoundNBT> nbtConsumer)
+	public static void modifyNBT(MobSpawnerTileEntity tile, Consumer<CompoundNBT> nbtConsumer)
 	{
 		CompoundNBT nbt = new CompoundNBT();
 		tile.getSpawnerBaseLogic().write(nbt);

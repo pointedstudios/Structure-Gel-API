@@ -1,11 +1,8 @@
 package com.legacy.structure_gel.access_helpers;
 
 import java.util.List;
-import java.util.function.Consumer;
 
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.MobSpawnerTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.WeightedSpawnerEntity;
 
 /**
@@ -17,14 +14,6 @@ import net.minecraft.util.WeightedSpawnerEntity;
  */
 public class TileEntityAccessHelper
 {
-	public static void modifyNBT(TileEntity tile, Consumer<CompoundNBT> nbtConsumer)
-	{
-		CompoundNBT nbt = new CompoundNBT();
-		tile.write(nbt);
-		nbtConsumer.accept(nbt);
-		tile.read(tile.getBlockState(), nbt);
-	}
-	
 	/**
 	 * @see TileEntityAccessHelper#setSpawnerSpawns(MobSpawnerTileEntity, List)
 	 * @deprecated See {@link SpawnerAccessHelper}
