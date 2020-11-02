@@ -19,7 +19,7 @@ sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = co
 
 version = '1.7.0'
 group = 'com.legacy.structure_gel'
-archivesBaseName = 'structure-gel-api-1.16.3'
+archivesBaseName = 'structure-gel-api-1.16.4'
 
 minecraft {
     mappings channel: 'snapshot', version: '20201028-1.16.3'
@@ -65,7 +65,7 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.3-34.1.23'
+    minecraft 'net.minecraftforge:forge:1.16.4-35.0.1'
 }
 
 mixin {

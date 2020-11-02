@@ -1,7 +1,0 @@
-1.16.3-v1.4.2
-
-A minor update to fix structures not defaulting to generate in every noise setting when no value is set. This should fix issues with Biomes O' Plenty.
-
-Fixes:
-- Fixed modded world gen settings not working.
-- Fixed some mods setting a map to be immutable when it shouldn't be. 

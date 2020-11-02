@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[34,)"
+loaderVersion="[35,)"
 issueTrackerURL="https://gitlab.com/modding-legacy/structure-gel-api/-/issues"
 license="https://www.gnu.org/licenses/gpl-3.0.en.html"
 [[mods]]
@@ -15,12 +15,12 @@ license="https://www.gnu.org/licenses/gpl-3.0.en.html"
 [[dependencies.structure_gel]]
     modId="forge"
     mandatory=true
-    versionRange="[34.1.23,)"
+    versionRange="[35.0.0,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.structure_gel]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16.3]"
+    versionRange="[1.16.4]"
     ordering="NONE"
     side="BOTH"
