@@ -14,3 +14,10 @@ Additions:
 	- An extended version of TemplateStructurePiece
 	- Adds compatibility with gel blocks
 	- Contains hooks to modify specific parts of the piece
+	
+Changes:
+- Commands
+	- /structure_gel getspawns
+		- Now sorts results alphabetically
+	- /structure_gel savestructures
+		- Now sorts results alphabetically

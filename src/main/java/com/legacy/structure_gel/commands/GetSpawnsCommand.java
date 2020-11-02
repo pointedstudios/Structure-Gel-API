@@ -1,5 +1,6 @@
 package com.legacy.structure_gel.commands;
 
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import net.minecraft.world.biome.MobSpawnInfo;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.event.ForgeEventFactory;
 
 public class GetSpawnsCommand
 {
@@ -43,7 +45,7 @@ public class GetSpawnsCommand
 		if (!map.isEmpty())
 		{
 			context.getSource().sendFeedback(new StringTextComponent("--Spawn Data--"), true);
-			map.forEach((classification, list) -> printSpawns(classification, list, context));
+			map.entrySet().stream().sorted(new ClassificationComparator<>()).forEach(e -> printSpawns(e.getKey(), e.getValue(), context));
 		}
 		context.getSource().sendFeedback(new StringTextComponent("No spawn data."), true);
 
@@ -58,7 +60,7 @@ public class GetSpawnsCommand
 		ChunkGenerator chunkGen = world.getChunkProvider().generator;
 		StructureManager manager = world.func_241112_a_();
 		List<MobSpawnInfo.Spawners> list = chunkGen.func_230353_a_(biome, manager, classification, pos);
-		return net.minecraftforge.event.ForgeEventFactory.getPotentialSpawns(world, classification, pos, list);
+		return ForgeEventFactory.getPotentialSpawns(world, classification, pos, list);
 	}
 
 	private static void printSpawns(EntityClassification classification, List<MobSpawnInfo.Spawners> spawns, CommandContext<CommandSource> context)
@@ -66,7 +68,25 @@ public class GetSpawnsCommand
 		if (!spawns.isEmpty())
 		{
 			context.getSource().sendFeedback(new StringTextComponent("[" + classification.getName() + "]").mergeStyle(TextFormatting.GREEN), true);
-			spawns.forEach(spawn -> context.getSource().sendFeedback(new StringTextComponent(String.format(" - %s, weight:%d, min:%d, max:%d", spawn.type.getRegistryName(), spawn.itemWeight, spawn.minCount, spawn.maxCount)), true));
+			spawns.stream().sorted(new SpawnInfoComparator<>()).forEach(spawn -> context.getSource().sendFeedback(new StringTextComponent(String.format(" - %s, weight:%d, min:%d, max:%d", spawn.type.getRegistryName(), spawn.itemWeight, spawn.minCount, spawn.maxCount)), true));
 		}
+	}
+	
+	private static class SpawnInfoComparator<T extends MobSpawnInfo.Spawners> implements Comparator<T>
+	{
+		@Override
+		public int compare(T o1, T o2)
+		{
+			return o1.type.getRegistryName().toString().compareTo(o2.type.getRegistryName().toString());
+		}	
+	}
+	
+	private static class ClassificationComparator<T extends Map.Entry<EntityClassification, List<MobSpawnInfo.Spawners>>> implements Comparator<T>
+	{
+		@Override
+		public int compare(T o1, T o2)
+		{
+			return o1.getKey().getName().compareTo(o2.getKey().getName());
+		}	
 	}
 }

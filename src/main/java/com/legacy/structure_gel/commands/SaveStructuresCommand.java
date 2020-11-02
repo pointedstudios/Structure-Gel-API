@@ -53,12 +53,12 @@ public class SaveStructuresCommand
 		{
 			context.getSource().sendFeedback(new StringTextComponent("[Saved " + savedStructures.size() + " Structures]").mergeStyle(TextFormatting.GREEN), true);
 			if (savedStructures.size() <= 50)
-				savedStructures.forEach(structure -> context.getSource().sendFeedback(new StringTextComponent(" - " + structure), true));
+				savedStructures.stream().sorted().forEach(structure -> context.getSource().sendFeedback(new StringTextComponent(" - " + structure), true));
 			else
 			{
 				context.getSource().sendFeedback(new StringTextComponent(" - Too many structures to print. Check the console."), true);
 				StructureGelMod.LOGGER.info("Saved structures:");
-				savedStructures.forEach(StructureGelMod.LOGGER::info);
+				savedStructures.stream().sorted().forEach(StructureGelMod.LOGGER::info);
 			}
 			if (duplicates.size() > 0)
 			{
