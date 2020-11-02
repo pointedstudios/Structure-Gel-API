@@ -2,6 +2,10 @@ package com.legacy.structure_gel.access_helpers;
 
 import java.util.List;
 
+import com.google.common.collect.Lists;
+
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.MobSpawnerTileEntity;
 import net.minecraft.util.WeightedSpawnerEntity;
 
@@ -16,14 +20,12 @@ public class TileEntityAccessHelper
 {
 	/**
 	 * @see TileEntityAccessHelper#setSpawnerSpawns(MobSpawnerTileEntity, List)
-	 * @deprecated See {@link SpawnerAccessHelper}
 	 * @param tile
 	 * @param spawnerEntities
 	 */
-	@Deprecated
 	public static void setSpawnerSpawns(MobSpawnerTileEntity tile, WeightedSpawnerEntity... spawnerEntities)
 	{
-		SpawnerAccessHelper.setSpawnPotentials(tile, spawnerEntities);
+		TileEntityAccessHelper.setSpawnerSpawns(tile, Lists.newArrayList(spawnerEntities));
 	}
 
 	/**
@@ -34,13 +36,23 @@ public class TileEntityAccessHelper
 	 * x.getNbt().putString("id", "minecraft:skeleton");<br>
 	 * x.getNbt().putBoolean("Glowing", true);<br>
 	 * 
-	 * @deprecated See {@link SpawnerAccessHelper}
 	 * @param tile
 	 * @param spawnerEntities
 	 */
-	@Deprecated
 	public static void setSpawnerSpawns(MobSpawnerTileEntity tile, List<WeightedSpawnerEntity> spawnerEntities)
 	{
-		SpawnerAccessHelper.setSpawnPotentials(tile, spawnerEntities);
+		CompoundNBT compound = new CompoundNBT();
+		tile.getSpawnerBaseLogic().write(compound);
+
+		if (!spawnerEntities.isEmpty())
+		{
+			compound.put("SpawnData", spawnerEntities.get(0).getNbt());
+
+			ListNBT listNbt = new ListNBT();
+			spawnerEntities.forEach(wse -> listNbt.add(wse.toCompoundTag()));
+			compound.put("SpawnPotentials", listNbt);
+
+		}
+		tile.getSpawnerBaseLogic().read(compound);
 	}
 }
