@@ -27,7 +27,7 @@ public class TileEntityAccessHelper
 	
 	/**
 	 * @see TileEntityAccessHelper#setSpawnerSpawns(MobSpawnerTileEntity, List)
-	 * @deprecated See {@link SpawnerAccessHelper} TODO remove in 1.17
+	 * @deprecated See {@link SpawnerAccessHelper}
 	 * @param tile
 	 * @param spawnerEntities
 	 */
@@ -45,7 +45,7 @@ public class TileEntityAccessHelper
 	 * x.getNbt().putString("id", "minecraft:skeleton");<br>
 	 * x.getNbt().putBoolean("Glowing", true);<br>
 	 * 
-	 * @deprecated See {@link SpawnerAccessHelper} TODO remove in 1.17
+	 * @deprecated See {@link SpawnerAccessHelper}
 	 * @param tile
 	 * @param spawnerEntities
 	 */
