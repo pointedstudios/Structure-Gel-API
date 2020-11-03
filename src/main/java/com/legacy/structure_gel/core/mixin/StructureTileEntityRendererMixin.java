@@ -43,17 +43,12 @@ public class StructureTileEntityRendererMixin
 		if (StructureGelConfig.CLIENT.showStructureBlockInfo())
 		{
 			Minecraft mc = Minecraft.getInstance();
-			if (tileEntityIn.getWorld() != null && mc.player != null)
+			if (tileEntityIn.getWorld() != null && mc.player != null && ((BlockRayTraceResult) rayTrace(tileEntityIn.getWorld(), mc.player)).getPos().equals(tileEntityIn.getPos()))
 			{
-				BlockRayTraceResult traceResult = (BlockRayTraceResult) rayTrace(tileEntityIn.getWorld(), mc.player);
-
-				if (traceResult.getPos().equals(tileEntityIn.getPos()))
-				{
-					IFormattableTextComponent blockName = new StringTextComponent(tileEntityIn.getMode().name().substring(0, 1).toUpperCase() + tileEntityIn.getMode().name().substring(1).toLowerCase()).setStyle(Style.EMPTY.setBold(true).setUnderlined(true));
-					IFormattableTextComponent metadataName = new StringTextComponent(": " + (tileEntityIn.getMode() == StructureMode.DATA ? tileEntityIn.getMetadata() : tileEntityIn.getName())).setStyle(Style.EMPTY.setBold(false).setUnderlined(false));
-
-					renderName(blockName.append(metadataName), matrixStackIn, bufferIn, 220);
-				}
+				String name = tileEntityIn.getMode().name();
+				IFormattableTextComponent mode = new StringTextComponent(name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase()).setStyle(Style.EMPTY.setBold(true).setUnderlined(true));
+				IFormattableTextComponent displayText = new StringTextComponent(": " + (tileEntityIn.getMode() == StructureMode.DATA ? tileEntityIn.getMetadata() : tileEntityIn.getName())).setStyle(Style.EMPTY.setBold(false).setUnderlined(false));
+				renderName(mode.append(displayText), matrixStackIn, bufferIn, 220);
 			}
 		}
 	}
@@ -61,62 +56,53 @@ public class StructureTileEntityRendererMixin
 	/**
 	 * Ray trace the block in front of the player passed in.
 	 * 
-	 * @param worldIn
+	 * @param world
 	 * @param player
 	 * @return {@link RayTraceResult}
 	 */
-	private static RayTraceResult rayTrace(World worldIn, PlayerEntity player)
+	private static RayTraceResult rayTrace(World world, PlayerEntity player)
 	{
-		float f = player.rotationPitch;
-		float f1 = player.rotationYaw;
-		Vector3d vec3d = player.getEyePosition(1.0F);
-		float f2 = MathHelper.cos(-f1 * ((float) Math.PI / 180F) - (float) Math.PI);
-		float f3 = MathHelper.sin(-f1 * ((float) Math.PI / 180F) - (float) Math.PI);
-		float f4 = -MathHelper.cos(-f * ((float) Math.PI / 180F));
-		float f5 = MathHelper.sin(-f * ((float) Math.PI / 180F));
-		float f6 = f3 * f4;
-		float f7 = f2 * f4;
-		double d0 = player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
-		Vector3d vec3d1 = vec3d.add((double) f6 * d0, (double) f5 * d0, (double) f7 * d0);
-		return worldIn.rayTraceBlocks(new RayTraceContext(vec3d, vec3d1, RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.SOURCE_ONLY, player));
+		Vector3d eyePos = player.getEyePosition(1.0F);
+		float pi = (float) Math.PI;
+		float radian = pi / 180F;
+		float pitch = player.rotationPitch * radian;
+		float yaw = player.rotationYaw * radian;
+		float cosYaw = MathHelper.cos(-yaw - pi);
+		float sinYaw = MathHelper.sin(-yaw - pi);
+		float cosPitch = -MathHelper.cos(-pitch);
+		float sinPitch = MathHelper.sin(-pitch);
+		double playerReach = player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
+		Vector3d endPos = eyePos.add(sinYaw * cosPitch * playerReach, sinPitch * playerReach, cosYaw * cosPitch * playerReach);
+		return world.rayTraceBlocks(new RayTraceContext(eyePos, endPos, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, player));
 	}
 
 	/**
 	 * Renders a nameplate at the given buffer position.
 	 * 
-	 * @param displayNameIn
-	 * @param matrixStackIn
-	 * @param bufferIn
-	 * @param packedLightIn
+	 * @param displayName
+	 * @param matrixStack
+	 * @param buffer
+	 * @param packedLight
 	 */
-	private static void renderName(ITextComponent displayNameIn, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn)
+	private static void renderName(ITextComponent displayName, MatrixStack matrixStack, IRenderTypeBuffer buffer, int packedLight)
 	{
 		Minecraft mc = Minecraft.getInstance();
 
 		if (mc.player == null || mc.world == null)
 			return;
 
-		double d0 = mc.getRenderManager().squareDistanceTo(mc.player);
-		if (!(d0 > 4096.0D))
+		if (mc.getRenderManager().squareDistanceTo(mc.player) <= 4096.0D)
 		{
-			boolean flag = true;
-			float f = 1 + 0.5F;
-			matrixStackIn.push();
-			matrixStackIn.translate(0.5D, (double) f, 0.5D);
-			matrixStackIn.rotate(mc.getRenderManager().getCameraOrientation());
-			matrixStackIn.scale(-0.025F, -0.025F, 0.025F);
-			Matrix4f matrix4f = matrixStackIn.getLast().getMatrix();
-			float f1 = mc.gameSettings.getTextBackgroundOpacity(0.25F);
-			int j = (int) (f1 * 255.0F) << 24;
-			FontRenderer fontrenderer = mc.fontRenderer;
-			float f2 = (float) (-fontrenderer.getStringPropertyWidth(displayNameIn) / 2);
-			fontrenderer.func_243247_a(displayNameIn, f2, (float) 0, 553648127, false, matrix4f, bufferIn, flag, j, packedLightIn);
-			if (flag)
-			{
-				fontrenderer.func_243247_a(displayNameIn, f2, (float) 0, -1, false, matrix4f, bufferIn, false, 0, packedLightIn);
-			}
-
-			matrixStackIn.pop();
+			matrixStack.push();
+			matrixStack.translate(0.5, 1.5, 0.5);
+			matrixStack.rotate(mc.getRenderManager().getCameraOrientation());
+			matrixStack.scale(-0.025F, -0.025F, 0.025F);
+			Matrix4f lastMatrix = matrixStack.getLast().getMatrix();
+			FontRenderer fontRenderer = mc.fontRenderer;
+			float centerString = (float) (-fontRenderer.getStringPropertyWidth(displayName) / 2);
+			fontRenderer.func_243247_a(displayName, centerString, (float) 0, 553648127, false, lastMatrix, buffer, true, (int) (mc.gameSettings.getTextBackgroundOpacity(0.25F) * 255.0F) << 24, packedLight);
+			fontRenderer.func_243247_a(displayName, centerString, (float) 0, -1, false, lastMatrix, buffer, false, 0, packedLight);
+			matrixStack.pop();
 		}
 	}
 }
