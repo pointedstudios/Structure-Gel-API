@@ -4,7 +4,10 @@ General feature update and updates to 1.16.4.
 
 Additions:
 - Structure blocks now render the text inside when you look at them
-	- Can be disabled via client config
+	- Can be disabled via client config "show_structure_block_info"
+- Structure block items now display the nbt data within them as their name
+	- Works when using ctrl + pick block on a structure block
+	- Can be disabled via client config "show_structure_block_info"
 - Added SpawnerAccessHelper
 	- Allows for easy modification of mob spawner data
 	- Mob spawner related methods in TileEntityAccessHelper have been deprecated

@@ -17,7 +17,8 @@
 		"SpawnerFix$IronGolem",
 		"SpawnerFix$PolarBear",
 		"SpawnerFix$Wolf",
-		"StructureTileEntityRendererMixin"
+		"StructureTileEntityRendererMixin",
+		"ItemMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
