@@ -25,6 +25,7 @@ import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeMod;
 
@@ -45,10 +46,10 @@ public class StructureTileEntityRendererMixin
 			Minecraft mc = Minecraft.getInstance();
 			if (tileEntityIn.getWorld() != null && mc.player != null && ((BlockRayTraceResult) rayTrace(tileEntityIn.getWorld(), mc.player)).getPos().equals(tileEntityIn.getPos()))
 			{
-				String name = tileEntityIn.getMode().name();
-				IFormattableTextComponent mode = new StringTextComponent(name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase()).setStyle(Style.EMPTY.setBold(true).setUnderlined(true));
-				IFormattableTextComponent displayText = new StringTextComponent(": " + (tileEntityIn.getMode() == StructureMode.DATA ? tileEntityIn.getMetadata() : tileEntityIn.getName())).setStyle(Style.EMPTY.setBold(false).setUnderlined(false));
-				renderName(mode.append(displayText), matrixStackIn, bufferIn, 220);
+				String name = tileEntityIn.getMode().getString();
+				IFormattableTextComponent mode = new TranslationTextComponent("structure_block.mode." + name).setStyle(Style.EMPTY.setBold(true).setUnderlined(true));
+				IFormattableTextComponent text = new StringTextComponent(": " + (tileEntityIn.getMode() == StructureMode.DATA ? tileEntityIn.getMetadata() : tileEntityIn.getName())).setStyle(Style.EMPTY.setBold(false).setUnderlined(false));
+				renderName(mode.append(text), matrixStackIn, bufferIn, 220);
 			}
 		}
 	}
