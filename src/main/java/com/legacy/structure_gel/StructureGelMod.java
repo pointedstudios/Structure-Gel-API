@@ -1,51 +1,26 @@
 package com.legacy.structure_gel;
 
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.commons.lang3.tuple.Triple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.legacy.structure_gel.biome_dictionary.BiomeDictionary;
+import com.legacy.structure_gel.SGRegistry.GelBlocks;
+import com.legacy.structure_gel.SGRegistry.GelItems;
+import com.legacy.structure_gel.SGRegistry.StructureRegistry;
 import com.legacy.structure_gel.biome_dictionary.BiomeType;
-import com.legacy.structure_gel.blocks.AxisStructureGelBlock;
-import com.legacy.structure_gel.blocks.IStructureGel.Behavior;
-import com.legacy.structure_gel.blocks.StructureGelBlock;
-import com.legacy.structure_gel.items.StructureGelItem;
 import com.legacy.structure_gel.util.Internal;
-import com.legacy.structure_gel.util.RegistryHelper;
-import com.legacy.structure_gel.worldgen.jigsaw.GelJigsawPiece;
-import com.legacy.structure_gel.worldgen.jigsaw.GelStructurePiece;
-import com.legacy.structure_gel.worldgen.processors.RandomBlockSwapProcessor;
-import com.legacy.structure_gel.worldgen.processors.RandomStateSwapProcessor;
-import com.legacy.structure_gel.worldgen.processors.RandomTagSwapProcessor;
-import com.legacy.structure_gel.worldgen.processors.RemoveGelStructureProcessor;
-import com.mojang.serialization.Codec;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.feature.jigsaw.IJigsawDeserializer;
-import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
-import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.feature.template.IStructureProcessorType;
-import net.minecraft.world.gen.feature.template.StructureProcessor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.IForgeRegistry;
 
 /**
  * This is an API with the purpose of giving access and shortcuts to various
@@ -78,7 +53,7 @@ public class StructureGelMod
 		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
 
 		SGEvents.init(modBus, forgeBus);
-		modBus.addGenericListener(BiomeType.class, StructureGelMod::registerBiomeDictionary);
+		modBus.addGenericListener(BiomeType.class, SGRegistry::registerBiomeDictionary);
 		modBus.addGenericListener(Block.class, GelBlocks::onRegistry);
 		modBus.addGenericListener(Item.class, GelItems::onRegistry);
 		modBus.addGenericListener(Structure.class, StructureRegistry::onRegistry);
@@ -96,142 +71,9 @@ public class StructureGelMod
 		// com.legacy.structure_gel.SGDebug.init(modBus, forgeBus);
 	}
 
-	/**
-	 * Create a method with the same name, arguments, and return type as this in
-	 * your main mod class (annotated with {@link Mod}) to register your own biome
-	 * dictionary entries. Structure Gel does not need to be a dependency for this
-	 * to work. <br>
-	 * <br>
-	 * Returns a list containing the required data to register a biome dictionary
-	 * entry. The {@link org.apache.commons.lang3.tuple.Triple} contains a
-	 * {@link ResourceLocation} for the registry name, a {@link Set} of resource
-	 * locations for parenting biome types that this should inherit biomes from, and
-	 * a Set of biome {@link RegistryKey}s for what biomes should be in the
-	 * dictionary entry.
-	 * 
-	 * @deprecated TODO remove in 1.17 in favor of new class-based system.
-	 * @return {@link List}&lt;{@link Triple}&lt;{@link ResourceLocation},
-	 *         {@link Set}&lt;{@link ResourceLocation}&gt;,
-	 *         {@link Set}&lt;{@link RegistryKey}&lt;{@link Biome}&gt;&gt;&gt;&gt;
-	 */
-	@Deprecated
-	public List<Triple<ResourceLocation, Set<ResourceLocation>, Set<RegistryKey<Biome>>>> getBiomesSG()
-	{
-		/*
-		List<Triple<ResourceLocation, Set<ResourceLocation>, Set<RegistryKey<Biome>>>> list = new ArrayList<>();
-		
-		list.add(Triple.of(locate("plains"), ImmutableSet.of(new ResourceLocation(MODID, "oak_forest")), ImmutableSet.of(Biomes.DESERT)));
-		
-		return list;
-		*/
-		return null;
-	}
-
 	@Internal
 	public static ResourceLocation locate(String key)
 	{
 		return new ResourceLocation(MODID, key);
-	}
-
-	// -------------------------- REGISTRY
-
-	// TODO move to own class in 1.17
-	@Internal
-	public static void registerBiomeDictionary(final RegistryEvent.Register<BiomeType> event)
-	{
-		BiomeDictionary.init();
-	}
-
-	// TODO move to own class in 1.17
-	public static class GelBlocks
-	{
-		public static Set<Block> BLOCKS = new LinkedHashSet<Block>();
-		public static StructureGelBlock RED_GEL, BLUE_GEL, GREEN_GEL, CYAN_GEL, ORANGE_GEL, YELLOW_GEL;
-
-		public static void onRegistry(final RegistryEvent.Register<Block> event)
-		{
-			IForgeRegistry<Block> registry = event.getRegistry();
-			RED_GEL = registerBlock(registry, "red_gel", new StructureGelBlock());
-			BLUE_GEL = registerBlock(registry, "blue_gel", new StructureGelBlock(Behavior.PHOTOSENSITIVE));
-			GREEN_GEL = registerBlock(registry, "green_gel", new StructureGelBlock(Behavior.DIAGONAL_SPREAD));
-			CYAN_GEL = registerBlock(registry, "cyan_gel", new StructureGelBlock(Behavior.PHOTOSENSITIVE, Behavior.DIAGONAL_SPREAD));
-			ORANGE_GEL = registerBlock(registry, "orange_gel", new StructureGelBlock(Behavior.DYNAMIC_SPREAD_DIST));
-			YELLOW_GEL = registerBlock(registry, "yellow_gel", new AxisStructureGelBlock(Behavior.AXIS_SPREAD));
-		}
-
-		private static <T extends Block> T registerBlock(IForgeRegistry<Block> registry, String key, T object)
-		{
-			BLOCKS.add(object);
-			return RegistryHelper.registerExact(registry, StructureGelMod.locate(key), object);
-		}
-	}
-
-	// TODO move to own class in 1.17
-	public static class GelItems
-	{
-		public static void onRegistry(final RegistryEvent.Register<Item> event)
-		{
-			StructureGelMod.GelBlocks.BLOCKS.forEach(b -> RegistryHelper.registerExact(event.getRegistry(), b.getRegistryName(), new StructureGelItem((StructureGelBlock) b)));
-		}
-	}
-
-	// TODO move to own class in 1.17
-	public static class StructureRegistry
-	{
-		public static void onRegistry(final RegistryEvent.Register<Structure<?>> event)
-		{
-			registerProcessors();
-			registerDeserializers();
-			registerStructurePieces();
-		}
-
-		private static void registerProcessors()
-		{
-			Processors.REMOVE_FILLER = Processors.register("remove_filler", RemoveGelStructureProcessor.CODEC);
-			Processors.REPLACE_BLOCK = Processors.register("replace_block", RandomBlockSwapProcessor.CODEC);
-			Processors.REPLACE_TAG = Processors.register("replace_tag", RandomTagSwapProcessor.CODEC);
-			Processors.REPLACE_STATE = Processors.register("replace_state", RandomStateSwapProcessor.CODEC);
-		}
-
-		private static void registerDeserializers()
-		{
-			JigsawDeserializers.GEL_SINGLE_POOL_ELEMENT = JigsawDeserializers.register("gel_single_pool_element", GelJigsawPiece.CODEC);
-		}
-
-		private static void registerStructurePieces()
-		{
-			StructurePieceTypes.GEL_JIGSAW = RegistryHelper.registerStructurePiece(locate("gel_jigsaw"), GelStructurePiece::new);
-		}
-	}
-
-	// TODO move to own class in 1.17
-	public static class Processors
-	{
-		public static IStructureProcessorType<RemoveGelStructureProcessor> REMOVE_FILLER;
-		public static IStructureProcessorType<RandomBlockSwapProcessor> REPLACE_BLOCK;
-		public static IStructureProcessorType<RandomTagSwapProcessor> REPLACE_TAG;
-		public static IStructureProcessorType<RandomStateSwapProcessor> REPLACE_STATE;
-
-		protected static <P extends StructureProcessor> IStructureProcessorType<P> register(String key, Codec<P> codec)
-		{
-			return Registry.register(Registry.STRUCTURE_PROCESSOR, locate(key), () -> codec);
-		}
-	}
-
-	// TODO move to own class in 1.17
-	public static class JigsawDeserializers
-	{
-		public static IJigsawDeserializer<GelJigsawPiece> GEL_SINGLE_POOL_ELEMENT;
-
-		protected static <P extends JigsawPiece> IJigsawDeserializer<P> register(String key, Codec<P> codec)
-		{
-			return Registry.register(Registry.STRUCTURE_POOL_ELEMENT, locate(key), () -> codec);
-		}
-	}
-
-	// TODO move to own class in 1.17
-	public static class StructurePieceTypes
-	{
-		public static IStructurePieceType GEL_JIGSAW;
 	}
 }

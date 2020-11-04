@@ -4,7 +4,7 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
-import com.legacy.structure_gel.StructureGelMod;
+import com.legacy.structure_gel.SGRegistry.Processors;
 import com.legacy.structure_gel.util.Internal;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -116,6 +116,6 @@ public class RandomTagSwapProcessor extends StructureProcessor
 	@Override
 	protected IStructureProcessorType<?> getType()
 	{
-		return StructureGelMod.Processors.REPLACE_TAG;
+		return Processors.REPLACE_TAG;
 	}
 }

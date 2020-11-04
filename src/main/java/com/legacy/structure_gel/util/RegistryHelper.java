@@ -17,7 +17,6 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.village.PointOfInterestType;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
 import net.minecraft.world.gen.GenerationStage.Decoration;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
@@ -42,22 +41,6 @@ public class RegistryHelper
 {
 	/**
 	 * Returns an optional containing the registry key associated with the value
-	 * passed.<br>
-	 * <br>
-	 * TODO remove in 1.17 in favor of IWorld version.
-	 * 
-	 * @param world
-	 * @param registry
-	 * @param value
-	 * @return {@link Optional}
-	 */
-	public static <T> Optional<RegistryKey<T>> getKey(World world, RegistryKey<Registry<T>> registry, T value)
-	{
-		return world.func_241828_r().getRegistry(registry).getOptionalKey(value);
-	}
-
-	/**
-	 * Returns an optional containing the registry key associated with the value
 	 * passed.
 	 * 
 	 * @param world
@@ -68,21 +51,6 @@ public class RegistryHelper
 	public static <T> Optional<RegistryKey<T>> getKey(IWorld world, RegistryKey<Registry<T>> registry, T value)
 	{
 		return world.func_241828_r().getRegistry(registry).getOptionalKey(value);
-	}
-
-	/**
-	 * Returns an optional containing the value of the registry key passed.<br>
-	 * <br>
-	 * TODO remove in 1.17 in favor of IWorld version.
-	 * 
-	 * @param world
-	 * @param registry
-	 * @param key
-	 * @return {@link Optional}
-	 */
-	public static <T> Optional<T> getValue(World world, RegistryKey<Registry<T>> registry, RegistryKey<T> key)
-	{
-		return Optional.ofNullable(world.func_241828_r().getRegistry(registry).getValueForKey(key));
 	}
 
 	/**
@@ -99,23 +67,6 @@ public class RegistryHelper
 	}
 
 	/**
-	 * Simple means of registering to a forge registry.
-	 * 
-	 * @param registry
-	 * @param key
-	 * @param registryObject
-	 * @return The registryObject
-	 * @deprecated Use
-	 *             {@link #registerExact(IForgeRegistry, ResourceLocation, IForgeRegistryEntry)}.
-	 *             TODO Remove in 1.17.
-	 */
-	@Deprecated
-	public static <T extends IForgeRegistryEntry<T>> T register(IForgeRegistry<T> registry, ResourceLocation key, T registryObject)
-	{
-		return registerExact(registry, key, registryObject);
-	}
-
-	/**
 	 * Simple means of registering to a forge registry. Returns the exact type of
 	 * the object passed in.
 	 * 
@@ -124,7 +75,7 @@ public class RegistryHelper
 	 * @param registryObject
 	 * @return The registryObject
 	 */
-	public static <T extends IForgeRegistryEntry<T>, C extends T> C registerExact(IForgeRegistry<T> registry, ResourceLocation key, C registryObject)
+	public static <T extends IForgeRegistryEntry<T>, C extends T> C register(IForgeRegistry<T> registry, ResourceLocation key, C registryObject)
 	{
 		registryObject.setRegistryName(key);
 		registry.register(registryObject);

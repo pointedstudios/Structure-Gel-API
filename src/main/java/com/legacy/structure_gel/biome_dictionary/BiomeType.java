@@ -46,20 +46,18 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 	/**
 	 * Ensures none of the values will be set to null just in case.
 	 * 
-	 * // TODO Change from RegistryKey to ResourceLocation in 1.17
-	 * 
 	 * @param name
 	 * @param parents
 	 * @param biomes
 	 */
-	public BiomeType(ResourceLocation name, Set<ResourceLocation> parents, Set<RegistryKey<Biome>> biomes)
+	public BiomeType(ResourceLocation name, Set<ResourceLocation> parents, Set<ResourceLocation> biomes)
 	{
 		if (name != null)
 			this.registryName = name;
 		if (parents != null)
 			this.parents = new HashSet<>(parents);
 		if (biomes != null)
-			this.biomes = biomes.stream().map(r -> r.getLocation()).collect(Collectors.toSet());
+			this.biomes = new HashSet<>(biomes);
 	}
 
 	/**
@@ -212,23 +210,8 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 	 * 
 	 * @param biomes
 	 * @return {@link BiomeType}
-	 * @deprecated Use {@link #setBiomesSafe(Set)}. TODO Remove in 1.17.
 	 */
-	@Deprecated
-	public BiomeType setBiomes(Set<RegistryKey<Biome>> biomes)
-	{
-		this.biomes = biomes.stream().map(r -> r.getLocation()).collect(Collectors.toSet());
-		return this;
-	}
-
-	/**
-	 * Sets the biomes of this entry, overriding old ones. You probably shouldn't
-	 * use this unless you're creating a new instance.
-	 * 
-	 * @param biomes
-	 * @return {@link BiomeType}
-	 */
-	public BiomeType setBiomesSafe(Set<ResourceLocation> biomes)
+	public BiomeType setBiomes(Set<ResourceLocation> biomes)
 	{
 		this.biomes = biomes.stream().collect(Collectors.toSet());
 		return this;

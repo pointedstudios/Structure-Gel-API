@@ -17,7 +17,7 @@ import net.minecraft.entity.passive.PolarBearEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.nbt.CompoundNBT;
 
-// TODO remove in 1.16.4?
+// TODO remove in 1.17
 public class SpawnerFixMixins
 {
 	@Mixin(EndermanEntity.class)
@@ -30,7 +30,7 @@ public class SpawnerFixMixins
 				callback.cancel();
 		}
 	}
-	
+
 	@Mixin(ZombifiedPiglinEntity.class)
 	public static class ZPiglin
 	{
@@ -41,7 +41,7 @@ public class SpawnerFixMixins
 				callback.cancel();
 		}
 	}
-	
+
 	@Mixin(BeeEntity.class)
 	public static class Bee
 	{
@@ -52,7 +52,7 @@ public class SpawnerFixMixins
 				callback.cancel();
 		}
 	}
-	
+
 	@Mixin(IronGolemEntity.class)
 	public static class IronGolem
 	{
@@ -63,7 +63,7 @@ public class SpawnerFixMixins
 				callback.cancel();
 		}
 	}
-	
+
 	@Mixin(PolarBearEntity.class)
 	public static class PolarBear
 	{
@@ -74,7 +74,7 @@ public class SpawnerFixMixins
 				callback.cancel();
 		}
 	}
-	
+
 	@Mixin(WolfEntity.class)
 	public static class Wolf
 	{

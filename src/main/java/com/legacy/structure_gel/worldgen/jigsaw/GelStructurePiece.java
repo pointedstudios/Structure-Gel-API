@@ -2,7 +2,7 @@ package com.legacy.structure_gel.worldgen.jigsaw;
 
 import java.util.Random;
 
-import com.legacy.structure_gel.StructureGelMod;
+import com.legacy.structure_gel.SGRegistry.StructurePieceTypes;
 import com.legacy.structure_gel.util.Internal;
 
 import net.minecraft.nbt.CompoundNBT;
@@ -36,7 +36,7 @@ public final class GelStructurePiece extends AbstractGelStructurePiece
 	@Override
 	public IStructurePieceType getStructurePieceType()
 	{
-		return StructureGelMod.StructurePieceTypes.GEL_JIGSAW;
+		return StructurePieceTypes.GEL_JIGSAW;
 	}
 
 	/**

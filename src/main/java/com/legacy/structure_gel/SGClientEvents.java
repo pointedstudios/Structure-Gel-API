@@ -2,7 +2,7 @@ package com.legacy.structure_gel;
 
 import java.util.List;
 
-import com.legacy.structure_gel.StructureGelMod.GelBlocks;
+import com.legacy.structure_gel.SGRegistry.GelBlocks;
 import com.legacy.structure_gel.blocks.GelPortalBlock;
 import com.legacy.structure_gel.util.Internal;
 import com.legacy.structure_gel.util.capability.GelCapability;

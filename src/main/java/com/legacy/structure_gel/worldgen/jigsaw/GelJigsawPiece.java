@@ -5,7 +5,7 @@ import java.util.Random;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import com.legacy.structure_gel.StructureGelMod;
+import com.legacy.structure_gel.SGRegistry.JigsawDeserializers;
 import com.legacy.structure_gel.worldgen.GelPlacementSettings;
 import com.legacy.structure_gel.worldgen.GelTemplate;
 import com.legacy.structure_gel.worldgen.processors.RemoveGelStructureProcessor;
@@ -213,7 +213,7 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	@Override
 	public IJigsawDeserializer<?> getType()
 	{
-		return StructureGelMod.JigsawDeserializers.GEL_SINGLE_POOL_ELEMENT;
+		return JigsawDeserializers.GEL_SINGLE_POOL_ELEMENT;
 	}
 
 	/**

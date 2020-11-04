@@ -2,7 +2,7 @@ package com.legacy.structure_gel.worldgen.processors;
 
 import javax.annotation.Nullable;
 
-import com.legacy.structure_gel.StructureGelMod;
+import com.legacy.structure_gel.SGRegistry.Processors;
 import com.legacy.structure_gel.data.GelTags;
 import com.legacy.structure_gel.util.Internal;
 import com.legacy.structure_gel.worldgen.jigsaw.GelJigsawPiece;
@@ -58,6 +58,6 @@ public class RemoveGelStructureProcessor extends StructureProcessor
 	@Override
 	protected IStructureProcessorType<?> getType()
 	{
-		return StructureGelMod.Processors.REMOVE_FILLER;
+		return Processors.REMOVE_FILLER;
 	}
 }

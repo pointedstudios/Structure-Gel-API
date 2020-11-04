@@ -12,15 +12,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.TriConsumer;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.legacy.structure_gel.biome_dictionary.BiomeDictionary;
 import com.legacy.structure_gel.biome_dictionary.BiomeType;
 import com.legacy.structure_gel.util.Internal;
 
-import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.biome.Biome;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
@@ -59,18 +56,15 @@ public class StructureGelCompat
 
 		// Initializing the biome dictionary here just in case this runs first
 		BiomeDictionary.init();
-		// TODO remove this in 1.17
-		registerBiomeDictionaryOld(event);
 
 		compatForEachMod("BiomeDictionaryCompat", (compatClass, modID, mod) ->
 		{
 			getMethod(compatClass, "register", String.class).ifPresent(method ->
 			{
 				List<Triple<ResourceLocation, Set<ResourceLocation>, Set<ResourceLocation>>> returnType = null;
-				// TODO use BiomeType constructor in 1.17
 				invokeMethod(method, returnType, modID).ifPresent(result -> result.forEach(t ->
 				{
-					BiomeType type = BiomeType.create(t.getLeft()).setParents(t.getMiddle()).setBiomesSafe(t.getRight());
+					BiomeType type = new BiomeType(t.getLeft(), t.getMiddle(), t.getRight());
 					LOGGER.info(modID + " registered a biome type: " + type.toString());
 					BiomeDictionary.register(type);
 				}));
@@ -180,68 +174,5 @@ public class StructureGelCompat
 			e.printStackTrace();
 		}
 		return Optional.empty();
-	}
-
-	// TODO remove in 1.17 favor of the new system
-	@Deprecated
-	@SuppressWarnings({ "unchecked", "deprecation" })
-	public static void registerBiomeDictionaryOld(final RegistryEvent.Register<BiomeType> event)
-	{
-		try
-		{
-			ModList.get().forEachModContainer((s, mc) ->
-			{
-				if (mc instanceof FMLModContainer)
-				{
-					FMLModContainer fmlContainer = (FMLModContainer) mc;
-					Method[] methods = new Method[0];
-					try
-					{
-						methods = fmlContainer.getMod().getClass().getMethods();
-					}
-					catch (Throwable e)
-					{
-						// If it fails, just silently move on without it. Likely caused by trying to
-						// access client classes on server. This feature is deprecated anyway and
-						// there's a better way to do it.
-					}
-
-					for (Method method : methods)
-					{
-						List<Triple<ResourceLocation, Set<ResourceLocation>, Set<RegistryKey<Biome>>>> result = Lists.newArrayList();
-
-						// As of 1.16.2-v1.3.0
-						if (method.getName().equals("getBiomesSG"))
-						{
-							try
-							{
-								result = (List<Triple<ResourceLocation, Set<ResourceLocation>, Set<RegistryKey<Biome>>>>) method.invoke(fmlContainer.getMod());
-							}
-							catch (Throwable e)
-							{
-								LOGGER.info(String.format("Failed to invoke getBiomesSG from %s. Proceeding to the next mod.", s));
-								e.printStackTrace();
-							}
-						}
-
-						// Register
-						if (result != null && !result.isEmpty())
-						{
-							result.forEach(t ->
-							{
-								BiomeType type = BiomeType.create(t.getLeft()).setParents(t.getMiddle()).setBiomes(t.getRight());
-								LOGGER.info(s + " registered a biome type: " + type.toString());
-								BiomeDictionary.register(type);
-							});
-						}
-					}
-				}
-			});
-		}
-		catch (Throwable e)
-		{
-			LOGGER.info("Encountered a critical error while trying to load other mods' biome dictionary methods. Skipping this step.");
-			e.printStackTrace();
-		}
 	}
 }

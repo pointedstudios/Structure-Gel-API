@@ -28,6 +28,7 @@ Changes:
 		- Now sorts results alphabetically
 	- /structure_gel savestructures
 		- Now sorts results alphabetically
+- Applied marked TODO changes to codebase
 		
 Fixes:
 - Fixed VoxelShapeUtil.rotate not working on complex voxel shapes

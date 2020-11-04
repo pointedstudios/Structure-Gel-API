@@ -150,7 +150,7 @@ public class BiomeDictionary
 	public static final BiomeType NETHER = register(BiomeType.create("nether").parents(WARPED, CRIMSON, NETHER_FOREST, OVERGROWN_NETHER, NETHER_FUNGAL, NETHER_SANDY, NETHER_EXTREME, NETHER_FLESHY).biomes(Biomes.NETHER_WASTES).biomes(bop, "crystalline_chasm", "withered_abyss").biomes(byg, "embur_bog", "sythian_torrids"));
 	public static final BiomeType END = register(BiomeType.create("end").parents(OUTER_END).biomes(Biomes.THE_END));
 	public static final BiomeType AETHER = register(BiomeType.create("aether").biomes(aether, "aether_skylands"));
-	public static final BiomeType OVERWORLD = register(BiomeType.create("overworld").setBiomesSafe(getOverworldBiomesSafe()));
+	public static final BiomeType OVERWORLD = register(BiomeType.create("overworld").setBiomes(getOverworldBiomes()));
 	public static final BiomeType SKYLANDS = register(BiomeType.create("skylands").biomes(rediscovered, "skylands"));
 	public static final BiomeType MOOLANDS = register(BiomeType.create("moolands").biomes(moo, "awkward_heights"));
 	public static final BiomeType PAGAMOS = register(BiomeType.create("pagamos").biomes(pagamos, "frozen_hell"));
@@ -204,12 +204,12 @@ public class BiomeDictionary
 	/**
 	 * Replacement for {@link IForgeRegistry#register(IForgeRegistryEntry)}. Please
 	 * use this instead as it has special functionality to allow extending existing
-	 * registries. TODO make BiomeType generic in 1.17
+	 * registries.
 	 * 
 	 * @param biomeType
 	 * @return {@link BiomeType}
 	 */
-	public static BiomeType register(BiomeType biomeType)
+	public static <T extends BiomeType> T register(T biomeType)
 	{
 		ResourceLocation key = biomeType.getRegistryName();
 		if (biomeType.getRegistryName().equals(EMPTY_NAME))
@@ -261,28 +261,8 @@ public class BiomeDictionary
 	 * Returns all registed vanilla biomes that aren't tagged as nether or end.
 	 * 
 	 * @return {@link Set}
-	 * @deprecated use {@link #getOverworldBiomesSafe()}. TODO Remove in 1.17.
 	 */
-	@Deprecated
-	public static Set<RegistryKey<Biome>> getOverworldBiomes()
-	{
-		Set<RegistryKey<Biome>> biomes = new HashSet<>();
-
-		ForgeRegistries.BIOMES.getValues().stream().filter(b -> ImmutableList.of("minecraft", bop, byg).contains(b.getRegistryName().getNamespace()) && !BiomeDictionary.NETHER.contains(b) && !BiomeDictionary.END.contains(b)).forEach(b ->
-		{
-			if (getBiomeKey(b) != null)
-				biomes.add(getBiomeKey(b));
-		});
-
-		return biomes;
-	}
-
-	/**
-	 * Returns all registed vanilla biomes that aren't tagged as nether or end.
-	 * 
-	 * @return {@link Set}
-	 */
-	public static Set<ResourceLocation> getOverworldBiomesSafe()
+	public static Set<ResourceLocation> getOverworldBiomes()
 	{
 		Set<ResourceLocation> biomes = new HashSet<>();
 

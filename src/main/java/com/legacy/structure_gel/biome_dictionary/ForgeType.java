@@ -195,14 +195,7 @@ public class ForgeType extends BiomeType
 
 	@Deprecated
 	@Override
-	public ForgeType setBiomes(Set<RegistryKey<Biome>> biomes)
-	{
-		return this;
-	}
-
-	@Deprecated
-	@Override
-	public ForgeType setBiomesSafe(Set<ResourceLocation> biomes)
+	public ForgeType setBiomes(Set<ResourceLocation> biomes)
 	{
 		return this;
 	}
