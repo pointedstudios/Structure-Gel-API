@@ -8,6 +8,8 @@ Additions:
 - Structure block items now display the nbt data within them as their name
 	- Works when using ctrl + pick block on a structure block
 	- Can be disabled via client config "show_structure_block_info"
+- Added a fix for a vanilla bug that causes chunks to not save after removing a structure from registry data
+	- Can be disabled by config
 - Added SpawnerAccessHelper
 	- Allows for easy modification of mob spawner data
 	- Mob spawner related methods in TileEntityAccessHelper have been deprecated
@@ -17,6 +19,8 @@ Additions:
 	- An extended version of TemplateStructurePiece
 	- Adds compatibility with gel blocks
 	- Contains hooks to modify specific parts of the piece
+- Added VoxelShape.mirror
+	- Mirrors the provided voxel shape along an axis
 	
 Changes:
 - Commands
@@ -24,3 +28,6 @@ Changes:
 		- Now sorts results alphabetically
 	- /structure_gel savestructures
 		- Now sorts results alphabetically
+		
+Fixes:
+- Fixed VoxelShapeUtil.rotate not working on complex voxel shapes
