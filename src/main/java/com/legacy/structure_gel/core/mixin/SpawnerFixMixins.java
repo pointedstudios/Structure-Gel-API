@@ -18,7 +18,7 @@ import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.nbt.CompoundNBT;
 
 // TODO remove in 1.16.4?
-public class SpawnerFix
+public class SpawnerFixMixins
 {
 	@Mixin(EndermanEntity.class)
 	public static class Enderman

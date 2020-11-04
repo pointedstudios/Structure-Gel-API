@@ -33,6 +33,7 @@ public class StructureGelConfig
 		private final ForgeConfigSpec.BooleanValue extraLakeProofing;
 		private final ForgeConfigSpec.ConfigValue<String> ignoredMods;
 		private final ForgeConfigSpec.BooleanValue guessBiomeDict;
+		private final ForgeConfigSpec.BooleanValue fixMissingStructureSaving;
 
 		//public final com.legacy.structure_gel.util.ConfigTemplates.StructureConfig structureConfig;
 
@@ -41,7 +42,8 @@ public class StructureGelConfig
 			this.extraLakeProofing = builder.comment("Adds more vanilla structures to the list of structures that lakes cannot generate inside of. Only villages when set to false. Requires reload.").define("features.extra_lake_proofing", true);
 			this.ignoredMods = builder.comment("A list of mod IDs that will be ignored when the biome dictionary attempts to register unregistered biomes. Mod IDs must be comma separated (\"biomesoplenty, byg, blue_skies\").").define("biome_dictionary.ignored_mods", "");
 			this.guessBiomeDict = builder.comment("Determines if the biome dictionary make assumptions for unregistered biomes. Setting this to false can fix issues where a structure generates in the wrong dimension.").define("biome_dictionary.make_best_guess", true);
-
+			this.fixMissingStructureSaving = builder.comment("When true, fixes issues with worlds not saving chunks related to removing a mod that added a structure.").define("structures.fix_missing_structure_saving", true);
+			
 			//this.structureConfig = new com.legacy.structure_gel.util.ConfigTemplates.StructureConfig(builder, "test_structure", 1.0, 20, 0).biomes(true, "#structure_gel:end");
 		}
 
@@ -58,6 +60,11 @@ public class StructureGelConfig
 		public List<String> getIgnoredMods()
 		{
 			return Arrays.stream(ignoredMods.get().split(",")).map(String::trim).collect(Collectors.toList());
+		}
+		
+		public boolean shouldFixMissingStructureSaving()
+		{
+			return this.fixMissingStructureSaving.get();
 		}
 	}
 

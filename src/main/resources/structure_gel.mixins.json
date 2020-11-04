@@ -6,17 +6,19 @@
 	"mixins": [
 		"LakesFeatureMixin",
 		"EntityMixin",
-		"MinecraftServerMixin"
+		"MinecraftServerMixin",
+		"StructureSaveMixins$ChunkMixin",
+		"StructureSaveMixins$ChunkSerializerMixin"
 	],
 	"client": [
 		"WorldRendererMixin",
 		"IngameGuiMixin",
-		"SpawnerFix$Enderman",
-		"SpawnerFix$ZPiglin",
-		"SpawnerFix$Bee",
-		"SpawnerFix$IronGolem",
-		"SpawnerFix$PolarBear",
-		"SpawnerFix$Wolf",
+		"SpawnerFixMixins$Enderman",
+		"SpawnerFixMixins$ZPiglin",
+		"SpawnerFixMixins$Bee",
+		"SpawnerFixMixins$IronGolem",
+		"SpawnerFixMixins$PolarBear",
+		"SpawnerFixMixins$Wolf",
 		"StructureTileEntityRendererMixin",
 		"ItemMixin"
 	],
