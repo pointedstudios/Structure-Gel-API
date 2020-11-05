@@ -8,7 +8,9 @@
 		"EntityMixin",
 		"MinecraftServerMixin",
 		"StructureSaveMixins$ChunkMixin",
-		"StructureSaveMixins$ChunkSerializerMixin"
+		"StructureSaveMixins$ChunkSerializerMixin",
+		"FillCommandMixin",
+		"CloneCommandMixin"
 	],
 	"client": [
 		"WorldRendererMixin",

@@ -34,6 +34,7 @@ public class StructureGelConfig
 		private final ForgeConfigSpec.ConfigValue<String> ignoredMods;
 		private final ForgeConfigSpec.BooleanValue guessBiomeDict;
 		private final ForgeConfigSpec.BooleanValue fixMissingStructureSaving;
+		private final ForgeConfigSpec.BooleanValue exceedFillLimit;
 
 		//public final com.legacy.structure_gel.util.ConfigTemplates.StructureConfig structureConfig;
 
@@ -43,6 +44,7 @@ public class StructureGelConfig
 			this.ignoredMods = builder.comment("A list of mod IDs that will be ignored when the biome dictionary attempts to register unregistered biomes. Mod IDs must be comma separated (\"biomesoplenty, byg, blue_skies\").").define("biome_dictionary.ignored_mods", "");
 			this.guessBiomeDict = builder.comment("Determines if the biome dictionary make assumptions for unregistered biomes. Setting this to false can fix issues where a structure generates in the wrong dimension.").define("biome_dictionary.make_best_guess", true);
 			this.fixMissingStructureSaving = builder.comment("When true, fixes issues with worlds not saving chunks related to removing a mod that added a structure.").define("structures.fix_missing_structure_saving", true);
+			this.exceedFillLimit = builder.comment("When true, removes the size limit from the fill and clone commands.").define("commands.exceed_fill_clone_limit", true);
 			
 			//this.structureConfig = new com.legacy.structure_gel.util.ConfigTemplates.StructureConfig(builder, "test_structure", 1.0, 20, 0).biomes(true, "#structure_gel:end");
 		}
@@ -65,6 +67,11 @@ public class StructureGelConfig
 		public boolean shouldFixMissingStructureSaving()
 		{
 			return this.fixMissingStructureSaving.get();
+		}
+		
+		public boolean shouldExceedFillLimit()
+		{
+			return this.exceedFillLimit.get();
 		}
 	}
 

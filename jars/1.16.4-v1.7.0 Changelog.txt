@@ -1,6 +1,6 @@
 1.16.4-v1.7.0
 
-General feature update and updates to 1.16.4.
+General feature update and port to 1.16.4.
 
 Additions:
 - Structure blocks now render the text inside when you look at them
@@ -8,6 +8,8 @@ Additions:
 - Structure block items now display the nbt data within them as their name
 	- Works when using ctrl + pick block on a structure block
 	- Can be disabled via client config "show_structure_block_info"
+- Removed the size limit from the fill and clone commands
+	- Limit can be re-enabled via config
 - Added a fix for a vanilla bug that causes chunks to not save after removing a structure from registry data
 	- Can be disabled by config
 - Added SpawnerAccessHelper
