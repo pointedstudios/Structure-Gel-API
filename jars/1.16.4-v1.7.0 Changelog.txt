@@ -24,15 +24,13 @@ Additions:
 - Added VoxelShape.mirror
 	- Mirrors the provided voxel shape along an axis
 - Registrars
-	- IForgeRegistrar:
+	- IForgeRegistrar
 		- Added a handleAll method to run both handle and handleForge at the same time
-	- KeyRegistrar:
-		- Handles general RegistryKey registration
-		- Should be called during the Forge registry if applicable
-	- BiomeRegistrar:
-		- Specialized version of KeyRegistrar with a supplier for creating a biome
+	- BiomeRegistrar
 		- Handles biome registration
 		- Should be called during the Forge registry event
+- BiomeType
+	- Now includes BiomeRegistrar variants for .biomes and .addBiome
 	
 Changes:
 - Commands

@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Sets;
+import com.legacy.structure_gel.registrars.BiomeRegistrar;
 import com.legacy.structure_gel.util.Internal;
 
 import net.minecraft.util.RegistryKey;
@@ -157,6 +158,13 @@ public class ForgeType extends BiomeType
 	{
 		return this;
 	}
+	
+	@Deprecated
+	@Override
+	public ForgeType biomes(BiomeRegistrar... biomes)
+	{
+		return this;
+	}
 
 	@Deprecated
 	@Override
@@ -193,6 +201,13 @@ public class ForgeType extends BiomeType
 		return this;
 	}
 
+	@Deprecated
+	@Override
+	public ForgeType addBiome(BiomeRegistrar biome)
+	{
+		return this;
+	}
+	
 	@Deprecated
 	@Override
 	public ForgeType setBiomes(Set<ResourceLocation> biomes)

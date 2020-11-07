@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.legacy.structure_gel.StructureGelMod;
+import com.legacy.structure_gel.registrars.BiomeRegistrar;
 import com.legacy.structure_gel.util.Internal;
 
 import net.minecraft.util.RegistryKey;
@@ -133,6 +134,18 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 	}
 
 	/**
+	 * Adds the biomes to this instance
+	 * 
+	 * @param biomes
+	 * @return {@link BiomeType}
+	 */
+	public BiomeType biomes(BiomeRegistrar... biomes)
+	{
+		this.addBiomes(Arrays.asList(biomes).stream().map(b -> b.getName()).collect(Collectors.toSet()));
+		return this;
+	}
+
+	/**
 	 * Adds the biomes to this instance for the modid provided.
 	 * 
 	 * @param modid
@@ -192,6 +205,17 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 	{
 		this.getBiomes().add(biome);
 		return this;
+	}
+
+	/**
+	 * Add the biome to this instance.
+	 * 
+	 * @param biome
+	 * @return {@link BiomeType}
+	 */
+	public BiomeType addBiome(BiomeRegistrar biome)
+	{
+		return addBiome(biome.getName());
 	}
 
 	/**
