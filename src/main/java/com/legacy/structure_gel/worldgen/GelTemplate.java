@@ -52,8 +52,11 @@ public class GelTemplate extends Template
 		this.template = template;
 	}
 
+	/**
+	 * Cloned vanilla method to fix entity rotations
+	 */
 	// addBlocksToWorld
-	public boolean func_237146_a_(IServerWorld worldIn, BlockPos pos, BlockPos pos2, PlacementSettings placementSettings, Random rand, int flags)
+	public boolean func_237146_a_(IServerWorld worldIn, BlockPos pos, BlockPos pos2, PlacementSettings placementSettings, Random rand, int flags, IModifyState shouldPlace)
 	{
 		if (this.template.blocks.isEmpty())
 		{
@@ -80,48 +83,52 @@ public class GelTemplate extends Template
 					if (mutableboundingbox == null || mutableboundingbox.isVecInside(blockpos))
 					{
 						FluidState fluidstate = placementSettings.func_204763_l() ? worldIn.getFluidState(blockpos) : null;
-						BlockState blockstate = template$blockinfo.state.mirror(placementSettings.getMirror()).rotate(worldIn, pos, placementSettings.getRotation());
-						if (template$blockinfo.nbt != null)
+						// Hook here with shouldPlace
+						BlockState blockstate = shouldPlace.modifyState(worldIn, rand, blockpos, template$blockinfo.state.mirror(placementSettings.getMirror()).rotate(worldIn, pos, placementSettings.getRotation()));
+						if (blockstate != null)
 						{
-							TileEntity tileentity = worldIn.getTileEntity(blockpos);
-							IClearable.clearObj(tileentity);
-							worldIn.setBlockState(blockpos, Blocks.BARRIER.getDefaultState(), 20);
-						}
-
-						if (worldIn.setBlockState(blockpos, blockstate, flags))
-						{
-							i = Math.min(i, blockpos.getX());
-							j = Math.min(j, blockpos.getY());
-							k = Math.min(k, blockpos.getZ());
-							l = Math.max(l, blockpos.getX());
-							i1 = Math.max(i1, blockpos.getY());
-							j1 = Math.max(j1, blockpos.getZ());
-							list2.add(Pair.of(blockpos, template$blockinfo.nbt));
 							if (template$blockinfo.nbt != null)
 							{
-								TileEntity tileentity1 = worldIn.getTileEntity(blockpos);
-								if (tileentity1 != null)
-								{
-									template$blockinfo.nbt.putInt("x", blockpos.getX());
-									template$blockinfo.nbt.putInt("y", blockpos.getY());
-									template$blockinfo.nbt.putInt("z", blockpos.getZ());
-									if (tileentity1 instanceof LockableLootTileEntity)
-									{
-										template$blockinfo.nbt.putLong("LootTableSeed", rand.nextLong());
-									}
-
-									tileentity1.read(template$blockinfo.state, template$blockinfo.nbt);
-									tileentity1.mirror(placementSettings.getMirror());
-									tileentity1.rotate(placementSettings.getRotation());
-								}
+								TileEntity tileentity = worldIn.getTileEntity(blockpos);
+								IClearable.clearObj(tileentity);
+								worldIn.setBlockState(blockpos, Blocks.BARRIER.getDefaultState(), 20);
 							}
 
-							if (fluidstate != null && blockstate.getBlock() instanceof ILiquidContainer)
+							if (worldIn.setBlockState(blockpos, blockstate, flags))
 							{
-								((ILiquidContainer) blockstate.getBlock()).receiveFluid(worldIn, blockpos, blockstate, fluidstate);
-								if (!fluidstate.isSource())
+								i = Math.min(i, blockpos.getX());
+								j = Math.min(j, blockpos.getY());
+								k = Math.min(k, blockpos.getZ());
+								l = Math.max(l, blockpos.getX());
+								i1 = Math.max(i1, blockpos.getY());
+								j1 = Math.max(j1, blockpos.getZ());
+								list2.add(Pair.of(blockpos, template$blockinfo.nbt));
+								if (template$blockinfo.nbt != null)
 								{
-									list1.add(blockpos);
+									TileEntity tileentity1 = worldIn.getTileEntity(blockpos);
+									if (tileentity1 != null)
+									{
+										template$blockinfo.nbt.putInt("x", blockpos.getX());
+										template$blockinfo.nbt.putInt("y", blockpos.getY());
+										template$blockinfo.nbt.putInt("z", blockpos.getZ());
+										if (tileentity1 instanceof LockableLootTileEntity)
+										{
+											template$blockinfo.nbt.putLong("LootTableSeed", rand.nextLong());
+										}
+
+										tileentity1.read(template$blockinfo.state, template$blockinfo.nbt);
+										tileentity1.mirror(placementSettings.getMirror());
+										tileentity1.rotate(placementSettings.getRotation());
+									}
+								}
+
+								if (fluidstate != null && blockstate.getBlock() instanceof ILiquidContainer)
+								{
+									((ILiquidContainer) blockstate.getBlock()).receiveFluid(worldIn, blockpos, blockstate, fluidstate);
+									if (!fluidstate.isSource())
+									{
+										list1.add(blockpos);
+									}
 								}
 							}
 						}
@@ -225,18 +232,23 @@ public class GelTemplate extends Template
 		}
 	}
 
+	/**
+	 * Modified vanilla method to fix rotations
+	 * 
+	 * @param worldIn
+	 * @param pos
+	 * @param placementIn
+	 */
 	private void addEntitiesToWorld(IServerWorld worldIn, BlockPos pos, PlacementSettings placementIn)
 	{
 		for (Template.EntityInfo entityInfo : processEntityInfos(this.template, worldIn, pos, placementIn, this.template.entities))
 		{
 			BlockPos blockpos = getTransformedPos(entityInfo.blockPos, placementIn.getMirror(), placementIn.getRotation(), placementIn.getCenterOffset()).add(pos);
-			blockpos = entityInfo.blockPos; // FORGE: Position will have already been transformed by
-											// processEntityInfos
+			blockpos = entityInfo.blockPos;
 			if (placementIn.getBoundingBox() == null || placementIn.getBoundingBox().isVecInside(blockpos))
 			{
 				CompoundNBT compoundnbt = entityInfo.nbt.copy();
-				Vector3d vec3d = entityInfo.pos; // FORGE: Position will have already been transformed by
-													// processEntityInfos
+				Vector3d vec3d = entityInfo.pos;
 				ListNBT listnbt = new ListNBT();
 				listnbt.add(DoubleNBT.valueOf(vec3d.x));
 				listnbt.add(DoubleNBT.valueOf(vec3d.y));

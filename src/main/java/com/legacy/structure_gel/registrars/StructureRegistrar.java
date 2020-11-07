@@ -53,7 +53,7 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 	}
 
 	/**
-	 * Handy method so you don't have to type the generic parameters.
+	 * Handy method so you don't have to type the generic type parameters.
 	 * 
 	 * @param name
 	 * @param structure
@@ -68,7 +68,7 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 	}
 
 	/**
-	 * Handy method so you don't have to type the generic parameters.
+	 * Handy method so you don't have to type the generic type parameters.
 	 * 
 	 * @param name
 	 * @param structure

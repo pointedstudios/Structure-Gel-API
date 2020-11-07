@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import com.legacy.structure_gel.SGRegistry.JigsawDeserializers;
 import com.legacy.structure_gel.worldgen.GelPlacementSettings;
 import com.legacy.structure_gel.worldgen.GelTemplate;
+import com.legacy.structure_gel.worldgen.IModifyState;
 import com.legacy.structure_gel.worldgen.processors.RemoveGelStructureProcessor;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
@@ -38,8 +39,15 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
 /**
  * Extension of {@link SingleJigsawPiece} without the
  * {@link BlockIgnoreStructureProcessor#AIR_AND_STRUCTURE_BLOCK} in favor of
- * {@link RemoveGelStructureProcessor#INSTANCE} and including a way to determine
- * interactions with water.
+ * {@link RemoveGelStructureProcessor#INSTANCE}.<br>
+ * <br>
+ * Includes the following:<br>
+ * - Improved water interaction handling.<br>
+ * - Data structure block functionality. See
+ * {@link AbstractGelStructurePiece}<br>
+ * - Block placement overrides, separate from processors. See
+ * {@link IModifyState}<br>
+ * - Fixes for entity rotation within the structure.
  * 
  * @author David
  *
@@ -161,27 +169,23 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	{
 		Template template = this.getTemplate(templateManager);
 		PlacementSettings placementSettings = this.func_230379_a_(rotation, bounds, isLegacy);
-		if (!new GelTemplate(template).func_237146_a_(seedReader, pos, pos2, placementSettings, rand, 18))
-		{
+		if (!new GelTemplate(template).func_237146_a_(seedReader, pos, pos2, placementSettings, rand, 18, gelStructurePiece::modifyState))
 			return false;
-		}
-		else
+
+		for (Template.BlockInfo blockInfo : Template.processBlockInfos(seedReader, pos, pos2, placementSettings, this.getDataMarkers(templateManager, pos, rotation, false), template))
 		{
-			for (Template.BlockInfo blockInfo : Template.processBlockInfos(seedReader, pos, pos2, placementSettings, this.getDataMarkers(templateManager, pos, rotation, false), template))
+			this.handleDataMarker(seedReader, blockInfo, pos, rotation, rand, bounds);
+			if (blockInfo.nbt != null && seedReader.getBlockState(blockInfo.pos).getBlock() == Blocks.STRUCTURE_BLOCK)
 			{
-				this.handleDataMarker(seedReader, blockInfo, pos, rotation, rand, bounds);
-				if (blockInfo.nbt != null && seedReader.getBlockState(blockInfo.pos).getBlock() == Blocks.STRUCTURE_BLOCK)
+				StructureMode mode = StructureMode.valueOf(blockInfo.nbt.getString("mode"));
+				if (mode == StructureMode.DATA)
 				{
-					StructureMode mode = StructureMode.valueOf(blockInfo.nbt.getString("mode"));
-					if (mode == StructureMode.DATA)
-					{
-						gelStructurePiece.handleDataMarker(blockInfo.nbt.getString("metadata"), blockInfo.pos, seedReader, rand, bounds);
-					}
+					gelStructurePiece.handleDataMarker(blockInfo.nbt.getString("metadata"), blockInfo.pos, seedReader, rand, bounds);
 				}
 			}
-
-			return true;
 		}
+
+		return true;
 	}
 
 	/**

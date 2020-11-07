@@ -3,8 +3,11 @@ package com.legacy.structure_gel.worldgen.jigsaw;
 import java.util.Random;
 import java.util.function.Function;
 
+import javax.annotation.Nullable;
+
 import com.legacy.structure_gel.access_helpers.JigsawAccessHelper;
 import com.legacy.structure_gel.util.Internal;
+import com.legacy.structure_gel.worldgen.IModifyState;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -38,7 +41,7 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
  * @author David
  *
  */
-public abstract class AbstractGelStructurePiece extends AbstractVillagePiece
+public abstract class AbstractGelStructurePiece extends AbstractVillagePiece implements IModifyState
 {
 	public AbstractGelStructurePiece(TemplateManager templateManager, JigsawPiece jigsawPiece, BlockPos pos, int groundLevelDelta, Rotation rotation, MutableBoundingBox bounds)
 	{
@@ -95,6 +98,25 @@ public abstract class AbstractGelStructurePiece extends AbstractVillagePiece
 		if (this.jigsawPiece instanceof GelJigsawPiece)
 			return ((GelJigsawPiece) this.jigsawPiece).place(this.templateManager, seedReader, structureManager, chunkGen, this.pos, pos, this.rotation, bounds, rand, isLegacy, this);
 		return this.jigsawPiece.func_230378_a_(this.templateManager, seedReader, structureManager, chunkGen, this.pos, pos, this.rotation, bounds, rand, isLegacy);
+	}
+
+	/**
+	 * Modifies the state passed in based on the structure's rules. This method is
+	 * called after processors are applied.<br>
+	 * <br>
+	 * Return null to prevent placement.
+	 * 
+	 * @param world
+	 * @param rand
+	 * @param pos
+	 * @param originalState
+	 * @return {@link BlockState}
+	 */
+	@Override
+	@Nullable
+	public BlockState modifyState(IServerWorld world, Random rand, BlockPos pos, BlockState originalState)
+	{
+		return originalState;
 	}
 
 	/**

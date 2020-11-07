@@ -21,4 +21,16 @@ public interface IForgeRegistrar<T extends IForgeRegistrar<T, R>, R extends IFor
 	 * @return {@link IForgeRegistrar}
 	 */
 	public T handleForge(IForgeRegistry<R> registry);
+
+	/**
+	 * Runs {@link #handle()} and {@link #handleForge(IForgeRegistry)} at the same
+	 * time
+	 * 
+	 * @param registry
+	 * @return {@link IForgeRegistrar}
+	 */
+	default T handleAll(IForgeRegistry<R> registry)
+	{
+		return handle().handleForge(registry);
+	}
 }
