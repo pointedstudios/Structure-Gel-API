@@ -1,6 +1,5 @@
 package com.legacy.structure_gel.registrars;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -33,23 +32,73 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 {
 	private final ResourceLocation name;
 	private final S structure;
-	private final IStructurePieceType pieceType;
+	private final Map<String, IStructurePieceType> pieceTypes;
 	private final Map<String, StructureFeature<C, S>> structureFeatures;
 	private final GenerationStage.Decoration generationStage;
 
-	@SuppressWarnings("unchecked")
+	/**
+	 * The most simple structure with only one config and one piece type
+	 * 
+	 * @param name
+	 * @param structure
+	 * @param pieceType
+	 * @param config
+	 * @param generationStage
+	 */
+	public StructureRegistrar(ResourceLocation name, S structure, IStructurePieceType pieceType, C config, GenerationStage.Decoration generationStage)
+	{
+		this(name, structure, ImmutableMap.of("", pieceType), ImmutableMap.of("", config), generationStage);
+	}
+
+	/**
+	 * A structure with one piece type and multiple configured features. Generally
+	 * those would be used for different biomes, like how villages work
+	 * 
+	 * @param name
+	 * @param structure
+	 * @param pieceType
+	 * @param configs
+	 * @param generationStage
+	 */
 	public StructureRegistrar(ResourceLocation name, S structure, IStructurePieceType pieceType, Map<String, C> configs, GenerationStage.Decoration generationStage)
+	{
+		this(name, structure, ImmutableMap.of("", pieceType), configs, generationStage);
+	}
+
+	/**
+	 * A structure with multiple piece types and one config. Generally this would be
+	 * used for a structure with a lot of complexity in its pieces
+	 * 
+	 * @param name
+	 * @param structure
+	 * @param pieceTypes
+	 * @param config
+	 * @param generationStage
+	 */
+	public StructureRegistrar(ResourceLocation name, S structure, Map<String, IStructurePieceType> pieceTypes, C config, GenerationStage.Decoration generationStage)
+	{
+		this(name, structure, pieceTypes, ImmutableMap.of("", config), generationStage);
+	}
+
+	/**
+	 * A structure with multiple piece types and multiple configs. This would be for
+	 * something with many pieces and different configured variations. Probably the
+	 * most rare type to need
+	 * 
+	 * @param name
+	 * @param structure
+	 * @param pieceTypes
+	 * @param configs
+	 * @param generationStage
+	 */
+	@SuppressWarnings("unchecked")
+	public StructureRegistrar(ResourceLocation name, S structure, Map<String, IStructurePieceType> pieceTypes, Map<String, C> configs, GenerationStage.Decoration generationStage)
 	{
 		this.name = name;
 		this.structure = structure;
-		this.pieceType = pieceType;
+		this.pieceTypes = pieceTypes;
 		this.structureFeatures = configs.entrySet().stream().collect(Collectors.toMap(Entry::getKey, (v) -> (StructureFeature<C, S>) structure.withConfiguration(v.getValue())));
 		this.generationStage = generationStage;
-	}
-
-	public StructureRegistrar(ResourceLocation name, S structure, IStructurePieceType pieceType, C config, GenerationStage.Decoration generationStage)
-	{
-		this(name, structure, pieceType, ImmutableMap.of("", config), generationStage);
 	}
 
 	/**
@@ -81,6 +130,36 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 	{
 		return new StructureRegistrar<C, S>(name, structure, pieceType, config, generationStage);
 	}
+	
+	/**
+	 * Handy method so you don't have to type the generic type parameters.
+	 * 
+	 * @param name
+	 * @param structure
+	 * @param pieceType
+	 * @param configs
+	 * @param generationStage
+	 * @return {@link StructureRegistrar}
+	 */
+	public static <C extends IFeatureConfig, S extends Structure<C>> StructureRegistrar<C, S> of(ResourceLocation name, S structure, Map<String, IStructurePieceType> pieceTypes, Map<String, C> configs, GenerationStage.Decoration generationStage)
+	{
+		return new StructureRegistrar<C, S>(name, structure, pieceTypes, configs, generationStage);
+	}
+
+	/**
+	 * Handy method so you don't have to type the generic type parameters.
+	 * 
+	 * @param name
+	 * @param structure
+	 * @param pieceType
+	 * @param config
+	 * @param generationStage
+	 * @return {@link StructureRegistrar}
+	 */
+	public static <C extends IFeatureConfig, S extends Structure<C>> StructureRegistrar<C, S> of(ResourceLocation name, S structure, Map<String, IStructurePieceType> pieceTypes, C config, GenerationStage.Decoration generationStage)
+	{
+		return new StructureRegistrar<C, S>(name, structure, pieceTypes, config, generationStage);
+	}
 
 	/**
 	 * Gets the {@link Structure}.
@@ -93,20 +172,46 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 	}
 
 	/**
+	 * Gets the map of {@link IStructurePieceType}s.
+	 * 
+	 * @return {@link Map}
+	 */
+	public Map<String, IStructurePieceType> getPieceTypes()
+	{
+		return this.pieceTypes;
+	}
+
+	/**
+	 * Returns the {@link IStructurePieceType} for the name passed.
+	 * 
+	 * @param name
+	 * @return {@link IStructurePieceType} or null if no object is present in the
+	 *         Map
+	 */
+	@Nullable
+	public IStructurePieceType getPieceType(String name)
+	{
+		return this.pieceTypes.get(name);
+	}
+
+	/**
 	 * Gets the {@link IStructurePieceType}. This is what you use in your
-	 * {@link StructurePiece}.
+	 * {@link StructurePiece}. Use this if there's only one piece type.
 	 * 
 	 * @return {@link IStructurePieceType}
 	 */
 	public IStructurePieceType getPieceType()
 	{
-		return this.pieceType;
+		if (this.pieceTypes.size() > 0)
+			return this.pieceTypes.get(this.pieceTypes.keySet().toArray()[0]);
+		else
+			return null;
 	}
 
 	/**
-	 * Gets the list of {@link StructureFeature}s.
+	 * Gets the map of {@link StructureFeature}s.
 	 * 
-	 * @return {@link List}
+	 * @return {@link Map}
 	 */
 	public Map<String, StructureFeature<C, S>> getStructureFeatures()
 	{
@@ -116,7 +221,8 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 	/**
 	 * Returns the {@link StructureFeature} for the name passed.
 	 * 
-	 * @return {@link StructureFeature}
+	 * @param name
+	 * @return {@link StructureFeature} or null if no object is present in the Map
 	 */
 	@Nullable
 	public StructureFeature<C, S> getStructureFeature(String name)
@@ -142,8 +248,8 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 	@Override
 	public StructureRegistrar<C, S> handle()
 	{
-		RegistryHelper.registerStructurePiece(this.name, this.pieceType);
-		this.structureFeatures.forEach((s, sf) -> RegistryHelper.registerStructureFeature(s.isEmpty() ? this.name : new ResourceLocation(this.name.getNamespace(), this.name.getPath() + "_" + s), sf));
+		this.pieceTypes.forEach((name, pieceType) -> RegistryHelper.registerStructurePiece(new ResourceLocation(this.name.getNamespace(), this.name.getPath() + "_" + name), pieceType));
+		this.structureFeatures.forEach((name, feature) -> RegistryHelper.registerStructureFeature(name.isEmpty() ? this.name : new ResourceLocation(this.name.getNamespace(), this.name.getPath() + "_" + name), feature));
 		return this;
 	}
 
