@@ -125,13 +125,13 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	 * Checks to see if this structure can generate in the given chunk using a grid
 	 * with custom spacing and offsets.
 	 * 
-	 * @see #getSpacing()
-	 * @see #getOffset()
+	 * @param settings Can be null since we use {@link #getSpacing()} and
+	 *            {@link #getOffset()} instead
 	 * @return {@link ChunkPos}
 	 */
 	@Internal
 	@Override
-	public ChunkPos getChunkPosForStructure(StructureSeparationSettings settings, long seed, SharedSeedRandom sharedSeedRand, int x, int z)
+	public ChunkPos getChunkPosForStructure(@Nullable StructureSeparationSettings settings, long seed, SharedSeedRandom sharedSeedRand, int x, int z)
 	{
 		int spacing = this.getSpacing();
 		int gridX = ((x / spacing) * spacing);
@@ -158,9 +158,13 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	}
 
 	// findNearest
+	/**
+	 * @param settings Can be null since it's obtained from
+	 *            {@link #getSeparationSettings()}
+	 */
 	@Internal
 	@Override
-	public BlockPos func_236388_a_(IWorldReader worldIn, StructureManager structureManager, BlockPos startPos, int searchRadius, boolean skipExistingChunks, long seed, StructureSeparationSettings settings)
+	public BlockPos func_236388_a_(IWorldReader worldIn, StructureManager structureManager, BlockPos startPos, int searchRadius, boolean skipExistingChunks, long seed, @Nullable StructureSeparationSettings settings)
 	{
 		return super.func_236388_a_(worldIn, structureManager, startPos, searchRadius, skipExistingChunks, seed, this.getSeparationSettings());
 	}

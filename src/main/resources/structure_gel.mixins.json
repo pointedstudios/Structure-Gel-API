@@ -7,8 +7,6 @@
 		"LakesFeatureMixin",
 		"EntityMixin",
 		"MinecraftServerMixin",
-		"StructureSaveMixins$ChunkMixin",
-		"StructureSaveMixins$ChunkSerializerMixin",
 		"FillCommandMixin",
 		"CloneCommandMixin"
 	],
