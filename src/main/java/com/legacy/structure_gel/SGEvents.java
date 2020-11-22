@@ -1,5 +1,7 @@
 package com.legacy.structure_gel;
 
+import java.util.stream.Collectors;
+
 import com.legacy.structure_gel.biome_dictionary.BiomeDictionary;
 import com.legacy.structure_gel.biome_dictionary.BiomeType;
 import com.legacy.structure_gel.commands.StructureGelCommand;
@@ -52,13 +54,12 @@ public class SGEvents
 			if (StructureGelConfig.COMMON.shouldGuessBiomeDict())
 			{
 				StructureGelMod.LOGGER.info("Attempting to register unregistered biomes to the biome dictionary. This can be disabled via config.");
-				BiomeDictionary.makeGuess();
+				BiomeDictionary.makeGuess().forEach((name, types) -> StructureGelMod.LOGGER.info(String.format("Registered %s to %s:[%s]", name, StructureGelMod.MODID, String.join(", ", types.stream().filter(BiomeDictionary::filterTypeForAutoRegister).map(bt -> bt.getRegistryName().getPath()).sorted().collect(Collectors.toSet())))));
 			}
 		}
 		catch (Exception e)
 		{
-			StructureGelMod.LOGGER.error("Encountered an issue while making assumptions for the biome dictionary. Please narrow down which mods cause a conflict here and report it to our issue tracker:");
-			StructureGelMod.LOGGER.error("https://gitlab.com/modding-legacy/structure-gel-api/-/issues");
+			StructureGelMod.LOGGER.error("Encountered an issue while making assumptions for the biome dictionary. Please narrow down which mods cause a conflict here and report it to our issue tracker: https://gitlab.com/modding-legacy/structure-gel-api/-/issues");
 			e.printStackTrace();
 		}
 	}

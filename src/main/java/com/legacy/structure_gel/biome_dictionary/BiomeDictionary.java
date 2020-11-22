@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableList;
 import com.legacy.structure_gel.StructureGelConfig;
@@ -72,51 +71,51 @@ public class BiomeDictionary
 	public static final BiomeType COLD_OCEAN = register(BiomeType.create("cold_ocean").biomes(Biomes.COLD_OCEAN, Biomes.DEEP_COLD_OCEAN));
 	public static final BiomeType WARM_OCEAN = register(BiomeType.create("warm_ocean").biomes(Biomes.WARM_OCEAN, Biomes.DEEP_WARM_OCEAN));
 	public static final BiomeType OCEAN = register(BiomeType.create("ocean").parents(COLD_OCEAN, WARM_OCEAN, FROZEN_OCEAN).biomes(Biomes.OCEAN, Biomes.DEEP_LUKEWARM_OCEAN, Biomes.DEEP_OCEAN, Biomes.LUKEWARM_OCEAN).biomes(byg, "dead_sea"));
-	public static final BiomeType PLAINS = register(BiomeType.create("plains").biomes(Biomes.PLAINS, Biomes.SUNFLOWER_PLAINS).biomes(bop, "steppe", "highland", "tundra", "lush_grassland", "grassland", "shrubland", "poppy_field", "scrubland", "flower_meadow", "prairie", "pasture").biomes(byg, "allium_fields", "amaranth_fields", "meadow", "prairie", "prairie_clearing", "shrublands", "wooded_meadow"));
+	public static final BiomeType PLAINS = register(BiomeType.create("plains").biomes(Biomes.PLAINS, Biomes.SUNFLOWER_PLAINS).biomes(bop, "steppe", "highland", "tundra", "lush_grassland", "jade_grassland", "shrubland", "lush_savanna", "scrubland", "flower_meadow", "prairie", "golden_prairie").biomes(byg, "allium_fields", "amaranth_fields", "meadow", "prairie", "prairie_clearing", "shrublands", "wooded_meadow"));
 	public static final BiomeType SNOWY_PLAINS = register(BiomeType.create("snowy_plains").biomes(Biomes.SNOWY_TUNDRA));
 	public static final BiomeType DESERT = register(BiomeType.create("desert").biomes(Biomes.DESERT, Biomes.DESERT_HILLS, Biomes.DESERT_LAKES).biomes(bop, "xeric_shrubland", "outback", "lush_desert").biomes(byg, "dunes", "lush_red_desert", "mojave_desert", "red_desert", "red_desert_dunes"));
 	public static final BiomeType SAVANNA = register(BiomeType.create("savanna").biomes(Biomes.SAVANNA, Biomes.SAVANNA_PLATEAU).biomes(bop, "brushland").biomes(byg, "baobab_savanna"));
 	public static final BiomeType MOUNTAIN_SAVANNA = register(BiomeType.create("mountain_savanna").biomes(Biomes.SHATTERED_SAVANNA, Biomes.SHATTERED_SAVANNA_PLATEAU));
-	public static final BiomeType FLOWERY = register(BiomeType.create("flowery").biomes(Biomes.FLOWER_FOREST, Biomes.SUNFLOWER_PLAINS).biomes(bop, "lavender_field", "poppy_field", "flower_meadow").biomes(byg, "allium_fields", "amaranth_fields", "flowering_enchanted_grove", "flowering_grove", "flowering_meadow"));
-	public static final BiomeType OAK_FOREST = register(BiomeType.create("oak_forest").biomes(Biomes.FOREST).biomes(bop, "maple_woods", "orchard", "origin_hills", "rainforest", "silkglade", "snowy_forest", "woodland").biomes(byg, "deciduous_clearing", "deciduous_forest", "deciduous_forest_hills", "orchard", "red_oak_forest", "red_oak_forest_hills", "snowy_deciduous_clearing", "snowy_deciduous_forest", "snowy_deciduous_forest_hills", "woodlands"));
+	public static final BiomeType FLOWERY = register(BiomeType.create("flowery").biomes(Biomes.FLOWER_FOREST, Biomes.SUNFLOWER_PLAINS).biomes(bop, "lavender_field", "lush_savanna", "flower_meadow").biomes(byg, "allium_fields", "amaranth_fields", "flowering_enchanted_grove", "flowering_grove", "flowering_meadow"));
+	public static final BiomeType OAK_FOREST = register(BiomeType.create("oak_forest").biomes(Biomes.FOREST).biomes(bop, "maple_forest", "snowy_maple_forest", "orchard", "origin_hills", "rainforest", "silkglade", "snowy_forest").biomes(byg, "deciduous_clearing", "deciduous_forest", "deciduous_forest_hills", "orchard", "red_oak_forest", "red_oak_forest_hills", "snowy_deciduous_clearing", "snowy_deciduous_forest", "snowy_deciduous_forest_hills", "woodlands"));
 	public static final BiomeType BIRCH_FOREST = register(BiomeType.create("birch_forest").biomes(Biomes.BIRCH_FOREST, Biomes.BIRCH_FOREST_HILLS, Biomes.TALL_BIRCH_FOREST, Biomes.TALL_BIRCH_HILLS).biomes(bop, "boreal_forest", "rainbow_valley").biomes(byg, "aspen_clearing", "aspen_forest", "aspen_forest_hills"));
-	public static final BiomeType SPRUCE_FOREST = register(BiomeType.create("spruce_forest").biomes(Biomes.TAIGA, Biomes.TAIGA_HILLS, Biomes.TAIGA_MOUNTAINS).biomes(bop, "shield", "grove", "meadow", "jade_cliffs").biomes(byg, "blue_taiga", "blue_taiga_hills", "boreal_clearing", "boreal_forest", "boreal_forest_hills", "evergreen_clearing", "evergreen_hills", "evergreen_taiga"));
+	public static final BiomeType SPRUCE_FOREST = register(BiomeType.create("spruce_forest").biomes(Biomes.TAIGA, Biomes.TAIGA_HILLS, Biomes.TAIGA_MOUNTAINS).biomes(bop, "coniferous_lakes", "grove", "meadow", "jade_cliffs").biomes(byg, "blue_taiga", "blue_taiga_hills", "boreal_clearing", "boreal_forest", "boreal_forest_hills", "evergreen_clearing", "evergreen_hills", "evergreen_taiga"));
 	public static final BiomeType SNOWY_SPRUCE_FOREST = register(BiomeType.create("snowy_spruce_forest").biomes(Biomes.SNOWY_TAIGA, Biomes.SNOWY_TAIGA_HILLS, Biomes.SNOWY_TAIGA_MOUNTAINS).biomes(byg, "apline_foothills", "snowy_blue_taiga", "snowy_blue_taiga_hills", "snowy_evergreen_clearing", "snowy_evergreen_hills", "snowy_evergreen_taiga"));
 	public static final BiomeType LARGE_SPRUCE_FOREST = register(BiomeType.create("large_spruce_forest").biomes(Biomes.GIANT_SPRUCE_TAIGA, Biomes.GIANT_SPRUCE_TAIGA_HILLS, Biomes.GIANT_TREE_TAIGA, Biomes.GIANT_TREE_TAIGA_HILLS).biomes(byg, "blue_giant_taiga", "snowy_blue_giant_taiga"));
 	public static final BiomeType BAMBOO_JUNGLE = register(BiomeType.create("bamboo_jungle").biomes(Biomes.BAMBOO_JUNGLE, Biomes.BAMBOO_JUNGLE_HILLS));
-	public static final BiomeType JUNGLE = register(BiomeType.create("jungle").parents(BAMBOO_JUNGLE).biomes(Biomes.JUNGLE, Biomes.JUNGLE_HILLS, Biomes.JUNGLE_EDGE, Biomes.MODIFIED_JUNGLE, Biomes.MODIFIED_JUNGLE_EDGE).biomes(bop, "overgrown_cliffs").biomes(byg, "guiana_clearing", "guiana_shield"));
+	public static final BiomeType JUNGLE = register(BiomeType.create("jungle").parents(BAMBOO_JUNGLE).biomes(Biomes.JUNGLE, Biomes.JUNGLE_HILLS, Biomes.JUNGLE_EDGE, Biomes.MODIFIED_JUNGLE, Biomes.MODIFIED_JUNGLE_EDGE).biomes(bop, "rainforest_cliffs").biomes(byg, "guiana_clearing", "guiana_shield"));
 	public static final BiomeType DARK_FOREST = register(BiomeType.create("dark_forest").biomes(Biomes.DARK_FOREST, Biomes.DARK_FOREST_HILLS).biomes(byg, "ancient_forest", "ebony_woods", "ebony_hills", "flowering_ancient_forest"));
 	public static final BiomeType CONIFEROUS_FOREST = register(BiomeType.create("coniferous_forest").biomes(bop, "snowy_coniferous_forest", "coniferous_forest", "fir_clearing", "snowy_fir_clearing").biomes(byg, "coniferous_clearing", "coniferous_forest", "coniferous_forest_hills", "snowy_coniferous_clearing", "snowy_coniferous_forest", "snowy_coniferous_forest_hills"));
-	public static final BiomeType REDWOOD_FOREST = register(BiomeType.create("redwood_forest").biomes(bop, "redwood_forest", "redwood_forest_edge", "temperate_rainforest", "temperate_rainforest_hills").biomes(byg, "redwood_clearing", "redwood_mountains", "redwood_tropics"));
-	public static final BiomeType AUTUMN_FOREST = register(BiomeType.create("autumn_forest").biomes(bop, "maple_woods", "seasonal_forest").biomes(byg, "maple_hills", "maple_taiga", "seasonal_birch_forest", "seasonal_birch_forest_hills", "seasonal_deciduous_clearing", "seasonal_deciduous_forest", "seasonal_deciduous_forest_hills", "seasonal_forest", "seasonal_forest_hills", "seasonal_giant_taiga", "seasonal_taiga", "seasonal_taiga_hills", "zelkova_clearing", "zelkova_forest", "zelkova_forest_hills"));
+	public static final BiomeType REDWOOD_FOREST = register(BiomeType.create("redwood_forest").biomes(bop, "redwood_forest", "redwood_forest_edge", "redwood_forest", "redwood_forest_hills").biomes(byg, "redwood_clearing", "redwood_mountains", "redwood_tropics"));
+	public static final BiomeType AUTUMN_FOREST = register(BiomeType.create("autumn_forest").biomes(bop, "maple_forest", "seasonal_forest").biomes(byg, "maple_hills", "maple_taiga", "seasonal_birch_forest", "seasonal_birch_forest_hills", "seasonal_deciduous_clearing", "seasonal_deciduous_forest", "seasonal_deciduous_forest_hills", "seasonal_forest", "seasonal_forest_hills", "seasonal_giant_taiga", "seasonal_taiga", "seasonal_taiga_hills", "zelkova_clearing", "zelkova_forest", "zelkova_forest_hills"));
 	public static final BiomeType CHERRY_FOREST = register(BiomeType.create("cherry_forest").biomes(bop, "cherry_blossom_grove").biomes(byg, "cherry_blossom_clearing", "cherry_blossom_forest", "skyris_highlands"));
 	public static final BiomeType BAMBOO = register(BiomeType.create("bamboo").parents(BAMBOO_JUNGLE).biomes(byg, "jacaranda_clearing", "jacaranda_forest", "jacaranda_forest_hills", "bamboo_forest", "crag_gardens"));
-	public static final BiomeType MOUNTAIN = register(BiomeType.create("mountain").biomes(Biomes.MOUNTAINS, Biomes.GRAVELLY_MOUNTAINS, Biomes.MODIFIED_GRAVELLY_MOUNTAINS, Biomes.WOODED_MOUNTAINS).biomes(bop, "steppe", "overgrown_cliffs", "highland_moor", "highland", "chaparral", "jade_cliffs").biomes(byg, "bluff_steeps", "cika_mountains", "crag_gardens", "dover_mountains", "grassland_plateau", "guiana_clearing", "guiana_shield", "redwood_mountains", "skyris_highlands", "wooded_grassland_plateau"));
-	public static final BiomeType SNOWY_MOUNTAIN = register(BiomeType.create("snowy_mountain").biomes(Biomes.SNOWY_MOUNTAINS).biomes(bop, "muskeg", "alps", "alps_foothills").biomes(byg, "apls", "apline_foothills", "bluff_peaks", "bluff_steeps"));
-	public static final BiomeType SWAMP = register(BiomeType.create("swamp").biomes(Biomes.SWAMP, Biomes.SWAMP_HILLS).biomes(bop, "mire", "floodplain", "bayou", "wetland", "lush_swamp", "bog", "marsh").biomes(byg, "bayou", "bog", "cold_swamplands", "cypress_swamplands", "glowshroom_bayou", "marshlands", "vibrant_swamplands"));
-	public static final BiomeType MANGROVE = register(BiomeType.create("mangrove").biomes(bop, "mangrove").biomes(byg, "coral_mangroves", "cypress_swamplands", "mangrove_marshes"));
+	public static final BiomeType MOUNTAIN = register(BiomeType.create("mountain").biomes(Biomes.MOUNTAINS, Biomes.GRAVELLY_MOUNTAINS, Biomes.MODIFIED_GRAVELLY_MOUNTAINS, Biomes.WOODED_MOUNTAINS).biomes(bop, "steppe", "rainforest_cliffs", "highland_moor", "highland", "shrubland_hills", "jade_cliffs").biomes(byg, "bluff_steeps", "cika_mountains", "crag_gardens", "dover_mountains", "grassland_plateau", "guiana_clearing", "guiana_shield", "redwood_mountains", "skyris_highlands", "wooded_grassland_plateau"));
+	public static final BiomeType SNOWY_MOUNTAIN = register(BiomeType.create("snowy_mountain").biomes(Biomes.SNOWY_MOUNTAINS).biomes(bop, "alps", "alps_foothills").biomes(byg, "apls", "apline_foothills", "bluff_peaks", "bluff_steeps"));
+	public static final BiomeType SWAMP = register(BiomeType.create("swamp").biomes(Biomes.SWAMP, Biomes.SWAMP_HILLS).biomes(bop, "dead_swamp", "rainforest_floodplain", "bayou", "wetland", "lush_swamp", "bog", "wetland_marsh").biomes(byg, "bayou", "tundra_bog", "cold_swamplands", "cypress_swamplands", "glowshroom_bayou", "marshlands", "vibrant_swamplands"));
+	public static final BiomeType MANGROVE = register(BiomeType.create("mangrove").biomes(bop, "bayou_mangrove").biomes(byg, "coral_mangroves", "cypress_swamplands", "mangrove_marshes"));
 	public static final BiomeType BADLANDS = register(BiomeType.create("badlands").biomes(Biomes.BADLANDS, Biomes.BADLANDS_PLATEAU, Biomes.ERODED_BADLANDS, Biomes.MODIFIED_BADLANDS_PLATEAU, Biomes.MODIFIED_WOODED_BADLANDS_PLATEAU, Biomes.WOODED_BADLANDS_PLATEAU).biomes(bop, "outback").biomes(byg, "lush_red_desert", "red_desert", "red_desert_dunes", "red_rock_highlands", "red_rock_lowlands", "red_rock_mountains", "sierra_range", "sierra_valley", "wooded_red_rock_mountains"));
 	public static final BiomeType MUSHROOM = register(BiomeType.create("mushroom").biomes(Biomes.MUSHROOM_FIELD_SHORE, Biomes.MUSHROOM_FIELDS).biomes(bop, "fungal_jungle").biomes(byg, "glowing_ancient_forest", "glowshroom_bayou"));
 	public static final BiomeType FUNGAL = register(BiomeType.create("fungal").parents(MUSHROOM).biomes(byg, "fungal_patch"));
 	public static final BiomeType RIVER = register(BiomeType.create("river").biomes(Biomes.RIVER, Biomes.FROZEN_RIVER));
 	public static final BiomeType LAKE = register(BiomeType.create("lake").biomes(bop, "oasis").biomes(byg, "fresh_water_lake", "oasis", "frozen_lake", "great_lakes", "polluted_lake"));
 	public static final BiomeType BEACH = register(BiomeType.create("beach").biomes(Biomes.BEACH).biomes(bop, "tropic_beach").biomes(byg, "rainbow_beach", "snowy_black_beach", "white_beach"));
-	public static final BiomeType WOODED = register(BiomeType.create("wooded").parents(OAK_FOREST, BIRCH_FOREST, SPRUCE_FOREST, SNOWY_SPRUCE_FOREST, DARK_FOREST, AUTUMN_FOREST, CHERRY_FOREST).biomes(Biomes.FLOWER_FOREST).biomes(bop, "seasonal_forest", "lavender_field", "tropical_rainforest", "dead_forest", "muskeg").biomes(byg, "jacaranda_forest", "the_black_forest", "black_forest_hills", "bluff_peaks", "bluff_steeps", "enchanted_forest", "enchanted_forest_hills", "flowering_meadow", "forest_fault", "glowing_ancient_forest", "great_lake_isles", "grove", "weeping_witch_forest", "weeping_witch_clearing", "wooded_grassland_plateau", "wooded_meadow", "wooded_red_rock_mountains"));
+	public static final BiomeType WOODED = register(BiomeType.create("wooded").parents(OAK_FOREST, BIRCH_FOREST, SPRUCE_FOREST, SNOWY_SPRUCE_FOREST, DARK_FOREST, AUTUMN_FOREST, CHERRY_FOREST).biomes(Biomes.FLOWER_FOREST).biomes(bop, "seasonal_forest", "lavender_field", "tropical_rainforest", "dead_forest").biomes(byg, "jacaranda_forest", "the_black_forest", "black_forest_hills", "bluff_peaks", "bluff_steeps", "enchanted_forest", "enchanted_forest_hills", "flowering_meadow", "forest_fault", "glowing_ancient_forest", "great_lake_isles", "grove", "weeping_witch_forest", "weeping_witch_clearing", "wooded_grassland_plateau", "wooded_meadow", "wooded_red_rock_mountains"));
 	public static final BiomeType LARGE_WOODED = register(BiomeType.create("large_wooded").parents(LARGE_SPRUCE_FOREST, JUNGLE, CONIFEROUS_FOREST, REDWOOD_FOREST).biomes(byg, "cika_wooded", "cika_mountains", "dover_mountains", "northern_forest"));
 	public static final BiomeType SANDY = register(BiomeType.create("sandy").parents(DESERT, BEACH).biomes(Biomes.SOUL_SAND_VALLEY, Biomes.BADLANDS));
-	public static final BiomeType GRAVELLY = register(BiomeType.create("gravelly").biomes(bop, "gravel_beach", "cold_desert"));
+	public static final BiomeType GRAVELLY = register(BiomeType.create("gravelly").biomes(bop, "gravel_beach", "tundra_basin"));
 	public static final BiomeType DIRTY = register(BiomeType.create("dirty").biomes(Biomes.GIANT_SPRUCE_TAIGA, Biomes.GIANT_SPRUCE_TAIGA_HILLS).biomes(byg, "black_forest_clearing"));
-	public static final BiomeType TROPICAL = register(BiomeType.create("tropical").biomes(bop, "tropic_beach", "tropics", "rainforest", "tropical_rainforest", "overgrown_cliffs").biomes(byg, "tropical_fungal_forest", "tropical_fungal_rainforest_hills", "tropical_island", "tropical_rainforest", "tropical_rainforest_hills"));
+	public static final BiomeType TROPICAL = register(BiomeType.create("tropical").biomes(bop, "tropic_beach", "tropics", "rainforest", "tropical_rainforest", "rainforest_cliffs").biomes(byg, "tropical_fungal_forest", "tropical_fungal_rainforest_hills", "tropical_island", "tropical_rainforest", "tropical_rainforest_hills"));
 	public static final BiomeType VOLCANIC = register(BiomeType.create("volcanic").biomes(bop, "volcanic_plains", "volcano"));
-	public static final BiomeType DEAD = register(BiomeType.create("dead").biomes(Biomes.NETHER_WASTES).biomes(bop, "dead_forest", "wasteland", "silkglade", "xeric_shrubland", "brushland", "muskeg", "dryland").biomes(byg, "dead_sea"));
+	public static final BiomeType DEAD = register(BiomeType.create("dead").biomes(Biomes.NETHER_WASTES).biomes(bop, "burnt_forest", "dead_forest", "wasteland", "silkglade", "xeric_shrubland", "brushland", "dead_swamp", "dryland").biomes(byg, "dead_sea"));
 	public static final BiomeType SKY = register(BiomeType.create("sky").biomes(rediscovered, "skylands"));
 
 	// Temperature
 	public static final BiomeType FROZEN = register(BiomeType.create("frozen").biomes(Biomes.FROZEN_RIVER, Biomes.ICE_SPIKES).parents(FROZEN_OCEAN).biomes(byg, "frozen_lake", "shattered_glacier"));
-	public static final BiomeType SNOWY = register(BiomeType.create("snowy").parents(SNOWY_SPRUCE_FOREST, SNOWY_PLAINS).biomes(Biomes.FROZEN_RIVER, Biomes.SNOWY_BEACH).biomes(bop, "snowy_forest", "snowy_coniferous_forest", "snowy_fir_clearing", "muskeg", "alps", "alps_foothills", "snowy_black_beach", "snowy_blue_taiga", "snowy_blue_taiga_hills", "snowy_giant_blue_taiga", "snowy_coniferous_clearing", "snowy_coniferous_forest", "snowy_coniferous_forest_hills", "snowy_deciduous_clearing", "snowy_deciduous_forest", "snowy_deciduous_forest_hills", "snowy_evergreen_clearing", "snowy_evergreen_hills", "snowy_evergreen_taiga", "snowy_rocky_black_beach"));
-	public static final BiomeType COLD = register(BiomeType.create("cold").parents(SPRUCE_FOREST, LARGE_SPRUCE_FOREST, CONIFEROUS_FOREST).biomes(Biomes.MOUNTAINS, Biomes.GRAVELLY_MOUNTAINS, Biomes.WOODED_MOUNTAINS, Biomes.MODIFIED_GRAVELLY_MOUNTAINS, Biomes.STONE_SHORE).biomes(bop, "tundra", "cold_desert").biomes(byg, "cold_swamplands", "lush_tundra", "rocky_beach"));
+	public static final BiomeType SNOWY = register(BiomeType.create("snowy").parents(SNOWY_SPRUCE_FOREST, SNOWY_PLAINS).biomes(Biomes.FROZEN_RIVER, Biomes.SNOWY_BEACH).biomes(bop, "snowy_forest", "snowy_coniferous_forest", "snowy_fir_clearing", "muskeg", "alps", "alps_foothills", "snowy_black_beach", "snowy_blue_taiga", "snowy_blue_taiga_hills", "snowy_giant_blue_taiga", "snowy_coniferous_clearing", "snowy_coniferous_forest", "snowy_coniferous_forest_hills", "snowy_deciduous_clearing", "snowy_deciduous_forest", "snowy_deciduous_forest_hills", "snowy_evergreen_clearing", "snowy_evergreen_hills", "snowy_evergreen_taiga", "snowy_maple_forest", "snowy_rocky_black_beach"));
+	public static final BiomeType COLD = register(BiomeType.create("cold").parents(SPRUCE_FOREST, LARGE_SPRUCE_FOREST, CONIFEROUS_FOREST).biomes(Biomes.MOUNTAINS, Biomes.GRAVELLY_MOUNTAINS, Biomes.WOODED_MOUNTAINS, Biomes.MODIFIED_GRAVELLY_MOUNTAINS, Biomes.STONE_SHORE).biomes(bop, "tundra", "tundra_basin").biomes(byg, "cold_swamplands", "lush_tundra", "rocky_beach"));
 	public static final BiomeType NEUTRAL_TEMP = register(BiomeType.create("neutral_temp").parents(PLAINS, OAK_FOREST, BIRCH_FOREST, DARK_FOREST).biomes(Biomes.FLOWER_FOREST));
-	public static final BiomeType WARM = register(BiomeType.create("warm").parents(SWAMP, MANGROVE, JUNGLE, MUSHROOM, TROPICAL).biomes(bop, "temperate_rainforest", "temperate_rainforest_hills"));
+	public static final BiomeType WARM = register(BiomeType.create("warm").parents(SWAMP, MANGROVE, JUNGLE, MUSHROOM, TROPICAL));
 	public static final BiomeType HOT = register(BiomeType.create("hot").parents(DESERT, BADLANDS, SAVANNA, MOUNTAIN_SAVANNA, VOLCANIC));
 	public static final BiomeType FIERY = register(BiomeType.create("fiery").biomes(Biomes.NETHER_WASTES, Biomes.SOUL_SAND_VALLEY, Biomes.BASALT_DELTAS).biomes(byg, "embur_bog"));
 
@@ -282,10 +281,14 @@ public class BiomeDictionary
 	 * it is not already registered to a type.<br>
 	 * <br>
 	 * This can be disabled via configs.
+	 * 
+	 * @return The biomes registered and where they were registered to
 	 */
 	@Internal
-	public static void makeGuess()
+	public static Map<ResourceLocation, Set<BiomeType>> makeGuess()
 	{
+		Map<ResourceLocation, Set<BiomeType>> newlyRegistered = new HashMap<>();
+
 		Map<Biome.Category, Function<Biome, BiomeType>> categoryToType = new HashMap<>();
 		categoryToType.put(Biome.Category.TAIGA, (b) -> b.getPrecipitation() == RainType.SNOW ? SNOWY_SPRUCE_FOREST : SPRUCE_FOREST);
 		categoryToType.put(Biome.Category.EXTREME_HILLS, (b) -> b.getPrecipitation() == RainType.SNOW ? SNOWY_MOUNTAIN : MOUNTAIN);
@@ -356,7 +359,7 @@ public class BiomeDictionary
 
 		List<String> ignoredMods = StructureGelConfig.COMMON.getIgnoredMods();
 
-		ForgeRegistries.BIOMES.getValues().stream().filter(biome -> !ignoredMods.contains(biome.getRegistryName().getNamespace()) && !getAllTypes(biome).stream().filter(type -> !(type instanceof ForgeType)).findAny().isPresent()).forEach(biome ->
+		ForgeRegistries.BIOMES.getValues().stream().filter(biome -> !ignoredMods.contains(biome.getRegistryName().getNamespace()) && !getAllTypes(biome).stream().filter(BiomeDictionary::filterTypeForAutoRegister).findAny().isPresent()).forEach(biome ->
 		{
 			// Vanilla category
 			if (categoryToType.containsKey(biome.getCategory()))
@@ -420,10 +423,17 @@ public class BiomeDictionary
 				GRAVELLY.addBiome(biome);
 
 			BIOME_TO_BIOMETYPE_CACHE.clear();
-			StructureGelMod.LOGGER.info(String.format("Registered %s to %s:[%s]", biome.getRegistryName().toString(), StructureGelMod.MODID, String.join(", ", getAllTypes(biome).stream().filter(bt -> !(bt instanceof ForgeType)).map(bt -> bt.getRegistryName().getPath()).sorted().collect(Collectors.toSet()))));
+			newlyRegistered.put(biome.getRegistryName(), getAllTypes(biome));
 		});
 
 		BIOME_TO_BIOMETYPE_CACHE.clear();
+		return newlyRegistered;
+	}
+	
+	@Internal
+	public static boolean filterTypeForAutoRegister(BiomeType type)
+	{
+		return !(type instanceof ForgeType) && type != OVERWORLD;
 	}
 
 	/**
