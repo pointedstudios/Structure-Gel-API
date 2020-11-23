@@ -248,7 +248,7 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 	@Override
 	public StructureRegistrar<C, S> handle()
 	{
-		this.pieceTypes.forEach((name, pieceType) -> RegistryHelper.registerStructurePiece(new ResourceLocation(this.name.getNamespace(), this.name.getPath() + "_" + name), pieceType));
+		this.pieceTypes.forEach((name, pieceType) -> RegistryHelper.registerStructurePiece(name.isEmpty() ? this.name : new ResourceLocation(this.name.getNamespace(), this.name.getPath() + "_" + name), pieceType));
 		this.structureFeatures.forEach((name, feature) -> RegistryHelper.registerStructureFeature(name.isEmpty() ? this.name : new ResourceLocation(this.name.getNamespace(), this.name.getPath() + "_" + name), feature));
 		return this;
 	}
