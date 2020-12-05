@@ -10,11 +10,13 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
+import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.biome_dictionary.BiomeDictionary;
 
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.ResourceLocationException;
 import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.MobSpawnInfo;
@@ -341,12 +343,20 @@ public class ConfigTemplates
 					boolean not = s.startsWith("!");
 					boolean isTag = s.replace("!", "").startsWith("#");
 					String biomeString = s.replace("!", "").replace("#", "");
-					ResourceLocation value = new ResourceLocation(biomeString);
+					try
+					{
+						ResourceLocation value = new ResourceLocation(biomeString);
 
-					if (!isTag)
-						updateBiomeList(biomes, value, not);
-					else if (BiomeDictionary.contains(value))
-						BiomeDictionary.get(value).getAllBiomes().forEach(b -> updateBiomeList(biomes, b.getLocation(), not));
+						if (!isTag)
+							updateBiomeList(biomes, value, not);
+						else if (BiomeDictionary.contains(value))
+							BiomeDictionary.get(value).getAllBiomes().forEach(b -> updateBiomeList(biomes, b.getLocation(), not));
+					}
+					catch (ResourceLocationException e)
+					{
+						String string = isTag ? "#mod_namespace:biome_dictionary_entry" : "mod_namespace:biome";
+						throw new ResourceLocationException("An invalid character exists in the config. It should be formatted as \"" + string + "\"");
+					}
 				});
 			}
 			return biomes;
@@ -388,9 +398,16 @@ public class ConfigTemplates
 					Matcher matcher = Pattern.compile("(\\[([a-z0-9/_:[-][.]]*),\\s*([0-9]*),\\s*([0-9]*),\\s*([0-9*])\\])").matcher(key);
 					while (matcher.find())
 					{
-						ResourceLocation entity = new ResourceLocation(matcher.group(2));
-						if (ForgeRegistries.ENTITIES.containsKey(entity))
-							spawns.add(new MobSpawnInfo.Spawners(ForgeRegistries.ENTITIES.getValue(entity), Integer.parseInt(matcher.group(3)), Integer.parseInt(matcher.group(4)), Integer.parseInt(matcher.group(5))));
+						try
+						{
+							ResourceLocation entity = new ResourceLocation(matcher.group(2));
+							if (ForgeRegistries.ENTITIES.containsKey(entity))
+								spawns.add(new MobSpawnInfo.Spawners(ForgeRegistries.ENTITIES.getValue(entity), Integer.parseInt(matcher.group(3)), Integer.parseInt(matcher.group(4)), Integer.parseInt(matcher.group(5))));
+						}
+						catch (ResourceLocationException e)
+						{
+							throw new ResourceLocationException("An invalid character exists in the config. It should be formatted as \"mod_namespace:entity\"");
+						}
 					}
 				}
 				catch (Exception e)
@@ -413,15 +430,22 @@ public class ConfigTemplates
 		{
 			if (key == null)
 				return null;
-			
+
 			List<DimensionSettings> noiseSettings = new ArrayList<>();
 			if (!key.isEmpty())
-			{		
+			{
 				Arrays.asList(key.replace(" ", "").split(",")).stream().forEach(s ->
 				{
-					ResourceLocation settings = new ResourceLocation(s);
-					if (WorldGenRegistries.NOISE_SETTINGS.getOptional(settings).isPresent())
-						noiseSettings.add(WorldGenRegistries.NOISE_SETTINGS.getOptional(settings).get());
+					try
+					{
+						ResourceLocation settings = new ResourceLocation(s);
+						if (WorldGenRegistries.NOISE_SETTINGS.getOptional(settings).isPresent())
+							noiseSettings.add(WorldGenRegistries.NOISE_SETTINGS.getOptional(settings).get());
+					}
+					catch (ResourceLocationException e)
+					{
+						throw new ResourceLocationException("An invalid character exists in the config. It should be formatted as \"mod_namespace:noise_settings\"");
+					}
 				});
 			}
 			return noiseSettings;
