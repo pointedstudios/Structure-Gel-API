@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
+import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.biome_dictionary.BiomeDictionary;
 
 import net.minecraft.entity.EntityClassification;
@@ -354,7 +355,7 @@ public class ConfigTemplates
 					catch (ResourceLocationException e)
 					{
 						String string = isTag ? "#mod_namespace:biome_dictionary_entry" : "mod_namespace:biome";
-						throw new ResourceLocationException("An invalid character exists in the config. It should be formatted as \"" + string + "\"");
+						throwInvalidResourceLocation("An invalid character exists your config. It should be formatted as \"" + string + "\"");
 					}
 				});
 			}
@@ -405,7 +406,7 @@ public class ConfigTemplates
 						}
 						catch (ResourceLocationException e)
 						{
-							throw new ResourceLocationException("An invalid character exists in the config. It should be formatted as \"mod_namespace:entity\"");
+							throwInvalidResourceLocation("An invalid character exists your config. It should be formatted as \"mod_namespace:entity\"");
 						}
 					}
 				}
@@ -443,7 +444,7 @@ public class ConfigTemplates
 					}
 					catch (ResourceLocationException e)
 					{
-						throw new ResourceLocationException("An invalid character exists in the config. It should be formatted as \"mod_namespace:noise_settings\"");
+						throwInvalidResourceLocation("An invalid character exists your config. It should be formatted as \"mod_namespace:noise_settings\"");
 					}
 				});
 			}
@@ -494,5 +495,20 @@ public class ConfigTemplates
 		{
 			this(builder, name, probability, spacing, offset, biomes, true);
 		}
+	}
+
+	/**
+	 * Throws a {@link ResourceLocationException} with the provided message and logs
+	 * it to the console.
+	 * 
+	 * @param message
+	 * @throws ResourceLocationException
+	 */
+	@Internal
+	private static void throwInvalidResourceLocation(String message) throws ResourceLocationException
+	{
+		ResourceLocationException e2 = new ResourceLocationException(message);
+		StructureGelMod.LOGGER.fatal(e2);
+		throw e2;
 	}
 }
