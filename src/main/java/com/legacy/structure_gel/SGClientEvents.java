@@ -5,9 +5,8 @@ import java.util.List;
 import com.legacy.structure_gel.SGRegistry.GelBlocks;
 import com.legacy.structure_gel.blocks.GelPortalBlock;
 import com.legacy.structure_gel.util.Internal;
-import com.legacy.structure_gel.util.capability.GelCapability;
+import com.legacy.structure_gel.util.capability.GelEntity;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.ConfirmBackupScreen;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.widget.Widget;
@@ -84,18 +83,14 @@ public class SGClientEvents
 
 	protected static void onPlaySound(final PlaySoundEvent event)
 	{
-		Minecraft mc = Minecraft.getInstance();
-		GelCapability.ifPresent(mc.player, gelEntity ->
+		ResourceLocation name = event.getSound().getSoundLocation();
+		GelPortalBlock portal = GelEntity.getPortalClient();
+		if (portal != null)
 		{
-			ResourceLocation name = event.getSound().getSoundLocation();
-			GelPortalBlock portal = gelEntity.getPortalAudio();
-			if (portal != null)
-			{
-				if (name.equals(SoundEvents.BLOCK_PORTAL_TRAVEL.getName()))
-					event.setResultSound(portal.getTravelSound());
-				else if (name.equals(SoundEvents.BLOCK_PORTAL_TRIGGER.getName()))
-					event.setResultSound(portal.getTriggerSound());
-			}
-		});
+			if (name.equals(SoundEvents.BLOCK_PORTAL_TRAVEL.getName()))
+				event.setResultSound(portal.getTravelSound());
+			else if (name.equals(SoundEvents.BLOCK_PORTAL_TRIGGER.getName()))
+				event.setResultSound(portal.getTriggerSound());
+		}
 	}
 }

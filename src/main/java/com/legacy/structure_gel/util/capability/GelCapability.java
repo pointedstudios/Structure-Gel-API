@@ -114,7 +114,7 @@ public class GelCapability
 	public static class Storage implements Capability.IStorage<IGelEntity>
 	{
 		public static final ResourceLocation EMPTY = StructureGelMod.locate("empty");
-		public static final String portal = "portal", portalVisual = "portal_visual", portalAudio = "portal_audio";
+		public static final String portal = "portal";
 
 		@Nullable
 		@Override
@@ -122,8 +122,6 @@ public class GelCapability
 		{
 			CompoundNBT nbt = new CompoundNBT();
 			putPortal(nbt, portal, instance.getPortal());
-			putPortal(nbt, portalVisual, instance.getPortalVisual());
-			putPortal(nbt, portalAudio, instance.getPortalAudio());
 			return nbt;
 		}
 
@@ -139,8 +137,6 @@ public class GelCapability
 			{
 				CompoundNBT nbt = (CompoundNBT) inbt;
 				instance.setPortal(getPortal(nbt, portal));
-				instance.setPortalVisual(getPortal(nbt, portalVisual));
-				instance.setPortalAudio(getPortal(nbt, portalAudio));
 			}
 		}
 

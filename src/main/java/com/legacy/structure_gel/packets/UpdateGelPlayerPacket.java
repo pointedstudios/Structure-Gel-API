@@ -29,16 +29,12 @@ public class UpdateGelPlayerPacket
 	public static void encoder(UpdateGelPlayerPacket packet, PacketBuffer buff)
 	{
 		putPortal(buff, packet.gelEntity.getPortal());
-		putPortal(buff, packet.gelEntity.getPortalVisual());
-		putPortal(buff, packet.gelEntity.getPortalAudio());
 	}
 
 	public static UpdateGelPlayerPacket decoder(PacketBuffer buff)
 	{
 		IGelEntity gelEntity = new GelEntity();
 		gelEntity.setPortal(getPortal(buff));
-		gelEntity.setPortalVisual(getPortal(buff));
-		gelEntity.setPortalAudio(getPortal(buff));
 		return new UpdateGelPlayerPacket(gelEntity);
 	}
 
@@ -65,11 +61,6 @@ public class UpdateGelPlayerPacket
 	private static void handlePacket(UpdateGelPlayerPacket packet)
 	{
 		net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getInstance();
-		GelCapability.ifPresent(mc.player, (ge) ->
-		{
-			ge.setPortal(packet.gelEntity.getPortal());
-			ge.setPortalVisual(packet.gelEntity.getPortalVisual());
-			ge.setPortalAudio(packet.gelEntity.getPortalAudio());
-		});
+		GelCapability.ifPresent(mc.player, ge -> ge.setPortal(packet.gelEntity.getPortal()));
 	}
 }

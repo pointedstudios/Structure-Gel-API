@@ -9,6 +9,7 @@ import com.google.common.collect.ImmutableList;
 import com.legacy.structure_gel.util.GelPortalSize;
 import com.legacy.structure_gel.util.GelTeleporter;
 import com.legacy.structure_gel.util.capability.GelCapability;
+import com.legacy.structure_gel.util.capability.GelEntity;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -16,6 +17,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.NetherPortalBlock;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -182,31 +184,31 @@ public class GelPortalBlock extends NetherPortalBlock
 	}
 
 	@Override
-	public void randomTick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random)
+	public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random)
 	{
 		return;
 	}
 
 	@Override
-	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos)
+	public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos currentPos, BlockPos facingPos)
 	{
 		Direction.Axis facingAxis = facing.getAxis();
-		Direction.Axis portalAxis = stateIn.get(AXIS);
+		Direction.Axis portalAxis = state.get(AXIS);
 		boolean flag = portalAxis != facingAxis && facingAxis.isHorizontal();
-		return !flag && !facingState.isIn(this) && !(new GelPortalSize(worldIn, currentPos, portalAxis, this.getFrameBlock().get().getBlock(), this, ImmutableList.of())).isPortalComplete() ? Blocks.AIR.getDefaultState() : super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+		return !flag && !facingState.isIn(this) && !(new GelPortalSize(world, currentPos, portalAxis, this.getFrameBlock().get().getBlock(), this, ImmutableList.of())).isPortalComplete() ? Blocks.AIR.getDefaultState() : super.updatePostPlacement(state, facing, facingState, world, currentPos, facingPos);
 	}
 
 	@Override
-	public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn)
+	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity)
 	{
-		GelCapability.ifPresent(entityIn, (gelEntity) ->
+		GelCapability.ifPresent(entity, gelEntity ->
 		{
-			if (!entityIn.isPassenger() && !entityIn.isBeingRidden() && entityIn.isNonBoss())
+			if (!entity.isPassenger() && !entity.isBeingRidden() && entity.isNonBoss())
 			{
-				entityIn.setPortal(pos);
+				entity.setPortal(pos);
 				gelEntity.setPortal(this);
-				gelEntity.setPortalVisual(this);
-				gelEntity.setPortalAudio(this);
+				if (world.isRemote && entity instanceof PlayerEntity)
+					GelEntity.setPortalClient(this);
 			}
 		});
 	}

@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
-import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.biome_dictionary.BiomeDictionary;
 
 import net.minecraft.entity.EntityClassification;

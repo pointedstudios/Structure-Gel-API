@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.legacy.structure_gel.blocks.GelPortalBlock;
 import com.legacy.structure_gel.util.capability.GelCapability;
+import com.legacy.structure_gel.util.capability.GelEntity;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IngameGui;
@@ -28,9 +29,9 @@ public class IngameGuiMixin
 	@Inject(at = @At("HEAD"), method = "renderPortal(F)V", cancellable = true)
 	private void renderPortal(float timeInPortal, CallbackInfo callback)
 	{
-		GelCapability.ifPresent(this.mc.player, (gelEntity) ->
+		GelCapability.ifPresent(this.mc.player, gelEntity ->
 		{
-			GelPortalBlock portal = gelEntity.getPortalVisual();
+			GelPortalBlock portal = GelEntity.getPortalClient();
 			if (portal != null)
 			{
 				portal.renderPortal(timeInPortal, this.scaledHeight, this.scaledWidth);

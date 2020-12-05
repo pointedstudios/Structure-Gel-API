@@ -26,33 +26,4 @@ public interface IGelEntity
 	 * @param portal
 	 */
 	void setPortal(GelPortalBlock portal);
-
-	/**
-	 * The portal that the entity last stepped into. Used for rendering gui
-	 * overlays.
-	 * 
-	 * @return {@link GelPortalBlock}
-	 */
-	@Nullable
-	GelPortalBlock getPortalVisual();
-
-	/**
-	 * @see #getPortalVisual()
-	 * @param portal
-	 */
-	void setPortalVisual(GelPortalBlock portal);
-
-	/**
-	 * The portal that the entity last stepped into. Used for playing sounds.
-	 * 
-	 * @return {@link GelPortalBlock}
-	 */
-	@Nullable
-	GelPortalBlock getPortalAudio();
-
-	/**
-	 * @see #getPortalAudio()
-	 * @param portalAudio
-	 */
-	void setPortalAudio(GelPortalBlock portalAudio);
 }

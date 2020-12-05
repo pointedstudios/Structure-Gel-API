@@ -3,15 +3,15 @@ package com.legacy.structure_gel.util.capability;
 import javax.annotation.Nullable;
 
 import com.legacy.structure_gel.blocks.GelPortalBlock;
+import com.legacy.structure_gel.util.Internal;
 
 public class GelEntity implements IGelEntity
 {
 	@Nullable
 	private GelPortalBlock portal;
+	@Internal
 	@Nullable
-	private GelPortalBlock portalVisual;
-	@Nullable
-	private GelPortalBlock portalAudio;
+	private static GelPortalBlock portalClient;
 
 	@Nullable
 	@Override
@@ -27,28 +27,15 @@ public class GelEntity implements IGelEntity
 	}
 
 	@Nullable
-	@Override
-	public GelPortalBlock getPortalVisual()
+	@Internal
+	public static GelPortalBlock getPortalClient()
 	{
-		return this.portalVisual;
+		return GelEntity.portalClient;
 	}
 
-	@Override
-	public void setPortalVisual(GelPortalBlock prevPortal)
+	@Internal
+	public static void setPortalClient(GelPortalBlock portalClient)
 	{
-		this.portalVisual = prevPortal;
-	}
-	
-	@Nullable
-	@Override
-	public GelPortalBlock getPortalAudio()
-	{
-		return this.portalAudio;
-	}
-
-	@Override
-	public void setPortalAudio(GelPortalBlock portalAudio)
-	{
-		this.portalAudio = portalAudio;
+		GelEntity.portalClient = portalClient;
 	}
 }
