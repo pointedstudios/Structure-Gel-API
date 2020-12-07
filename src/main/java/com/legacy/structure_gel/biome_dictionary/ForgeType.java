@@ -1,5 +1,6 @@
 package com.legacy.structure_gel.biome_dictionary;
 
+import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -35,7 +36,7 @@ public class ForgeType extends BiomeType
 	 */
 	private ForgeType(BiomeDictionary.Type type)
 	{
-		super(new ResourceLocation("forge", type.getName().toLowerCase()), Sets.newHashSet(), Sets.newHashSet());
+		super(new ResourceLocation("forge", type.getName().toLowerCase(Locale.ENGLISH)), Sets.newHashSet(), Sets.newHashSet());
 		this.type = type;
 	}
 

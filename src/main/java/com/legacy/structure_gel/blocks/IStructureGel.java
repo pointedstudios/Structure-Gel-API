@@ -1,5 +1,6 @@
 package com.legacy.structure_gel.blocks;
 
+import java.util.Locale;
 import java.util.Random;
 
 import javax.annotation.Nullable;
@@ -77,7 +78,7 @@ public interface IStructureGel
 		 */
 		Behavior()
 		{
-			this.translation = String.format("info.%s.%s", StructureGelMod.MODID, this.name().toLowerCase());
+			this.translation = String.format("info.%s.%s", StructureGelMod.MODID, this.name().toLowerCase(Locale.ENGLISH));
 		}
 
 		@Override

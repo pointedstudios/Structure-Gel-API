@@ -1,5 +1,7 @@
 package com.legacy.structure_gel.core.mixin;
 
+import java.util.Locale;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -26,7 +28,7 @@ public class ItemMixin
 			CompoundNBT blockEntityTag = stack.getChildTag("BlockEntityTag");
 			if (blockEntityTag != null)
 			{
-				String mode = blockEntityTag.contains("mode") ? blockEntityTag.getString("mode").toLowerCase() : "data";
+				String mode = blockEntityTag.contains("mode") ? blockEntityTag.getString("mode").toLowerCase(Locale.ENGLISH) : "data";
 				String text = mode.equals("data") ? (blockEntityTag.contains("metadata") ? blockEntityTag.getString("metadata") : "null") : (blockEntityTag.contains("name") ? blockEntityTag.getString("name") : "null");
 				callback.setReturnValue(new TranslationTextComponent("structure_block.mode." + mode).append(new StringTextComponent(": \"" + text + "\"")));
 			}
