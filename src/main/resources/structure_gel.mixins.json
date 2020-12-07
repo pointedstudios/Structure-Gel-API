@@ -20,7 +20,8 @@
 		"SpawnerFixMixins$PolarBear",
 		"SpawnerFixMixins$Wolf",
 		"StructureTileEntityRendererMixin",
-		"ItemMixin"
+		"ItemMixin",
+		"EndPortalBlockMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

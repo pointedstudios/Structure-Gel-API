@@ -11,7 +11,6 @@ import com.legacy.structure_gel.util.capability.GelCapability;
 import com.legacy.structure_gel.util.capability.GelEntity;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.ITeleporter;
@@ -72,8 +71,8 @@ public class EntityMixin
 				gelEntity.setPortal(null);
 			}
 			// not in gel portal but in some portal
-			else if (world.isRemote && (Entity) (Object) this instanceof PlayerEntity && this.inPortal)
-				GelEntity.setPortalClient(null);
+			else if (this.inPortal)
+				GelEntity.setPortalClient((Entity) (Object) this, null);
 		});
 	}
 

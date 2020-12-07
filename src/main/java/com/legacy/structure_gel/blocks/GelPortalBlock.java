@@ -17,7 +17,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.NetherPortalBlock;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -207,8 +206,7 @@ public class GelPortalBlock extends NetherPortalBlock
 			{
 				entity.setPortal(pos);
 				gelEntity.setPortal(this);
-				if (world.isRemote && entity instanceof PlayerEntity)
-					GelEntity.setPortalClient(this);
+				GelEntity.setPortalClient(entity, this);
 			}
 		});
 	}

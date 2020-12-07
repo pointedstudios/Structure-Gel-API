@@ -5,6 +5,8 @@ import javax.annotation.Nullable;
 import com.legacy.structure_gel.blocks.GelPortalBlock;
 import com.legacy.structure_gel.util.Internal;
 
+import net.minecraft.entity.Entity;
+
 public class GelEntity implements IGelEntity
 {
 	@Nullable
@@ -34,8 +36,10 @@ public class GelEntity implements IGelEntity
 	}
 
 	@Internal
-	public static void setPortalClient(GelPortalBlock portalClient)
+	public static void setPortalClient(Entity entity, GelPortalBlock portalClient)
 	{
-		GelEntity.portalClient = portalClient;
+		if (entity.world.isRemote)
+			if (net.minecraft.client.Minecraft.getInstance().player == entity)
+				GelEntity.portalClient = portalClient;
 	}
 }
