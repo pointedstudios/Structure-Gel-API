@@ -17,7 +17,7 @@ apply plugin: 'org.spongepowered.mixin'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
-version = '1.7.2'
+version = '1.7.3'
 group = 'com.legacy.structure_gel'
 archivesBaseName = 'structure-gel-api-1.16.4'
 
