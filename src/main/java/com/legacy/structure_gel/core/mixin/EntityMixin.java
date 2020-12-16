@@ -13,7 +13,6 @@ import com.legacy.structure_gel.util.capability.GelEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.common.util.ITeleporter;
 
 @Mixin(Entity.class)
 public class EntityMixin
@@ -89,7 +88,7 @@ public class EntityMixin
 	}
 
 	@Shadow
-	public Entity changeDimension(ServerWorld world, ITeleporter teleporter)
+	public Entity changeDimension(ServerWorld world, net.minecraftforge.common.util.ITeleporter teleporter)
 	{
 		throw new IllegalStateException("Mixin failed to shadow changeDimension()");
 	}
