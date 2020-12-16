@@ -10,27 +10,95 @@ buildscript {
 		classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
 	}
 }
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
-apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'net.minecraftforge.gradle' // ForgeGradle
+apply plugin: 'org.spongepowered.mixin' // MixinGradle
 
+// This plugin is used to add compatibility for Eclipse workspaces.
+apply plugin: 'eclipse'
+// This plugin is used to add the ability to sign jars.
+apply plugin: 'signing'
+// This plugin is used to be able to publish to the Modding Legacy Maven (ask Jonathing for details).
+apply plugin: 'maven-publish'
+
+// Get a variable from gradle.properties, or return null if it doesn't exist.
+String getVariable(String key) {
+    return rootProject.hasProperty(key) ? rootProject.property(key) : null
+}
+
+// Get the Minecraft version from gradle.properties
+def mc_version = "${mc_version_major}.${mc_version_minor}.${mc_version_patch}"
+// Get the Minecraft Forge version from gradle.properties
+def forge_version = project.hasProperty('forge_version_build') ? "${forge_version_major}.${forge_version_minor}.${forge_version_patch}.${forge_version_build}" : "${forge_version_major}.${forge_version_minor}.${forge_version_patch}"
+
+
+// Get the mod version from gradle.properties
+version = project.hasProperty('mod_version_modifier') ? "${mod_version_major}.${mod_version_minor}.${mod_version_patch}-${mod_version_modifier}" : "${mod_version_major}.${mod_version_minor}.${mod_version_patch}"
+// Get the mod group from gradle.properties
+group = "${mod_group}"
+// Get the archives base name from the mod id and the Minecraft version.
+archivesBaseName = "${mod_id}-${mc_version}"
+
+// Ensure that the IDE knows that this project is for Java 8 and not anything else.
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
-version = '1.7.3'
-group = 'com.legacy.structure_gel'
-archivesBaseName = 'structure-gel-api-1.16.4'
+project.ext.canJarBeSigned = { return canJarBeSigned() }
+project.ext.getProjectFingerprint = { return getProjectFingerprint() }
+project.ext.sign = { File jar -> return sign(jar) }
+project.ext.isOsx = { return isOsx() }
 
+// This section prints out the Java, Minecraft, and Mod info just to double check all the values are correct.
+// It is printed on every build, so make sure you double check!
+println('')
+println('Java Information')
+println('- Java: ' + System.getProperty('java.version'))
+println('- JVM: ' + System.getProperty('java.vm.version') + ' (' + System.getProperty('java.vendor') + ')')
+println('- Arch: ' + System.getProperty('os.arch'))
+println('')
+println('Minecraft Information')
+println('- Minecraft: ' + "${mc_version}".toString())
+println('- Minecraft Forge: ' + "${forge_version}".toString())
+println('- Mappings: ' + "${mappings_version} ${mappings_channel}".toString())
+println('')
+println('Mod Information')
+println('- ID: ' + "${mod_id}".toString())
+println('- Name: ' + "${mod_name}".toString())
+println('- Version: ' + "${version}".toString())
+println('')
+
+// Any repositories for dependencies go here.
+repositories {
+
+}
+
+// Minecraft information
 minecraft {
-    mappings channel: 'snapshot', version: '20201028-1.16.3'
+    // Mappings from gradle.properties
+    mappings channel: "${mappings_channel}".toString(), version: "${mappings_version}".toString()
+
+    // Access Transformer (commented out by default)
 	accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
+    // Run configurations
     runs {
+        // Client run configuration
         client {
+            // The directory for Minecraft to run in
             workingDirectory project.file('run')
+
+            // Enable mixins (comment out if using a Mixin connector)
 			arg '-mixin.config=structure_gel.mixins.json'
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Mod scanning, registration, and registry dump logging (commented out by default)
+            //property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Console logging level (info by default)
             property 'forge.logging.console.level', 'info'
+
+            // Tell Minecraft if it is running in an IDE (must be configured in your project)
+            property "${mod_id}.iside".toString(), 'true'
+
             mods {
+                // you will NEED to change this to your mod id. Unfortunately, this is not automated.
                 structure_gel {
                     source sourceSets.main
                 }
@@ -38,11 +106,26 @@ minecraft {
         }
 
         server {
+            // The directory for Minecraft to run in
             workingDirectory project.file('run')
-			arg '-mixin.config=structure_gel.mixins.json'
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Enable mixins (comment out if using a Mixin connector)
+            arg '-mixin.config=structure_gel.mixins.json'
+
+            // Mod scanning, registration, and registry dump logging (commented out by default)
+            //property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Console logging level (info by default)
             property 'forge.logging.console.level', 'info'
+
+            // Tell Minecraft if it is running in an IDE (must be configured in your project)
+            property "${mod_id}.iside".toString(), 'true'
+
+            // Additional arguments exclusive to the server (nogui by default, separated by ",")
+            args 'nogui'
+
             mods {
+                // you will NEED to change this to your mod id. Unfortunately, this is not automated.
                 structure_gel {
                     source sourceSets.main
                 }
@@ -50,12 +133,35 @@ minecraft {
         }
 		
 		data {
-			workingDirectory project.file('run')
-			arg '-mixin.config=structure_gel.mixins.json'
-			property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-			property 'forge.logging.console.level', 'debug'
-			args '--mod', 'structure_gel', '--all', '--output', file('run/generated/resources')
-			mods {
+            // The directory for Minecraft to run in
+            workingDirectory project.file('run')
+
+            // Enable mixins (comment out if using a Mixin connector)
+            arg '-mixin.config=structure_gel.mixins.json'
+
+            // Mod scanning, registration, and registry dump logging (commented out by default)
+            //property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Console logging level (info by default)
+            property 'forge.logging.console.level', 'info'
+
+            // Tell Minecraft if it is running in an IDE (must be configured in your project)
+            property "${mod_id}.iside".toString(), 'true'
+
+            // Tell Minecraft if it is running datagen (must be configured in your project)
+            property "${mod_id}.datagen".toString(), 'true'
+
+            // Workaround for https://github.com/MinecraftForge/ForgeGradle/issues/690
+            // Written by Shadew
+            if (project.ext.isOsx()) {
+                jvmArg("-XstartOnFirstThread")
+            }
+
+            // Additional arguments exclusive to data generation (do NOT change these unless necessary)
+            args '--mod', "${mod_id}".toString(), '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+
+            mods {
+                // you will NEED to change this to your mod id. Unfortunately, this is not automated.
 				structure_gel {
 					source sourceSets.main
 				}
@@ -64,43 +170,125 @@ minecraft {
     }
 }
 
-dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.4-35.1.0'
+// Include resources generated by data generators.
+sourceSets {
+    main {
+        resources {
+            srcDir 'src/generated/resources'
+        }
+    }
 }
 
+// Ensure the reference map is included in the source sets
 mixin {
     add sourceSets.main, "structure_gel.refmap.json"
+}
+
+// Additional dependencies (including Minecraft) for the project)
+dependencies {
+    minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}".toString()
 }
 
 jar {
     manifest {
         attributes([
-            "Specification-Title": "structure_gel_api",
-            "Specification-Vendor": "moddinglegacy",
-            "Specification-Version": "1",
+            "Specification-Title": "${jar_specification_title}",
+            "Specification-Vendor": "${jar_specification_vendor}",
+            "Specification-Version": "${jar_specification_version}",
             "Implementation-Title": project.name,
             "Implementation-Version": "${version}",
-            "Implementation-Vendor" :"moddinglegacy",
+            "Implementation-Vendor" :"${jar_specification_vendor}",
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-			"MixinConfigs": "structure_gel.mixins.json"
+			"MixinConfigs": "${mod_id}.mixins.json"
         ])
     }
 }
 
-def reobfFile = file("$buildDir/reobfJar/output.jar")
-def reobfArtifact = artifacts.add('default', reobfFile) {
-    type 'jar'
-    builtBy 'reobfJar'
+// Detects if the OS is macOS. Required for the workaround in genData.
+static def isOsx() {
+    def osProp = System.properties['os.name'].toLowerCase()
+    return osProp.contains('darwin') || osProp.contains('osx') || osProp.contains('mac')
 }
+
+// Ensures that the signJar task will run on every build
+// REMINDER: the jar will not be signed if the mlKeyStore key in gradle.properties does not exist
+build {
+    dependsOn 'signJar'
+}
+
+// detects if the mlKeyStore key in gradle.properties exists so the jar can be signed
+def canJarBeSigned() {
+    return getVariable('mlKeyStore') != null
+}
+
+// Returns the public fingerprint, may be empty ("")
+def getProjectFingerprint() {
+    if (canJarBeSigned()) {
+        def sha256 = getVariable('mlKeyStoreSHA256')
+        return sha256 != null ? sha256 : ''
+    }
+}
+
+// Signs a jar file
+def sign(File jar) {
+    if (canJarBeSigned()) {
+        println "Attempting to sign jar: ${jar}"
+        ant.signjar(
+                destDir: "${jar.parentFile}",
+                jar: "${jar}",
+                alias: getVariable('mlKeyStoreAlias'),
+                storetype: "jks",
+                keystore: getVariable("mlKeyStore"),
+                storepass: getVariable('mlKeyStorePass'),
+                keypass: getVariable('mlKeyStoreKeyPass'),
+                verbose: true,
+                preservelastmodified: "true"
+        )
+        println "Jar signed: ${jar}"
+    } else {
+        println "No keystore property found, jar will not be signed"
+    }
+}
+
+// Gradle task to sign the jar.
+task signJar(dependsOn: 'reobfJar') {
+    doLast {
+        project.ext.sign(jar.archivePath)
+    }
+}
+
+// generates the javadocs and shoves them in a jar
+task javadocJar(type: Jar) {
+    from javadoc
+    classifier = 'javadoc'
+}
+
+// Ensures that the mod is built before it is published to the maven
+publish {
+    dependsOn 'build'
+}
+
+// the reobfFile takes the built file (from the build task) and uses that to publish it to the maven
+def reobfFile = file("build/libs/structure-gel-api-${mc_version}-${version}.jar")
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifact reobfArtifact
+            groupId = "${mod_group}"
+            artifactId = "${mod_id}"
+            version = "${mc_version}-${version}"
+
+            artifact reobfFile
+            artifact javadocJar
         }
     }
     repositories {
         maven {
-            url "file:///${project.projectDir}/mcmodsrepo"
+            name = "ModdingLegacyMaven"
+            url = uri("https://maven.moddinglegacy.com/artifactory/modding-legacy/")
+            credentials {
+                username = project.findProperty("mlm.user") ?: System.getenv("USERNAME")
+                password = project.findProperty("mlm.key") ?: System.getenv("TOKEN")
+            }
         }
     }
 }
