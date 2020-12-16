@@ -52,15 +52,19 @@ dependencies {
 
 To view a list of all the available versions, go to the [structure_gel folder in the maven repository browser](https://maven.moddinglegacy.com/artifactory/modding-legacy/com/legacy/structure-gel/).
 
-3. In the `build.gradle` file for your mod, add the Structure Gel mixin file to your run configurations. This only shows the client, but all are required.
+3. In the `build.gradle` file for your mod, you must add two things to your run configurations. This only shows the client, but all are required. 
+   1. Add the Structure Gel mixin file to your run configurations.
+   2. Add a property to your run configurations that disables mixin's reference maps. This is to prevent mixin from injecting code into unmapped methods instead of the methods that have been remapped with your mappings of choice.
 
 ```groovy
 minecraft {
     runs {
         client {
             workingDirectory project.file('run')
+           
+            arg '-mixin.config=structure_gel.mixins.json' // <-- Part 3a
 
-            arg '-mixin.config=structure_gel.mixins.json' // <-- This part right here
+            property 'mixin.env.disableRefMap', 'true' // <-- Part 3b
             // ...
         }
     }
