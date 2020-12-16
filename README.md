@@ -1,12 +1,14 @@
 # Structure Gel API
 
 ## About
+
 This library mod seeks to make handling world gen easier on developers. It's main features include:
+
 - Gel blocks that can be used to automatically fill a structure and replace with air using structure processors
 - Jigsaw registry shortcuts/builders
 - Data structure block handling within jigsaw structures
 - Configurable structure classes
-	- Placement separation values, mob spawns, data marker handling, etc
+  - Placement separation values, mob spawns, data marker handling, etc
 - Dimension registry events
 - Extensible vanilla-like portal behavior
 - An extended biome dictionary with support for many popular biome mods
@@ -14,54 +16,73 @@ This library mod seeks to make handling world gen easier on developers. It's mai
 - Registry utilities for structures, structure processors, points of interest, and configured features
 
 ## Compatibility
+
 Mods are able to add compatibility to some aspects Structure Gel without needing to incorporate it into their workspace. Currently, support exists for the following:
+
 - Biome dictionary registry
 
-Check ``com.legacy.structure_gel.StructureGelCompat`` in the source code to learn more on how to use this as it's documented there.
+Check `com.legacy.structure_gel.StructureGelCompat` class in the source code to learn more on how to use this as it's documented there.
 
 ## Installing in Your Workspace
-1) Get a deobfuscated jar of this mod from the "jars" folder in the repository.
-	- Make sure you're in the correct version number branch.
-	- MCP mapping and minimum forge versions are listed in the "jars/README" file.
-	- The latest version in this folder may not yet be released to [the curse page](https://www.curseforge.com/minecraft/mc-mods/structure-gel-api), so make sure to check what players can actually download before using the latest.
-2) In the build.gradle for your mod, add the jar as a dependency.
-```
-dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.3-34.1.23'
-    compile files('libs/structure-gel-api-1.16.3-1.5.0-deobf.jar')
+
+The Structure Gel API can be downloaded from the Modding Legacy maven repository via the buildscript. To do so, follow these steps:
+
+1. In the `build.gradle` file for your mod, add the Modding Legacy maven repository to the `repositories` block (it is not in the `buildscript` block)
+
+```groovy
+repositories {
+    // ...
+
+    maven {
+        name = "Modding Legacy Maven"
+        url = "https://maven.moddinglegacy.com/artifactory/modding-legacy/"
+    }
 }
 ```
-3) In the build.gradle for your mod, add the Structure Gel mixin file to your run configurations. This only shows the client, but all are required.
+
+2. In the `build.gradle` file for your mod, add Structure Gel API as a dependency.
+
+```groovy
+dependencies {
+    // ...
+
+    compile fg.deobf("com.legacy:structure-gel:1.16.4-1.7.3")
+}
 ```
+
+To view a list of all the available versions, go to the [structure_gel folder in the maven repository browser](https://maven.moddinglegacy.com/artifactory/modding-legacy/com/legacy/structure-gel/).
+
+3. In the `build.gradle` file for your mod, add the Structure Gel mixin file to your run configurations. This only shows the client, but all are required.
+
+```groovy
 minecraft {
     runs {
         client {
             workingDirectory project.file('run')
+
             arg '-mixin.config=structure_gel.mixins.json' // <-- This part right here
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'debug'
-            mods {
-                examplemod {
-                    source sourceSets.main
-                }
-            }
+            // ...
         }
     }
 }
 ```
-4) Add Structure Gel as a dependency for your mod in it's mods.toml.
-```
+
+4. Add Structure Gel as a dependency for your mod in its `mods.toml` file.
+
+```toml
 [[dependencies.examplemod]]
     modId="structure_gel"
     mandatory=true
-    versionRange="[1.5.0,]"
+    versionRange="[1.7.3,]"
     ordering="NONE"
     side="BOTH"
 ```
-5) Setup your workspace with the appropriate gradlew commands for your IDE.
-	- For Eclipse
-		- ``gradlew eclispe``
-		- ``gradlew genEclipseRuns``
-	- For IntelliJ
-		- ``gradlew genIntellijRuns``
-6) From here, assuming you see Structure Gel in your project's external dependencies, you should be able to use the API. If you do not see it, try refreshing your project as some IDEs won't do that automatically.
+
+5. Setup your workspace with the appropriate gradlew commands for your IDE.
+    - For Eclipse
+        - ``gradlew eclispe``
+        - ``gradlew genEclipseRuns``
+    - For IntelliJ
+        - ``gradlew genIntellijRuns``
+
+6. From here, assuming you see Structure Gel in your project's external dependencies, you should be able to use the API. If you do not see it, try refreshing your project as some IDEs won't do that automatically.

@@ -86,7 +86,10 @@ minecraft {
             workingDirectory project.file('run')
 
             // Enable mixins (comment out if using a Mixin connector)
-			arg '-mixin.config=structure_gel.mixins.json'
+            arg "-mixin.config=${mod_id}.mixins.json".toString()
+
+            // Enable Structure Gel API mixins (commented out by default)
+            //arg '-mixin.config=structure_gel.mixins.json'
 
             // Mod scanning, registration, and registry dump logging (commented out by default)
             //property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
@@ -110,7 +113,10 @@ minecraft {
             workingDirectory project.file('run')
 
             // Enable mixins (comment out if using a Mixin connector)
-            arg '-mixin.config=structure_gel.mixins.json'
+            arg "-mixin.config=${mod_id}.mixins.json".toString()
+
+            // Enable Structure Gel API mixins (commented out by default)
+            //arg '-mixin.config=structure_gel.mixins.json'
 
             // Mod scanning, registration, and registry dump logging (commented out by default)
             //property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
@@ -137,7 +143,10 @@ minecraft {
             workingDirectory project.file('run')
 
             // Enable mixins (comment out if using a Mixin connector)
-            arg '-mixin.config=structure_gel.mixins.json'
+            arg "-mixin.config=${mod_id}.mixins.json".toString()
+
+            // Enable Structure Gel API mixins (commented out by default)
+            //arg '-mixin.config=structure_gel.mixins.json'
 
             // Mod scanning, registration, and registry dump logging (commented out by default)
             //property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
@@ -181,7 +190,7 @@ sourceSets {
 
 // Ensure the reference map is included in the source sets
 mixin {
-    add sourceSets.main, "structure_gel.refmap.json"
+    add sourceSets.main, "${mod_id}.refmap.json"
 }
 
 // Additional dependencies (including Minecraft) for the project)
@@ -269,7 +278,7 @@ publish {
 }
 
 // the reobfFile takes the built file (from the build task) and uses that to publish it to the maven
-def reobfFile = file("build/libs/structure-gel-api-${mc_version}-${version}.jar")
+def reobfFile = file("build/libs/${archivesBaseName}-${version}.jar")
 publishing {
     publications {
         mavenJava(MavenPublication) {
