@@ -34,13 +34,12 @@ import java.util.function.Function;
  * <br>
  * To add support for your mod without needing the API as a dependency, create a
  * method in your main mod class like this one
- * {@link StructureGelMod#getBiomesSG()}.<br>
+ * {@code StructureGelMod#getBiomesSG()}.<br>
  * <br>
  * When using a {@link ConfigTemplates.StructureConfig} and adding biome tags to
  * the config, it will reference this dictionary.
  *
  * @author David
- * @see StructureGelMod#getBiomesSG()
  */
 @SuppressWarnings("unchecked")
 public class BiomeDictionary

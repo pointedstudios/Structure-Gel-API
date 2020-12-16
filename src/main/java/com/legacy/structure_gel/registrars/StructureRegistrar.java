@@ -133,7 +133,7 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 	 *
 	 * @param name
 	 * @param structure
-	 * @param pieceType
+	 * @param pieceTypes
 	 * @param configs
 	 * @param generationStage
 	 * @return {@link StructureRegistrar}
@@ -148,7 +148,7 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 	 *
 	 * @param name
 	 * @param structure
-	 * @param pieceType
+	 * @param pieceTypes
 	 * @param config
 	 * @param generationStage
 	 * @return {@link StructureRegistrar}

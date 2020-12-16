@@ -148,8 +148,7 @@ public abstract class GelTemplateStructurePiece extends TemplateStructurePiece i
 	 * loaded later when the world needs it.
 	 *
 	 * @param nbt
-	 * @see #GelTemplateStructurePiece(IStructurePieceType, ResourceLocation,
-	 * CompoundNBT)
+	 * @see #GelTemplateStructurePiece(IStructurePieceType, CompoundNBT)
 	 */
 	@Override
 	protected void readAdditional(CompoundNBT nbt)
@@ -164,8 +163,7 @@ public abstract class GelTemplateStructurePiece extends TemplateStructurePiece i
 	 * Override of the vanilla method that places blocks from a structure into the
 	 * world with added hooks for special conditions.
 	 *
-	 * @see #shouldPlace(ISeedReader, StructureManager, ChunkGenerator, Random,
-	 * MutableBoundingBox, BlockPos, BlockState)
+	 * @see TemplateStructurePiece#func_230383_a_(ISeedReader, StructureManager, ChunkGenerator, Random, MutableBoundingBox, ChunkPos, BlockPos)
 	 */
 	@Override
 	public boolean func_230383_a_(ISeedReader world, StructureManager structureManager, ChunkGenerator chunkGenerator, Random rand, MutableBoundingBox bounds, ChunkPos chunkPos, BlockPos pos)
