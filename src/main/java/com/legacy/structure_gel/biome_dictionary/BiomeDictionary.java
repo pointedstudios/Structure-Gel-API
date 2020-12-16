@@ -1,19 +1,10 @@
 package com.legacy.structure_gel.biome_dictionary;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
 import com.google.common.collect.ImmutableList;
 import com.legacy.structure_gel.StructureGelConfig;
 import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.util.ConfigTemplates;
 import com.legacy.structure_gel.util.Internal;
-
 import net.minecraft.block.GravelBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.RegistryKey;
@@ -29,6 +20,10 @@ import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryManager;
 
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
 /**
  * A current replacement for the forge biome dictionary. To register to the
  * biome dictionary, use the event for
@@ -43,10 +38,9 @@ import net.minecraftforge.registries.RegistryManager;
  * <br>
  * When using a {@link ConfigTemplates.StructureConfig} and adding biome tags to
  * the config, it will reference this dictionary.
- * 
- * @see StructureGelMod#getBiomesSG()
- * @author David
  *
+ * @author David
+ * @see StructureGelMod#getBiomesSG()
  */
 @SuppressWarnings("unchecked")
 public class BiomeDictionary
@@ -204,7 +198,7 @@ public class BiomeDictionary
 	 * Replacement for {@link IForgeRegistry#register(IForgeRegistryEntry)}. Please
 	 * use this instead as it has special functionality to allow extending existing
 	 * registries.
-	 * 
+	 *
 	 * @param biomeType
 	 * @return {@link BiomeType}
 	 */
@@ -221,7 +215,7 @@ public class BiomeDictionary
 			// Add to existing registry
 			if (REGISTRY.containsKey(key))
 				REGISTRY.getValue(key).addBiomes(biomeType.getBiomes()).addParents(biomeType.getParents());
-			// Create new registry
+				// Create new registry
 			else
 				REGISTRY.register(biomeType);
 			if (!BIOME_TO_BIOMETYPE_CACHE.isEmpty())
@@ -234,7 +228,7 @@ public class BiomeDictionary
 	/**
 	 * Used for registering forge biome dictionary entries to this dictionary for
 	 * compatibility.
-	 * 
+	 *
 	 * @param forgeType
 	 * @return {@link ForgeType}
 	 */
@@ -247,7 +241,7 @@ public class BiomeDictionary
 
 	/**
 	 * Replacement for {@link IForgeRegistry#registerAll(IForgeRegistryEntry...)}
-	 * 
+	 *
 	 * @param biomeTypes
 	 */
 	public static void registerAll(BiomeType... biomeTypes)
@@ -258,7 +252,7 @@ public class BiomeDictionary
 
 	/**
 	 * Returns all registed vanilla biomes that aren't tagged as nether or end.
-	 * 
+	 *
 	 * @return {@link Set}
 	 */
 	public static Set<ResourceLocation> getOverworldBiomes()
@@ -281,7 +275,7 @@ public class BiomeDictionary
 	 * it is not already registered to a type.<br>
 	 * <br>
 	 * This can be disabled via configs.
-	 * 
+	 *
 	 * @return The biomes registered and where they were registered to
 	 */
 	@Internal
@@ -387,15 +381,15 @@ public class BiomeDictionary
 			// Rain type
 			switch (biome.getPrecipitation())
 			{
-			case NONE:
-				if (biome.getDepth() > 0)
-					DRY.addBiome(biome);
-				break;
-			case SNOW:
-				SNOWY.addBiome(biome);
-				break;
-			default:
-				break;
+				case NONE:
+					if (biome.getDepth() > 0)
+						DRY.addBiome(biome);
+					break;
+				case SNOW:
+					SNOWY.addBiome(biome);
+					break;
+				default:
+					break;
 			}
 
 			if (biome.getRegistryName() != null)
@@ -431,7 +425,7 @@ public class BiomeDictionary
 		BIOME_TO_BIOMETYPE_CACHE.clear();
 		return newlyRegistered;
 	}
-	
+
 	@Internal
 	public static boolean filterTypeForAutoRegister(BiomeType type)
 	{
@@ -440,7 +434,7 @@ public class BiomeDictionary
 
 	/**
 	 * Returns the {@link RegistryKey} for the passed {@link Biome}.
-	 * 
+	 *
 	 * @param biome
 	 * @return {@link RegistryKey}
 	 */
@@ -451,7 +445,7 @@ public class BiomeDictionary
 
 	/**
 	 * Returns all {@link BiomeType}s containing this biome.
-	 * 
+	 *
 	 * @param biome
 	 * @return {@link Set}
 	 */
@@ -462,7 +456,7 @@ public class BiomeDictionary
 
 	/**
 	 * Returns all {@link BiomeType}s containing this biome.
-	 * 
+	 *
 	 * @param biome
 	 * @return {@link Set}
 	 */
@@ -473,7 +467,7 @@ public class BiomeDictionary
 
 	/**
 	 * Returns all {@link BiomeType}s containing this biome.
-	 * 
+	 *
 	 * @param biome
 	 * @return {@link Set}
 	 */
@@ -497,7 +491,7 @@ public class BiomeDictionary
 
 	/**
 	 * Shorthand for BiomeDictionary.REGISTRY.containsKey(ResourceLocation).
-	 * 
+	 *
 	 * @param name
 	 * @return {@link Boolean}
 	 */
@@ -509,7 +503,7 @@ public class BiomeDictionary
 	/**
 	 * Shorthand for BiomeDictionary.REGISTRY.getValue(ResourceLocation). Returns
 	 * {@link #EMPTY} if no value is present.
-	 * 
+	 *
 	 * @return {@link BiomeType}
 	 */
 	public static BiomeType get(ResourceLocation name)
@@ -519,7 +513,7 @@ public class BiomeDictionary
 
 	/**
 	 * Shorthand for BiomeDictionary.REGISTRY.forEach(Consumer).
-	 * 
+	 *
 	 * @param action
 	 */
 	public static void forEach(Consumer<BiomeType> action)

@@ -1,14 +1,10 @@
 package com.legacy.structure_gel;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.legacy.structure_gel.SGRegistry.GelBlocks;
 import com.legacy.structure_gel.SGRegistry.GelItems;
 import com.legacy.structure_gel.SGRegistry.StructureRegistry;
 import com.legacy.structure_gel.biome_dictionary.BiomeType;
 import com.legacy.structure_gel.util.Internal;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
@@ -21,6 +17,8 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This is an API with the purpose of giving access and shortcuts to various
@@ -35,9 +33,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
  * <br>
  * If you encounter issues or find any bugs, please report them to the issue
  * tracker. https://gitlab.com/modding-legacy/structure-gel-api/-/issues
- * 
- * @author David
  *
+ * @author David
  */
 @Mod(StructureGelMod.MODID)
 public class StructureGelMod

@@ -1,14 +1,9 @@
 package com.legacy.structure_gel.worldgen.processors;
 
-import java.util.Random;
-
-import javax.annotation.Nullable;
-
 import com.legacy.structure_gel.SGRegistry.Processors;
 import com.legacy.structure_gel.util.Internal;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
@@ -19,12 +14,14 @@ import net.minecraft.world.gen.feature.template.PlacementSettings;
 import net.minecraft.world.gen.feature.template.StructureProcessor;
 import net.minecraft.world.gen.feature.template.Template;
 
+import javax.annotation.Nullable;
+import java.util.Random;
+
 /**
  * Shorthand way of creating a structure processor to randomly replace some
  * blocks.
- * 
- * @author David
  *
+ * @author David
  */
 public class RandomStateSwapProcessor extends StructureProcessor
 {
@@ -41,16 +38,16 @@ public class RandomStateSwapProcessor extends StructureProcessor
 			return processor.changeTo;
 		})).apply(instance, RandomStateSwapProcessor::new);
 	});
-	
+
 	private final BlockState condition;
 	private final float chance;
 	private final BlockState changeTo;
 
 	/**
 	 * @param condition : the block state to change
-	 * @param chance : expressed as a percentage. 0.1F = 10%
-	 * @param changeTo : the BlockState to change "condition" to when the chance is
-	 *            true
+	 * @param chance    : expressed as a percentage. 0.1F = 10%
+	 * @param changeTo  : the BlockState to change "condition" to when the chance is
+	 *                  true
 	 */
 	public RandomStateSwapProcessor(BlockState condition, float chance, BlockState changeTo)
 	{
@@ -61,7 +58,7 @@ public class RandomStateSwapProcessor extends StructureProcessor
 
 	/**
 	 * 100% chance to swap
-	 * 
+	 *
 	 * @param condition
 	 * @param changeTo
 	 */
@@ -72,7 +69,7 @@ public class RandomStateSwapProcessor extends StructureProcessor
 
 	/**
 	 * Assumes changeTo uses the default state.
-	 * 
+	 *
 	 * @param condition
 	 * @param chance
 	 * @param changeTo
@@ -84,7 +81,7 @@ public class RandomStateSwapProcessor extends StructureProcessor
 
 	/**
 	 * 100% chance to swap. Assumes changeTo uses the default state.
-	 * 
+	 *
 	 * @param condition
 	 * @param changeTo
 	 */
@@ -94,7 +91,7 @@ public class RandomStateSwapProcessor extends StructureProcessor
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	@Nullable
 	@Internal
@@ -107,7 +104,7 @@ public class RandomStateSwapProcessor extends StructureProcessor
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	@Internal
 	@Override

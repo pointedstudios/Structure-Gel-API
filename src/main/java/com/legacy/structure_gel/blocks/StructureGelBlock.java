@@ -1,17 +1,7 @@
 package com.legacy.structure_gel.blocks;
 
-import java.util.List;
-import java.util.Random;
-
-import javax.annotation.Nullable;
-
 import com.google.common.collect.ImmutableList;
-
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.SoundType;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -34,15 +24,18 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Random;
+
 /**
  * A block that spreads out from where it's placed. Sneak while placing to
  * trigger this behavior. Right click with gunpowder to cause a chain reaction
  * that removes all gels connected. Some methods contain hooks in
  * {@link IStructureGel} that you can override for custom behavior. All methods
  * containing hooks are documented with "@see"
- * 
- * @author David
  *
+ * @author David
  */
 public class StructureGelBlock extends Block implements IStructureGel
 {
@@ -52,7 +45,7 @@ public class StructureGelBlock extends Block implements IStructureGel
 	public static final IntegerProperty COUNT = IntegerProperty.create("count", 0, 51);
 	/**
 	 * List of behaviors that this block will use.
-	 * 
+	 *
 	 * @see Behavior
 	 */
 	public final List<IBehavior> behaviors;
@@ -72,7 +65,7 @@ public class StructureGelBlock extends Block implements IStructureGel
 
 	/**
 	 * Ensures that only creative players can place this block.
-	 * 
+	 *
 	 * @see IStructureGel#onHandPlaceHook(BlockItemUseContext)
 	 */
 	@Override
@@ -108,7 +101,7 @@ public class StructureGelBlock extends Block implements IStructureGel
 
 	/**
 	 * Called on block update to either spread or remove the structure gel.
-	 * 
+	 *
 	 * @see IStructureGel#spreadHookPre(BlockState, World, BlockPos, Random)
 	 * @see IStructureGel#spreadHookPost(BlockState, World, BlockPos, Random)
 	 * @see IStructureGel#removalHookPre(BlockState, World, BlockPos, Random)
@@ -198,12 +191,11 @@ public class StructureGelBlock extends Block implements IStructureGel
 	/**
 	 * Called when adding structure gel to the world. This method contains checks to
 	 * ensure that it can place the gel before actually placing it.
-	 * 
+	 *
 	 * @param state
 	 * @param worldIn
 	 * @param pos
 	 * @param count
-	 * 
 	 * @see IStructureGel#checkPlacementHook(World, BlockPos, int)
 	 * @see StructureGelBlock#setGel(BlockState, World, BlockPos, int)
 	 */
@@ -217,11 +209,10 @@ public class StructureGelBlock extends Block implements IStructureGel
 	 * Called when removing structure gel from the world from the gunpowder chain
 	 * reaction. This method contains checks to make sure it's only removing
 	 * structure gel blocks from the world.
-	 * 
+	 *
 	 * @param state
 	 * @param worldIn
 	 * @param pos
-	 * 
 	 * @see StructureGelBlock#setGel(BlockState, World, BlockPos, int)
 	 */
 	public void removeGel(BlockState state, World worldIn, BlockPos pos)
@@ -233,7 +224,7 @@ public class StructureGelBlock extends Block implements IStructureGel
 	/**
 	 * Places structure gel with the proper state and then schedules a block update
 	 * on it to continue the spread.
-	 * 
+	 *
 	 * @param state
 	 * @param worldIn
 	 * @param pos
@@ -248,7 +239,7 @@ public class StructureGelBlock extends Block implements IStructureGel
 	/**
 	 * Checks to see if the blocks above this are either air or gel. Returns false
 	 * if there's anything else above.
-	 * 
+	 *
 	 * @param worldIn
 	 * @param pos
 	 * @return {@link Boolean}
@@ -269,7 +260,7 @@ public class StructureGelBlock extends Block implements IStructureGel
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	@Override
 	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
@@ -278,7 +269,7 @@ public class StructureGelBlock extends Block implements IStructureGel
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	@Override
 	public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
@@ -287,7 +278,7 @@ public class StructureGelBlock extends Block implements IStructureGel
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	@Override
 	public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos)
@@ -296,7 +287,7 @@ public class StructureGelBlock extends Block implements IStructureGel
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	@OnlyIn(Dist.CLIENT)
 	@Override
@@ -306,7 +297,7 @@ public class StructureGelBlock extends Block implements IStructureGel
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	@OnlyIn(Dist.CLIENT)
 	@Override

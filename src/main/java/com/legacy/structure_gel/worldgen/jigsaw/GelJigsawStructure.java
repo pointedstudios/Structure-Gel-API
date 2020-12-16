@@ -1,12 +1,8 @@
 package com.legacy.structure_gel.worldgen.jigsaw;
 
-import java.util.List;
-import java.util.Random;
-
 import com.legacy.structure_gel.util.Internal;
 import com.legacy.structure_gel.worldgen.structure.GelStructure;
 import com.mojang.serialization.Codec;
-
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
@@ -22,9 +18,12 @@ import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.world.gen.feature.structure.VillageConfig;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 
+import java.util.List;
+import java.util.Random;
+
 /**
  * An extension of {@link GelStructure} to use with jigsaw structures.
- * 
+ *
  * @author David
  */
 public abstract class GelJigsawStructure extends GelStructure<VillageConfig>
@@ -57,7 +56,7 @@ public abstract class GelJigsawStructure extends GelStructure<VillageConfig>
 	/**
 	 * Override this with a declaration of your own extension of
 	 * {@link GelStructurePiece} to use data markers.
-	 * 
+	 *
 	 * @return {@link IPieceFactory}
 	 */
 	public IPieceFactory getPieceType()
@@ -83,7 +82,7 @@ public abstract class GelJigsawStructure extends GelStructure<VillageConfig>
 	/**
 	 * Called in the start factory so you won't need to make your own for basic
 	 * things.
-	 * 
+	 *
 	 * @param start
 	 * @param dynamicRegistries
 	 * @param chunkGen

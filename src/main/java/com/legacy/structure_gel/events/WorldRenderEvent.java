@@ -14,9 +14,8 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
  * renderer.<br>
  * <br>
  * {@link Bus#FORGE}
- * 
- * @author David
  *
+ * @author David
  */
 @Cancelable
 @OnlyIn(value = Dist.CLIENT)

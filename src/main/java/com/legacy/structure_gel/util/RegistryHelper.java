@@ -1,16 +1,10 @@
 package com.legacy.structure_gel.util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Streams;
 import com.legacy.structure_gel.registrars.IForgeRegistrar;
 import com.legacy.structure_gel.registrars.IRegistrar;
 import com.mojang.datafixers.util.Pair;
-
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
@@ -29,20 +23,24 @@ import net.minecraft.world.gen.feature.template.StructureProcessorList;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 /**
  * A simple class that gives methods to ease the registry process by a bit.
- * 
+ * <p>
  * Note: As of 1.16.2, jigsaw structures no longer require a piece type.
- * 
- * @author David
  *
+ * @author David
  */
 public class RegistryHelper
 {
 	/**
 	 * Returns an optional containing the registry key associated with the value
 	 * passed.
-	 * 
+	 *
 	 * @param world
 	 * @param registry
 	 * @param value
@@ -55,7 +53,7 @@ public class RegistryHelper
 
 	/**
 	 * Returns an optional containing the value of the registry key passed.
-	 * 
+	 *
 	 * @param world
 	 * @param registry
 	 * @param key
@@ -69,7 +67,7 @@ public class RegistryHelper
 	/**
 	 * Simple means of registering to a forge registry. Returns the exact type of
 	 * the object passed in.
-	 * 
+	 *
 	 * @param registry
 	 * @param key
 	 * @param registryObject
@@ -85,7 +83,7 @@ public class RegistryHelper
 	/**
 	 * Registers the {@link PointOfInterestType} properly since the methods to do it
 	 * are private normally.
-	 * 
+	 *
 	 * @param registry
 	 * @param poi
 	 * @return {@link PointOfInterestType}
@@ -99,7 +97,7 @@ public class RegistryHelper
 	/**
 	 * Registers the configured feature. If you don't add register a configured
 	 * feature, things break when you try to add it to a biome.
-	 * 
+	 *
 	 * @param key
 	 * @param configuredFeature
 	 * @return {@link ConfiguredFeature}
@@ -112,7 +110,7 @@ public class RegistryHelper
 	/**
 	 * Registers the input structure to both the forge Feature registry and the
 	 * Structure Feature registry
-	 * 
+	 *
 	 * @param registry
 	 * @param key
 	 * @param structure
@@ -130,7 +128,7 @@ public class RegistryHelper
 
 	/**
 	 * Registers the input {@link IStructurePieceType}
-	 * 
+	 *
 	 * @param key
 	 * @param pieceType
 	 * @return {@link IStructurePieceType}
@@ -142,7 +140,7 @@ public class RegistryHelper
 
 	/**
 	 * Registers the input {@link Structure} and {@link IStructurePieceType}.
-	 * 
+	 *
 	 * @param registry
 	 * @param key
 	 * @param structure
@@ -150,7 +148,7 @@ public class RegistryHelper
 	 * @param pieceType
 	 * @return {@link Pair}
 	 * @deprecated Use
-	 *             {@link RegistryHelper#handleRegistrar(IForgeRegistrar, IForgeRegistry)}
+	 * {@link RegistryHelper#handleRegistrar(IForgeRegistrar, IForgeRegistry)}
 	 */
 	@Deprecated
 	public static <C extends IFeatureConfig, S extends Structure<C>, P extends IStructurePieceType> Pair<S, P> registerStructureAndPiece(IForgeRegistry<Structure<?>> registry, ResourceLocation key, S structure, Decoration generationStage, P pieceType)
@@ -162,7 +160,7 @@ public class RegistryHelper
 
 	/**
 	 * Registers the structure as a feature for world generation.
-	 * 
+	 *
 	 * @param key
 	 * @param structureFeature
 	 * @return {@link StructureFeature}
@@ -175,7 +173,7 @@ public class RegistryHelper
 	/**
 	 * Registers the structure as a feature for world generation. Uses the
 	 * structure's registry name as the key.
-	 * 
+	 *
 	 * @param structureFeature
 	 * @return {@link StructureFeature}
 	 */
@@ -186,7 +184,7 @@ public class RegistryHelper
 
 	/**
 	 * Executes the handle method in the registrar.
-	 * 
+	 *
 	 * @param registrar
 	 * @return {@link IRegistrar}
 	 */
@@ -197,7 +195,7 @@ public class RegistryHelper
 
 	/**
 	 * Executes the handleForge method in the registrar.
-	 * 
+	 *
 	 * @param registrar
 	 * @param registry
 	 * @return {@link IForgeRegistrar}
@@ -209,7 +207,7 @@ public class RegistryHelper
 
 	/**
 	 * Registers the {@link StructureProcessor} as a {@link StructureProcessorList}.
-	 * 
+	 *
 	 * @param key
 	 * @param processor
 	 * @return {@link StructureProcessorList}
@@ -221,7 +219,7 @@ public class RegistryHelper
 
 	/**
 	 * Registers the {@link StructureProcessorList}.
-	 * 
+	 *
 	 * @param key
 	 * @param processorList
 	 * @return {@link StructureProcessorList}
@@ -234,7 +232,7 @@ public class RegistryHelper
 	/**
 	 * Registers the list of {@link StructureProcessor}s as a
 	 * {@link StructureProcessorList}
-	 * 
+	 *
 	 * @param key
 	 * @param processors
 	 * @return {@link StructureProcessorList}
@@ -247,7 +245,7 @@ public class RegistryHelper
 	/**
 	 * Merges the passed {@link StructureProcessorList} array and returns the
 	 * result.
-	 * 
+	 *
 	 * @param lists
 	 * @return {@link StructureProcessorList}
 	 */
@@ -262,7 +260,7 @@ public class RegistryHelper
 	 * Merges the {@link StructureProcessorList} with the list of
 	 * {@link StructureProcessor}s and returns the resulting
 	 * {@link StructureProcessorList}.
-	 * 
+	 *
 	 * @param list
 	 * @param processors
 	 * @return {@link StructureProcessorList}

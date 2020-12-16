@@ -1,17 +1,10 @@
 package com.legacy.structure_gel.items;
 
-import java.util.List;
-
 import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.blocks.IStructureGel.Behavior;
 import com.legacy.structure_gel.blocks.IStructureGel.IBehavior;
 import com.legacy.structure_gel.blocks.StructureGelBlock;
-
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -20,11 +13,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.List;
+
 /**
  * The item used by structure gel blocks to display information on how it works.
- * 
- * @author David
  *
+ * @author David
  */
 public class StructureGelItem extends BlockItem
 {
@@ -51,7 +45,7 @@ public class StructureGelItem extends BlockItem
 
 	/**
 	 * Displays information about the structure gel based on it's behaviors.
-	 * 
+	 *
 	 * @see Behavior
 	 */
 	@Override

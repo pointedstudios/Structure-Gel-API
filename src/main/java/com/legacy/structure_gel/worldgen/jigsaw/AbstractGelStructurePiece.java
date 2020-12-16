@@ -1,14 +1,8 @@
 package com.legacy.structure_gel.worldgen.jigsaw;
 
-import java.util.Random;
-import java.util.function.Function;
-
-import javax.annotation.Nullable;
-
 import com.legacy.structure_gel.access_helpers.JigsawAccessHelper;
 import com.legacy.structure_gel.util.Internal;
 import com.legacy.structure_gel.worldgen.IModifyState;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
@@ -32,14 +26,17 @@ import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.feature.structure.TemplateStructurePiece;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 
+import javax.annotation.Nullable;
+import java.util.Random;
+import java.util.function.Function;
+
 /**
  * An extension of {@link AbstractVillagePiece} for jigsaw structures that
  * allows for data structure block interaction and contains more functional
  * methods to go along with that. Use this as your piece type if you're doing
  * anything with jigsaw structures, as you'll have more options.
- * 
- * @author David
  *
+ * @author David
  */
 public abstract class AbstractGelStructurePiece extends AbstractVillagePiece implements IModifyState
 {
@@ -58,7 +55,7 @@ public abstract class AbstractGelStructurePiece extends AbstractVillagePiece imp
 	/**
 	 * Runs on every data structure block the same as you would in
 	 * {@link TemplateStructurePiece}
-	 * 
+	 *
 	 * @param key
 	 * @param pos
 	 * @param world
@@ -68,14 +65,14 @@ public abstract class AbstractGelStructurePiece extends AbstractVillagePiece imp
 
 	/**
 	 * Returns the {@link IStructurePieceType} for this piece.
-	 * 
+	 *
 	 * @return {@link IStructurePieceType}
 	 */
 	public abstract IStructurePieceType getStructurePieceType();
 
 	/**
 	 * Sets the {@link IStructurePieceType} for this piece.
-	 * 
+	 *
 	 * @param structurePieceType
 	 */
 	@Internal
@@ -88,7 +85,7 @@ public abstract class AbstractGelStructurePiece extends AbstractVillagePiece imp
 	 * addComponentParts<br>
 	 * <br>
 	 * Modification of addComponentParts to allow for data structure block handling.
-	 * 
+	 *
 	 * @return {@link Boolean}
 	 */
 	@Override
@@ -105,7 +102,7 @@ public abstract class AbstractGelStructurePiece extends AbstractVillagePiece imp
 	 * called after processors are applied.<br>
 	 * <br>
 	 * Return null to prevent placement.
-	 * 
+	 *
 	 * @param world
 	 * @param rand
 	 * @param pos
@@ -123,7 +120,7 @@ public abstract class AbstractGelStructurePiece extends AbstractVillagePiece imp
 	 * Shorthand method to create an entity with the given pos (offset by 0.5) and
 	 * rotation. Rotation is south by default, with the structure's rotation taken
 	 * into account.
-	 * 
+	 *
 	 * @param entityType
 	 * @param worldIn
 	 * @param pos
@@ -140,7 +137,7 @@ public abstract class AbstractGelStructurePiece extends AbstractVillagePiece imp
 	/**
 	 * Gives you the name of this structure piece. Useful for cases where you want
 	 * extra things to happen when this piece generates.
-	 * 
+	 *
 	 * @return {@link ResourceLocation}
 	 */
 	public ResourceLocation getLocation()
@@ -152,7 +149,7 @@ public abstract class AbstractGelStructurePiece extends AbstractVillagePiece imp
 
 	/**
 	 * Returns the template manager so you can get data about the structure itself.
-	 * 
+	 *
 	 * @return {@link TemplateManager}
 	 */
 	public TemplateManager getTemplateManager()
@@ -162,7 +159,7 @@ public abstract class AbstractGelStructurePiece extends AbstractVillagePiece imp
 
 	/**
 	 * Gets the size of the structure.
-	 * 
+	 *
 	 * @return {@link BlockPos}
 	 */
 	public BlockPos getSize()
@@ -172,7 +169,7 @@ public abstract class AbstractGelStructurePiece extends AbstractVillagePiece imp
 
 	/**
 	 * world.setBlockState(pos, Blocks.AIR.getDefaultState(), 3)
-	 * 
+	 *
 	 * @param world
 	 * @param pos
 	 */
@@ -184,7 +181,7 @@ public abstract class AbstractGelStructurePiece extends AbstractVillagePiece imp
 	/**
 	 * Fills the air and liquid below the lowest part of this structure with
 	 * stateIn.
-	 * 
+	 *
 	 * @param worldIn
 	 * @param stateIn
 	 * @param bounds
@@ -199,7 +196,7 @@ public abstract class AbstractGelStructurePiece extends AbstractVillagePiece imp
 	/**
 	 * Fills the air and liquid below the lowest part of this structure with the
 	 * BlockState produced from randStateIn.
-	 * 
+	 *
 	 * @param worldIn
 	 * @param randStateIn
 	 * @param bounds

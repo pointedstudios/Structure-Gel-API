@@ -1,19 +1,18 @@
 package com.legacy.structure_gel.util;
 
-import java.util.OptionalLong;
-
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.biome.ColumnFuzzedBiomeMagnifier;
 import net.minecraft.world.biome.IBiomeMagnifier;
 
+import java.util.OptionalLong;
+
 /**
  * A way of creating a {@link DimensionType} in a builder format. All values are
  * defaulted to what they would be for the overworld.
- * 
- * @author David
  *
+ * @author David
  */
 public class DimensionTypeBuilder
 {
@@ -42,7 +41,7 @@ public class DimensionTypeBuilder
 
 	/**
 	 * Creates a new instance of the builder.
-	 * 
+	 *
 	 * @return {@link DimensionTypeBuilder}
 	 */
 	public static DimensionTypeBuilder of()
@@ -52,7 +51,7 @@ public class DimensionTypeBuilder
 
 	/**
 	 * Locks the sun at a specific time.
-	 * 
+	 *
 	 * @param fixedTime
 	 * @return {@link DimensionTypeBuilder}
 	 */
@@ -65,7 +64,7 @@ public class DimensionTypeBuilder
 	/**
 	 * Determines if things that require the sky can occur, such as daylight
 	 * detectors and phantom spawning.
-	 * 
+	 *
 	 * @param hasSkyLight
 	 * @return {@link DimensionTypeBuilder}
 	 */
@@ -77,7 +76,7 @@ public class DimensionTypeBuilder
 
 	/**
 	 * Determines a few things in mob spawning for if your world has a ceiling.
-	 * 
+	 *
 	 * @param hasCeiling
 	 * @return {@link DimensionTypeBuilder}
 	 */
@@ -89,7 +88,7 @@ public class DimensionTypeBuilder
 
 	/**
 	 * Causes water to evaporate and lava to flow further.
-	 * 
+	 *
 	 * @param ultrawarm
 	 * @return {@link DimensionTypeBuilder}
 	 */
@@ -102,7 +101,7 @@ public class DimensionTypeBuilder
 	/**
 	 * When false, compasses and clocks don't function.<br>
 	 * When true, nether portals spawn zombified piglins.
-	 * 
+	 *
 	 * @param natural
 	 * @return {@link DimensionTypeBuilder}
 	 */
@@ -114,7 +113,7 @@ public class DimensionTypeBuilder
 
 	/**
 	 * A multiplier applied to coordinates when traveling between dimensions.
-	 * 
+	 *
 	 * @param coordinateScale
 	 * @return {@link DimensionTypeBuilder}
 	 */
@@ -126,7 +125,7 @@ public class DimensionTypeBuilder
 
 	/**
 	 * Allows the dragon fight to function properly when set to true.
-	 * 
+	 *
 	 * @param hasDragonFight
 	 * @return {@link DimensionTypeBuilder}
 	 */
@@ -138,7 +137,7 @@ public class DimensionTypeBuilder
 
 	/**
 	 * When set to false, piglins will zombify in the dimension.
-	 * 
+	 *
 	 * @param piglinSafe
 	 * @return {@link DimensionTypeBuilder}
 	 */
@@ -150,7 +149,7 @@ public class DimensionTypeBuilder
 
 	/**
 	 * Determines if you're allowed to use a bed.
-	 * 
+	 *
 	 * @param bedWorks
 	 * @return {@link DimensionTypeBuilder}
 	 */
@@ -162,7 +161,7 @@ public class DimensionTypeBuilder
 
 	/**
 	 * Determines if you're allowed to use a respawn anchor.
-	 * 
+	 *
 	 * @param respawnAnchorWorks
 	 * @return {@link DimensionTypeBuilder}
 	 */
@@ -174,7 +173,7 @@ public class DimensionTypeBuilder
 
 	/**
 	 * Determines if players with bad omen can trigger a raid.
-	 * 
+	 *
 	 * @param hasRaids
 	 * @return {@link DimensionTypeBuilder}
 	 */
@@ -187,7 +186,7 @@ public class DimensionTypeBuilder
 	/**
 	 * The maximum height that various mechanics are allowed to send the player.
 	 * This is to prevent players from getting stuck on the nether roof.
-	 * 
+	 *
 	 * @param logicalHeight
 	 * @return {@link DimensionTypeBuilder}
 	 */
@@ -199,7 +198,7 @@ public class DimensionTypeBuilder
 
 	/**
 	 * Used in world gen.
-	 * 
+	 *
 	 * @param magnifier
 	 * @return {@link DimensionTypeBuilder}
 	 */
@@ -211,7 +210,7 @@ public class DimensionTypeBuilder
 
 	/**
 	 * A tag of blocks that are allowed to burn forever in the dimension.
-	 * 
+	 *
 	 * @param infiniburn
 	 * @return {@link DimensionTypeBuilder}
 	 */
@@ -224,7 +223,7 @@ public class DimensionTypeBuilder
 	/**
 	 * Sets what effects the dimension has such as fog. "effects" is a registry id
 	 * in {@link net.minecraft.client.world.DimensionRenderInfo}.
-	 * 
+	 *
 	 * @param effects
 	 * @return {@link DimensionTypeBuilder}
 	 */
@@ -237,7 +236,7 @@ public class DimensionTypeBuilder
 	/**
 	 * Determins how blocks should render. It's what makes the underside of blocks
 	 * brighter in the nether.
-	 * 
+	 *
 	 * @param ambientLight
 	 * @return {@link DimensionTypeBuilder}
 	 */
@@ -249,7 +248,7 @@ public class DimensionTypeBuilder
 
 	/**
 	 * Creates the {@link DimensionType} with the provided settings.
-	 * 
+	 *
 	 * @return {@link DimensionType}
 	 */
 	public DimensionType build()

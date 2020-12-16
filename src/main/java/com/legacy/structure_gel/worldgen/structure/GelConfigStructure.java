@@ -1,20 +1,18 @@
 package com.legacy.structure_gel.worldgen.structure;
 
-import java.util.List;
-
 import com.legacy.structure_gel.util.ConfigTemplates.StructureConfig;
 import com.mojang.serialization.Codec;
-
 import net.minecraft.world.gen.DimensionSettings;
 import net.minecraft.world.gen.feature.IFeatureConfig;
+
+import java.util.List;
 
 /**
  * Extension of {@link GelStructure} for easy implementation of config files
  * using {@link StructureConfig}.
- * 
- * @author David
  *
  * @param <C>
+ * @author David
  */
 public abstract class GelConfigStructure<C extends IFeatureConfig> extends GelStructure<C> implements IConfigStructure
 {

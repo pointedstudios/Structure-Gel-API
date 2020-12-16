@@ -1,44 +1,39 @@
 package com.legacy.structure_gel.blocks;
 
-import java.util.Locale;
-import java.util.Random;
-
-import javax.annotation.Nullable;
-
 import com.legacy.structure_gel.StructureGelMod;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
+import java.util.Locale;
+import java.util.Random;
+
 /**
  * Includes a few methods to hook into {@link StructureGelBlock}'s behavior
- * 
- * @author David
  *
+ * @author David
  */
 public interface IStructureGel
 {
 	/**
 	 * Extend off of this to make your own behaviors.
-	 * 
-	 * @author David
 	 *
+	 * @author David
 	 */
-	public static interface IBehavior
+	interface IBehavior
 	{
-		public String getTranslation();
+		String getTranslation();
 	}
 
 	/**
 	 * Determines how the structure gel should act and provides translations for the
 	 * item.
-	 * 
-	 * @author David
 	 *
+	 * @author David
 	 */
-	public static enum Behavior implements IBehavior
+	enum Behavior implements IBehavior
 	{
 		/**
 		 * Spreads the gel along the cardinal directions, only replacing air. All gels
@@ -73,7 +68,7 @@ public interface IStructureGel
 
 		/**
 		 * Automatically generates a translation as "info.structure_gel.(name)"
-		 * 
+		 *
 		 * @see Behavior
 		 */
 		Behavior()
@@ -91,7 +86,7 @@ public interface IStructureGel
 	/**
 	 * Called before the gel spreads. Return false to cancel the default spread
 	 * mechanic and do your own.
-	 * 
+	 *
 	 * @param state
 	 * @param worldIn
 	 * @param pos
@@ -101,12 +96,12 @@ public interface IStructureGel
 	default boolean spreadHookPre(BlockState state, World worldIn, BlockPos pos, Random random)
 	{
 		return true;
-	};
+	}
 
 	/**
 	 * Called before the gel begins to remove itself. Return false to cancel the
 	 * default removal mechanic and do your own.
-	 * 
+	 *
 	 * @param state
 	 * @param worldIn
 	 * @param pos
@@ -116,11 +111,11 @@ public interface IStructureGel
 	default boolean removalHookPre(BlockState state, World worldIn, BlockPos pos, Random random)
 	{
 		return true;
-	};
+	}
 
 	/**
 	 * Called after the gel finishes spreading to append additional actions
-	 * 
+	 *
 	 * @param state
 	 * @param worldIn
 	 * @param pos
@@ -128,11 +123,11 @@ public interface IStructureGel
 	 */
 	default void spreadHookPost(BlockState state, World worldIn, BlockPos pos, Random random)
 	{
-	};
+	}
 
 	/**
 	 * Called after the gel finishes it's steps for chain removal
-	 * 
+	 *
 	 * @param state
 	 * @param worldIn
 	 * @param pos
@@ -140,15 +135,15 @@ public interface IStructureGel
 	 */
 	default void removalHookPost(BlockState state, World worldIn, BlockPos pos, Random random)
 	{
-	};
+	}
 
 	/**
 	 * Called when the gel checks if it can spread to a given location. Return false
 	 * to prevent the gel from spreading to spreadPos.
-	 * 
+	 *
 	 * @param worldIn
 	 * @param spreadPos : where the gel is trying to spread
-	 * @param count : the {@link StructureGelBlock#COUNT} property to place as
+	 * @param count     : the {@link StructureGelBlock#COUNT} property to place as
 	 * @return {@link Boolean}
 	 */
 	default boolean checkPlacementHook(World worldIn, BlockPos spreadPos, int count)
@@ -159,7 +154,7 @@ public interface IStructureGel
 	/**
 	 * Called when placed by hand to get what state this should place as. Return
 	 * null for default placement behavior.
-	 * 
+	 *
 	 * @param context
 	 * @return {@link BlockState}
 	 */

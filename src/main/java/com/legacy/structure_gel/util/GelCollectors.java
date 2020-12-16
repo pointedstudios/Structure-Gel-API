@@ -1,33 +1,27 @@
 package com.legacy.structure_gel.util;
 
-import java.util.AbstractMap;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Streams;
+
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Contains helper methods for various types of {@link Collection}, including an
  * alternative to creating a {@link Map} and various ways to make immutable
  * collections mutable.
- * 
- * @author David
  *
+ * @author David
  */
 public class GelCollectors
 {
 	/**
 	 * A method to create a map with any amount of arguments. Note that this does
 	 * have issues with generic types.
-	 * 
+	 *
 	 * @param keyClass
 	 * @param valueClass
 	 * @param objects
@@ -46,7 +40,7 @@ public class GelCollectors
 
 	/**
 	 * Adds the object passed to the list and returns the result.
-	 * 
+	 *
 	 * @param list
 	 * @param obj
 	 * @return {@link List}
@@ -58,7 +52,7 @@ public class GelCollectors
 
 	/**
 	 * Merges the entries from the two lists and returns the result.
-	 * 
+	 *
 	 * @param list
 	 * @param list2
 	 * @return {@link List}
@@ -70,7 +64,7 @@ public class GelCollectors
 
 	/**
 	 * Creates a mutable version of the list passed in and returns it.
-	 * 
+	 *
 	 * @param list
 	 * @return {@link List}
 	 */
@@ -82,7 +76,7 @@ public class GelCollectors
 	/**
 	 * Creates a mutable version of the list passed in, applies the passed function
 	 * to all entries, and returns it.
-	 * 
+	 *
 	 * @param list
 	 * @param listFunction
 	 * @return {@link List}
@@ -94,7 +88,7 @@ public class GelCollectors
 
 	/**
 	 * Adds the object passed to the set and returns the result.
-	 * 
+	 *
 	 * @param set
 	 * @param obj
 	 * @return {@link Set}
@@ -106,7 +100,7 @@ public class GelCollectors
 
 	/**
 	 * Merges the entries from the two sets and returns the result.
-	 * 
+	 *
 	 * @param set
 	 * @param set2
 	 * @return {@link Set}
@@ -118,7 +112,7 @@ public class GelCollectors
 
 	/**
 	 * Creates a mutable version of the set passed in and returns it.
-	 * 
+	 *
 	 * @param set
 	 * @return {@link Set}
 	 */
@@ -130,7 +124,7 @@ public class GelCollectors
 	/**
 	 * Creates a mutable version of the set passed in, applies the passed function
 	 * to all entries, and returns it.
-	 * 
+	 *
 	 * @param set
 	 * @param setFunction
 	 * @return {@link Set}
@@ -143,7 +137,7 @@ public class GelCollectors
 	/**
 	 * Merges the entries from the two maps, applies the passed functions to all
 	 * entries, and returns the result.
-	 * 
+	 *
 	 * @param map
 	 * @param map2
 	 * @param keyFunction
@@ -157,7 +151,7 @@ public class GelCollectors
 
 	/**
 	 * Merges the entries from the two maps and returns the result.
-	 * 
+	 *
 	 * @param map
 	 * @param map2
 	 * @return {@link Map}
@@ -170,7 +164,7 @@ public class GelCollectors
 	/**
 	 * Adds the key and value passed to the map, applies the passed functions to all
 	 * entries, and returns the result.
-	 * 
+	 *
 	 * @param map
 	 * @param key
 	 * @param value
@@ -185,7 +179,7 @@ public class GelCollectors
 
 	/**
 	 * Adds the key and value passed to the map and returns the result.
-	 * 
+	 *
 	 * @param map
 	 * @param key
 	 * @param value
@@ -199,7 +193,7 @@ public class GelCollectors
 	/**
 	 * Creates a mutable version of the map passed in, applies the passed functions
 	 * to all entries, and returns it.
-	 * 
+	 *
 	 * @param map
 	 * @param keyFunction
 	 * @param valueFunction
@@ -212,7 +206,7 @@ public class GelCollectors
 
 	/**
 	 * Creates a mutable version of the map passed in and returns it.
-	 * 
+	 *
 	 * @param map
 	 * @return {@link Map}
 	 */

@@ -11,9 +11,8 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
  * the event when you're done rendering.<br>
  * <br>
  * {@link Bus#FORGE}
- * 
- * @author David
  *
+ * @author David
  */
 @Cancelable
 @OnlyIn(value = Dist.CLIENT)

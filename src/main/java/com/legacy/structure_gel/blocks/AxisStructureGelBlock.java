@@ -1,7 +1,5 @@
 package com.legacy.structure_gel.blocks;
 
-import java.util.Random;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItemUseContext;
@@ -13,12 +11,13 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.Random;
+
 /**
  * This extension of {@link StructureGelBlock} contains a blockstate for its
  * axis, and it uses it to only spread in a flat plane.
- * 
- * @author David
  *
+ * @author David
  */
 public class AxisStructureGelBlock extends StructureGelBlock
 {

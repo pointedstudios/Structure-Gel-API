@@ -1,18 +1,7 @@
 package com.legacy.structure_gel.util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.annotation.Nullable;
-
 import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.biome_dictionary.BiomeDictionary;
-
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
@@ -27,11 +16,15 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import javax.annotation.Nullable;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * These are templates that you can use for your structure's config settings.
- * 
- * @author David
  *
+ * @author David
  */
 public class ConfigTemplates
 {
@@ -49,7 +42,7 @@ public class ConfigTemplates
 		private ForgeConfigSpec.ConfigValue<String> biomeString;
 		private List<ResourceLocation> biomes = new ArrayList<>();
 		// Mob spawn settings
-		private Map<EntityClassification, ForgeConfigSpec.ConfigValue<String>> spawnsStrings = new HashMap<>();
+		private final Map<EntityClassification, ForgeConfigSpec.ConfigValue<String>> spawnsStrings = new HashMap<>();
 		private Map<EntityClassification, List<MobSpawnInfo.Spawners>> spawns = new HashMap<>();
 		// Worldgen noise settings... settings. That's a mouthful
 		private ForgeConfigSpec.ConfigValue<String> noiseSettingsString;
@@ -57,7 +50,6 @@ public class ConfigTemplates
 		private List<DimensionSettings> noiseSettings = null;
 
 		/**
-		 * 
 		 * @param builder
 		 * @param name
 		 */
@@ -69,7 +61,6 @@ public class ConfigTemplates
 		}
 
 		/**
-		 * 
 		 * @param builder
 		 * @param name
 		 * @param probability
@@ -135,7 +126,7 @@ public class ConfigTemplates
 
 		/**
 		 * Gets the probability for the structure to generate. 1.0 by default.
-		 * 
+		 *
 		 * @return {@link Double}
 		 */
 		public double getProbability()
@@ -145,7 +136,7 @@ public class ConfigTemplates
 
 		/**
 		 * Gets the spacing for the structure in chunks. 16 by default.
-		 * 
+		 *
 		 * @return {@link Integer}
 		 */
 		public int getSpacing()
@@ -155,7 +146,7 @@ public class ConfigTemplates
 
 		/**
 		 * Gets the offset for the structure in chunks. 7 by default.
-		 * 
+		 *
 		 * @return {@link Integer}
 		 */
 		public int getOffset()
@@ -166,7 +157,7 @@ public class ConfigTemplates
 		/**
 		 * Gets the whitelist mode for picking what biomes a structure should generate
 		 * in. True by default.
-		 * 
+		 *
 		 * @return {@link Boolean}
 		 */
 		public boolean isWhitelist()
@@ -177,7 +168,7 @@ public class ConfigTemplates
 		/**
 		 * Returns the biome filter for determining where the structure should be
 		 * allowed to generate. "" by default.
-		 * 
+		 *
 		 * @return {@link String}
 		 */
 		public String getBiomeString()
@@ -189,7 +180,7 @@ public class ConfigTemplates
 		 * Gets the list of biomes for the filter. Use
 		 * {@link BiomeStructureConfig#isBiomeAllowed(Biome)} to use the
 		 * whitelist/blacklist setting.
-		 * 
+		 *
 		 * @return {@link List}
 		 */
 		public List<ResourceLocation> getBiomes()
@@ -199,7 +190,7 @@ public class ConfigTemplates
 
 		/**
 		 * Returns all spawns strings as a map.
-		 * 
+		 *
 		 * @return {@link Map}
 		 */
 		public Map<EntityClassification, ForgeConfigSpec.ConfigValue<String>> getSpawnsStrings()
@@ -211,7 +202,7 @@ public class ConfigTemplates
 		 * Returns the specific spawns string for the classification passed. Null if not
 		 * present. You shouldn't need this one. Check
 		 * {@link #getSpawnsForClassification(EntityClassification)}
-		 * 
+		 *
 		 * @param classification
 		 * @return {@link String}
 		 */
@@ -222,7 +213,7 @@ public class ConfigTemplates
 
 		/**
 		 * Returns the spawn list for the specific classification.
-		 * 
+		 *
 		 * @param classification
 		 * @return {@link List}
 		 */
@@ -234,7 +225,7 @@ public class ConfigTemplates
 
 		/**
 		 * Returns all spawn entries.
-		 * 
+		 *
 		 * @return {@link Map}
 		 */
 		public Map<EntityClassification, List<MobSpawnInfo.Spawners>> getSpawns()
@@ -246,7 +237,7 @@ public class ConfigTemplates
 		 * Returns the dimension noise settings that this structure is allowed to
 		 * generate with. "minecraft:overworld, minecraft:amplified, minecraft:nether,
 		 * minecraft:end, minecraft:caves, minecraft:floating_islands" by default.
-		 * 
+		 *
 		 * @return {@link String}
 		 */
 		@Nullable
@@ -258,7 +249,7 @@ public class ConfigTemplates
 		/**
 		 * Returns the dimension noise settings that this structure is allowed to
 		 * generate with. Null if no value is set.
-		 * 
+		 *
 		 * @return {@link List}
 		 */
 		@Nullable
@@ -269,7 +260,7 @@ public class ConfigTemplates
 
 		/**
 		 * Parses config strings and resets lists. Some things may need restarting.
-		 * 
+		 *
 		 * @param event
 		 */
 		protected void onConfigLoad(ModConfig.ModConfigEvent event)
@@ -292,7 +283,7 @@ public class ConfigTemplates
 		/**
 		 * Checks if the input biome is or isn't in the biomes list depending on if you
 		 * use whitelist or blacklist mode.
-		 * 
+		 *
 		 * @param biome
 		 * @return {@link Boolean}
 		 */
@@ -304,7 +295,7 @@ public class ConfigTemplates
 		/**
 		 * Checks if the input biome is or isn't in the biomes list depending on if you
 		 * use whitelist or blacklist mode.
-		 * 
+		 *
 		 * @param biome
 		 * @return {@link Boolean}
 		 */
@@ -316,7 +307,7 @@ public class ConfigTemplates
 		/**
 		 * Checks if the input biome is or isn't in the biomes list depending on if you
 		 * use whitelist or blacklist mode.
-		 * 
+		 *
 		 * @param biome
 		 * @return {@link Boolean}
 		 */
@@ -329,7 +320,7 @@ public class ConfigTemplates
 		 * Reads the biomes and tags from the config string and assigns them to the
 		 * biomes list. Used internally.<br>
 		 * "#overworld, !#forest, !minecraft:snowy_taiga, minecraft:flower_forest"
-		 * 
+		 *
 		 * @param key
 		 * @return {@link List}
 		 */
@@ -364,7 +355,7 @@ public class ConfigTemplates
 
 		/**
 		 * Adds/removes the biome to/from the biomes list.
-		 * 
+		 *
 		 * @param biome
 		 * @param not
 		 */
@@ -373,8 +364,7 @@ public class ConfigTemplates
 		{
 			if (not)
 			{
-				if (biomes.contains(biome))
-					biomes.remove(biome);
+				biomes.remove(biome);
 			}
 			else if (!biomes.contains(biome))
 				biomes.add(biome);
@@ -384,7 +374,7 @@ public class ConfigTemplates
 		 * Reads the spawns set from the string and puts them into a list. Used
 		 * internally.<br>
 		 * "[zombie, 1, 2, 4][skeleton, 2, 2, 4]"
-		 * 
+		 *
 		 * @param key
 		 * @return {@link List}
 		 */
@@ -421,7 +411,7 @@ public class ConfigTemplates
 		/**
 		 * Reads the dimension noise settings listed in the string and returns a list
 		 * containing their registered versions.
-		 * 
+		 *
 		 * @param key
 		 * @return {@link List}
 		 */
@@ -456,7 +446,7 @@ public class ConfigTemplates
 	 * Extension of {@link StructureConfig} that allows allows stores what biomes a
 	 * structure should generate in. Use this setting in {@link FMLCommonSetupEvent}
 	 * to register the structure in the appropriate biomes.
-	 * 
+	 *
 	 * @author David
 	 * @deprecated Use {@link StructureConfig}
 	 */
@@ -465,7 +455,6 @@ public class ConfigTemplates
 	{
 
 		/**
-		 * 
 		 * @param builder
 		 * @param name
 		 * @param probability
@@ -481,15 +470,14 @@ public class ConfigTemplates
 		}
 
 		/**
-		 * 
 		 * @param builder
 		 * @param name
 		 * @param probability
 		 * @param spacing
 		 * @param offset
-		 * @param biomes : Entered as a comma separated string of resource locations.
-		 *            You can put spaces, but you don't need to. Ex: "plains,
-		 *            minecraft:swamp, biomesoplenty:origin_beach"
+		 * @param biomes      : Entered as a comma separated string of resource locations.
+		 *                    You can put spaces, but you don't need to. Ex: "plains,
+		 *                    minecraft:swamp, biomesoplenty:origin_beach"
 		 */
 		public BiomeStructureConfig(ForgeConfigSpec.Builder builder, String name, double probability, int spacing, int offset, String biomes)
 		{
@@ -500,7 +488,7 @@ public class ConfigTemplates
 	/**
 	 * Throws a {@link ResourceLocationException} with the provided message and logs
 	 * it to the console.
-	 * 
+	 *
 	 * @param message
 	 * @throws ResourceLocationException
 	 */

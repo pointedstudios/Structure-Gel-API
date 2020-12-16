@@ -1,13 +1,7 @@
 package com.legacy.structure_gel.util.capability;
 
-import java.util.function.Consumer;
-import java.util.function.Function;
-
-import javax.annotation.Nullable;
-
 import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.blocks.GelPortalBlock;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
@@ -17,6 +11,10 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import javax.annotation.Nullable;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class GelCapability
 {
@@ -31,7 +29,7 @@ public class GelCapability
 	/**
 	 * Gets the capability instance from the entity passed. Returns null if the
 	 * entity is null or if the entity does not have the capability attached.
-	 * 
+	 *
 	 * @param entity
 	 * @return {@link IGelEntity}
 	 */
@@ -45,7 +43,7 @@ public class GelCapability
 
 	/**
 	 * Runs the consumer if the entity has the capability
-	 * 
+	 *
 	 * @param entity
 	 * @param action
 	 */
@@ -58,7 +56,7 @@ public class GelCapability
 	/**
 	 * Runs the first consumer if the entity has the capability. The second consumer
 	 * is ran if the capability isn't present.
-	 * 
+	 *
 	 * @param entity
 	 * @param action
 	 * @param elseAction
@@ -76,7 +74,7 @@ public class GelCapability
 
 	/**
 	 * Runs the function if the entity has the capability. Returns the result.
-	 * 
+	 *
 	 * @param entity
 	 * @param action
 	 * @return Result of action
@@ -92,7 +90,7 @@ public class GelCapability
 	/**
 	 * Runs the first function if the entity has the capability. The second function
 	 * is ran if the capability isn't present. Returns the result.
-	 * 
+	 *
 	 * @param entity
 	 * @param action
 	 * @param elseAction

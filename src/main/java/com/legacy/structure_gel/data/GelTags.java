@@ -2,16 +2,14 @@ package com.legacy.structure_gel.data;
 
 import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.worldgen.processors.RemoveGelStructureProcessor;
-
 import net.minecraft.block.Block;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ITag;
 
 /**
  * Stores all tags used by the mod.
- * 
- * @author David
  *
+ * @author David
  */
 public class GelTags
 {

@@ -1,14 +1,12 @@
 package com.legacy.structure_gel.core.mixin;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-
 import com.legacy.structure_gel.StructureGelConfig;
-
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.impl.FillCommand;
 import net.minecraft.util.text.TranslationTextComponent;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(FillCommand.class)
 public class FillCommandMixin

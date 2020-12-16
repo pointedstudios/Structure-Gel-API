@@ -1,9 +1,6 @@
 package com.legacy.structure_gel.registrars;
 
-import javax.annotation.Nonnull;
-
 import com.legacy.structure_gel.util.RegistryHelper;
-
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
@@ -11,12 +8,13 @@ import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.registries.IForgeRegistry;
 
+import javax.annotation.Nonnull;
+
 /**
  * Stores a {@link Biome} and its {@link RegistryKey} and registers with
  * {@link #handle()} or {@link RegistryHelper#handleRegistrar(IRegistrar)}.
- * 
- * @author David
  *
+ * @author David
  */
 public class BiomeRegistrar implements IForgeRegistrar<BiomeRegistrar, Biome>
 {
@@ -39,7 +37,7 @@ public class BiomeRegistrar implements IForgeRegistrar<BiomeRegistrar, Biome>
 	/**
 	 * Gets the name used in registry. Effectively the same as getting the registry
 	 * name of the biome through it.
-	 * 
+	 *
 	 * @return {@link ResourceLocation}
 	 */
 	public ResourceLocation getName()
@@ -49,10 +47,10 @@ public class BiomeRegistrar implements IForgeRegistrar<BiomeRegistrar, Biome>
 
 	/**
 	 * Gets the {@link Biome} held by this registrar.
-	 * 
-	 * @throws NullPointerException If the Biome has not yet been created through
-	 *             {@link #handleForge(IForgeRegistry)}
+	 *
 	 * @return {@link Biome}
+	 * @throws NullPointerException If the Biome has not yet been created through
+	 *                              {@link #handleForge(IForgeRegistry)}
 	 */
 	public Biome getBiome() throws NullPointerException
 	{
@@ -63,10 +61,10 @@ public class BiomeRegistrar implements IForgeRegistrar<BiomeRegistrar, Biome>
 
 	/**
 	 * Gets the {@link RegistryKey} held by this registrar.
-	 * 
-	 * @throws NullPointerException If the RegistryKey has not yet been created
-	 *             through {@link #handle()}
+	 *
 	 * @return {@link RegistryKey}
+	 * @throws NullPointerException If the RegistryKey has not yet been created
+	 *                              through {@link #handle()}
 	 */
 	public RegistryKey<Biome> getKey() throws NullPointerException
 	{

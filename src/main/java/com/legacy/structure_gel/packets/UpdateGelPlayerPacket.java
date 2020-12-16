@@ -1,14 +1,11 @@
 package com.legacy.structure_gel.packets;
 
-import java.util.function.Supplier;
-
 import com.legacy.structure_gel.blocks.GelPortalBlock;
 import com.legacy.structure_gel.util.Internal;
 import com.legacy.structure_gel.util.capability.GelCapability;
 import com.legacy.structure_gel.util.capability.GelCapability.Storage;
 import com.legacy.structure_gel.util.capability.GelEntity;
 import com.legacy.structure_gel.util.capability.IGelEntity;
-
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -16,6 +13,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.function.Supplier;
 
 public class UpdateGelPlayerPacket
 {

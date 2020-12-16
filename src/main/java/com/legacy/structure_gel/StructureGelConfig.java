@@ -1,14 +1,12 @@
 package com.legacy.structure_gel;
 
+import com.legacy.structure_gel.util.Internal;
+import net.minecraftforge.common.ForgeConfigSpec;
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.tuple.Pair;
-
-import com.legacy.structure_gel.util.Internal;
-
-import net.minecraftforge.common.ForgeConfigSpec;
 
 @Internal
 public class StructureGelConfig
@@ -17,6 +15,7 @@ public class StructureGelConfig
 	public static final Client CLIENT;
 	protected static final ForgeConfigSpec COMMON_SPEC;
 	protected static final ForgeConfigSpec CLIENT_SPEC;
+
 	static
 	{
 		Pair<Common, ForgeConfigSpec> specPairCommon = new ForgeConfigSpec.Builder().configure(Common::new);

@@ -75,9 +75,8 @@ import net.minecraftforge.fml.DistExecutor;*/
  * <br>
  * Comment code from these places. {@link StructureGelMod}
  * {@link StructureGelConfig}
- * 
- * @author David
  *
+ * @author David
  */
 public class SGDebug
 {

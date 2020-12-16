@@ -1,27 +1,26 @@
 package com.legacy.structure_gel.access_helpers;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.function.Consumer;
-
 import net.minecraft.entity.EntityType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.MobSpawnerTileEntity;
 import net.minecraft.util.WeightedSpawnerEntity;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.function.Consumer;
+
 /**
  * Contains helper methods for modifying the various fields within a mob spawner
  * through it's NBT.
- * 
- * @author David
  *
+ * @author David
  */
 public class SpawnerAccessHelper
 {
 	/**
 	 * The minimum time a spawner should wait before spawning a mob.
-	 * 
+	 *
 	 * @param tile
 	 * @param minSpawnelay
 	 */
@@ -32,7 +31,7 @@ public class SpawnerAccessHelper
 
 	/**
 	 * The maximum time a spawner should wait before spawning a mob.
-	 * 
+	 *
 	 * @param tile
 	 * @param maxSpawnDelay
 	 */
@@ -43,7 +42,7 @@ public class SpawnerAccessHelper
 
 	/**
 	 * The maximum amount of mobs that can spawn from this spawner at a time.
-	 * 
+	 *
 	 * @param tile
 	 * @param spawnCount
 	 */
@@ -54,7 +53,7 @@ public class SpawnerAccessHelper
 
 	/**
 	 * How many entities can be around the spawner before it stops spawning mobs.
-	 * 
+	 *
 	 * @param tile
 	 * @param maxNearbyEntities
 	 */
@@ -65,7 +64,7 @@ public class SpawnerAccessHelper
 
 	/**
 	 * How far the player can be from the spawner for it to spawn mobs.
-	 * 
+	 *
 	 * @param tile
 	 * @param requiredPlayerRange
 	 */
@@ -78,7 +77,7 @@ public class SpawnerAccessHelper
 	 * The horizontal area a spawner will search to try placing mobs. The vertical
 	 * area is between the y level below the spawner and the y level above it (3
 	 * blocks high).
-	 * 
+	 *
 	 * @param tile
 	 * @param spawnRange
 	 */
@@ -89,7 +88,7 @@ public class SpawnerAccessHelper
 
 	/**
 	 * Sets the passed {@link EntityType} as the mob that the spawner should spawn.
-	 * 
+	 *
 	 * @param tile
 	 * @param entityType
 	 */
@@ -99,9 +98,9 @@ public class SpawnerAccessHelper
 	}
 
 	/**
-	 * @see SpawnerAccessHelper#setSpawnPotentials(MobSpawnerTileEntity, Collection)
 	 * @param tile
 	 * @param spawnerEntities
+	 * @see SpawnerAccessHelper#setSpawnPotentials(MobSpawnerTileEntity, Collection)
 	 */
 	public static void setSpawnPotentials(MobSpawnerTileEntity tile, WeightedSpawnerEntity... spawnerEntities)
 	{
@@ -118,7 +117,7 @@ public class SpawnerAccessHelper
 	 * <br>
 	 * You can also use {@link #createSpawnerEntity(int, EntityType, CompoundNBT)}
 	 * to generate one.
-	 * 
+	 *
 	 * @param tile
 	 * @param spawnerEntities
 	 */
@@ -138,7 +137,7 @@ public class SpawnerAccessHelper
 
 	/**
 	 * Creates a {@link WeightedSpawnerEntity} with the entity passed.
-	 * 
+	 *
 	 * @param entity
 	 * @return {@link WeightedSpawnerEntity}
 	 */
@@ -149,7 +148,7 @@ public class SpawnerAccessHelper
 
 	/**
 	 * Creates a {@link WeightedSpawnerEntity} with the weight and entity passed.
-	 * 
+	 *
 	 * @param weight
 	 * @param entity
 	 * @return {@link WeightedSpawnerEntity}
@@ -162,7 +161,7 @@ public class SpawnerAccessHelper
 	/**
 	 * Creates a {@link WeightedSpawnerEntity} with the wieght, entity, and entity
 	 * nbt passed.
-	 * 
+	 *
 	 * @param weight
 	 * @param entity
 	 * @param entityNBT
@@ -178,7 +177,7 @@ public class SpawnerAccessHelper
 
 	/**
 	 * Applies nbtConsumer to the nbt of the spawner tile entity.
-	 * 
+	 *
 	 * @param tile
 	 * @param nbtConsumer
 	 */

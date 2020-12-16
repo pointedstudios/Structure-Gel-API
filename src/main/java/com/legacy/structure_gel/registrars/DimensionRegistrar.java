@@ -1,13 +1,8 @@
 package com.legacy.structure_gel.registrars;
 
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
 import com.legacy.structure_gel.events.RegisterDimensionEvent;
 import com.legacy.structure_gel.util.DimensionTypeBuilder;
 import com.mojang.serialization.Lifecycle;
-
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.DynamicRegistries;
@@ -19,15 +14,18 @@ import net.minecraft.world.World;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.DimensionSettings;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 /**
  * Handles registering dimensions. Create a new instance of this during the
  * {@link RegisterDimensionEvent} to have it automatically register a dimension
  * with the values passed in.<br>
  * <br>
  * Any values present in the data folder will override the values set here.
- * 
- * @author David
  *
+ * @author David
  */
 public class DimensionRegistrar implements IRegistrar<DimensionRegistrar>
 {
@@ -41,17 +39,16 @@ public class DimensionRegistrar implements IRegistrar<DimensionRegistrar>
 	private final BiFunction<RegisterDimensionEvent, DimensionSettings, ChunkGenerator> chunkGenerator;
 
 	/**
-	 * 
-	 * @param event The event that stores data needed to register your dimension.
-	 * @param key The name of your dimension, dimension type, and dimension
-	 *            settings.
-	 * @param type A {@link Supplier} that returns your {@link DimensionType}. Check
-	 *            {@link DimensionTypeBuilder}.
-	 * @param settings A {@link Function} that creates your
-	 *            {@link DimensionSettings} with the passed {@link RegistryKey}.
+	 * @param event          The event that stores data needed to register your dimension.
+	 * @param key            The name of your dimension, dimension type, and dimension
+	 *                       settings.
+	 * @param type           A {@link Supplier} that returns your {@link DimensionType}. Check
+	 *                       {@link DimensionTypeBuilder}.
+	 * @param settings       A {@link Function} that creates your
+	 *                       {@link DimensionSettings} with the passed {@link RegistryKey}.
 	 * @param chunkGenerator A {@link BiFunction} that creates your
-	 *            {@link ChunkGenerator} with the passed
-	 *            {@link RegisterDimensionEvent} and {@link DimensionSettings}.
+	 *                       {@link ChunkGenerator} with the passed
+	 *                       {@link RegisterDimensionEvent} and {@link DimensionSettings}.
 	 */
 	public DimensionRegistrar(RegisterDimensionEvent event, ResourceLocation key, Supplier<DimensionType> type, Function<RegistryKey<DimensionSettings>, DimensionSettings> settings, BiFunction<RegisterDimensionEvent, DimensionSettings, ChunkGenerator> chunkGenerator)
 	{
@@ -67,7 +64,7 @@ public class DimensionRegistrar implements IRegistrar<DimensionRegistrar>
 
 	/**
 	 * Returns the dimension registry key.
-	 * 
+	 *
 	 * @return {@link RegistryKey}
 	 */
 	public RegistryKey<Dimension> getDimensionKey()
@@ -77,7 +74,7 @@ public class DimensionRegistrar implements IRegistrar<DimensionRegistrar>
 
 	/**
 	 * Returns the dimension type registry key.
-	 * 
+	 *
 	 * @return {@link RegistryKey}
 	 */
 	public RegistryKey<DimensionType> getTypeKey()
@@ -87,7 +84,7 @@ public class DimensionRegistrar implements IRegistrar<DimensionRegistrar>
 
 	/**
 	 * Returns the dimension settings registry key.
-	 * 
+	 *
 	 * @return {@link RegistryKey}
 	 */
 	public RegistryKey<DimensionSettings> getSettingsKey()
@@ -97,7 +94,7 @@ public class DimensionRegistrar implements IRegistrar<DimensionRegistrar>
 
 	/**
 	 * Returns the world key.
-	 * 
+	 *
 	 * @return {@link RegistryKey}
 	 */
 	public RegistryKey<World> getWorldKey()

@@ -1,23 +1,19 @@
 package com.legacy.structure_gel.structure_gel_compat;
 
+import com.legacy.structure_gel.StructureGelCompat;
+import com.legacy.structure_gel.util.Internal;
+import net.minecraft.util.ResourceLocation;
+import org.apache.commons.lang3.tuple.Triple;
+
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.Nullable;
-
-import org.apache.commons.lang3.tuple.Triple;
-
-import com.legacy.structure_gel.StructureGelCompat;
-import com.legacy.structure_gel.util.Internal;
-
-import net.minecraft.util.ResourceLocation;
-
 /**
  * Sample class for adding Structure Gel biome dictionary support to your mod.
- * 
- * @see StructureGelCompat
- * @author David
  *
+ * @author David
+ * @see StructureGelCompat
  */
 @Internal
 public class BiomeDictionaryCompat
@@ -33,10 +29,10 @@ public class BiomeDictionaryCompat
 	 * dictionary entry. In that order.<br>
 	 * <br>
 	 * This will append to an existing entry if one already exists.
-	 * 
+	 *
 	 * @return {@link List}&lt;{@link Triple}&lt;{@link ResourceLocation},
-	 *         {@link Set}&lt;{@link ResourceLocation}&gt;,
-	 *         {@link Set}&lt;{@link ResourceLocation}&gt;&gt;&gt;
+	 * {@link Set}&lt;{@link ResourceLocation}&gt;,
+	 * {@link Set}&lt;{@link ResourceLocation}&gt;&gt;&gt;
 	 */
 	@Nullable
 	public static List<Triple<ResourceLocation, Set<ResourceLocation>, Set<ResourceLocation>>> register(String modID)

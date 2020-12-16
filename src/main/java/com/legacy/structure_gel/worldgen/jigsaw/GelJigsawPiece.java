@@ -1,10 +1,5 @@
 package com.legacy.structure_gel.worldgen.jigsaw;
 
-import java.util.Optional;
-import java.util.Random;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
 import com.legacy.structure_gel.SGRegistry.JigsawDeserializers;
 import com.legacy.structure_gel.worldgen.GelPlacementSettings;
 import com.legacy.structure_gel.worldgen.GelTemplate;
@@ -15,7 +10,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import net.minecraft.block.Blocks;
 import net.minecraft.state.properties.StructureMode;
 import net.minecraft.util.ResourceLocation;
@@ -28,13 +22,12 @@ import net.minecraft.world.gen.feature.jigsaw.IJigsawDeserializer;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
 import net.minecraft.world.gen.feature.jigsaw.SingleJigsawPiece;
 import net.minecraft.world.gen.feature.structure.StructureManager;
-import net.minecraft.world.gen.feature.template.BlockIgnoreStructureProcessor;
-import net.minecraft.world.gen.feature.template.IStructureProcessorType;
-import net.minecraft.world.gen.feature.template.JigsawReplacementStructureProcessor;
-import net.minecraft.world.gen.feature.template.PlacementSettings;
-import net.minecraft.world.gen.feature.template.StructureProcessorList;
-import net.minecraft.world.gen.feature.template.Template;
-import net.minecraft.world.gen.feature.template.TemplateManager;
+import net.minecraft.world.gen.feature.template.*;
+
+import java.util.Optional;
+import java.util.Random;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Extension of {@link SingleJigsawPiece} without the
@@ -48,9 +41,8 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
  * - Block placement overrides, separate from processors. See
  * {@link IModifyState}<br>
  * - Fixes for entity rotation within the structure.
- * 
- * @author David
  *
+ * @author David
  */
 public class GelJigsawPiece extends SingleJigsawPiece
 {
@@ -85,8 +77,7 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	}
 
 	/**
-	 * 
-	 * @param location : the structure
+	 * @param location          : the structure
 	 * @param processors
 	 * @param placementBehavior
 	 * @param maintainWater
@@ -101,7 +92,7 @@ public class GelJigsawPiece extends SingleJigsawPiece
 
 	/**
 	 * Determins if blocks should become waterlogged when placed in water.
-	 * 
+	 *
 	 * @param value
 	 * @return {@link GelJigsawPiece}
 	 */
@@ -114,7 +105,7 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	/**
 	 * Prevents entities from generating with the structure. Not sure why you'd do
 	 * this, but I'll allow it.
-	 * 
+	 *
 	 * @param value
 	 * @return {@link GelJigsawPiece}
 	 */
@@ -126,7 +117,7 @@ public class GelJigsawPiece extends SingleJigsawPiece
 
 	/**
 	 * Gets the {@link PlacementSettings} for the piece to use.
-	 * 
+	 *
 	 * @param rotation
 	 * @param boundingBox
 	 * @param isLegacy
@@ -151,7 +142,7 @@ public class GelJigsawPiece extends SingleJigsawPiece
 
 	/**
 	 * Changes how the place function works to allow for data structure blocks.
-	 * 
+	 *
 	 * @param templateManager
 	 * @param seedReader
 	 * @param structureManager
@@ -190,7 +181,7 @@ public class GelJigsawPiece extends SingleJigsawPiece
 
 	/**
 	 * Gets the resource location of this piece
-	 * 
+	 *
 	 * @return {@link ResourceLocation}
 	 */
 	public ResourceLocation getLocation()
@@ -200,7 +191,7 @@ public class GelJigsawPiece extends SingleJigsawPiece
 
 	/**
 	 * Gets the template from the {@link TemplateManager}
-	 * 
+	 *
 	 * @param templateManager
 	 * @return {@link Template}
 	 */
@@ -211,7 +202,7 @@ public class GelJigsawPiece extends SingleJigsawPiece
 
 	/**
 	 * Used internally.
-	 * 
+	 *
 	 * @return {@link IJigsawDeserializer}
 	 */
 	@Override
@@ -221,7 +212,7 @@ public class GelJigsawPiece extends SingleJigsawPiece
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	@Override
 	public String toString()

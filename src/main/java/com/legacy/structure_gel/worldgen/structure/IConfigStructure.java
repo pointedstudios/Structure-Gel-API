@@ -6,16 +6,15 @@ import com.legacy.structure_gel.util.ConfigTemplates.StructureConfig;
 /**
  * Used for structures that implement configuration files from
  * {@link ConfigTemplates}.
- * 
- * @author David
  *
+ * @author David
  */
 public interface IConfigStructure
 {
 	/**
 	 * Returns the config file for this structure.
-	 * 
+	 *
 	 * @return {@link StructureConfig}
 	 */
-	public StructureConfig getConfig();
+	StructureConfig getConfig();
 }

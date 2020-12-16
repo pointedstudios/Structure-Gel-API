@@ -1,8 +1,5 @@
 package com.legacy.structure_gel;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import com.legacy.structure_gel.biome_dictionary.BiomeDictionary;
 import com.legacy.structure_gel.biome_dictionary.BiomeType;
 import com.legacy.structure_gel.blocks.AxisStructureGelBlock;
@@ -17,7 +14,6 @@ import com.legacy.structure_gel.worldgen.processors.RandomStateSwapProcessor;
 import com.legacy.structure_gel.worldgen.processors.RandomTagSwapProcessor;
 import com.legacy.structure_gel.worldgen.processors.RemoveGelStructureProcessor;
 import com.mojang.serialization.Codec;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.util.registry.Registry;
@@ -29,6 +25,9 @@ import net.minecraft.world.gen.feature.template.IStructureProcessorType;
 import net.minecraft.world.gen.feature.template.StructureProcessor;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.registries.IForgeRegistry;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class SGRegistry
 {

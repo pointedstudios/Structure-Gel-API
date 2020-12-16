@@ -1,13 +1,7 @@
 package com.legacy.structure_gel.commands;
 
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.EntityClassification;
@@ -20,6 +14,11 @@ import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.ForgeEventFactory;
+
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GetSpawnsCommand
 {
@@ -71,22 +70,22 @@ public class GetSpawnsCommand
 			spawns.stream().sorted(new SpawnInfoComparator<>()).forEach(spawn -> context.getSource().sendFeedback(new StringTextComponent(String.format(" - %s, weight:%d, min:%d, max:%d", spawn.type.getRegistryName(), spawn.itemWeight, spawn.minCount, spawn.maxCount)), true));
 		}
 	}
-	
+
 	private static class SpawnInfoComparator<T extends MobSpawnInfo.Spawners> implements Comparator<T>
 	{
 		@Override
 		public int compare(T o1, T o2)
 		{
 			return o1.type.getRegistryName().toString().compareTo(o2.type.getRegistryName().toString());
-		}	
+		}
 	}
-	
+
 	private static class ClassificationComparator<T extends Map.Entry<EntityClassification, List<MobSpawnInfo.Spawners>>> implements Comparator<T>
 	{
 		@Override
 		public int compare(T o1, T o2)
 		{
 			return o1.getKey().getName().compareTo(o2.getKey().getName());
-		}	
+		}
 	}
 }

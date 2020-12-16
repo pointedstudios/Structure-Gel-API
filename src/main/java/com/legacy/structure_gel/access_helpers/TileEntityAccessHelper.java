@@ -1,15 +1,14 @@
 package com.legacy.structure_gel.access_helpers;
 
-import java.util.function.Consumer;
-
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 
+import java.util.function.Consumer;
+
 /**
  * Contains methods for modifying tile entity data.
- * 
- * @author David
  *
+ * @author David
  */
 public class TileEntityAccessHelper
 {

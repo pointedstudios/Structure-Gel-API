@@ -1,22 +1,17 @@
 package com.legacy.structure_gel.worldgen.processors;
 
-import javax.annotation.Nullable;
-
 import com.legacy.structure_gel.SGRegistry.Processors;
 import com.legacy.structure_gel.data.GelTags;
 import com.legacy.structure_gel.util.Internal;
 import com.legacy.structure_gel.worldgen.jigsaw.GelJigsawPiece;
 import com.legacy.structure_gel.worldgen.jigsaw.GelStructurePiece;
 import com.mojang.serialization.Codec;
-
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReader;
-import net.minecraft.world.gen.feature.template.BlockIgnoreStructureProcessor;
-import net.minecraft.world.gen.feature.template.IStructureProcessorType;
-import net.minecraft.world.gen.feature.template.PlacementSettings;
-import net.minecraft.world.gen.feature.template.StructureProcessor;
-import net.minecraft.world.gen.feature.template.Template;
+import net.minecraft.world.gen.feature.template.*;
+
+import javax.annotation.Nullable;
 
 /**
  * Functions similar to
@@ -29,17 +24,16 @@ import net.minecraft.world.gen.feature.template.Template;
  * <br>
  * This processor is automatically added to anything using
  * {@link GelJigsawPiece}.
- * 
- * @author David
  *
+ * @author David
  */
 public class RemoveGelStructureProcessor extends StructureProcessor
 {
-	public static final RemoveGelStructureProcessor INSTANCE = new RemoveGelStructureProcessor();	
+	public static final RemoveGelStructureProcessor INSTANCE = new RemoveGelStructureProcessor();
 	public static final Codec<RemoveGelStructureProcessor> CODEC = Codec.unit(() -> INSTANCE);
 
 	/**
-	 * 
+	 *
 	 */
 	@Nullable
 	@Internal
@@ -52,7 +46,7 @@ public class RemoveGelStructureProcessor extends StructureProcessor
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	@Internal
 	@Override

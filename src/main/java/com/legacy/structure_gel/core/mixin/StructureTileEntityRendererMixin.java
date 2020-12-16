@@ -1,13 +1,7 @@
 package com.legacy.structure_gel.core.mixin;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
 import com.legacy.structure_gel.StructureGelConfig;
 import com.mojang.blaze3d.matrix.MatrixStack;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -21,18 +15,18 @@ import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeMod;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
  * Renders text in the world on top of Structure Blocks, similarly to how it did
  * before 1.13.
- * 
+ *
  * @author Bailey
  */
 @Mixin(StructureTileEntityRenderer.class)
@@ -56,7 +50,7 @@ public class StructureTileEntityRendererMixin
 
 	/**
 	 * Ray trace the block in front of the player passed in.
-	 * 
+	 *
 	 * @param world
 	 * @param player
 	 * @return {@link RayTraceResult}
@@ -79,7 +73,7 @@ public class StructureTileEntityRendererMixin
 
 	/**
 	 * Renders a nameplate at the given buffer position.
-	 * 
+	 *
 	 * @param displayName
 	 * @param matrixStack
 	 * @param buffer

@@ -1,11 +1,6 @@
 package com.legacy.structure_gel.packets;
 
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
 import com.legacy.structure_gel.StructureGelMod;
-
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
@@ -14,6 +9,10 @@ import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
+
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class PacketHandler
 {
@@ -35,7 +34,7 @@ public class PacketHandler
 
 	/**
 	 * Server to Client
-	 * 
+	 *
 	 * @param packet
 	 * @param serverPlayer
 	 */
@@ -47,7 +46,7 @@ public class PacketHandler
 
 	/**
 	 * Server to all Clients in same world
-	 * 
+	 *
 	 * @param packet
 	 * @param world
 	 */
@@ -58,7 +57,7 @@ public class PacketHandler
 
 	/**
 	 * Client to Server
-	 * 
+	 *
 	 * @param packet
 	 */
 	public static void sendToServer(Object packet)

@@ -1,19 +1,11 @@
 package com.legacy.structure_gel.access_helpers;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
-
-import javax.annotation.Nullable;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.legacy.structure_gel.util.GelCollectors;
 import com.legacy.structure_gel.worldgen.structure.GelStructure;
 import com.legacy.structure_gel.worldgen.structure.IConfigStructure;
-
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.world.biome.Biome;
@@ -35,20 +27,25 @@ import net.minecraft.world.gen.surfacebuilders.ConfiguredSurfaceBuilder;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
+
 /**
  * Contains methods to add various things to biomes. Some code is deprecated
  * thanks to the addition of the {@link BiomeLoadingEvent}, so you should look
  * into using that.
- * 
- * @author David
  *
+ * @author David
  */
 public class BiomeAccessHelper
 {
 	/**
 	 * Returns the biome generation settings. Mainly a mapped method for
 	 * convenience.
-	 * 
+	 *
 	 * @param biome
 	 * @return {@link BiomeGenerationSettings}
 	 */
@@ -61,7 +58,7 @@ public class BiomeAccessHelper
 	 * Adds the feature to the biome with the given settings. For flowers, use
 	 * {@link #addFlowerFeature(Biome, Decoration, ConfiguredFeature)}. Make sure
 	 * that the {@link ConfiguredFeature} is registered first.
-	 * 
+	 *
 	 * @param biome
 	 * @param stage
 	 * @param feature
@@ -85,7 +82,7 @@ public class BiomeAccessHelper
 
 	/**
 	 * Adds the input structure to the biome from the event passed.
-	 * 
+	 *
 	 * @param event
 	 * @param structure
 	 * @param separationSettings
@@ -106,7 +103,7 @@ public class BiomeAccessHelper
 
 	/**
 	 * Adds the input {@link GelStructure} to the biome from the event passed.
-	 * 
+	 *
 	 * @param event
 	 * @param gelStructure
 	 */
@@ -120,7 +117,7 @@ public class BiomeAccessHelper
 	 * biome is in it's config.<br>
 	 * <br>
 	 * The structure must implement {@link IConfigStructure}.
-	 * 
+	 *
 	 * @param event
 	 * @param gelStructure
 	 * @throws IllegalArgumentException
@@ -138,13 +135,13 @@ public class BiomeAccessHelper
 
 	/**
 	 * Sets the input {@link Structure} to generate in the biome.
-	 * 
+	 *
 	 * @param biome
 	 * @param structure
 	 * @param separationSettings
 	 * @param noiseSettings
 	 * @deprecated use
-	 *             {@link #addStructure(BiomeLoadingEvent, StructureFeature, StructureSeparationSettings, List)}
+	 * {@link #addStructure(BiomeLoadingEvent, StructureFeature, StructureSeparationSettings, List)}
 	 */
 	@Deprecated
 	public static <C extends IFeatureConfig, S extends Structure<C>> void addStructure(Biome biome, StructureFeature<C, S> structure, StructureSeparationSettings separationSettings, List<DimensionSettings> noiseSettings)
@@ -179,7 +176,7 @@ public class BiomeAccessHelper
 
 	/**
 	 * Sets the input {@link GelStructure} to generate in the biome.
-	 * 
+	 *
 	 * @param biome
 	 * @param gelStructure
 	 * @deprecated use {@link #addStructure(BiomeLoadingEvent, StructureFeature)}
@@ -193,11 +190,11 @@ public class BiomeAccessHelper
 	/**
 	 * Registers the input {@link StructureFeature} to the biomes listed in it's
 	 * config if the structure is an instance of {@link IConfigStructure}.
-	 * 
+	 *
 	 * @param structure
-	 * @deprecated use
-	 *             {@link #addStructureIfAllowed(BiomeLoadingEvent, StructureFeature)}
 	 * @throws IllegalArgumentException
+	 * @deprecated use
+	 * {@link #addStructureIfAllowed(BiomeLoadingEvent, StructureFeature)}
 	 */
 	@Deprecated
 	public static <C extends IFeatureConfig, S extends GelStructure<C>> void addStructureToBiomes(StructureFeature<C, S> structure)
@@ -210,7 +207,7 @@ public class BiomeAccessHelper
 
 	/**
 	 * Gets the surface builder for the biome passed in.
-	 * 
+	 *
 	 * @param biome
 	 * @return {@link ConfiguredSurfaceBuilder}
 	 * @deprecated use {@link BiomeLoadingEvent}
@@ -224,7 +221,7 @@ public class BiomeAccessHelper
 
 	/**
 	 * Sets the surface builder for the biome passed in.
-	 * 
+	 *
 	 * @param biome
 	 * @param surfaceBuilder
 	 * @deprecated use {@link BiomeLoadingEvent}
@@ -237,7 +234,7 @@ public class BiomeAccessHelper
 
 	/**
 	 * Adds the carver to the biome passed in.
-	 * 
+	 *
 	 * @param biome
 	 * @param carvingType
 	 * @param configuredCarver
@@ -260,7 +257,7 @@ public class BiomeAccessHelper
 
 	/**
 	 * Returns the carvers for the given type.
-	 * 
+	 *
 	 * @param biome
 	 * @param carvingType
 	 * @return {@link List}
@@ -274,7 +271,7 @@ public class BiomeAccessHelper
 
 	/**
 	 * Adds the flower feature to the biome with the given settings.
-	 * 
+	 *
 	 * @param biome
 	 * @param stage
 	 * @param feature
@@ -295,7 +292,7 @@ public class BiomeAccessHelper
 
 	/**
 	 * Adds the mob spawn to the biome.
-	 * 
+	 *
 	 * @param biome
 	 * @param classification
 	 * @param spawner
@@ -319,7 +316,7 @@ public class BiomeAccessHelper
 	/**
 	 * Adds the spawn cost to the given biome. This is how the soul sand valley
 	 * limits ghast spawns.
-	 * 
+	 *
 	 * @param biome
 	 * @param entity
 	 * @param spawnCost
@@ -338,7 +335,7 @@ public class BiomeAccessHelper
 
 	/**
 	 * Sets the ambience for the biome.
-	 * 
+	 *
 	 * @param biome
 	 * @param ambience
 	 * @deprecated use {@link BiomeLoadingEvent}

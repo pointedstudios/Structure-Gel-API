@@ -1,27 +1,25 @@
 package com.legacy.structure_gel;
 
+import com.google.common.collect.Sets;
+import com.legacy.structure_gel.biome_dictionary.BiomeDictionary;
+import com.legacy.structure_gel.biome_dictionary.BiomeType;
+import com.legacy.structure_gel.util.Internal;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.javafmlmod.FMLModContainer;
+import org.apache.commons.lang3.tuple.Triple;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.util.TriConsumer;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
-import org.apache.commons.lang3.tuple.Triple;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.util.TriConsumer;
-
-import com.google.common.collect.Sets;
-import com.legacy.structure_gel.biome_dictionary.BiomeDictionary;
-import com.legacy.structure_gel.biome_dictionary.BiomeType;
-import com.legacy.structure_gel.util.Internal;
-
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.javafmlmod.FMLModContainer;
 
 /**
  * Introuces compatibility with other mods without them needing to use the API
@@ -36,9 +34,8 @@ import net.minecraftforge.fml.javafmlmod.FMLModContainer;
  * <br>
  * If you encounter issues or find any bugs, please report them to the issue
  * tracker. https://gitlab.com/modding-legacy/structure-gel-api/-/issues
- * 
- * @author David
  *
+ * @author David
  */
 @Internal
 public class StructureGelCompat
@@ -143,13 +140,13 @@ public class StructureGelCompat
 	/**
 	 * Invokes the provided method and returns an {@link Optional} storing the
 	 * result.
-	 * 
-	 * @param method The method to invoke.
+	 *
+	 * @param method             The method to invoke.
 	 * @param returnTypeInstance This doesn't need to be initialized since it exists
-	 *            for casting types.
-	 * @param args The arguments for the invoked method.
+	 *                           for casting types.
+	 * @param args               The arguments for the invoked method.
 	 * @return An {@link Optional} containing the object returned by invoking the
-	 *         method passed. May be empty if nothing was returned.
+	 * method passed. May be empty if nothing was returned.
 	 */
 	@SuppressWarnings("unchecked")
 	private static <T> Optional<T> invokeMethod(Method method, T returnTypeInstance, Object... args)

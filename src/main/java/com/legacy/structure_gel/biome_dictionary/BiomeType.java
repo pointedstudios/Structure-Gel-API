@@ -1,19 +1,18 @@
 package com.legacy.structure_gel.biome_dictionary;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.registrars.BiomeRegistrar;
 import com.legacy.structure_gel.util.Internal;
-
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistryEntry;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Stores a collection of biomes that should have similar traits for referencing
@@ -22,10 +21,9 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
  * <br>
  * When registering a BiomeType of your own, check the {@link BiomeDictionary}
  * class since handling registry data is a bit different.
- * 
- * @see BiomeDictionary
- * @author David
  *
+ * @author David
+ * @see BiomeDictionary
  */
 public class BiomeType implements IForgeRegistryEntry<BiomeType>
 {
@@ -46,7 +44,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 
 	/**
 	 * Ensures none of the values will be set to null just in case.
-	 * 
+	 *
 	 * @param name
 	 * @param parents
 	 * @param biomes
@@ -72,7 +70,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 
 	/**
 	 * Start creating the {@link BiomeType}.
-	 * 
+	 *
 	 * @param name
 	 * @return {@link BiomeType}
 	 */
@@ -85,10 +83,10 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 
 	/**
 	 * Start creating the {@link BiomeType}.
-	 * 
-	 * @see #create(ResourceLocation)
+	 *
 	 * @param name
 	 * @return {@link BiomeType}
+	 * @see #create(ResourceLocation)
 	 */
 	@Internal
 	protected static BiomeType create(String name)
@@ -98,7 +96,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 
 	/**
 	 * Adds the biomes to this instance
-	 * 
+	 *
 	 * @param biomes
 	 * @return {@link BiomeType}
 	 */
@@ -111,7 +109,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 
 	/**
 	 * Adds the biomes to this instance
-	 * 
+	 *
 	 * @param biomes
 	 * @return {@link BiomeType}
 	 */
@@ -123,7 +121,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 
 	/**
 	 * Adds the biomes to this instance
-	 * 
+	 *
 	 * @param biomes
 	 * @return {@link BiomeType}
 	 */
@@ -135,7 +133,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 
 	/**
 	 * Adds the biomes to this instance
-	 * 
+	 *
 	 * @param biomes
 	 * @return {@link BiomeType}
 	 */
@@ -147,7 +145,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 
 	/**
 	 * Adds the biomes to this instance for the modid provided.
-	 * 
+	 *
 	 * @param modid
 	 * @param biomes
 	 * @return {@link BiomeType}
@@ -163,7 +161,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 
 	/**
 	 * Adds the listed biomes to this instance.
-	 * 
+	 *
 	 * @param biomes
 	 * @return {@link BiomeType}
 	 */
@@ -175,7 +173,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 
 	/**
 	 * Add the biome to this instance.
-	 * 
+	 *
 	 * @param biome
 	 * @return {@link BiomeType}
 	 */
@@ -186,7 +184,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 
 	/**
 	 * Add the biome to this instance.
-	 * 
+	 *
 	 * @param biome
 	 * @return {@link BiomeType}
 	 */
@@ -197,7 +195,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 
 	/**
 	 * Add the biome to this instance.
-	 * 
+	 *
 	 * @param biome
 	 * @return {@link BiomeType}
 	 */
@@ -209,7 +207,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 
 	/**
 	 * Add the biome to this instance.
-	 * 
+	 *
 	 * @param biome
 	 * @return {@link BiomeType}
 	 */
@@ -220,7 +218,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 
 	/**
 	 * Gets the biomes from this instance.
-	 * 
+	 *
 	 * @return {@link Set}
 	 */
 	public Set<ResourceLocation> getBiomes()
@@ -231,7 +229,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 	/**
 	 * Sets the biomes of this entry, overriding old ones. You probably shouldn't
 	 * use this unless you're creating a new instance.
-	 * 
+	 *
 	 * @param biomes
 	 * @return {@link BiomeType}
 	 */
@@ -243,7 +241,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 
 	/**
 	 * Adds the parents to this instance
-	 * 
+	 *
 	 * @param parents
 	 * @return {@link BiomeType}
 	 */
@@ -255,7 +253,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 
 	/**
 	 * Set the parents for this instance.
-	 * 
+	 *
 	 * @param parents
 	 * @return {@link BiomeType}
 	 */
@@ -267,7 +265,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 
 	/**
 	 * Does not allow duplicates.
-	 * 
+	 *
 	 * @param parents
 	 * @return {@link BiomeType}
 	 */
@@ -279,7 +277,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 
 	/**
 	 * Does not allow duplicates.
-	 * 
+	 *
 	 * @param parent
 	 * @return {@link BiomeType}
 	 */
@@ -300,7 +298,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 	/**
 	 * Sets the parents of this entry, overriding old ones. sYou probably shouldn't
 	 * use this unless you're creating a new instance.
-	 * 
+	 *
 	 * @param parents
 	 * @return {@link BiomeType}
 	 */
@@ -313,7 +311,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 	/**
 	 * Gets the biomes from this instance and it's parents by trying to find their
 	 * registry keys.
-	 * 
+	 *
 	 * @return {@link Set}
 	 */
 	public Set<RegistryKey<Biome>> getAllBiomes()
@@ -330,7 +328,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 
 	/**
 	 * Does this instance or it's parents contain the biome passed.
-	 * 
+	 *
 	 * @param key
 	 * @return {@link Boolean}
 	 */
@@ -341,7 +339,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 
 	/**
 	 * Does this instance or it's parents contain the biome passed.
-	 * 
+	 *
 	 * @param biome
 	 * @return {@link Boolean}
 	 */
@@ -352,7 +350,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 
 	/**
 	 * Does this instance or it's parents contain the biome passed.
-	 * 
+	 *
 	 * @param key
 	 * @return {@link Boolean}
 	 */
@@ -383,7 +381,7 @@ public class BiomeType implements IForgeRegistryEntry<BiomeType>
 
 	/**
 	 * Gets the registered name of the {@link BiomeType}.
-	 * 
+	 *
 	 * @return {@link ResourceLocation}
 	 */
 	public ResourceLocation getRegistryName()

@@ -1,29 +1,28 @@
 package com.legacy.structure_gel.util.capability;
 
-import javax.annotation.Nullable;
-
 import com.legacy.structure_gel.blocks.GelPortalBlock;
+
+import javax.annotation.Nullable;
 
 /**
  * Data for all entities allowing for custom portal logic.
- * 
- * @author David
  *
+ * @author David
  */
 public interface IGelEntity
 {
 	/**
 	 * The portal that the entity last stepped into. Used for handling teleportation
 	 * logic.
-	 * 
+	 *
 	 * @return {@link GelPortalBlock}
 	 */
 	@Nullable
 	GelPortalBlock getPortal();
 
 	/**
-	 * @see #getPortal()
 	 * @param portal
+	 * @see #getPortal()
 	 */
 	void setPortal(GelPortalBlock portal);
 }

@@ -1,7 +1,5 @@
 package com.legacy.structure_gel;
 
-import java.util.stream.Collectors;
-
 import com.legacy.structure_gel.biome_dictionary.BiomeDictionary;
 import com.legacy.structure_gel.biome_dictionary.BiomeType;
 import com.legacy.structure_gel.commands.StructureGelCommand;
@@ -10,7 +8,6 @@ import com.legacy.structure_gel.packets.UpdateGelPlayerPacket;
 import com.legacy.structure_gel.util.Internal;
 import com.legacy.structure_gel.util.capability.GelCapability;
 import com.legacy.structure_gel.util.capability.GelEntityProvider;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -22,11 +19,12 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.registries.RegistryBuilder;
 
+import java.util.stream.Collectors;
+
 /**
  * Structure Gel events to fire on both threads.
- * 
- * @author David
  *
+ * @author David
  */
 @Internal
 public class SGEvents

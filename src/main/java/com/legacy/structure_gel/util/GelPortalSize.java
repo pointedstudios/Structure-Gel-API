@@ -1,12 +1,6 @@
 package com.legacy.structure_gel.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import com.legacy.structure_gel.blocks.GelPortalBlock;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.NetherPortalBlock;
@@ -17,15 +11,18 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A version of {@link PortalSize} to work with {@link GelPortalBlock} and
  * {@link GelTeleporter}. Call {@link #isValidSize()} to check if you're in a
  * portal frame or
  * {@link #trySpawnPortal(IWorld, BlockPos, GelPortalBlock, List)} to attempt to
  * spawn a portal at the position.
- * 
- * @author David
  *
+ * @author David
  */
 public class GelPortalSize
 {
@@ -83,7 +80,7 @@ public class GelPortalSize
 	/**
 	 * Attempts to spawn a portal. Returns true if it succeeded and false if it
 	 * failed.
-	 * 
+	 *
 	 * @param worldIn
 	 * @param pos
 	 * @param portalBlock
@@ -118,7 +115,7 @@ public class GelPortalSize
 
 	/**
 	 * Checks to see if the position is within a portal frame.
-	 * 
+	 *
 	 * @param worldIn
 	 * @param pos
 	 * @param portalBlock
@@ -139,7 +136,7 @@ public class GelPortalSize
 
 	/**
 	 * Checks to see if the portal is the right size.
-	 * 
+	 *
 	 * @return {@link Boolean}
 	 */
 	public boolean isValidSize()
@@ -150,7 +147,7 @@ public class GelPortalSize
 	/**
 	 * Checks to see if the portal is the right size and isn't missing any portal
 	 * blocks.
-	 * 
+	 *
 	 * @return {@link Boolean}
 	 */
 	public boolean isPortalComplete()
@@ -160,7 +157,7 @@ public class GelPortalSize
 
 	/**
 	 * Checks if all portal blocks exist within the frame.
-	 * 
+	 *
 	 * @return {@link Boolean}
 	 */
 	public boolean hasAllPortals()
@@ -185,7 +182,8 @@ public class GelPortalSize
 
 	protected int calculatePortalHeight()
 	{
-		label56: for (this.height = 0; this.height < 21; ++this.height)
+		label56:
+		for (this.height = 0; this.height < 21; ++this.height)
 		{
 			for (int i = 0; i < this.width; ++i)
 			{

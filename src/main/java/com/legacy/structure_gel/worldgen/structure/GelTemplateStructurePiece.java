@@ -1,19 +1,11 @@
 package com.legacy.structure_gel.worldgen.structure;
 
-import java.util.Random;
-
-import javax.annotation.Nullable;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.legacy.structure_gel.worldgen.GelPlacementSettings;
 import com.legacy.structure_gel.worldgen.GelTemplate;
 import com.legacy.structure_gel.worldgen.IModifyState;
 import com.legacy.structure_gel.worldgen.processors.RemoveGelStructureProcessor;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.command.arguments.BlockStateParser;
@@ -35,6 +27,11 @@ import net.minecraft.world.gen.feature.template.BlockIgnoreStructureProcessor;
 import net.minecraft.world.gen.feature.template.PlacementSettings;
 import net.minecraft.world.gen.feature.template.Template;
 import net.minecraft.world.gen.feature.template.TemplateManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javax.annotation.Nullable;
+import java.util.Random;
 
 /**
  * An extension of {@link TemplateStructurePiece} with more extensible methods
@@ -47,9 +44,8 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
  * - Block placement overrides, separate from processors. See
  * {@link IModifyState}<br>
  * - Fixes for entity rotation within the structure.
- * 
- * @author David
  *
+ * @author David
  */
 public abstract class GelTemplateStructurePiece extends TemplateStructurePiece implements IModifyState
 {
@@ -72,10 +68,10 @@ public abstract class GelTemplateStructurePiece extends TemplateStructurePiece i
 	 * SET_YOUR_FIELDS_HERE<br>
 	 * this.setupTemplate(templateManager);<br>
 	 * }<br>
-	 * 
+	 *
 	 * @param structurePieceTypeIn
-	 * @param componentTypeIn A marker that allows for different behavior in the
-	 *            constructor. You may not need to use this.
+	 * @param componentTypeIn      A marker that allows for different behavior in the
+	 *                             constructor. You may not need to use this.
 	 */
 	public GelTemplateStructurePiece(IStructurePieceType structurePieceTypeIn, ResourceLocation name, int componentTypeIn)
 	{
@@ -86,11 +82,10 @@ public abstract class GelTemplateStructurePiece extends TemplateStructurePiece i
 	/**
 	 * This consturctor is used to read existing template data from the world's save
 	 * data. All values should be stored in nbt.
-	 * 
-	 * @see #readAdditional(CompoundNBT)
-	 * 
+	 *
 	 * @param structurePieceType
 	 * @param nbt
+	 * @see #readAdditional(CompoundNBT)
 	 */
 	public GelTemplateStructurePiece(IStructurePieceType structurePieceType, CompoundNBT nbt)
 	{
@@ -102,7 +97,7 @@ public abstract class GelTemplateStructurePiece extends TemplateStructurePiece i
 
 	/**
 	 * Sets up the template data and placement settings.
-	 * 
+	 *
 	 * @param templateManager
 	 */
 	public void setupTemplate(TemplateManager templateManager)
@@ -112,7 +107,7 @@ public abstract class GelTemplateStructurePiece extends TemplateStructurePiece i
 
 	/**
 	 * Sets up the placement settings for this piece instance.
-	 * 
+	 *
 	 * @param templateManager
 	 * @return {@link PlacementSettings}
 	 */
@@ -125,10 +120,10 @@ public abstract class GelTemplateStructurePiece extends TemplateStructurePiece i
 
 	/**
 	 * Creates a new {@link PlacementSettings} instance.
-	 * 
-	 * @see #getPlacementSettings(TemplateManager)
+	 *
 	 * @param templateManager
 	 * @return {@link PlacementSettings}
+	 * @see #getPlacementSettings(TemplateManager)
 	 */
 	public PlacementSettings createPlacementSettings(TemplateManager templateManager)
 	{
@@ -137,10 +132,10 @@ public abstract class GelTemplateStructurePiece extends TemplateStructurePiece i
 
 	/**
 	 * Override this to add processors to placementSettings.
-	 * 
-	 * @see #getPlacementSettings(TemplateManager)
+	 *
 	 * @param templateManager
 	 * @param placementSettings
+	 * @see #getPlacementSettings(TemplateManager)
 	 */
 	public void addProcessors(TemplateManager templateManager, PlacementSettings placementSettings)
 	{
@@ -151,11 +146,10 @@ public abstract class GelTemplateStructurePiece extends TemplateStructurePiece i
 	/**
 	 * Use this to store data about this piece instance into nbt. This will be
 	 * loaded later when the world needs it.
-	 * 
-	 * @see #GelTemplateStructurePiece(IStructurePieceType, ResourceLocation,
-	 *      CompoundNBT)
-	 * 
+	 *
 	 * @param nbt
+	 * @see #GelTemplateStructurePiece(IStructurePieceType, ResourceLocation,
+	 * CompoundNBT)
 	 */
 	@Override
 	protected void readAdditional(CompoundNBT nbt)
@@ -169,9 +163,9 @@ public abstract class GelTemplateStructurePiece extends TemplateStructurePiece i
 	/**
 	 * Override of the vanilla method that places blocks from a structure into the
 	 * world with added hooks for special conditions.
-	 * 
+	 *
 	 * @see #shouldPlace(ISeedReader, StructureManager, ChunkGenerator, Random,
-	 *      MutableBoundingBox, BlockPos, BlockState)
+	 * MutableBoundingBox, BlockPos, BlockState)
 	 */
 	@Override
 	public boolean func_230383_a_(ISeedReader world, StructureManager structureManager, ChunkGenerator chunkGenerator, Random rand, MutableBoundingBox bounds, ChunkPos chunkPos, BlockPos pos)
@@ -220,7 +214,7 @@ public abstract class GelTemplateStructurePiece extends TemplateStructurePiece i
 	 * called after processors are applied.<br>
 	 * <br>
 	 * Return null to prevent placement.
-	 * 
+	 *
 	 * @param world
 	 * @param rand
 	 * @param pos

@@ -1,13 +1,8 @@
 package com.legacy.structure_gel.biome_dictionary;
 
-import java.util.Locale;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.google.common.collect.Sets;
 import com.legacy.structure_gel.registrars.BiomeRegistrar;
 import com.legacy.structure_gel.util.Internal;
-
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
@@ -15,12 +10,15 @@ import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeDictionary.Type;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.Locale;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 /**
  * A forge biome dictionary compatible version of {@link BiomeType}. This is
  * effectively immutable, so you cannot add biomes/parents to it.
- * 
- * @author David
  *
+ * @author David
  */
 @Internal
 public class ForgeType extends BiomeType
@@ -31,8 +29,8 @@ public class ForgeType extends BiomeType
 	private final BiomeDictionary.Type type;
 
 	/**
-	 * @see #create(net.minecraftforge.common.BiomeDictionary.Type)
 	 * @param type
+	 * @see #create(net.minecraftforge.common.BiomeDictionary.Type)
 	 */
 	private ForgeType(BiomeDictionary.Type type)
 	{
@@ -42,7 +40,7 @@ public class ForgeType extends BiomeType
 
 	/**
 	 * Creates a new instance of this.
-	 * 
+	 *
 	 * @param type
 	 * @return {@link ForgeType}
 	 */
@@ -53,7 +51,7 @@ public class ForgeType extends BiomeType
 
 	/**
 	 * Returns the forge biome dictionary {@link Type} referenced by this instance.
-	 * 
+	 *
 	 * @return {@link Type}
 	 */
 	public BiomeDictionary.Type getType()
@@ -63,7 +61,7 @@ public class ForgeType extends BiomeType
 
 	/**
 	 * Gets the biomes from this instance.
-	 * 
+	 *
 	 * @return {@link Set}
 	 */
 	@Override
@@ -74,7 +72,7 @@ public class ForgeType extends BiomeType
 
 	/**
 	 * Gets the biomes from this instance.
-	 * 
+	 *
 	 * @return {@link Set}
 	 */
 	@Override
@@ -85,7 +83,7 @@ public class ForgeType extends BiomeType
 
 	/**
 	 * Does this instance contain the biome passed.
-	 * 
+	 *
 	 * @param key
 	 * @return {@link Boolean}
 	 */
@@ -97,7 +95,7 @@ public class ForgeType extends BiomeType
 
 	/**
 	 * Does this instance contain the biome passed.
-	 * 
+	 *
 	 * @param biome
 	 * @return {@link Boolean}
 	 */
@@ -109,7 +107,7 @@ public class ForgeType extends BiomeType
 
 	/**
 	 * Does this instance contain the biome passed.
-	 * 
+	 *
 	 * @param key
 	 * @return {@link Boolean}
 	 */
@@ -159,7 +157,7 @@ public class ForgeType extends BiomeType
 	{
 		return this;
 	}
-	
+
 	@Deprecated
 	@Override
 	public ForgeType biomes(BiomeRegistrar... biomes)
@@ -208,7 +206,7 @@ public class ForgeType extends BiomeType
 	{
 		return this;
 	}
-	
+
 	@Deprecated
 	@Override
 	public ForgeType setBiomes(Set<ResourceLocation> biomes)

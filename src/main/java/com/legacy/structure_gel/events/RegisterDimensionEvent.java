@@ -2,7 +2,6 @@ package com.legacy.structure_gel.events;
 
 import com.legacy.structure_gel.registrars.DimensionRegistrar;
 import com.mojang.serialization.Lifecycle;
-
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.SimpleRegistry;
@@ -19,10 +18,9 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
  * dimension.<br>
  * <br>
  * {@link Bus#FORGE}
- * 
- * @see DimensionRegistrar
- * @author David
  *
+ * @author David
+ * @see DimensionRegistrar
  */
 public class RegisterDimensionEvent extends Event
 {
@@ -63,7 +61,7 @@ public class RegisterDimensionEvent extends Event
 
 	/**
 	 * This is the seed of the overworld.
-	 * 
+	 *
 	 * @return {@link Long}
 	 */
 	public long getSeed()
@@ -73,7 +71,7 @@ public class RegisterDimensionEvent extends Event
 
 	/**
 	 * Registers the passed dimension to the world.
-	 * 
+	 *
 	 * @param registryKey
 	 * @param dimension
 	 */

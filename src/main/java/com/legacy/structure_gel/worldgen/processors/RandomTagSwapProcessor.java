@@ -1,14 +1,9 @@
 package com.legacy.structure_gel.worldgen.processors;
 
-import java.util.Random;
-
-import javax.annotation.Nullable;
-
 import com.legacy.structure_gel.SGRegistry.Processors;
 import com.legacy.structure_gel.util.Internal;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.tags.ITag;
@@ -22,12 +17,14 @@ import net.minecraft.world.gen.feature.template.PlacementSettings;
 import net.minecraft.world.gen.feature.template.StructureProcessor;
 import net.minecraft.world.gen.feature.template.Template;
 
+import javax.annotation.Nullable;
+import java.util.Random;
+
 /**
  * Shorthand way of creating a structure processor to randomly replace some
  * blocks.
- * 
- * @author David
  *
+ * @author David
  */
 public class RandomTagSwapProcessor extends StructureProcessor
 {
@@ -51,9 +48,9 @@ public class RandomTagSwapProcessor extends StructureProcessor
 
 	/**
 	 * @param condition : the tag to change
-	 * @param chance : expressed as a percentage. 0.1F = 10%
-	 * @param changeTo : the BlockState to change "condition" to when the chance is
-	 *            true
+	 * @param chance    : expressed as a percentage. 0.1F = 10%
+	 * @param changeTo  : the BlockState to change "condition" to when the chance is
+	 *                  true
 	 */
 	public RandomTagSwapProcessor(ITag<Block> condition, float chance, BlockState changeTo)
 	{
@@ -64,7 +61,7 @@ public class RandomTagSwapProcessor extends StructureProcessor
 
 	/**
 	 * 100% chance to swap
-	 * 
+	 *
 	 * @param condition
 	 * @param changeTo
 	 */
@@ -75,7 +72,7 @@ public class RandomTagSwapProcessor extends StructureProcessor
 
 	/**
 	 * Assumes changeTo uses the default state.
-	 * 
+	 *
 	 * @param condition
 	 * @param chance
 	 * @param changeTo
@@ -87,7 +84,7 @@ public class RandomTagSwapProcessor extends StructureProcessor
 
 	/**
 	 * 100% chance to swap. Assumes changeTo uses the default state.
-	 * 
+	 *
 	 * @param condition
 	 * @param changeTo
 	 */
@@ -97,7 +94,7 @@ public class RandomTagSwapProcessor extends StructureProcessor
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	@Nullable
 	@Internal
@@ -110,7 +107,7 @@ public class RandomTagSwapProcessor extends StructureProcessor
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	@Internal
 	@Override

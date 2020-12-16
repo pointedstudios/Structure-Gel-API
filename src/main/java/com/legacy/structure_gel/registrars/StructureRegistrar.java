@@ -1,14 +1,7 @@
 package com.legacy.structure_gel.registrars;
 
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nullable;
-
 import com.google.common.collect.ImmutableMap;
 import com.legacy.structure_gel.util.RegistryHelper;
-
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.IFeatureConfig;
@@ -18,15 +11,19 @@ import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructurePiece;
 import net.minecraftforge.registries.IForgeRegistry;
 
+import javax.annotation.Nullable;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+
 /**
  * Stores a {@link Structure}, {@link IStructurePieceType}, and
  * {@link StructureFeature} and registers with {@link #handle()} or
  * {@link RegistryHelper#handleRegistrar(IRegistrar)}.
- * 
- * @author David
  *
  * @param <C>
  * @param <S>
+ * @author David
  */
 public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>> implements IForgeRegistrar<StructureRegistrar<C, S>, Structure<?>>
 {
@@ -38,7 +35,7 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 
 	/**
 	 * The most simple structure with only one config and one piece type
-	 * 
+	 *
 	 * @param name
 	 * @param structure
 	 * @param pieceType
@@ -53,7 +50,7 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 	/**
 	 * A structure with one piece type and multiple configured features. Generally
 	 * those would be used for different biomes, like how villages work
-	 * 
+	 *
 	 * @param name
 	 * @param structure
 	 * @param pieceType
@@ -68,7 +65,7 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 	/**
 	 * A structure with multiple piece types and one config. Generally this would be
 	 * used for a structure with a lot of complexity in its pieces
-	 * 
+	 *
 	 * @param name
 	 * @param structure
 	 * @param pieceTypes
@@ -84,7 +81,7 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 	 * A structure with multiple piece types and multiple configs. This would be for
 	 * something with many pieces and different configured variations. Probably the
 	 * most rare type to need
-	 * 
+	 *
 	 * @param name
 	 * @param structure
 	 * @param pieceTypes
@@ -103,7 +100,7 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 
 	/**
 	 * Handy method so you don't have to type the generic type parameters.
-	 * 
+	 *
 	 * @param name
 	 * @param structure
 	 * @param pieceType
@@ -118,7 +115,7 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 
 	/**
 	 * Handy method so you don't have to type the generic type parameters.
-	 * 
+	 *
 	 * @param name
 	 * @param structure
 	 * @param pieceType
@@ -130,10 +127,10 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 	{
 		return new StructureRegistrar<C, S>(name, structure, pieceType, config, generationStage);
 	}
-	
+
 	/**
 	 * Handy method so you don't have to type the generic type parameters.
-	 * 
+	 *
 	 * @param name
 	 * @param structure
 	 * @param pieceType
@@ -148,7 +145,7 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 
 	/**
 	 * Handy method so you don't have to type the generic type parameters.
-	 * 
+	 *
 	 * @param name
 	 * @param structure
 	 * @param pieceType
@@ -163,7 +160,7 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 
 	/**
 	 * Gets the {@link Structure}.
-	 * 
+	 *
 	 * @return The {@link Structure} passed in
 	 */
 	public S getStructure()
@@ -173,7 +170,7 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 
 	/**
 	 * Gets the map of {@link IStructurePieceType}s.
-	 * 
+	 *
 	 * @return {@link Map}
 	 */
 	public Map<String, IStructurePieceType> getPieceTypes()
@@ -183,10 +180,10 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 
 	/**
 	 * Returns the {@link IStructurePieceType} for the name passed.
-	 * 
+	 *
 	 * @param name
 	 * @return {@link IStructurePieceType} or null if no object is present in the
-	 *         Map
+	 * Map
 	 */
 	@Nullable
 	public IStructurePieceType getPieceType(String name)
@@ -197,7 +194,7 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 	/**
 	 * Gets the {@link IStructurePieceType}. This is what you use in your
 	 * {@link StructurePiece}. Use this if there's only one piece type.
-	 * 
+	 *
 	 * @return {@link IStructurePieceType}
 	 */
 	public IStructurePieceType getPieceType()
@@ -210,7 +207,7 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 
 	/**
 	 * Gets the map of {@link StructureFeature}s.
-	 * 
+	 *
 	 * @return {@link Map}
 	 */
 	public Map<String, StructureFeature<C, S>> getStructureFeatures()
@@ -220,7 +217,7 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 
 	/**
 	 * Returns the {@link StructureFeature} for the name passed.
-	 * 
+	 *
 	 * @param name
 	 * @return {@link StructureFeature} or null if no object is present in the Map
 	 */
@@ -233,7 +230,7 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 	/**
 	 * Returns the first {@link StructureFeature} in the map. Only use this if you
 	 * only have one StructureFeature registered for this structure.
-	 * 
+	 *
 	 * @return {@link StructureFeature}
 	 */
 	@Nullable

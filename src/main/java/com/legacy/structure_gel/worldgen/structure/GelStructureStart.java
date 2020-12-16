@@ -9,10 +9,9 @@ import net.minecraft.world.gen.feature.structure.StructureStart;
  * An extension of {@link StructureStart} with a few methods for adjusting the y
  * coordinate of your structure. Not sure how useful it is, but it doesn't hurt
  * to keep.
- * 
- * @author David
  *
  * @param <C>
+ * @author David
  */
 public abstract class GelStructureStart<C extends IFeatureConfig> extends StructureStart<C>
 {
@@ -27,7 +26,7 @@ public abstract class GelStructureStart<C extends IFeatureConfig> extends Struct
 	 * box is above minY.<br>
 	 * <br>
 	 * If minY is bigger than maxY, or vis versa, it automatically corrects it.
-	 * 
+	 *
 	 * @param minY
 	 * @param maxY
 	 */
@@ -55,7 +54,7 @@ public abstract class GelStructureStart<C extends IFeatureConfig> extends Struct
 
 	/**
 	 * Places the structure at the y value set.
-	 * 
+	 *
 	 * @param y
 	 */
 	public void setHeight(int y)

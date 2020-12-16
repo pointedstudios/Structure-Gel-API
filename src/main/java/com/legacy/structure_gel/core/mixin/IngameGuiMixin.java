@@ -1,17 +1,15 @@
 package com.legacy.structure_gel.core.mixin;
 
+import com.legacy.structure_gel.blocks.GelPortalBlock;
+import com.legacy.structure_gel.util.capability.GelCapability;
+import com.legacy.structure_gel.util.capability.GelEntity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.IngameGui;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import com.legacy.structure_gel.blocks.GelPortalBlock;
-import com.legacy.structure_gel.util.capability.GelCapability;
-import com.legacy.structure_gel.util.capability.GelEntity;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.IngameGui;
 
 @Mixin(IngameGui.class)
 public class IngameGuiMixin

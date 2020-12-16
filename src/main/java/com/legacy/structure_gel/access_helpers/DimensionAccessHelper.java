@@ -1,33 +1,27 @@
 package com.legacy.structure_gel.access_helpers;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import com.legacy.structure_gel.worldgen.structure.GelStructure;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.gen.DimensionSettings;
 import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.settings.DimensionStructuresSettings;
-import net.minecraft.world.gen.settings.NoiseSettings;
-import net.minecraft.world.gen.settings.ScalingSettings;
-import net.minecraft.world.gen.settings.SlideSettings;
-import net.minecraft.world.gen.settings.StructureSeparationSettings;
+import net.minecraft.world.gen.settings.*;
+
+import java.util.Arrays;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Gives access to various methods to create {@link DimensionSettings}.
- * 
- * @author David
  *
+ * @author David
  */
 public class DimensionAccessHelper
 {
 	/**
 	 * Used to create fully custom noise settings, allowing for everything to be
 	 * customized.
-	 * 
+	 *
 	 * @param structures
 	 * @param noise
 	 * @param defaultBlock
@@ -46,7 +40,7 @@ public class DimensionAccessHelper
 	/**
 	 * Used to create noise settings akin to the Floating Islands buffet option.
 	 * This is also used by the End.
-	 * 
+	 *
 	 * @param structures
 	 * @param defaultBlock
 	 * @param defaultFluid
@@ -63,7 +57,7 @@ public class DimensionAccessHelper
 	/**
 	 * Used to create noise settings akin to the default Nether's, or the Overworld
 	 * Caves buffet option.
-	 * 
+	 *
 	 * @param structures
 	 * @param defaultBlock
 	 * @param defaultFluid
@@ -77,7 +71,7 @@ public class DimensionAccessHelper
 
 	/**
 	 * Used to create noise settings akin to the default Overworld's.
-	 * 
+	 *
 	 * @param structures
 	 * @param isAmplified
 	 * @param name
@@ -91,7 +85,7 @@ public class DimensionAccessHelper
 	/**
 	 * Used to create noise settings akin to the default Overworld's, this one
 	 * allows you to simply change the filler, and fluid blocks.
-	 * 
+	 *
 	 * @param structureSettingsIn
 	 * @param isAmplified
 	 * @param defaultBlock
@@ -107,7 +101,7 @@ public class DimensionAccessHelper
 	/**
 	 * Creates a map {@link Structure}s and {@link StructureSeparationSettings} for
 	 * use in {@link DimensionSettings}. Requires use of {@link GelStructure}.
-	 * 
+	 *
 	 * @param structures
 	 * @return {@link Map}
 	 */

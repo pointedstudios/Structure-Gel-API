@@ -12,10 +12,9 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
  * when you're done rendering.<br>
  * <br>
  * {@link Bus#FORGE}
- * 
+ *
  * @author David
  * @deprecated will be removed in 1.17. Use {@link IWeatherRenderHandler}
- *
  */
 @Deprecated
 @Cancelable

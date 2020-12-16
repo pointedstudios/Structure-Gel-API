@@ -1,18 +1,17 @@
 package com.legacy.structure_gel.worldgen.jigsaw;
 
-import java.util.List;
-
 import com.legacy.structure_gel.util.ConfigTemplates.StructureConfig;
 import com.legacy.structure_gel.worldgen.structure.IConfigStructure;
 import com.mojang.serialization.Codec;
-
 import net.minecraft.world.gen.DimensionSettings;
 import net.minecraft.world.gen.feature.structure.VillageConfig;
+
+import java.util.List;
 
 /**
  * Extension of {@link GelJigsawStructure} for easy implementation of config
  * files using {@link StructureConfig}.
- * 
+ *
  * @author David
  */
 public abstract class GelConfigJigsawStructure extends GelJigsawStructure implements IConfigStructure

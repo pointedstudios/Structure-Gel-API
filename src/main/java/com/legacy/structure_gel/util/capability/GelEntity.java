@@ -1,11 +1,10 @@
 package com.legacy.structure_gel.util.capability;
 
-import javax.annotation.Nullable;
-
 import com.legacy.structure_gel.blocks.GelPortalBlock;
 import com.legacy.structure_gel.util.Internal;
-
 import net.minecraft.entity.Entity;
+
+import javax.annotation.Nullable;
 
 public class GelEntity implements IGelEntity
 {

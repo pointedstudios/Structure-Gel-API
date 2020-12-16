@@ -1,10 +1,7 @@
 package com.legacy.structure_gel.worldgen.jigsaw;
 
-import java.util.Random;
-
 import com.legacy.structure_gel.SGRegistry.StructurePieceTypes;
 import com.legacy.structure_gel.util.Internal;
-
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
@@ -15,9 +12,11 @@ import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.TemplateStructurePiece;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 
+import java.util.Random;
+
 /**
  * The default implementation of {@link AbstractGelStructurePiece}.
- * 
+ *
  * @author David
  */
 @Internal
@@ -42,7 +41,7 @@ public final class GelStructurePiece extends AbstractGelStructurePiece
 	/**
 	 * Runs on every data structure block the same as you would in
 	 * {@link TemplateStructurePiece}
-	 * 
+	 *
 	 * @param key
 	 * @param pos
 	 * @param world

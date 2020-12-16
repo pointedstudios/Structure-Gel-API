@@ -1,13 +1,8 @@
 package com.legacy.structure_gel.worldgen;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
-
 import com.google.common.collect.Lists;
 import com.legacy.structure_gel.util.Internal;
 import com.mojang.datafixers.util.Pair;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -33,13 +28,16 @@ import net.minecraft.world.IServerWorld;
 import net.minecraft.world.gen.feature.template.PlacementSettings;
 import net.minecraft.world.gen.feature.template.Template;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
+
 /**
  * This class largly exists to fix a silly bug with how entities rotate when
  * placed in a structure. You won't need to mess with it, but it only works for
  * structures.
- * 
- * @author David
  *
+ * @author David
  */
 @Internal
 public class GelTemplate extends Template
@@ -136,7 +134,7 @@ public class GelTemplate extends Template
 				}
 
 				boolean flag = true;
-				Direction[] adirection = new Direction[] { Direction.UP, Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST };
+				Direction[] adirection = new Direction[]{Direction.UP, Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
 
 				while (flag && !list1.isEmpty())
 				{
@@ -234,7 +232,7 @@ public class GelTemplate extends Template
 
 	/**
 	 * Modified vanilla method to fix rotations
-	 * 
+	 *
 	 * @param worldIn
 	 * @param pos
 	 * @param placementIn
@@ -269,24 +267,24 @@ public class GelTemplate extends Template
 					float rotation = 0;
 					switch (placementIn.getRotation())
 					{
-					case CLOCKWISE_90:
-						rotation = 90;
-						break;
-					case CLOCKWISE_180:
-						rotation = 180;
-						break;
-					case COUNTERCLOCKWISE_90:
-						rotation = -90;
-						break;
-					default:
-						rotation = 0;
-						break;
+						case CLOCKWISE_90:
+							rotation = 90;
+							break;
+						case CLOCKWISE_180:
+							rotation = 180;
+							break;
+						case COUNTERCLOCKWISE_90:
+							rotation = -90;
+							break;
+						default:
+							rotation = 0;
+							break;
 					}
 					yaw = yaw + rotation;
 					entity.setLocationAndAngles(vec3d.x, vec3d.y, vec3d.z, yaw, entity.rotationPitch);
 					if (placementIn.func_237134_m_() && entity instanceof MobEntity)
 					{
-						((MobEntity) entity).onInitialSpawn(worldIn, worldIn.getDifficultyForLocation(new BlockPos(vec3d)), SpawnReason.STRUCTURE, (ILivingEntityData) null, compoundnbt);
+						((MobEntity) entity).onInitialSpawn(worldIn, worldIn.getDifficultyForLocation(new BlockPos(vec3d)), SpawnReason.STRUCTURE, null, compoundnbt);
 					}
 
 					worldIn.addEntity(entity);

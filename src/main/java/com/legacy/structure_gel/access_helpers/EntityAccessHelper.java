@@ -5,15 +5,14 @@ import net.minecraft.util.ResourceLocation;
 
 /**
  * Contains helper methods to interact with entities.
- * 
- * @author David
  *
+ * @author David
  */
 public class EntityAccessHelper
 {
 	/**
 	 * Gets the death loot table of the entity.
-	 * 
+	 *
 	 * @param entity
 	 * @return {@link ResourceLocation}
 	 */
@@ -24,7 +23,7 @@ public class EntityAccessHelper
 
 	/**
 	 * Sets the loot table for the entity passed.
-	 * 
+	 *
 	 * @param entity
 	 * @param lootTable
 	 */

@@ -1,33 +1,27 @@
 package com.legacy.structure_gel.access_helpers;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
 import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.util.GelCollectors;
 import com.legacy.structure_gel.worldgen.jigsaw.JigsawPoolBuilder;
 import com.mojang.datafixers.util.Pair;
-
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.jigsaw.FeatureJigsawPiece;
-import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
-import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
-import net.minecraft.world.gen.feature.jigsaw.ListJigsawPiece;
-import net.minecraft.world.gen.feature.jigsaw.SingleJigsawPiece;
+import net.minecraft.world.gen.feature.jigsaw.*;
 import net.minecraft.world.gen.feature.structure.Structure;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Contains methods to access normally privated values in the jigsaw piece or
  * registry. Also allows for you to add to/remove from existing JigsawPatterns,
  * allowing you to add new houses to villages, change pillager outpost designs,
  * etc.
- * 
- * @author David
  *
+ * @author David
  */
 public class JigsawAccessHelper
 {
@@ -36,7 +30,7 @@ public class JigsawAccessHelper
 	 * outposts to generate terrain underneath them so they don't float. The area
 	 * that gets generated is based on the structure that starts the generation. In
 	 * villages, this would be the town center.
-	 * 
+	 *
 	 * @param structures
 	 */
 	public static void addIllagerStructures(Structure<?>... structures)
@@ -46,7 +40,7 @@ public class JigsawAccessHelper
 
 	/**
 	 * Clears the input registered jigsaw pool.
-	 * 
+	 *
 	 * @param pool
 	 */
 	public static void clearPool(ResourceLocation pool)
@@ -62,7 +56,7 @@ public class JigsawAccessHelper
 	 * adding to has been initialized.<br>
 	 * <br>
 	 * Note: Make sure the structure's jigsaw blocks have the proper connections.
-	 * 
+	 *
 	 * @param pool
 	 * @param pieces
 	 * @see JigsawPoolBuilder
@@ -88,7 +82,7 @@ public class JigsawAccessHelper
 	/**
 	 * Removes the input jigsaw piece from the pool passed in. Make sure the pool
 	 * you're removing from has been initialized.
-	 * 
+	 *
 	 * @param pool
 	 * @param pieceName
 	 */
@@ -119,7 +113,7 @@ public class JigsawAccessHelper
 	/**
 	 * Removes the input feature from the pool passed in. Make sure the pool you're
 	 * removing from has been initialized.
-	 * 
+	 *
 	 * @param pool
 	 * @param feature
 	 */
@@ -150,7 +144,7 @@ public class JigsawAccessHelper
 	/**
 	 * Iterates through the ListJigsawPiece and removes all instances of pieceName
 	 * from it. Mainly for internal use.
-	 * 
+	 *
 	 * @param listJigsawPiece
 	 * @param pieceName
 	 * @return {@link Boolean}
@@ -176,7 +170,7 @@ public class JigsawAccessHelper
 	/**
 	 * Iterates through the ListJigsawPiece and removes all instances of pieceName
 	 * from it. Mainly for internal use.
-	 * 
+	 *
 	 * @param listJigsawPiece
 	 * @param feature
 	 * @return {@link Boolean}
@@ -201,7 +195,7 @@ public class JigsawAccessHelper
 
 	/**
 	 * Gives the name of this piece.
-	 * 
+	 *
 	 * @param piece
 	 * @return {@link ResourceLocation}
 	 */
@@ -212,7 +206,7 @@ public class JigsawAccessHelper
 
 	/**
 	 * Returns the pieces stored in this piece.
-	 * 
+	 *
 	 * @param piece
 	 * @return {@link List}
 	 */
@@ -223,7 +217,7 @@ public class JigsawAccessHelper
 
 	/**
 	 * Returns the feature stored in this piece.
-	 * 
+	 *
 	 * @param piece
 	 * @return {@link ConfiguredFeature}
 	 */
@@ -234,7 +228,7 @@ public class JigsawAccessHelper
 
 	/**
 	 * Accessor for the jigsaw pattern registry. Mainly for mapped convenience.
-	 * 
+	 *
 	 * @param location
 	 * @return {@link Optional}
 	 */

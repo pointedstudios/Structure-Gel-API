@@ -1,18 +1,11 @@
 package com.legacy.structure_gel.worldgen.structure;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nullable;
-
 import com.google.common.collect.ImmutableList;
 import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.access_helpers.StructureAccessHelper;
 import com.legacy.structure_gel.util.Internal;
 import com.legacy.structure_gel.worldgen.jigsaw.GelJigsawStructure;
 import com.mojang.serialization.Codec;
-
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.BlockPos;
@@ -33,14 +26,18 @@ import net.minecraft.world.gen.settings.StructureSeparationSettings;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.StructureSpawnListGatherEvent;
 
+import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * An extension of {@link Structure} that allows for more precise tweaking and
  * handles structure spacing. For jigsaw related structures, use
  * {@link GelJigsawStructure} or it's children.
- * 
- * @author David
  *
  * @param <C>
+ * @author David
  */
 public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C>
 {
@@ -70,7 +67,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	/**
 	 * Determines if lakes shuold generate inside of this structure or not. This is
 	 * automatically set to true when you create the structure.
-	 * 
+	 *
 	 * @param lakeProof
 	 * @return {@link GelStructure}
 	 */
@@ -87,7 +84,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	 * Sets the spawns that can exist in this structure for the passed mob
 	 * classification. Set to an empty list to prevent spawns, and leave as null to
 	 * change nothing.
-	 * 
+	 *
 	 * @param classification
 	 * @param spawns
 	 * @return {@link GelStructure}
@@ -101,7 +98,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	/**
 	 * Gets a list of {@link DimensionSettings} to tell your structure where to
 	 * generate. Can be set using configs. Defaults to every setting.
-	 * 
+	 *
 	 * @return {@link List}
 	 */
 	public List<DimensionSettings> getNoiseSettingsToGenerateIn()
@@ -112,7 +109,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	/**
 	 * What stage of generation your structure should be generated during. Surface
 	 * structures by default.
-	 * 
+	 *
 	 * @return {@link Decoration}
 	 */
 	@Override
@@ -124,9 +121,9 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	/**
 	 * Checks to see if this structure can generate in the given chunk using a grid
 	 * with custom spacing and offsets.
-	 * 
+	 *
 	 * @param settings Can be null since we use {@link #getSpacing()} and
-	 *            {@link #getOffset()} instead
+	 *                 {@link #getOffset()} instead
 	 * @return {@link ChunkPos}
 	 */
 	@Internal
@@ -158,9 +155,10 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	}
 
 	// findNearest
+
 	/**
 	 * @param settings Can be null since it's obtained from
-	 *            {@link #getSeparationSettings()}
+	 *                 {@link #getSeparationSettings()}
 	 */
 	@Internal
 	@Override
@@ -175,7 +173,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	 * should be constant.<br>
 	 * <br>
 	 * Returns the hash code of this instance's registry name by default.
-	 * 
+	 *
 	 * @return {@link Integer}
 	 */
 	public int getSeed()
@@ -196,7 +194,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	/**
 	 * This is the probability of the structure generating in a given chunk,
 	 * expressed as a percent.
-	 * 
+	 *
 	 * @return {@link Double}
 	 */
 	public abstract double getProbability();
@@ -207,7 +205,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	 * of 4 will space structures out 4 chunks apart.<br>
 	 * <br>
 	 * This number should not be negative or 0. 0 will crash. Don't do it.
-	 * 
+	 *
 	 * @return {@link Integer}
 	 */
 	public abstract int getSpacing();
@@ -220,14 +218,14 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	 * overlap.<br>
 	 * <br>
 	 * This number should not be negative.
-	 * 
+	 *
 	 * @return {@link Integer}
 	 */
 	public abstract int getOffset();
 
 	/**
 	 * Gets the registry name of the structure.
-	 * 
+	 *
 	 * @return {@link String}
 	 */
 	@Override
@@ -239,10 +237,10 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	/**
 	 * Return a list of hostile mobs to change spawn behavior. Return null to do
 	 * nothing.
-	 * 
-	 * @deprecated Use {@link #getSpawns(EntityClassification)} and
-	 *             {@link #setSpawnList(EntityClassification, List)}.
+	 *
 	 * @return {@link List}
+	 * @deprecated Use {@link #getSpawns(EntityClassification)} and
+	 * {@link #setSpawnList(EntityClassification, List)}.
 	 */
 	@Nullable
 	@Deprecated
@@ -255,10 +253,10 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	/**
 	 * Return a list of passive mobs to change spawn behavior. Return null to do
 	 * nothing.
-	 * 
-	 * @deprecated Use {@link #getSpawns(EntityClassification)} and
-	 *             {@link #setSpawnList(EntityClassification, List)}.
+	 *
 	 * @return {@link List}
+	 * @deprecated Use {@link #getSpawns(EntityClassification)} and
+	 * {@link #setSpawnList(EntityClassification, List)}.
 	 */
 	@Nullable
 	@Deprecated
@@ -271,7 +269,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	/**
 	 * Returns a list of mobs to spawn based on the classification put in. Any
 	 * classification not set in {@link #spawns} will return null, and be ignored.
-	 * 
+	 *
 	 * @param classification
 	 * @return {@link List}
 	 */
@@ -284,7 +282,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	/**
 	 * Automatically registered to the event bus. Uses
 	 * {@link #getSpawns(EntityClassification)} to get what mobs should spawn.
-	 * 
+	 *
 	 * @param event
 	 */
 	@Internal
@@ -301,7 +299,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 
 	/**
 	 * Gets a {@link StructureSeparationSettings} based on the API values.
-	 * 
+	 *
 	 * @return {@link StructureSeparationSettings}
 	 */
 	@Internal

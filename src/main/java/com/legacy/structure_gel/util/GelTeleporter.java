@@ -1,19 +1,7 @@
 package com.legacy.structure_gel.util;
 
-import java.util.Comparator;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
-import javax.annotation.Nullable;
-
 import com.legacy.structure_gel.blocks.GelPortalBlock;
-
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.NetherPortalBlock;
-import net.minecraft.block.PortalInfo;
-import net.minecraft.block.PortalSize;
+import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -38,11 +26,16 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.server.TicketType;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
+import javax.annotation.Nullable;
+import java.util.Comparator;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 /**
  * A more mod compatible teleporter for the API.
- * 
- * @author David
  *
+ * @author David
  */
 public class GelTeleporter extends Teleporter
 {
@@ -68,7 +61,7 @@ public class GelTeleporter extends Teleporter
 	private final Supplier<BlockState> frameBlock;
 	/**
 	 * The logic behind how creating a new portal will work.
-	 * 
+	 *
 	 * @see ICreatePortalFuncion
 	 * @see CreatePortalBehavior
 	 */
@@ -93,7 +86,7 @@ public class GelTeleporter extends Teleporter
 	/**
 	 * Returns the opposite world from the one in this instance, or
 	 * {@link #dimension1} by default.
-	 * 
+	 *
 	 * @return {@link RegistryKey}
 	 */
 	@Internal
@@ -137,7 +130,7 @@ public class GelTeleporter extends Teleporter
 
 	/**
 	 * Gets the destination world of this teleporter.
-	 * 
+	 *
 	 * @return {@link ServerWorld}
 	 */
 	public ServerWorld getWorld()
@@ -149,7 +142,7 @@ public class GelTeleporter extends Teleporter
 	 * Returns if the block passed should be ignored when placing on the surface. By
 	 * default, ignores blocks tagged as leaves or logs, air, and blocks without
 	 * collision (except fluids).
-	 * 
+	 *
 	 * @param state
 	 * @param pos
 	 * @return {@link Boolean}
@@ -163,7 +156,7 @@ public class GelTeleporter extends Teleporter
 	/**
 	 * Returns the default height to generate a portal if a position cannot be found
 	 * when placing on surface. Defaults to 70.
-	 * 
+	 *
 	 * @return {@link Integer}
 	 */
 	public int getDefaultHeight()
@@ -246,7 +239,7 @@ public class GelTeleporter extends Teleporter
 	/**
 	 * Places this portal on highest block in the world, ignoring blocks specified
 	 * in {@link #shouldIgnoreBlock(BlockState, BlockPos)}.
-	 * 
+	 *
 	 * @param teleporter
 	 * @param startPos
 	 * @param enterAxis
@@ -301,7 +294,8 @@ public class GelTeleporter extends Teleporter
 
 		// Add platform below portal
 		boolean placePlatform = true;
-		label0: for (int x1 = -1; x1 < 2; x1++)
+		label0:
+		for (int x1 = -1; x1 < 2; x1++)
 		{
 			for (int z1 = 0; z1 < 2; z1++)
 			{
@@ -326,7 +320,7 @@ public class GelTeleporter extends Teleporter
 
 	/**
 	 * Default code for the Teleporter with slight modification.
-	 * 
+	 *
 	 * @param teleporter
 	 * @param startPos
 	 * @param enterAxis
@@ -465,17 +459,16 @@ public class GelTeleporter extends Teleporter
 
 	/**
 	 * Determins how the portal generated should be placed.
-	 * 
-	 * @author David
 	 *
+	 * @author David
 	 */
-	public static enum CreatePortalBehavior
+	public enum CreatePortalBehavior
 	{
 		NETHER(GelTeleporter::createAndFindPortalNether), ON_SURFACE(GelTeleporter::createAndFindPortalSurface);
 
 		private final ICreatePortalFuncion function;
 
-		private CreatePortalBehavior(ICreatePortalFuncion function)
+		CreatePortalBehavior(ICreatePortalFuncion function)
 		{
 			this.function = function;
 		}
@@ -488,13 +481,12 @@ public class GelTeleporter extends Teleporter
 
 	/**
 	 * Used to create a portal and get it's location.
-	 * 
-	 * @author David
 	 *
+	 * @author David
 	 */
 	@FunctionalInterface
-	public static interface ICreatePortalFuncion
+	public interface ICreatePortalFuncion
 	{
-		public Optional<TeleportationRepositioner.Result> apply(GelTeleporter teleporter, BlockPos startPos, Direction.Axis enterAxis);
+		Optional<TeleportationRepositioner.Result> apply(GelTeleporter teleporter, BlockPos startPos, Direction.Axis enterAxis);
 	}
 }

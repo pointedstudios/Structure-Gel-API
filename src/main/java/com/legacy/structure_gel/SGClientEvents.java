@@ -1,12 +1,9 @@
 package com.legacy.structure_gel;
 
-import java.util.List;
-
 import com.legacy.structure_gel.SGRegistry.GelBlocks;
 import com.legacy.structure_gel.blocks.GelPortalBlock;
 import com.legacy.structure_gel.util.Internal;
 import com.legacy.structure_gel.util.capability.GelEntity;
-
 import net.minecraft.client.gui.screen.ConfirmBackupScreen;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.widget.Widget;
@@ -24,11 +21,12 @@ import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
+import java.util.List;
+
 /**
  * Structure Gel events to fire on the client thread.
- * 
- * @author David
  *
+ * @author David
  */
 @OnlyIn(Dist.CLIENT)
 @Internal
