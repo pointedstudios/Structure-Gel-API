@@ -273,8 +273,8 @@ def reobfFile = file("build/libs/structure-gel-api-${mc_version}-${version}.jar"
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            groupId = "${mod_group}"
-            artifactId = "${mod_id}"
+            groupId = "${maven_group}"
+            artifactId = "${maven_artifact_id}"
             version = "${mc_version}-${version}"
 
             artifact reobfFile
