@@ -91,6 +91,9 @@ minecraft {
             // Enable Structure Gel API mixins (commented out by default)
             //arg '-mixin.config=structure_gel.mixins.json'
 
+            // Disable refmaps for mixin in a dev environment
+            property 'mixin.env.disableRefMap', 'true'
+
             // Mod scanning, registration, and registry dump logging (commented out by default)
             //property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
 
@@ -117,6 +120,9 @@ minecraft {
 
             // Enable Structure Gel API mixins (commented out by default)
             //arg '-mixin.config=structure_gel.mixins.json'
+
+            // Disable refmaps for mixin in a dev environment
+            property 'mixin.env.disableRefMap', 'true'
 
             // Mod scanning, registration, and registry dump logging (commented out by default)
             //property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
@@ -147,6 +153,9 @@ minecraft {
 
             // Enable Structure Gel API mixins (commented out by default)
             //arg '-mixin.config=structure_gel.mixins.json'
+
+            // Disable refmaps for mixin in a dev environment
+            property 'mixin.env.disableRefMap', 'true'
 
             // Mod scanning, registration, and registry dump logging (commented out by default)
             //property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
