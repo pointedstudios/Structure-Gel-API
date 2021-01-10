@@ -147,10 +147,9 @@ public class GelTeleporter extends Teleporter
 	 * @param pos
 	 * @return {@link Boolean}
 	 */
-	@SuppressWarnings("deprecation")
 	public boolean shouldIgnoreBlock(BlockState state, BlockPos pos)
 	{
-		return state.isIn(BlockTags.LEAVES) || state.isIn(BlockTags.LOGS) || state.isAir(world, pos) || (state.getCollisionShape(world, pos).isEmpty() && !state.getMaterial().isLiquid());
+		return state.isIn(BlockTags.LEAVES) || state.isIn(BlockTags.LOGS) || world.isAirBlock(pos) || (state.getCollisionShape(world, pos).isEmpty() && !state.getMaterial().isLiquid());
 	}
 
 	/**
@@ -294,8 +293,7 @@ public class GelTeleporter extends Teleporter
 
 		// Add platform below portal
 		boolean placePlatform = true;
-		label0:
-		for (int x1 = -1; x1 < 2; x1++)
+		label0: for (int x1 = -1; x1 < 2; x1++)
 		{
 			for (int z1 = 0; z1 < 2; z1++)
 			{

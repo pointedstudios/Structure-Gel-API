@@ -45,9 +45,14 @@ public class ConfigTemplates
 		private final Map<EntityClassification, ForgeConfigSpec.ConfigValue<String>> spawnsStrings = new HashMap<>();
 		private Map<EntityClassification, List<MobSpawnInfo.Spawners>> spawns = new HashMap<>();
 		// Worldgen noise settings... settings. That's a mouthful
+		@Deprecated
 		private ForgeConfigSpec.ConfigValue<String> noiseSettingsString;
+		private ForgeConfigSpec.ConfigValue<String> validDimensionsString;
 		@Nullable
+		@Deprecated // TODO remove
 		private List<DimensionSettings> noiseSettings = null;
+		@Nullable
+		private Set<ResourceLocation> validDimensions = null;
 
 		/**
 		 * @param builder
@@ -106,22 +111,37 @@ public class ConfigTemplates
 			return this;
 		}
 
+		/**
+		 * @deprecated NO LONGER FUNCTIONS! replaced with {@link #validDimensions(String)} as of 1.7.3
+		 */
+		@Deprecated
 		public StructureConfig noiseSettings(String noiseSettings)
 		{
-			this.noiseSettingsString = builder.comment("What dimension noise settings should this structure be placed in. Default options are \"overworld\", \"amplified\", \"end\", \"nether\", \"caves\", and \"floating_islands\"").define(name + ".noise_settings", noiseSettings);
+			/*this.noiseSettingsString = builder.comment("What dimension noise settings should this structure be placed in. Default options are \"overworld\", \"amplified\", \"end\", \"nether\", \"caves\", and \"floating_islands\"").define(name + ".noise_settings", noiseSettings);*/
 			return this;
 		}
 
+		public StructureConfig validDimensions(String dimensions)
+		{
+			this.validDimensionsString = builder.comment("What dimensions should this structure be placed in. Type \"all\" to allow all dimensions").define(name + ".valid_dimensions", dimensions);
+			return this;
+		}
+
+		/**
+		 * @deprecated NO LONGER FUNCTIONS! replaced with {@link #validDimensions(String)} as of 1.7.3
+		 */
+		@Deprecated
 		public StructureConfig noiseSettings(DimensionSettings... noiseSettings)
 		{
-			String string = "";
+			/*String string = "";
 			for (int i = 0; i < noiseSettings.length; i++)
 			{
 				string = string + WorldGenRegistries.NOISE_SETTINGS.getKey(noiseSettings[i]).toString();
 				if (i < noiseSettings.length - 1)
 					string = string + ", ";
 			}
-			return this.noiseSettings(string);
+			return this.noiseSettings(string);*/
+			return this;
 		}
 
 		/**
@@ -247,15 +267,40 @@ public class ConfigTemplates
 		}
 
 		/**
+		 * Returns the dimensions that this structure can generate in.
+		 * 
+		 * @return {@link String}
+		 */
+		@Nullable
+		public String getValidDimensionsString()
+		{
+			return this.validDimensionsString != null ? this.validDimensionsString.get() : null;
+		}
+
+		/**
 		 * Returns the dimension noise settings that this structure is allowed to
 		 * generate with. Null if no value is set.
 		 *
 		 * @return {@link List}
+		 * @deprecated Replaced with {@link #getValidDimensions()} as of 1.7.3
 		 */
 		@Nullable
+		@Deprecated // TODO remove
 		public List<DimensionSettings> getNoiseSettings()
 		{
 			return this.noiseSettings;
+		}
+
+		/**
+		 * Returns the dimensions that the related structure can generate in. Returns
+		 * null to allow everything.
+		 * 
+		 * @return {@link Set}
+		 */
+		@Nullable
+		public Set<ResourceLocation> getValidDimensions()
+		{
+			return this.validDimensions;
 		}
 
 		/**
@@ -278,6 +323,7 @@ public class ConfigTemplates
 
 			this.biomes = parseBiomes(this.getBiomeString());
 			this.noiseSettings = parseNoiseSettings(this.getNoiseSettingsString());
+			this.validDimensions = parseValidDimensions(this.getValidDimensionsString());
 		}
 
 		/**
@@ -414,8 +460,10 @@ public class ConfigTemplates
 		 *
 		 * @param key
 		 * @return {@link List}
+		 * @deprecated replaced with {@link #parseValidDimensions(String)} as of 1.7.3
 		 */
 		@Nullable
+		@Deprecated // TODO remove
 		public List<DimensionSettings> parseNoiseSettings(String key)
 		{
 			if (key == null)
@@ -439,6 +487,37 @@ public class ConfigTemplates
 				});
 			}
 			return noiseSettings;
+		}
+
+		/**
+		 * Reads the valid dimensions listed in the string and converts it into a set.
+		 * Returns null if the key isn't present or the user types "all"
+		 * 
+		 * @param key
+		 * @return {@link Set}
+		 */
+		@Nullable
+		public Set<ResourceLocation> parseValidDimensions(String key)
+		{
+			if (key == null || key.equals("all"))
+				return null;
+
+			Set<ResourceLocation> dimensions = new HashSet<>();
+			if (!key.isEmpty())
+			{
+				Arrays.asList(key.replace(" ", "").split(",")).stream().forEach(s ->
+				{
+					try
+					{
+						dimensions.add(new ResourceLocation(s));
+					}
+					catch (ResourceLocationException e)
+					{
+						throwInvalidResourceLocation("An invalid character exists your config. It should be formatted as \"mod_namespace:dimension_id\"");
+					}
+				});
+			}
+			return dimensions;
 		}
 	}
 
@@ -475,9 +554,9 @@ public class ConfigTemplates
 		 * @param probability
 		 * @param spacing
 		 * @param offset
-		 * @param biomes      : Entered as a comma separated string of resource locations.
-		 *                    You can put spaces, but you don't need to. Ex: "plains,
-		 *                    minecraft:swamp, biomesoplenty:origin_beach"
+		 * @param biomes : Entered as a comma separated string of resource locations.
+		 *            You can put spaces, but you don't need to. Ex: "plains,
+		 *            minecraft:swamp, biomesoplenty:origin_beach"
 		 */
 		public BiomeStructureConfig(ForgeConfigSpec.Builder builder, String name, double probability, int spacing, int offset, String biomes)
 		{

@@ -1,12 +1,21 @@
 package com.legacy.structure_gel.worldgen.structure;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.Nullable;
+
 import com.google.common.collect.ImmutableList;
 import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.access_helpers.StructureAccessHelper;
 import com.legacy.structure_gel.util.Internal;
 import com.legacy.structure_gel.worldgen.jigsaw.GelJigsawStructure;
 import com.mojang.serialization.Codec;
+
 import net.minecraft.entity.EntityClassification;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -25,11 +34,6 @@ import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.settings.StructureSeparationSettings;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.StructureSpawnListGatherEvent;
-
-import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * An extension of {@link Structure} that allows for more precise tweaking and
@@ -56,6 +60,11 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	 * {@link #getSeed()} is called, but you can assign it in your constructor.
 	 */
 	public Integer seed = null;
+	/**
+	 * The dimensions that this structure is allowed to generate in. Defaults to
+	 * null to allow all dimensions
+	 */
+	public Set<ResourceLocation> dimensions = null;
 
 	public GelStructure(Codec<C> codec)
 	{
@@ -98,12 +107,27 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	/**
 	 * Gets a list of {@link DimensionSettings} to tell your structure where to
 	 * generate. Can be set using configs. Defaults to every setting.
-	 *
+	 * 
+	 * @deprecated NO LONGER FUNCTIONS! Replaced with {@link #getValidDimensions()}
+	 *             as of 1.7.3
 	 * @return {@link List}
 	 */
+	@Deprecated // TODO remove
 	public List<DimensionSettings> getNoiseSettingsToGenerateIn()
 	{
 		return WorldGenRegistries.NOISE_SETTINGS.getEntries().stream().map(Map.Entry::getValue).collect(ImmutableList.toImmutableList());
+	}
+
+	/**
+	 * Gets a set of dimension IDs that the structure should be added to, or null to
+	 * allow all dimensions.
+	 * 
+	 * @return {@link Set}
+	 */
+	@Nullable
+	public Set<ResourceLocation> getValidDimensions()
+	{
+		return this.dimensions;
 	}
 
 	/**
@@ -123,7 +147,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	 * with custom spacing and offsets.
 	 *
 	 * @param settings Can be null since we use {@link #getSpacing()} and
-	 *                 {@link #getOffset()} instead
+	 *            {@link #getOffset()} instead
 	 * @return {@link ChunkPos}
 	 */
 	@Internal
@@ -158,7 +182,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 
 	/**
 	 * @param settings Can be null since it's obtained from
-	 *                 {@link #getSeparationSettings()}
+	 *            {@link #getSeparationSettings()}
 	 */
 	@Internal
 	@Override
@@ -240,7 +264,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	 *
 	 * @return {@link List}
 	 * @deprecated Use {@link #getSpawns(EntityClassification)} and
-	 * {@link #setSpawnList(EntityClassification, List)}.
+	 *             {@link #setSpawnList(EntityClassification, List)}.
 	 */
 	@Nullable
 	@Deprecated
@@ -256,7 +280,7 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 	 *
 	 * @return {@link List}
 	 * @deprecated Use {@link #getSpawns(EntityClassification)} and
-	 * {@link #setSpawnList(EntityClassification, List)}.
+	 *             {@link #setSpawnList(EntityClassification, List)}.
 	 */
 	@Nullable
 	@Deprecated

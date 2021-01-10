@@ -1,25 +1,36 @@
 package com.legacy.structure_gel;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.legacy.structure_gel.biome_dictionary.BiomeDictionary;
 import com.legacy.structure_gel.biome_dictionary.BiomeType;
 import com.legacy.structure_gel.commands.StructureGelCommand;
 import com.legacy.structure_gel.packets.PacketHandler;
 import com.legacy.structure_gel.packets.UpdateGelPlayerPacket;
 import com.legacy.structure_gel.util.Internal;
+import com.legacy.structure_gel.util.RegistryHelper;
 import com.legacy.structure_gel.util.capability.GelCapability;
 import com.legacy.structure_gel.util.capability.GelEntityProvider;
+import com.legacy.structure_gel.worldgen.structure.GelStructure;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.gen.feature.structure.Structure;
+import net.minecraft.world.gen.settings.StructureSeparationSettings;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.registries.RegistryBuilder;
-
-import java.util.stream.Collectors;
 
 /**
  * Structure Gel events to fire on both threads.
@@ -36,6 +47,7 @@ public class SGEvents
 		modBus.addListener(SGEvents::createRegistries);
 		forgeBus.addListener(SGEvents::registerCommands);
 		forgeBus.addListener(SGEvents::onEntityJoinWorld);
+		forgeBus.addListener(SGEvents::worldLoad);
 		forgeBus.addGenericListener(Entity.class, SGEvents::attachCapabilities);
 	}
 
@@ -89,5 +101,26 @@ public class SGEvents
 	protected static void registerCommands(final RegisterCommandsEvent event)
 	{
 		StructureGelCommand.register(event.getDispatcher());
+	}
+
+	protected static void worldLoad(final WorldEvent.Load event)
+	{
+		if (event.getWorld() instanceof ServerWorld)
+		{
+			ServerWorld world = (ServerWorld) event.getWorld();
+			Map<Structure<?>, StructureSeparationSettings> settingsMap = new HashMap<>(world.getChunkProvider().getChunkGenerator().func_235957_b_().field_236193_d_);
+			RegistryHelper.STRUCTURE_SETTINGS_MAP.forEach((structure, settings) ->
+			{
+				if (structure instanceof GelStructure)
+				{
+					Set<ResourceLocation> dims = ((GelStructure<?>) structure).getValidDimensions();
+					if (dims == null || dims.contains(world.getDimensionKey().getLocation()))
+						settingsMap.put(structure, settings);
+				}
+				else
+					settingsMap.put(structure, settings);
+			});
+			world.getChunkProvider().getChunkGenerator().func_235957_b_().field_236193_d_ = settingsMap;
+		}
 	}
 }

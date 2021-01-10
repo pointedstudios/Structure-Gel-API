@@ -1,11 +1,19 @@
 package com.legacy.structure_gel.access_helpers;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
+
+import javax.annotation.Nullable;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.legacy.structure_gel.util.GelCollectors;
 import com.legacy.structure_gel.worldgen.structure.GelStructure;
 import com.legacy.structure_gel.worldgen.structure.IConfigStructure;
+
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.world.biome.Biome;
@@ -27,17 +35,11 @@ import net.minecraft.world.gen.surfacebuilders.ConfiguredSurfaceBuilder;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
-
 /**
  * Contains methods to add various things to biomes. Some code is deprecated
  * thanks to the addition of the {@link BiomeLoadingEvent}, so you should look
- * into using that.
- *
+ * into using that. TODO rework addStructure in 1.17
+ * 
  * @author David
  */
 public class BiomeAccessHelper
@@ -85,20 +87,13 @@ public class BiomeAccessHelper
 	 *
 	 * @param event
 	 * @param structure
-	 * @param separationSettings
-	 * @param noiseSettings
+	 * @param separationSettings // TODO remove from here
+	 * @param noiseSettings // TODO remove
 	 */
-	public static <C extends IFeatureConfig, S extends Structure<C>> void addStructure(BiomeLoadingEvent event, StructureFeature<C, S> structure, StructureSeparationSettings separationSettings, List<DimensionSettings> noiseSettings)
+	public static <C extends IFeatureConfig, S extends Structure<C>> void addStructure(BiomeLoadingEvent event, StructureFeature<C, S> structure, @Deprecated StructureSeparationSettings separationSettings, @Deprecated List<DimensionSettings> noiseSettings)
 	{
 		// Add structure to the biome
 		event.getGeneration().withStructure(structure);
-
-		// Add separation settings to noise settings so it's allowed to generate.
-		noiseSettings.forEach(noiseSetting ->
-		{
-			if (!noiseSetting.getStructures().field_236193_d_.containsKey(structure.field_236268_b_))
-				noiseSetting.getStructures().field_236193_d_ = GelCollectors.addToMap(noiseSetting.getStructures().field_236193_d_, structure.field_236268_b_, separationSettings);
-		});
 	}
 
 	/**
@@ -139,12 +134,12 @@ public class BiomeAccessHelper
 	 * @param biome
 	 * @param structure
 	 * @param separationSettings
-	 * @param noiseSettings
+	 * @param noiseSettings // TODO remove
 	 * @deprecated use
-	 * {@link #addStructure(BiomeLoadingEvent, StructureFeature, StructureSeparationSettings, List)}
+	 *             {@link #addStructure(BiomeLoadingEvent, StructureFeature, StructureSeparationSettings, List)}
 	 */
 	@Deprecated
-	public static <C extends IFeatureConfig, S extends Structure<C>> void addStructure(Biome biome, StructureFeature<C, S> structure, StructureSeparationSettings separationSettings, List<DimensionSettings> noiseSettings)
+	public static <C extends IFeatureConfig, S extends Structure<C>> void addStructure(Biome biome, StructureFeature<C, S> structure, @Deprecated StructureSeparationSettings separationSettings, @Deprecated List<DimensionSettings> noiseSettings)
 	{
 		// Add structure to the biome's structure list
 		getGenSettings(biome).structures = GelCollectors.addToList(getGenSettings(biome).structures, () -> structure);
@@ -165,13 +160,6 @@ public class BiomeAccessHelper
 			// Add to the generation stage
 			biome.biomeStructures.get(genStage).add(structure.field_236268_b_);
 		}
-
-		// Add separation settings to noise settings
-		noiseSettings.forEach(noiseSetting ->
-		{
-			if (!noiseSetting.getStructures().field_236193_d_.containsKey(structure.field_236268_b_))
-				noiseSetting.getStructures().field_236193_d_ = GelCollectors.addToMap(noiseSetting.getStructures().field_236193_d_, structure.field_236268_b_, separationSettings);
-		});
 	}
 
 	/**
@@ -194,7 +182,7 @@ public class BiomeAccessHelper
 	 * @param structure
 	 * @throws IllegalArgumentException
 	 * @deprecated use
-	 * {@link #addStructureIfAllowed(BiomeLoadingEvent, StructureFeature)}
+	 *             {@link #addStructureIfAllowed(BiomeLoadingEvent, StructureFeature)}
 	 */
 	@Deprecated
 	public static <C extends IFeatureConfig, S extends GelStructure<C>> void addStructureToBiomes(StructureFeature<C, S> structure)

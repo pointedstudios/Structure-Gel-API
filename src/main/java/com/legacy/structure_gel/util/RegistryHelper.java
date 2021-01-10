@@ -1,9 +1,11 @@
 package com.legacy.structure_gel.util;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Streams;
 import com.legacy.structure_gel.registrars.IForgeRegistrar;
 import com.legacy.structure_gel.registrars.IRegistrar;
+import com.legacy.structure_gel.worldgen.structure.GelStructure;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
@@ -20,12 +22,16 @@ import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.template.StructureProcessor;
 import net.minecraft.world.gen.feature.template.StructureProcessorList;
+import net.minecraft.world.gen.settings.DimensionStructuresSettings;
+import net.minecraft.world.gen.settings.StructureSeparationSettings;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -37,6 +43,8 @@ import java.util.Optional;
  */
 public class RegistryHelper
 {
+	public static final Map<Structure<?>, StructureSeparationSettings> STRUCTURE_SETTINGS_MAP = new HashMap<>();
+	
 	/**
 	 * Returns an optional containing the registry key associated with the value
 	 * passed.
@@ -109,7 +117,7 @@ public class RegistryHelper
 
 	/**
 	 * Registers the input structure to both the forge Feature registry and the
-	 * Structure Feature registry
+	 * Structure Feature registry.
 	 *
 	 * @param registry
 	 * @param key
@@ -119,10 +127,27 @@ public class RegistryHelper
 	 */
 	public static <C extends IFeatureConfig, S extends Structure<C>> S registerStructure(IForgeRegistry<Structure<?>> registry, ResourceLocation key, S structure, Decoration generationStage)
 	{
+		return registerStructure(registry, key, structure, generationStage, structure instanceof GelStructure<?> ? ((GelStructure<?>) structure).getSeparationSettings() : new StructureSeparationSettings(32, 8, 0));
+	}
+	
+	/**
+	 * Registers the input structure to both the forge Feature registry and the
+	 * Structure Feature registry
+	 *
+	 * @param registry
+	 * @param key
+	 * @param structure
+	 * @param generationStage
+	 * @return {@link Structure}
+	 */
+	public static <C extends IFeatureConfig, S extends Structure<C>> S registerStructure(IForgeRegistry<Structure<?>> registry, ResourceLocation key, S structure, Decoration generationStage, StructureSeparationSettings separationSettings)
+	{
 		structure.setRegistryName(key);
 		registry.register(structure);
 		Structure.NAME_STRUCTURE_BIMAP.put(key.toString(), structure);
 		Structure.STRUCTURE_DECORATION_STAGE_MAP.put(structure, generationStage);
+		DimensionStructuresSettings.field_236191_b_ = ImmutableMap.<Structure<?>, StructureSeparationSettings>builder().putAll(DimensionStructuresSettings.field_236191_b_).put(structure, separationSettings).build();
+		STRUCTURE_SETTINGS_MAP.put(structure, separationSettings);
 		return structure;
 	}
 
@@ -148,7 +173,7 @@ public class RegistryHelper
 	 * @param pieceType
 	 * @return {@link Pair}
 	 * @deprecated Use
-	 * {@link RegistryHelper#handleRegistrar(IForgeRegistrar, IForgeRegistry)}
+	 *             {@link RegistryHelper#handleRegistrar(IForgeRegistrar, IForgeRegistry)}
 	 */
 	@Deprecated
 	public static <C extends IFeatureConfig, S extends Structure<C>, P extends IStructurePieceType> Pair<S, P> registerStructureAndPiece(IForgeRegistry<Structure<?>> registry, ResourceLocation key, S structure, Decoration generationStage, P pieceType)
