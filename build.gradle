@@ -286,6 +286,12 @@ publish {
     dependsOn 'build'
 }
 
+// shoves all of the sources in a jar
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
 // the reobfFile takes the built file (from the build task) and uses that to publish it to the maven
 def reobfFile = file("build/libs/${archivesBaseName}-${version}.jar")
 publishing {
@@ -296,6 +302,7 @@ publishing {
             version = "${mc_version}-${version}"
 
             artifact reobfFile
+            artifact sourcesJar
             artifact javadocJar
         }
     }
