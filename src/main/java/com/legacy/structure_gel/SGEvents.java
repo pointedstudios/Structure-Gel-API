@@ -1,6 +1,7 @@
 package com.legacy.structure_gel;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -15,10 +16,13 @@ import com.legacy.structure_gel.util.RegistryHelper;
 import com.legacy.structure_gel.util.capability.GelCapability;
 import com.legacy.structure_gel.util.capability.GelEntityProvider;
 import com.legacy.structure_gel.worldgen.structure.GelStructure;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Util;
+import net.minecraft.util.datafix.DataFixesManager;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.settings.StructureSeparationSettings;
 import net.minecraft.world.server.ServerWorld;
@@ -40,6 +44,8 @@ import net.minecraftforge.registries.RegistryBuilder;
 @Internal
 public class SGEvents
 {
+	private static boolean worldHasFakeDataFixer = false;
+
 	protected static void init(IEventBus modBus, IEventBus forgeBus)
 	{
 		modBus.addListener(SGEvents::commonInit);
@@ -83,6 +89,9 @@ public class SGEvents
 			{
 				PacketHandler.sendToClient(new UpdateGelPlayerPacket(gelPlayer), player);
 			});
+
+			if (worldHasFakeDataFixer)
+				player.sendMessage(new TranslationTextComponent(String.format("info.structure_gel.fake_data_fixer.%s", ((ServerWorld) event.getWorld()).getServer().isSinglePlayer() ? "integrated" : "external")).mergeStyle(TextFormatting.YELLOW), Util.DUMMY_UUID);
 		}
 	}
 
@@ -107,6 +116,7 @@ public class SGEvents
 	{
 		if (event.getWorld() instanceof ServerWorld)
 		{
+			worldHasFakeDataFixer = DataFixesManager.getDataFixer().getClass().getName().toLowerCase(Locale.ENGLISH).contains("fake");
 			ServerWorld world = (ServerWorld) event.getWorld();
 			Map<Structure<?>, StructureSeparationSettings> settingsMap = new HashMap<>(world.getChunkProvider().getChunkGenerator().func_235957_b_().field_236193_d_);
 			RegistryHelper.STRUCTURE_SETTINGS_MAP.forEach((structure, settings) ->
