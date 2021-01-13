@@ -94,7 +94,7 @@ public class SGEvents
 				PacketHandler.sendToClient(new UpdateGelPlayerPacket(gelPlayer), player);
 			});
 
-			if (worldHasFakeDataFixer)
+			if (worldHasFakeDataFixer && !StructureGelConfig.COMMON.silenceFakeDataFixerWarning())
 				player.sendMessage(new TranslationTextComponent(String.format("info.structure_gel.fake_data_fixer.%s", ((ServerWorld) event.getWorld()).getServer().isSinglePlayer() ? "integrated" : "external"), "[Structure Gel API] ").mergeStyle(TextFormatting.YELLOW), Util.DUMMY_UUID);
 		}
 	}
