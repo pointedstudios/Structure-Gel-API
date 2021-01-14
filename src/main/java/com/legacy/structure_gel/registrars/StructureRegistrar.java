@@ -1,8 +1,10 @@
 package com.legacy.structure_gel.registrars;
 
 import com.google.common.collect.ImmutableMap;
+import com.legacy.structure_gel.util.GelCollectors;
 import com.legacy.structure_gel.util.RegistryHelper;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.gen.FlatGenerationSettings;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
@@ -183,7 +185,7 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 	 *
 	 * @param name
 	 * @return {@link IStructurePieceType} or null if no object is present in the
-	 * Map
+	 *         Map
 	 */
 	@Nullable
 	public IStructurePieceType getPieceType(String name)
@@ -254,6 +256,8 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 	public StructureRegistrar<C, S> handleForge(IForgeRegistry<Structure<?>> registry)
 	{
 		RegistryHelper.registerStructure(registry, this.name, this.structure, this.generationStage);
+		// TODO 1.17 move to registerStructure
+		FlatGenerationSettings.STRUCTURES = GelCollectors.addToMap(FlatGenerationSettings.STRUCTURES, this.structure, this.getStructureFeature());
 		return this;
 	}
 }

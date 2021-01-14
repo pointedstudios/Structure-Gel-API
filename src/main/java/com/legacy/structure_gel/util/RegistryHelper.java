@@ -1,5 +1,12 @@
 package com.legacy.structure_gel.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Streams;
@@ -7,6 +14,7 @@ import com.legacy.structure_gel.registrars.IForgeRegistrar;
 import com.legacy.structure_gel.registrars.IRegistrar;
 import com.legacy.structure_gel.worldgen.structure.GelStructure;
 import com.mojang.datafixers.util.Pair;
+
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
@@ -27,13 +35,6 @@ import net.minecraft.world.gen.settings.StructureSeparationSettings;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 /**
  * A simple class that gives methods to ease the registry process by a bit.
  * <p>
@@ -44,7 +45,7 @@ import java.util.Optional;
 public class RegistryHelper
 {
 	public static final Map<Structure<?>, StructureSeparationSettings> STRUCTURE_SETTINGS_MAP = new HashMap<>();
-	
+
 	/**
 	 * Returns an optional containing the registry key associated with the value
 	 * passed.
@@ -129,7 +130,7 @@ public class RegistryHelper
 	{
 		return registerStructure(registry, key, structure, generationStage, structure instanceof GelStructure<?> ? ((GelStructure<?>) structure).getSeparationSettings() : new StructureSeparationSettings(32, 8, 0));
 	}
-	
+
 	/**
 	 * Registers the input structure to both the forge Feature registry and the
 	 * Structure Feature registry
@@ -147,6 +148,7 @@ public class RegistryHelper
 		Structure.NAME_STRUCTURE_BIMAP.put(key.toString(), structure);
 		Structure.STRUCTURE_DECORATION_STAGE_MAP.put(structure, generationStage);
 		DimensionStructuresSettings.field_236191_b_ = ImmutableMap.<Structure<?>, StructureSeparationSettings>builder().putAll(DimensionStructuresSettings.field_236191_b_).put(structure, separationSettings).build();
+		// TODO 1.17 update this to inclue flat gen settings
 		STRUCTURE_SETTINGS_MAP.put(structure, separationSettings);
 		return structure;
 	}
