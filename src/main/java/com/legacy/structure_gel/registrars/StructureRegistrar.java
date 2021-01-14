@@ -1,8 +1,16 @@
 package com.legacy.structure_gel.registrars;
 
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nullable;
+
 import com.google.common.collect.ImmutableMap;
 import com.legacy.structure_gel.util.GelCollectors;
 import com.legacy.structure_gel.util.RegistryHelper;
+import com.legacy.structure_gel.worldgen.structure.GelStructure;
+
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.gen.FlatGenerationSettings;
 import net.minecraft.world.gen.GenerationStage;
@@ -11,12 +19,8 @@ import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructurePiece;
+import net.minecraft.world.gen.settings.StructureSeparationSettings;
 import net.minecraftforge.registries.IForgeRegistry;
-
-import javax.annotation.Nullable;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 /**
  * Stores a {@link Structure}, {@link IStructurePieceType}, and
@@ -34,6 +38,8 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 	private final Map<String, IStructurePieceType> pieceTypes;
 	private final Map<String, StructureFeature<C, S>> structureFeatures;
 	private final GenerationStage.Decoration generationStage;
+	@Nullable
+	private StructureSeparationSettings separationSettings;
 
 	/**
 	 * The most simple structure with only one config and one piece type
@@ -161,6 +167,20 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 	}
 
 	/**
+	 * Sets the separation settings of this structure. If not set and the structure
+	 * is an instance of {@link GelStructure}, this registrar will use
+	 * {@link GelStructure#getSeparationSettings()} instead.
+	 * 
+	 * @param separationSettings
+	 * @return {@link StructureRegistrar}
+	 */
+	public StructureRegistrar<C, S> withSeparation(StructureSeparationSettings separationSettings)
+	{
+		this.separationSettings = separationSettings;
+		return this;
+	}
+
+	/**
 	 * Gets the {@link Structure}.
 	 *
 	 * @return The {@link Structure} passed in
@@ -244,6 +264,48 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 			return null;
 	}
 
+	/**
+	 * Returns the name that this structure will be registered under.
+	 * 
+	 * @return {@link ResourceLocation}
+	 */
+	public ResourceLocation getRegistryName()
+	{
+		return this.name;
+	}
+
+	/**
+	 * Returns the decoration stage to generate the structure during.
+	 * 
+	 * @return {@link GenerationStage.Decoration}
+	 */
+	public GenerationStage.Decoration getGenerationStage()
+	{
+		return this.generationStage;
+	}
+
+	/**
+	 * Returns the separation settings for the structure. If not set and the
+	 * structure is an instance of {@link GelStructure}, this registrar will return
+	 * {@link GelStructure#getSeparationSettings()} instead.
+	 * 
+	 * @throws (TODO in 1.17) NullPointerException if {@link #separationSettings} is
+	 *             null and cannot be inferred from {@link GelStructure}
+	 * @return {@link StructureSeparationSettings}
+	 */
+	public StructureSeparationSettings getSeparationSettings()
+	{
+		if (this.separationSettings == null)
+		{
+			if (this.structure instanceof GelStructure<?>)
+				return ((GelStructure<?>) this.structure).getSeparationSettings();
+			else
+				return new StructureSeparationSettings(24, 8, 0);
+			/*throw new NullPointerException(String.format("%s does not have StructureSeparationSettings set. Use withSeparation()", this.getRegistryName().toString()));*/
+		}
+		return this.separationSettings;
+	}
+
 	@Override
 	public StructureRegistrar<C, S> handle()
 	{
@@ -252,12 +314,18 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 		return this;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public StructureRegistrar<C, S> handleForge(IForgeRegistry<Structure<?>> registry)
 	{
-		RegistryHelper.registerStructure(registry, this.name, this.structure, this.generationStage);
-		// TODO 1.17 move to registerStructure
-		FlatGenerationSettings.STRUCTURES = GelCollectors.addToMap(FlatGenerationSettings.STRUCTURES, this.structure, this.getStructureFeature());
+		// TODO 1.17 update based on RegistryHelper changes
+		if (this.structure instanceof GelStructure<?>)
+			RegistryHelper.registerStructure(registry, this);
+		else
+		{
+			RegistryHelper.registerStructure(registry, this.getRegistryName(), this.getStructure(), this.getGenerationStage(), this.getSeparationSettings());
+			FlatGenerationSettings.STRUCTURES = GelCollectors.addToMap(FlatGenerationSettings.STRUCTURES, structure, this.getStructureFeature());
+		}
 		return this;
 	}
 }

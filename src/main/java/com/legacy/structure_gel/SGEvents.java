@@ -15,9 +15,8 @@ import com.legacy.structure_gel.util.RegistryHelper;
 import com.legacy.structure_gel.util.capability.GelCapability;
 import com.legacy.structure_gel.util.capability.GelEntityProvider;
 import com.legacy.structure_gel.worldgen.structure.GelStructure;
-import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.DataFixerUpper;
-import net.minecraft.client.resources.I18n;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;

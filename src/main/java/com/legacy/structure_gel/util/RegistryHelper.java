@@ -12,6 +12,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Streams;
 import com.legacy.structure_gel.registrars.IForgeRegistrar;
 import com.legacy.structure_gel.registrars.IRegistrar;
+import com.legacy.structure_gel.registrars.StructureRegistrar;
 import com.legacy.structure_gel.worldgen.structure.GelStructure;
 import com.mojang.datafixers.util.Pair;
 
@@ -21,6 +22,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.village.PointOfInterestType;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.gen.FlatGenerationSettings;
 import net.minecraft.world.gen.GenerationStage.Decoration;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
@@ -119,37 +121,66 @@ public class RegistryHelper
 	/**
 	 * Registers the input structure to both the forge Feature registry and the
 	 * Structure Feature registry.
-	 *
+	 * 
+	 * @deprecated TODO 1.17 remove. Does not add to FlatGenerationSettings. use
+	 *             {@link #registerStructure(IForgeRegistry, StructureRegistrar, StructureSeparationSettings)}
 	 * @param registry
 	 * @param key
 	 * @param structure
 	 * @param generationStage
 	 * @return {@link Structure}
 	 */
+	@Deprecated
 	public static <C extends IFeatureConfig, S extends Structure<C>> S registerStructure(IForgeRegistry<Structure<?>> registry, ResourceLocation key, S structure, Decoration generationStage)
 	{
+		if (structure.getRegistryName() == null)
+			structure.setRegistryName(key);
 		return registerStructure(registry, key, structure, generationStage, structure instanceof GelStructure<?> ? ((GelStructure<?>) structure).getSeparationSettings() : new StructureSeparationSettings(32, 8, 0));
 	}
 
 	/**
 	 * Registers the input structure to both the forge Feature registry and the
 	 * Structure Feature registry
-	 *
+	 * 
+	 * @deprecated TODO 1.17 remove. Does not add to FlatGenerationSettings. use
+	 *             {@link #registerStructure(IForgeRegistry, StructureRegistrar, StructureSeparationSettings)}
 	 * @param registry
 	 * @param key
 	 * @param structure
 	 * @param generationStage
 	 * @return {@link Structure}
 	 */
+	@Deprecated
 	public static <C extends IFeatureConfig, S extends Structure<C>> S registerStructure(IForgeRegistry<Structure<?>> registry, ResourceLocation key, S structure, Decoration generationStage, StructureSeparationSettings separationSettings)
 	{
-		structure.setRegistryName(key);
+		if (structure.getRegistryName() == null)
+			structure.setRegistryName(key);
 		registry.register(structure);
 		Structure.NAME_STRUCTURE_BIMAP.put(key.toString(), structure);
 		Structure.STRUCTURE_DECORATION_STAGE_MAP.put(structure, generationStage);
 		DimensionStructuresSettings.field_236191_b_ = ImmutableMap.<Structure<?>, StructureSeparationSettings>builder().putAll(DimensionStructuresSettings.field_236191_b_).put(structure, separationSettings).build();
-		// TODO 1.17 update this to inclue flat gen settings
 		STRUCTURE_SETTINGS_MAP.put(structure, separationSettings);
+		return structure;
+	}
+
+	/**
+	 * 
+	 * @param registry
+	 * @param registrar
+	 * @param separationSettings
+	 * @return {@link Structure}
+	 */
+	public static <C extends IFeatureConfig, S extends Structure<C>> S registerStructure(IForgeRegistry<Structure<?>> registry, StructureRegistrar<C, S> registrar)
+	{
+		S structure = registrar.getStructure();
+		if (structure.getRegistryName() == null)
+			structure.setRegistryName(registrar.getRegistryName());
+		registry.register(structure);
+		Structure.NAME_STRUCTURE_BIMAP.put(registrar.getRegistryName().toString(), structure);
+		Structure.STRUCTURE_DECORATION_STAGE_MAP.put(structure, registrar.getGenerationStage());
+		DimensionStructuresSettings.field_236191_b_ = ImmutableMap.<Structure<?>, StructureSeparationSettings>builder().putAll(DimensionStructuresSettings.field_236191_b_).put(structure, registrar.getSeparationSettings()).build();
+		FlatGenerationSettings.STRUCTURES = GelCollectors.addToMap(FlatGenerationSettings.STRUCTURES, structure, registrar.getStructureFeature());
+		STRUCTURE_SETTINGS_MAP.put(structure, registrar.getSeparationSettings());
 		return structure;
 	}
 
