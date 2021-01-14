@@ -46,7 +46,7 @@ import net.minecraftforge.registries.RegistryBuilder;
 @Internal
 public class SGEvents
 {
-	private static boolean worldHasFakeDataFixer = false;
+	private static boolean HAS_FAKE_DATAFIXER = false;
 
 	protected static void init(IEventBus modBus, IEventBus forgeBus)
 	{
@@ -76,7 +76,7 @@ public class SGEvents
 				BiomeDictionary.makeGuess().forEach((name, types) -> StructureGelMod.LOGGER.info(String.format("Registered %s to %s:[%s]", name, StructureGelMod.MODID, String.join(", ", types.stream().filter(BiomeDictionary::filterTypeForAutoRegister).map(bt -> bt.getRegistryName().getPath()).sorted().collect(Collectors.toSet())))));
 			}
 		}
-		catch (Exception e)
+		catch (Throwable e)
 		{
 			StructureGelMod.LOGGER.error("Encountered an issue while making assumptions for the biome dictionary. Please narrow down which mods cause a conflict here and report it to our issue tracker: https://gitlab.com/modding-legacy/structure-gel-api/-/issues");
 			e.printStackTrace();
@@ -93,7 +93,7 @@ public class SGEvents
 				PacketHandler.sendToClient(new UpdateGelPlayerPacket(gelPlayer), player);
 			});
 
-			if (worldHasFakeDataFixer && !StructureGelConfig.COMMON.silenceFakeDataFixerWarning())
+			if (HAS_FAKE_DATAFIXER && !StructureGelConfig.COMMON.silenceFakeDataFixerWarning())
 				player.sendMessage(new TranslationTextComponent(String.format("info.structure_gel.fake_data_fixer.%s", ((ServerWorld) event.getWorld()).getServer().isSinglePlayer() ? "integrated" : "external"), "[Structure Gel API] ").mergeStyle(TextFormatting.YELLOW), Util.DUMMY_UUID);
 		}
 	}
@@ -119,7 +119,7 @@ public class SGEvents
 	{
 		if (event.getWorld() instanceof ServerWorld)
 		{
-			worldHasFakeDataFixer = !DataFixesManager.getDataFixer().getClass().equals(DataFixerUpper.class);
+			HAS_FAKE_DATAFIXER = !DataFixesManager.getDataFixer().getClass().equals(DataFixerUpper.class);
 			ServerWorld world = (ServerWorld) event.getWorld();
 
 			// Get from settings
@@ -147,7 +147,7 @@ public class SGEvents
 
 	protected static void serverStarted(final FMLServerStartedEvent event)
 	{
-		if (worldHasFakeDataFixer)
+		if (HAS_FAKE_DATAFIXER)
 			StructureGelMod.LOGGER.warn(new TranslationTextComponent(String.format("info.structure_gel.fake_data_fixer.%s", event.getServer().isSinglePlayer() && !event.getServer().getPublic() ? "integrated" : "external"), "").mergeStyle(TextFormatting.YELLOW).getString());
 	}
 }
