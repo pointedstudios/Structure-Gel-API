@@ -207,7 +207,8 @@ public abstract class GelStructure<C extends IFeatureConfig> extends Structure<C
 			if (this.getRegistryName() == null)
 			{
 				this.seed = 0;
-				StructureGelMod.LOGGER.error(String.format("The structure %s does not have a registry name. Seed defaulted to 0. This should be avoided.", this.getClass().getName()));
+				NullPointerException e = new NullPointerException("No registry name set.");
+				StructureGelMod.LOGGER.error(String.format("The structure %s does not have a registry name. Seed defaulted to 0. This should be avoided.", this.getClass().getName()), e);
 			}
 			else
 				this.seed = Math.abs(this.getRegistryName().toString().hashCode());

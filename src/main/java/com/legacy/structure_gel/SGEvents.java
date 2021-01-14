@@ -121,7 +121,11 @@ public class SGEvents
 		{
 			worldHasFakeDataFixer = !DataFixesManager.getDataFixer().getClass().equals(DataFixerUpper.class);
 			ServerWorld world = (ServerWorld) event.getWorld();
+
+			// Get from settings
 			Map<Structure<?>, StructureSeparationSettings> settingsMap = new HashMap<>(world.getChunkProvider().getChunkGenerator().func_235957_b_().field_236193_d_);
+
+			// Add to settings map
 			RegistryHelper.STRUCTURE_SETTINGS_MAP.forEach((structure, settings) ->
 			{
 				if (structure instanceof GelStructure)
@@ -133,7 +137,11 @@ public class SGEvents
 				else
 					settingsMap.put(structure, settings);
 			});
+
+			// Set into settings
+			// getDimSettings.instanceMap
 			world.getChunkProvider().getChunkGenerator().func_235957_b_().field_236193_d_ = settingsMap;
+
 		}
 	}
 

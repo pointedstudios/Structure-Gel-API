@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
+import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.util.GelCollectors;
 import com.legacy.structure_gel.util.RegistryHelper;
 import com.legacy.structure_gel.worldgen.structure.GelStructure;
@@ -289,8 +290,6 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 	 * structure is an instance of {@link GelStructure}, this registrar will return
 	 * {@link GelStructure#getSeparationSettings()} instead.
 	 * 
-	 * @throws (TODO in 1.17) NullPointerException if {@link #separationSettings} is
-	 *             null and cannot be inferred from {@link GelStructure}
 	 * @return {@link StructureSeparationSettings}
 	 */
 	public StructureSeparationSettings getSeparationSettings()
@@ -301,6 +300,7 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 				return ((GelStructure<?>) this.structure).getSeparationSettings();
 			else
 				return new StructureSeparationSettings(24, 8, 0);
+			// TODO 1.17 throw this if not set
 			/*throw new NullPointerException(String.format("%s does not have StructureSeparationSettings set. Use withSeparation()", this.getRegistryName().toString()));*/
 		}
 		return this.separationSettings;
@@ -323,6 +323,7 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 			RegistryHelper.registerStructure(registry, this);
 		else
 		{
+			StructureGelMod.LOGGER.info("USING OLD");
 			RegistryHelper.registerStructure(registry, this.getRegistryName(), this.getStructure(), this.getGenerationStage(), this.getSeparationSettings());
 			FlatGenerationSettings.STRUCTURES = GelCollectors.addToMap(FlatGenerationSettings.STRUCTURES, structure, this.getStructureFeature());
 		}

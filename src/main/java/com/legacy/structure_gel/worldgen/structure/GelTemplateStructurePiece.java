@@ -49,7 +49,7 @@ import java.util.Random;
  */
 public abstract class GelTemplateStructurePiece extends TemplateStructurePiece implements IModifyState
 {
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LogManager.getLogger("ModdingLegacy/StructureGel/GelTemplateStructurePiece");
 
 	/**
 	 * The location of your structure in the data folder.

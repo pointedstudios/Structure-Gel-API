@@ -40,7 +40,7 @@ import java.util.Set;
 @Internal
 public class StructureGelCompat
 {
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LogManager.getLogger("ModdingLegacy/StructureGel/Compat");
 
 	protected static void init(IEventBus modBus)
 	{

@@ -123,7 +123,7 @@ public class RegistryHelper
 	 * Structure Feature registry.
 	 * 
 	 * @deprecated TODO 1.17 remove. Does not add to FlatGenerationSettings. use
-	 *             {@link #registerStructure(IForgeRegistry, StructureRegistrar, StructureSeparationSettings)}
+	 *             {@link #registerStructure(IForgeRegistry, StructureRegistrar)}
 	 * @param registry
 	 * @param key
 	 * @param structure
@@ -143,7 +143,7 @@ public class RegistryHelper
 	 * Structure Feature registry
 	 * 
 	 * @deprecated TODO 1.17 remove. Does not add to FlatGenerationSettings. use
-	 *             {@link #registerStructure(IForgeRegistry, StructureRegistrar, StructureSeparationSettings)}
+	 *             {@link #registerStructure(IForgeRegistry, StructureRegistrar)}
 	 * @param registry
 	 * @param key
 	 * @param structure
@@ -167,21 +167,19 @@ public class RegistryHelper
 	 * 
 	 * @param registry
 	 * @param registrar
-	 * @param separationSettings
 	 * @return {@link Structure}
 	 */
 	public static <C extends IFeatureConfig, S extends Structure<C>> S registerStructure(IForgeRegistry<Structure<?>> registry, StructureRegistrar<C, S> registrar)
 	{
-		S structure = registrar.getStructure();
-		if (structure.getRegistryName() == null)
-			structure.setRegistryName(registrar.getRegistryName());
-		registry.register(structure);
-		Structure.NAME_STRUCTURE_BIMAP.put(registrar.getRegistryName().toString(), structure);
-		Structure.STRUCTURE_DECORATION_STAGE_MAP.put(structure, registrar.getGenerationStage());
-		DimensionStructuresSettings.field_236191_b_ = ImmutableMap.<Structure<?>, StructureSeparationSettings>builder().putAll(DimensionStructuresSettings.field_236191_b_).put(structure, registrar.getSeparationSettings()).build();
-		FlatGenerationSettings.STRUCTURES = GelCollectors.addToMap(FlatGenerationSettings.STRUCTURES, structure, registrar.getStructureFeature());
-		STRUCTURE_SETTINGS_MAP.put(structure, registrar.getSeparationSettings());
-		return structure;
+		if (registrar.getStructure().getRegistryName() == null)
+			registrar.getStructure().setRegistryName(registrar.getRegistryName());
+		registry.register(registrar.getStructure());
+		Structure.NAME_STRUCTURE_BIMAP.put(registrar.getRegistryName().toString(), registrar.getStructure());
+		Structure.STRUCTURE_DECORATION_STAGE_MAP.put(registrar.getStructure(), registrar.getGenerationStage());
+		DimensionStructuresSettings.field_236191_b_ = ImmutableMap.<Structure<?>, StructureSeparationSettings>builder().putAll(DimensionStructuresSettings.field_236191_b_).put(registrar.getStructure(), registrar.getSeparationSettings()).build();
+		FlatGenerationSettings.STRUCTURES = GelCollectors.addToMap(FlatGenerationSettings.STRUCTURES, registrar.getStructure(), registrar.getStructureFeature());
+		STRUCTURE_SETTINGS_MAP.put(registrar.getStructure(), registrar.getSeparationSettings());
+		return registrar.getStructure();
 	}
 
 	/**

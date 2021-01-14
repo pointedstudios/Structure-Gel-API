@@ -40,7 +40,7 @@ import org.apache.logging.log4j.Logger;
 public class StructureGelMod
 {
 	public static final String MODID = "structure_gel";
-	public static final Logger LOGGER = LogManager.getLogger();
+	public static final Logger LOGGER = LogManager.getLogger("ModdingLegacy/StructureGel");
 
 	public StructureGelMod()
 	{
