@@ -323,7 +323,7 @@ public class StructureRegistrar<C extends IFeatureConfig, S extends Structure<C>
 			RegistryHelper.registerStructure(registry, this);
 		else
 		{
-			StructureGelMod.LOGGER.info("USING OLD");
+			StructureGelMod.LOGGER.warn("Using old register method for {}. This method is deprecated and will be replaced in the future. StructureSeparationSettings may not be correct.", this.getRegistryName().toString());
 			RegistryHelper.registerStructure(registry, this.getRegistryName(), this.getStructure(), this.getGenerationStage(), this.getSeparationSettings());
 			FlatGenerationSettings.STRUCTURES = GelCollectors.addToMap(FlatGenerationSettings.STRUCTURES, structure, this.getStructureFeature());
 		}
