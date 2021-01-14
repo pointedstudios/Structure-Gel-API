@@ -148,6 +148,6 @@ public class SGEvents
 	protected static void serverStarted(final FMLServerStartedEvent event)
 	{
 		if (HAS_FAKE_DATAFIXER)
-			StructureGelMod.LOGGER.warn(new TranslationTextComponent(String.format("info.structure_gel.fake_data_fixer.%s", event.getServer().isSinglePlayer() && !event.getServer().getPublic() ? "integrated" : "external"), "").mergeStyle(TextFormatting.YELLOW).getString());
+			StructureGelMod.LOGGER.warn(new TranslationTextComponent(String.format("info.structure_gel.fake_data_fixer.%s", event.getServer().isSinglePlayer() && !event.getServer().getPublic() ? "integrated" : "external"), "").getString());
 	}
 }

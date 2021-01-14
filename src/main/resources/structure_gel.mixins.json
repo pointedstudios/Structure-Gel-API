@@ -8,7 +8,8 @@
 		"EntityMixin",
 		"MinecraftServerMixin",
 		"FillCommandMixin",
-		"CloneCommandMixin"
+		"CloneCommandMixin",
+		"CrashReportMixin"
 	],
 	"client": [
 		"WorldRendererMixin",
