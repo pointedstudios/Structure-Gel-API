@@ -1,11 +1,19 @@
 package com.legacy.structure_gel.worldgen.structure;
 
+import java.util.Random;
+
+import javax.annotation.Nullable;
+
+import org.apache.logging.log4j.Logger;
+
+import com.legacy.structure_gel.StructureGelMod;
 import com.legacy.structure_gel.worldgen.GelPlacementSettings;
 import com.legacy.structure_gel.worldgen.GelTemplate;
 import com.legacy.structure_gel.worldgen.IModifyState;
 import com.legacy.structure_gel.worldgen.processors.RemoveGelStructureProcessor;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.command.arguments.BlockStateParser;
@@ -27,11 +35,6 @@ import net.minecraft.world.gen.feature.template.BlockIgnoreStructureProcessor;
 import net.minecraft.world.gen.feature.template.PlacementSettings;
 import net.minecraft.world.gen.feature.template.Template;
 import net.minecraft.world.gen.feature.template.TemplateManager;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import javax.annotation.Nullable;
-import java.util.Random;
 
 /**
  * An extension of {@link TemplateStructurePiece} with more extensible methods
@@ -49,7 +52,7 @@ import java.util.Random;
  */
 public abstract class GelTemplateStructurePiece extends TemplateStructurePiece implements IModifyState
 {
-	private static final Logger LOGGER = LogManager.getLogger("ModdingLegacy/StructureGel/GelTemplateStructurePiece");
+	private static final Logger LOGGER = StructureGelMod.makeLogger("GelTemplateStructurePiece");
 
 	/**
 	 * The location of your structure in the data folder.
@@ -70,8 +73,8 @@ public abstract class GelTemplateStructurePiece extends TemplateStructurePiece i
 	 * }<br>
 	 *
 	 * @param structurePieceTypeIn
-	 * @param componentTypeIn      A marker that allows for different behavior in the
-	 *                             constructor. You may not need to use this.
+	 * @param componentTypeIn A marker that allows for different behavior in the
+	 *            constructor. You may not need to use this.
 	 */
 	public GelTemplateStructurePiece(IStructurePieceType structurePieceTypeIn, ResourceLocation name, int componentTypeIn)
 	{
@@ -163,7 +166,8 @@ public abstract class GelTemplateStructurePiece extends TemplateStructurePiece i
 	 * Override of the vanilla method that places blocks from a structure into the
 	 * world with added hooks for special conditions.
 	 *
-	 * @see TemplateStructurePiece#func_230383_a_(ISeedReader, StructureManager, ChunkGenerator, Random, MutableBoundingBox, ChunkPos, BlockPos)
+	 * @see TemplateStructurePiece#func_230383_a_(ISeedReader, StructureManager,
+	 *      ChunkGenerator, Random, MutableBoundingBox, ChunkPos, BlockPos)
 	 */
 	@Override
 	public boolean func_230383_a_(ISeedReader world, StructureManager structureManager, ChunkGenerator chunkGenerator, Random rand, MutableBoundingBox bounds, ChunkPos chunkPos, BlockPos pos)
