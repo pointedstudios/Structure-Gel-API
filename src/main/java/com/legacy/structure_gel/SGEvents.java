@@ -15,15 +15,10 @@ import com.legacy.structure_gel.util.RegistryHelper;
 import com.legacy.structure_gel.util.capability.GelCapability;
 import com.legacy.structure_gel.util.capability.GelEntityProvider;
 import com.legacy.structure_gel.worldgen.structure.GelStructure;
-import com.mojang.datafixers.DataFixerUpper;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Util;
-import net.minecraft.util.datafix.DataFixesManager;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.settings.StructureSeparationSettings;
 import net.minecraft.world.server.ServerWorld;
@@ -35,7 +30,6 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.registries.RegistryBuilder;
 
 /**
@@ -46,8 +40,6 @@ import net.minecraftforge.registries.RegistryBuilder;
 @Internal
 public class SGEvents
 {
-	private static boolean HAS_FAKE_DATAFIXER = false;
-
 	protected static void init(IEventBus modBus, IEventBus forgeBus)
 	{
 		modBus.addListener(SGEvents::commonInit);
@@ -56,7 +48,6 @@ public class SGEvents
 		forgeBus.addListener(SGEvents::registerCommands);
 		forgeBus.addListener(SGEvents::onEntityJoinWorld);
 		forgeBus.addListener(SGEvents::worldLoad);
-		forgeBus.addListener(SGEvents::serverStarted);
 		forgeBus.addGenericListener(Entity.class, SGEvents::attachCapabilities);
 	}
 
@@ -92,9 +83,6 @@ public class SGEvents
 			{
 				PacketHandler.sendToClient(new UpdateGelPlayerPacket(gelPlayer), player);
 			});
-
-			if (HAS_FAKE_DATAFIXER && !StructureGelConfig.COMMON.silenceFakeDataFixerWarning())
-				player.sendMessage(new TranslationTextComponent(String.format("info.structure_gel.fake_data_fixer.%s", ((ServerWorld) event.getWorld()).getServer().isSinglePlayer() ? "integrated" : "external"), "[Structure Gel API] ").mergeStyle(TextFormatting.YELLOW), Util.DUMMY_UUID);
 		}
 	}
 
@@ -119,7 +107,6 @@ public class SGEvents
 	{
 		if (event.getWorld() instanceof ServerWorld)
 		{
-			HAS_FAKE_DATAFIXER = !DataFixesManager.getDataFixer().getClass().equals(DataFixerUpper.class);
 			ServerWorld world = (ServerWorld) event.getWorld();
 
 			// Get from settings
@@ -143,11 +130,5 @@ public class SGEvents
 			world.getChunkProvider().getChunkGenerator().func_235957_b_().field_236193_d_ = settingsMap;
 
 		}
-	}
-
-	protected static void serverStarted(final FMLServerStartedEvent event)
-	{
-		if (HAS_FAKE_DATAFIXER)
-			StructureGelMod.LOGGER.warn(new TranslationTextComponent(String.format("info.structure_gel.fake_data_fixer.%s", event.getServer().isSinglePlayer() && !event.getServer().getPublic() ? "integrated" : "external"), "").getString());
 	}
 }

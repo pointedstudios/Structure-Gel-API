@@ -1,13 +1,13 @@
 package com.legacy.structure_gel.core.mixin;
 
-import com.legacy.structure_gel.SGCrashHandler;
-import net.minecraft.crash.CrashReport;
-import net.minecraft.util.Util;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-import java.util.ArrayList;
+import com.legacy.structure_gel.SGCrashHandler;
+
+import net.minecraft.crash.CrashReport;
+import net.minecraft.util.Util;
 
 @Mixin(CrashReport.class)
 public class CrashReportMixin
