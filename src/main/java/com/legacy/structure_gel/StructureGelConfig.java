@@ -1,12 +1,14 @@
 package com.legacy.structure_gel;
 
-import com.legacy.structure_gel.util.Internal;
-import net.minecraftforge.common.ForgeConfigSpec;
-import org.apache.commons.lang3.tuple.Pair;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.tuple.Pair;
+
+import com.legacy.structure_gel.util.Internal;
+
+import net.minecraftforge.common.ForgeConfigSpec;
 
 @Internal
 public class StructureGelConfig
@@ -33,9 +35,9 @@ public class StructureGelConfig
 		private final ForgeConfigSpec.ConfigValue<String> ignoredMods;
 		private final ForgeConfigSpec.BooleanValue guessBiomeDict;
 		private final ForgeConfigSpec.BooleanValue exceedFillLimit;
-		private final ForgeConfigSpec.BooleanValue silenceFakeDataFixerWarning;
 
-		//public final com.legacy.structure_gel.util.ConfigTemplates.StructureConfig structureConfig;
+		// public final com.legacy.structure_gel.util.ConfigTemplates.StructureConfig
+		// structureConfig;
 
 		public Common(ForgeConfigSpec.Builder builder)
 		{
@@ -43,9 +45,10 @@ public class StructureGelConfig
 			this.ignoredMods = builder.comment("A list of mod IDs that will be ignored when the biome dictionary attempts to register unregistered biomes. Mod IDs must be comma separated (\"biomesoplenty, byg, blue_skies\").").define("biome_dictionary.ignored_mods", "");
 			this.guessBiomeDict = builder.comment("Determines if the biome dictionary make assumptions for unregistered biomes. Setting this to false can fix issues where a structure generates in the wrong dimension.").define("biome_dictionary.make_best_guess", true);
 			this.exceedFillLimit = builder.comment("When true, removes the size limit from the fill and clone commands.").define("commands.exceed_fill_clone_limit", true);
-			this.silenceFakeDataFixerWarning = builder.comment("Hides the chat message warning you if a world you are on has a mod that disables the DataFixerUpper.").define("warnings.silence_fake_data_fixer_warning", false);
 
-			//this.structureConfig = new com.legacy.structure_gel.util.ConfigTemplates.StructureConfig(builder, "test_structure", 1.0, 20, 0).biomes(true, "#structure_gel:end");
+			// this.structureConfig = new
+			// com.legacy.structure_gel.util.ConfigTemplates.StructureConfig(builder,
+			// "test_structure", 1.0, 20, 0).biomes(true, "#structure_gel:end");
 		}
 
 		public boolean getExtraLakeProofing()
@@ -66,11 +69,6 @@ public class StructureGelConfig
 		public boolean shouldExceedFillLimit()
 		{
 			return this.exceedFillLimit.get();
-		}
-
-		public boolean silenceFakeDataFixerWarning()
-		{
-			return this.silenceFakeDataFixerWarning.get();
 		}
 	}
 
